@@ -27,8 +27,6 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
     private double driveAppliedVolts;
     private double turnAppliedVolts;
 
-    private int index;
-
     public SwerveModuleSparkMax(int index) {
         driveMotor = new SparkMax(DriveConstants.driveMotorPorts[index], SparkMax.MotorType.kBrushless);
         SparkMaxConfig driveConfig = new SparkMaxConfig();
@@ -60,8 +58,6 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
 
         absoluteEncoder = new CANcoder(DriveConstants.absoluteEncoderPorts[index]);
         absoluteEncoderOffsetRad = Units.degreesToRadians(DriveConstants.absoluteEncoderOffsetDeg[index]);
-
-        this.index = index;
     };
 
     @Override

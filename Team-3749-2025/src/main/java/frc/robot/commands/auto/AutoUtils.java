@@ -1,8 +1,6 @@
 package frc.robot.commands.auto;
 
-import java.util.function.Consumer;
 
-import choreo.Choreo;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoTrajectory;
@@ -14,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Robot;
-import frc.robot.utils.UtilityFunctions;
 
 /**
  * All setup and helper methods for auto routines, including the

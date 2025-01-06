@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.auto.AutoUtils;
 import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.ShuffleData;

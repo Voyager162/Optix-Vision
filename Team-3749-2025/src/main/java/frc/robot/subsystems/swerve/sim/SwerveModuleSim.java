@@ -1,7 +1,5 @@
 package frc.robot.subsystems.swerve.sim;
 
-import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystem;

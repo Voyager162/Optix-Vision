@@ -18,7 +18,6 @@ import frc.robot.utils.ShuffleData;
  */
 public class SwerveModule {
 
-    private double index;
     private String name;
     private SwerveModuleState desiredState = new SwerveModuleState();
     private final PIDController turningPidController;
@@ -54,7 +53,6 @@ public class SwerveModule {
         turningPidController = new PIDController(ModuleConstants.kPturning, 0, ModuleConstants.kDTurning);
         turningPidController.enableContinuousInput(0, 2 * Math.PI);
 
-        this.index = index;
 
         if (index == 0) {
             name = "FL module";
@@ -129,7 +127,7 @@ public class SwerveModule {
      */
     public void setDesiredState(SwerveModuleState state) {
 
-        state = SwerveModuleState.optimize(state, getState().angle);
+        state.optimize(getState().angle);
 
         // prevent micromovements on the motor
         if (Math.abs(state.speedMetersPerSecond) < 0.001) {
