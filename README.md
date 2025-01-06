@@ -1,5 +1,5 @@
-# Team 3749 2024 🤖
-Team Optix 3749's robot code for the 2024 FIRST® Robotics Competition Challenge: Reefscape!
+# Team 3749 2025 🤖
+Team Optix 3749's robot code for the 2025 FIRST® Robotics Competition Challenge: Reefscape!
 
 ## Auto Formatting
 1. Open a *.java file
