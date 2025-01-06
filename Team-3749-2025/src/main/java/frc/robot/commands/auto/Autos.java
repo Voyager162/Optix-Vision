@@ -99,4 +99,8 @@ public class Autos {
        return AutoUtils.getSingleTrajectory("Chair Game");
 
     }
+
+    public static Command getTestReefscape() {
+        return AutoUtils.getSingleTrajectory("TestReefscape");
+    }
 }

@@ -4,7 +4,6 @@ package frc.robot.commands.auto;
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoTrajectory;
-import choreo.auto.AutoFactory.AutoBindings;
 import choreo.auto.AutoRoutine;
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -50,10 +49,6 @@ public class AutoUtils {
      * setup the choreo factor object with bindings, controller, etc.
      */
     private static void setupFactory() {
-        // what commands run on what markers
-        AutoBindings bindings = new AutoFactory.AutoBindings();
-        bindings.bind("Marker", Commands.print("Marker Passed"));
-
         /**
          * Swerve Pose Supplier
          * Reset Odometry Method
@@ -69,8 +64,11 @@ public class AutoUtils {
                 (Pose2d startingPose) -> Robot.swerve.setOdometry(startingPose),
                 (SwerveSample sample) -> Robot.swerve.followSample(sample),
                 true,
-                Robot.swerve,
-                bindings);
+                Robot.swerve);
+
+        // Event Binding 
+        factory.bind("Marker", Commands.print("Marker Passed"));
+
 
     }
 
