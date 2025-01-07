@@ -107,4 +107,16 @@ public class Autos {
     public static Command getTaxi() {
         return AutoUtils.getSingleTrajectory("taxi");
     }
+
+    /*
+    Push alliance member's robot on the left side ahead for LEAVE
+    Go back to original spot and taxi for LEAVE
+    */
+    public static Command getPushLeftAndTaxi() {
+        return AutoUtils.getSingleTrajectory("push-left-and-taxi");
+    }
+
+    public static Command getPushRightAndTaxi() {
+        return AutoUtils.getSingleTrajectory("push-right-and-taxi");
+    }
 }
