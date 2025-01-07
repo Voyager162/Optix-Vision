@@ -8,53 +8,49 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPoint;
 import com.pathplanner.lib.path.Waypoint;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 public class ToPos {
-
-    import com.pathplanner.lib.PathPlanner;
-    import com.pathplanner.lib.PathPlannerTrajectory;
-    import com.pathplanner.lib.PathConstraints;
-    import com.pathplanner.lib.PathPoint;
-    import edu.wpi.first.math.geometry.Rotation2d;
-    import edu.wpi.first.math.geometry.Translation2d;
     
-    import java.util.List;
-    
-    public static PathPlannerTrajectory generateSwerveTrajectory(
-            double initialX,
-            double initialY,
-            double initialHeading,
-            double initialHolonomicRotation,
-            double finalX,
-            double finalY,
-            double finalHeading,
-            double finalHolonomicRotation,
+    public static PathPlannerPath generateDynamicPath(
+            Pose2d initialPose,
+            Pose2d finalPose,
             double maxVelocity,
-            double maxAccel
+            double maxAcceleration,
+            double maxAngularVelocity,
+            double maxAngularAcceleration,
+            Rotation2d finalHeading
     ) {
-        // Create PathPoint objects for the start and end positions
-        PathPoint startPoint = new PathPoint(
-            new Translation2d(initialX, initialY),              // Start position
-            Rotation2d.fromRadians(initialHeading),            // Start heading (direction of movement)
-            Rotation2d.fromRadians(initialHolonomicRotation)   // Robot-facing direction at start
+        // Create waypoints from the initial and final poses
+        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+                initialPose,
+                finalPose
         );
     
-        PathPoint endPoint = new PathPoint(
-            new Translation2d(finalX, finalY),                 // End position
-            Rotation2d.fromRadians(finalHeading),             // End heading (direction of movement)
-            Rotation2d.fromRadians(finalHolonomicRotation)    // Robot-facing direction at end
+        // Define path constraints
+        PathConstraints constraints = new PathConstraints(
+                maxVelocity,
+                maxAcceleration,
+                maxAngularVelocity,
+                maxAngularAcceleration
         );
     
-        // Generate the trajectory using PathPlanner's new API
-        List<PathPoint> pathPoints = List.of(startPoint, endPoint); // Define the path points
-        return PathPlanner.generatePath(
-            new PathConstraints(maxVelocity, maxAccel), // Define path constraints
-            pathPoints // Pass the list of points
+        // Create the path with the specified constraints and goal end state
+        PathPlannerPath path = new PathPlannerPath(
+                waypoints,
+                constraints,
+                null, // Ideal starting state, not needed for on-the-fly paths
+                new GoalEndState(0.0, finalHeading) // Goal end state with final heading
         );
+    
+        // Prevent the path from being flipped if coordinates are correct
+        path.preventFlipping = true;
+    
+        return path;
     }
+}
+    
     
 /** Main Goal
  *   
