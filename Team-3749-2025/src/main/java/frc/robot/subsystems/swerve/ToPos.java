@@ -26,8 +26,9 @@ public class ToPos {
     }
 }
 /** Main Goal
- *     What is a way to get to another setpoint without odometry,or more specifically rather than caring about 
- *     where robot is with odometry adding asd subtracting positions regardless to reach a setpoint 
+ *   
+ *       we want to be able to move from anywhare on the field to anywhere else on the feild durring teleop using pathplanner and accurate trajectories to get to the
+ *       setpoint without driver adjustment
  * 
  * 
  * Step one done by 1/7/2025
