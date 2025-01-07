@@ -9,12 +9,6 @@ import com.pathplanner.lib.path.Waypoint;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.Robot;
-
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import frc.robot.Robot;
-import frc.robot.subsystems.swerve.Swerve;
 public class ToPos {
 
     public ToPos()
