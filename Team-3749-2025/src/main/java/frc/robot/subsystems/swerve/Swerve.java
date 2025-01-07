@@ -4,6 +4,13 @@
 
 package frc.robot.subsystems.swerve;
 
+import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.DriveFeedforwards;
+
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -11,6 +18,8 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.commands.auto.AutoConstants;
@@ -197,6 +206,17 @@ public class Swerve extends SubsystemBase {
     return speeds;
   }
 
+  public ChassisSpeeds getRobotRelativeSpeeds() {
+    SwerveModuleState[] states = new SwerveModuleState[4];
+    for (int i = 0; i < 4; i++) {
+      states[i] = modules[i].getState();
+    }
+    ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(
+        DriveConstants.driveKinematics.toChassisSpeeds(states),
+        getRotation2d());
+    return speeds;
+  }
+
   /**
    * @return Returns direction the robot is facing as a Rotation2d object
    */
@@ -254,6 +274,12 @@ public class Swerve extends SubsystemBase {
 
   }
 
+  public void driveFF(ChassisSpeeds speeds, DriveFeedforwards ff) {
+    SwerveModuleState[] moduleStates = DriveConstants.driveKinematics.toSwerveModuleStates(
+        speeds);
+    setModuleStates(moduleStates);
+  }
+
   /**
    * takes a set of module states and sets individual modules to those states,
    * capping speeds to the maxmimum of the wheels
@@ -293,6 +319,46 @@ public class Swerve extends SubsystemBase {
         getPose().getRotation());
 
     Robot.swerve.setChassisSpeeds(speeds);
+  }
+
+  // Assuming this is a method in your drive subsystem
+  public Command followPathCommand() {
+    try {
+      PathPlannerPath path = ToPos.generateDynamicPath(getPose(),
+          new Pose2d(0, 0, new Rotation2d(Math.toRadians(90))),
+          getMaxDriveSpeed(), SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
+          getMaxAngularSpeed(), SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared);
+
+      return new FollowPathCommand(
+          path,
+          this::getPose, // Robot pose supplier
+          this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+          this::driveFF, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds, AND
+                         // feedforwards
+          new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
+                                          // holonomic drive trains
+              new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+              new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+          ),
+          RobotConfig.fromGUISettings(), // The robot configuration
+          () -> {
+            // Boolean supplier that controls when the path will be mirrored for the red
+            // alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+            var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent()) {
+              return alliance.get() == DriverStation.Alliance.Red;
+            }
+            return false;
+          },
+          this // Reference to this subsystem to set requirements
+      );
+    } catch (Exception e) {
+      DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+      return Commands.none();
+    }
   }
 
   public void setBreakMode(boolean enable) {
@@ -434,7 +500,6 @@ public class Swerve extends SubsystemBase {
         modules[3].getState().speedMetersPerSecond
     };
 
-
     // SmartDashboard.puTarr("Swerve: Real States",realSwerveModuleStates);
     Double[] desiredStates = {
         modules[0].getDesiredState().angle.getRadians(),
@@ -474,6 +539,8 @@ public class Swerve extends SubsystemBase {
     accelerationLog.set((robotVelocity - velocityLog.get()) / .02);
     velocityLog.set(robotVelocity);
     currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
+
+    //SmartDashboard.putData("Swerve Pose",getPose()); also i got opped on for codign this in csa rip
   }
 
   @Override

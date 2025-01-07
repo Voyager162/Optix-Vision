@@ -54,6 +54,7 @@ public class JoystickIO {
         // gyro reset
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
         pilot.a().whileTrue(DriveStraight);
+        pilot.x().onTrue(Commands.runOnce(() -> Robot.swerve.followPathCommand()));
 
         // Example binding
         operator.a().whileTrue(new ExampleSubsystemCommand());
