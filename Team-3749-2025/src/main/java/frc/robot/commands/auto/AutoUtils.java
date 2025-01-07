@@ -30,7 +30,6 @@ public class AutoUtils {
     public static void initAuto() {
         setupFactory();
         setupChooser();
-
     }
 
     /**
