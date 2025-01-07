@@ -32,7 +32,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // return new DriveStraight();
-    return Autos.getTestReefscape();
+    return Autos.getTaxi();
   }
 }

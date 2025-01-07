@@ -101,6 +101,10 @@ public class Autos {
     }
 
     public static Command getTestReefscape() {
-        return AutoUtils.getSingleTrajectory("TestReefscape");
+        return AutoUtils.getSingleTrajectory("1-reef-3");
+    }
+
+    public static Command getTaxi() {
+        return AutoUtils.getSingleTrajectory("taxi");
     }
 }
