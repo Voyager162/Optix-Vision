@@ -14,37 +14,48 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 public class ToPos {
 
-public static PathPlannerTrajectory generateTrajectory(
-        double initialX,
-        double initialY,
-        double initialHeading,
-        double finalX,
-        double finalY,
-        double finalHeading,
-        double maxVelocity,
-        double maxAccel
+    import com.pathplanner.lib.PathPlanner;
+    import com.pathplanner.lib.PathPlannerTrajectory;
+    import com.pathplanner.lib.PathConstraints;
+    import com.pathplanner.lib.PathPoint;
+    import edu.wpi.first.math.geometry.Rotation2d;
+    import edu.wpi.first.math.geometry.Translation2d;
+    
+    import java.util.List;
+    
+    public static PathPlannerTrajectory generateSwerveTrajectory(
+            double initialX,
+            double initialY,
+            double initialHeading,
+            double initialHolonomicRotation,
+            double finalX,
+            double finalY,
+            double finalHeading,
+            double finalHolonomicRotation,
+            double maxVelocity,
+            double maxAccel
     ) {
         // Create PathPoint objects for the start and end positions
         PathPoint startPoint = new PathPoint(
-            new Translation2d(initialX, initialY),  // Start position
-            Rotation2d.fromRadians(initialHeading), // Start heading
-            Rotation2d.fromRadians(initialHeading)  // Robot-facing direction at start
+            new Translation2d(initialX, initialY),              // Start position
+            Rotation2d.fromRadians(initialHeading),            // Start heading (direction of movement)
+            Rotation2d.fromRadians(initialHolonomicRotation)   // Robot-facing direction at start
         );
-
+    
         PathPoint endPoint = new PathPoint(
-            new Translation2d(finalX, finalY),       // End position
-            Rotation2d.fromRadians(finalHeading),   // End heading
-            Rotation2d.fromRadians(finalHeading)    // Robot-facing direction at end
+            new Translation2d(finalX, finalY),                 // End position
+            Rotation2d.fromRadians(finalHeading),             // End heading (direction of movement)
+            Rotation2d.fromRadians(finalHolonomicRotation)    // Robot-facing direction at end
         );
-
-        // Generate the trajectory using PathPlanner
+    
+        // Generate the trajectory using PathPlanner's new API
+        List<PathPoint> pathPoints = List.of(startPoint, endPoint); // Define the path points
         return PathPlanner.generatePath(
-            new PathPlannerTrajectory.PathConstraints(maxVelocity, maxAccel), // Velocity and acceleration constraints
-            startPoint,
-            endPoint
+            new PathConstraints(maxVelocity, maxAccel), // Define path constraints
+            pathPoints // Pass the list of points
         );
     }
-}
+    
 /** Main Goal
  *   
  *       we want to be able to move from anywhare on the field to anywhere else on the feild durring teleop using pathplanner and accurate trajectories to get to the
