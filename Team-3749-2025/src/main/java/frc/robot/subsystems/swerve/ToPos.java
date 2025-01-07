@@ -5,24 +5,44 @@ import java.util.List;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPoint;
 import com.pathplanner.lib.path.Waypoint;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 public class ToPos {
 
-    public ToPos()
-    {
+public static PathPlannerTrajectory generateTrajectory(
+        double initialX,
+        double initialY,
+        double initialHeading,
+        double finalX,
+        double finalY,
+        double finalHeading,
+        double maxVelocity,
+        double maxAccel
+    ) {
+        // Create PathPoint objects for the start and end positions
+        PathPoint startPoint = new PathPoint(
+            new Translation2d(initialX, initialY),  // Start position
+            Rotation2d.fromRadians(initialHeading), // Start heading
+            Rotation2d.fromRadians(initialHeading)  // Robot-facing direction at start
+        );
 
-    }
+        PathPoint endPoint = new PathPoint(
+            new Translation2d(finalX, finalY),       // End position
+            Rotation2d.fromRadians(finalHeading),   // End heading
+            Rotation2d.fromRadians(finalHeading)    // Robot-facing direction at end
+        );
 
-    private final GoalEndState EndGoalTest = new GoalEndState(0.0,Rotation2d.fromDegrees(90));
-    List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses();
-    PathConstraints constaints = new PathConstraints(null, null, null, null);
-
-    public void generatePathToPose(Pose2d pose) {
-        PathPlannerPath path = new PathPlannerPath(waypoints,constaints,null,EndGoalTest);
-        path.preventFlipping = true;
+        // Generate the trajectory using PathPlanner
+        return PathPlanner.generatePath(
+            new PathPlannerTrajectory.PathConstraints(maxVelocity, maxAccel), // Velocity and acceleration constraints
+            startPoint,
+            endPoint
+        );
     }
 }
 /** Main Goal
