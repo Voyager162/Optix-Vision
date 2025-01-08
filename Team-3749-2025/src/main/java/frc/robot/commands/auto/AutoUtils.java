@@ -86,6 +86,11 @@ public class AutoUtils {
         chooser.addCmd("Straight", () -> Autos.getStraight());
         chooser.addCmd("Chair", () -> Autos.getChairGame());
         chooser.addCmd("Score/pick note", () -> Autos.getScore_Pick());
+        chooser.addCmd("Team Taxi", () -> Autos.getTeamTaxi());
+        chooser.addCmd("Push Right and Taxi", () -> Autos.getPushRightAndTaxi());
+        chooser.addCmd("Push Left and Taxi", () -> Autos.getPushLeftAndTaxi());
+        chooser.addCmd("3 Piece", () -> Autos.get3Piece());
+        chooser.addCmd("1 Piece", () -> Autos.get1Piece());
         // Default
         chooser.select("Straight");
 
@@ -114,4 +119,3 @@ public class AutoUtils {
     }
 
 }
-
