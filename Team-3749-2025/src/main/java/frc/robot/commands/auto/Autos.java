@@ -113,7 +113,7 @@ public class Autos {
         return AutoUtils.getSingleTrajectory("NearestAlgaeTest");
     }
 
-    public static Command getTeamTaxi2() {
-        return AutoUtils.getSingleTrajectory("TeamTaxi2");
+    public static Command getTeamTaxi() {
+        return AutoUtils.getSingleTrajectory("TeamTaxi");
     }
 }
