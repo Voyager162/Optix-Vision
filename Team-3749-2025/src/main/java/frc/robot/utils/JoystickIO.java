@@ -106,8 +106,6 @@ public class JoystickIO {
                                 //     }
                                 //     return 0.0;
                                 // }
-                                //whoever wrote this and made y our rotator on sim
-                                //i do not forgiv eyou for this
                                 () -> pilot.getRightX()
                                 ));
     }

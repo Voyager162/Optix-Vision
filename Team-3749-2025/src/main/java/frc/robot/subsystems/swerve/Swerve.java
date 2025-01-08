@@ -4,13 +4,6 @@
 
 package frc.robot.subsystems.swerve;
 
-import com.pathplanner.lib.commands.FollowPathCommand;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.util.DriveFeedforwards;
-
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -271,17 +264,10 @@ public class Swerve extends SubsystemBase {
    */
   public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
     // Convert chassis speeds to individual module states
-    System.out.println(chassisSpeeds);
     SwerveModuleState[] moduleStates = DriveConstants.driveKinematics.toSwerveModuleStates(
         chassisSpeeds);
     setModuleStates(moduleStates);
 
-  }
-
-  public void driveFF(ChassisSpeeds speeds, DriveFeedforwards ff) {
-    SwerveModuleState[] moduleStates = DriveConstants.driveKinematics.toSwerveModuleStates(
-        speeds);
-    setModuleStates(moduleStates);
   }
 
   /**
@@ -324,48 +310,6 @@ public class Swerve extends SubsystemBase {
 
     Robot.swerve.setChassisSpeeds(speeds);
   }
-
-  // Assuming this is a method in your drive subsystem
-  // public Command followPathCommand() {
-  //   PathPlannerPath why = ToPos.generateDynamicPath(getPose(),
-  //     new Pose2d(200, 200, new Rotation2d(Math.toRadians(0))),
-  //     getMaxDriveSpeed(), SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
-  //     getMaxAngularSpeed(), SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared);
-  //   try {
-  //     return new FollowPathCommand(
-  //       ToPos.generateDynamicPath(getPose(),
-  //       new Pose2d(200, 200, new Rotation2d(Math.toRadians(0))),
-  //       getMaxDriveSpeed(), SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
-  //       getMaxAngularSpeed(), SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared),
-  //         this::getPose, // Robot pose supplier
-  //         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-  //         (speeds, feedforwards) -> setChassisSpeeds(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds, AND
-  //                        // feedforwards
-  //         new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
-  //                                         // holonomic drive trains
-  //             new PIDConstants(AutoConstants.kPDrive, 0, AutoConstants.kPDrive), // Translation PID constants
-  //             new PIDConstants(AutoConstants.kPTurn, 0.0, AutoConstants.kDTurn) // Rotation PID constants
-  //         ),
-  //         RobotConfig.fromGUISettings(), // The robot configuration
-  //         () -> {
-  //           // Boolean supplier that controls when the path will be mirrored for the red
-  //           // alliance
-  //           // This will flip the path being followed to the red side of the field.
-  //           // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-  //           var alliance = DriverStation.getAlliance();
-  //           if (alliance.isPresent()) {
-  //             return alliance.get() == DriverStation.Alliance.Red;
-  //           }
-  //           return false;
-  //         },
-  //         this // Reference to this subsystem to set requirements
-  //     );
-  //   } catch (Exception e) {
-  //     DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
-  //     return Commands.none();
-  //   }
-  // }
 
   public void setBreakMode(boolean enable) {
     for (int i = 0; i < 4; i++) {
