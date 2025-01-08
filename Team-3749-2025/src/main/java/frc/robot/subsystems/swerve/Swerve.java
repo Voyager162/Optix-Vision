@@ -18,7 +18,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
@@ -50,6 +50,7 @@ public class Swerve extends SubsystemBase {
 
   private GyroIO gyro;
   private GyroData gyroData = new GyroData();
+  private Field2d m_field = new Field2d();
 
   private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
@@ -185,8 +186,8 @@ public class Swerve extends SubsystemBase {
     resetGyro();
     setOdometry(new Pose2d(1.33, 5.53, new Rotation2d(0)));
     logSetpoints(
-        new SwerveSample(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, new double[] { 0, 0, 0, 0 }, new double[] { 0, 0, 0, 0 }));
-
+      new SwerveSample(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, new double[] { 0, 0, 0, 0 }, new double[] { 0, 0, 0, 0 }));
+    SmartDashboard.putData(m_field);
   }
 
   /**
@@ -325,7 +326,7 @@ public class Swerve extends SubsystemBase {
   public Command followPathCommand() {
     try {
       PathPlannerPath path = ToPos.generateDynamicPath(getPose(),
-          new Pose2d(0, 0, new Rotation2d(Math.toRadians(90))),
+          new Pose2d(60, 60, new Rotation2d(Math.toRadians(0))),
           getMaxDriveSpeed(), SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
           getMaxAngularSpeed(), SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared);
 
@@ -532,6 +533,7 @@ public class Swerve extends SubsystemBase {
     gyroConnectedLog.set(gyroData.isConnected);
     gyroCalibratingLog.set(gyroData.isCalibrating);
     headingLog.set(getRotation2d().getDegrees());
+    m_field.setRobotPose(getPose());
 
     // velocity and acceleration logging
     double robotVelocity = Math.hypot(getChassisSpeeds().vxMetersPerSecond,
@@ -540,7 +542,8 @@ public class Swerve extends SubsystemBase {
     velocityLog.set(robotVelocity);
     currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
 
-    //SmartDashboard.putData("Swerve Pose",getPose()); also i got opped on for codign this in csa rip
+    // SmartDashboard.putData("Swerve Pose",getPose()); also i got opped on for
+    // codign this in csa rip
   }
 
   @Override

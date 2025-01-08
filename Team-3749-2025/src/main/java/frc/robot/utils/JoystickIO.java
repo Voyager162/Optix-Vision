@@ -3,6 +3,7 @@ package frc.robot.utils;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot;
 import frc.robot.commands.example.ExampleSubsystemCommand;
@@ -98,12 +99,16 @@ public class JoystickIO {
                         new SwerveDefaultCommand(
                                 () -> pilot.getLeftX(),
                                 () -> pilot.getLeftY(),
-                                () -> {
-                                    if (pilot.y().getAsBoolean()) {
-                                        return 1.0;
-                                    }
-                                    return 0.0;
-                                }));
+                                // () -> {
+                                //     if (pilot.y().getAsBoolean()) {
+                                //         return 1.0;
+                                //     }
+                                //     return 0.0;
+                                // }
+                                //whoever wrote this and made y our rotator on sim
+                                //i do not forgiv eyou for this
+                                () -> pilot.getRightX()
+                                ));
     }
 
 }
