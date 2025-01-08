@@ -85,7 +85,7 @@ public class SwerveDefaultCommand extends Command {
         Robot.swerve.getRotation2d());
 
     // set chassis speeds
-    Robot.swerve.setChassisSpeeds(chassisSpeeds);
+    //Robot.swerve.setChassisSpeeds(chassisSpeeds);
   }
 
   @Override
