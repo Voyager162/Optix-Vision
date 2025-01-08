@@ -81,13 +81,16 @@ public class AutoUtils {
 
         // Made sendable, use SmartDashbaord now
         chooser = new AutoChooser();
-        SmartDashboard.putData("Auto: Auto Chooser", chooser);
+        // SmartDashboard.putData("Auto: Auto Chooser", chooser);
         chooser.addCmd("My Routine", () -> Autos.getMyRoutine());
         chooser.addCmd("Print", () -> Autos.getPrint());
         chooser.addCmd("Split", () -> Autos.getSplitRoutine());
         chooser.addCmd("Straight", () -> Autos.getStraight());
+        chooser.addCmd("Big", () -> Autos.getBig());
         // Default
         chooser.select("Straight");
+
+        SmartDashboard.putData("Auto: Auto Chooser", chooser);
 
     }
 

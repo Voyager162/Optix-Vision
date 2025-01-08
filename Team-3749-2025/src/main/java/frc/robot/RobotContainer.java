@@ -32,6 +32,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return Autos.getPushLeftAndTaxi();
+    return Autos.getBig();
   }
 }

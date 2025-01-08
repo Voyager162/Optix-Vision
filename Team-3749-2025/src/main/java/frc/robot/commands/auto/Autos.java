@@ -119,4 +119,8 @@ public class Autos {
     public static Command getPushRightAndTaxi() {
         return AutoUtils.getSingleTrajectory("push-right-and-taxi");
     }
+
+    public static Command getBig() {
+        return AutoUtils.getSingleTrajectory("1-r1-c1-r2-c1-r3");
+    }
 }
