@@ -32,7 +32,10 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // return new DriveStraight();
-    return Autos.getTeamTaxi();
+
+//     return Autos.getTeamTaxi();
+
+    return Autos.getSelectedCommand();
+
   }
 }

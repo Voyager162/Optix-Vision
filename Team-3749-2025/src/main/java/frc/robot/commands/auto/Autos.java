@@ -100,6 +100,7 @@ public class Autos {
 
     }
 
+
     public static Command getNearestAlgae() {
        return AutoUtils.getSingleTrajectory("NearestAlgae");
  
@@ -116,4 +117,5 @@ public class Autos {
     public static Command getTeamTaxi() {
         return AutoUtils.getSingleTrajectory("TeamTaxi");
     }
+
 }
