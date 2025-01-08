@@ -99,4 +99,21 @@ public class Autos {
        return AutoUtils.getSingleTrajectory("Chair Game");
 
     }
+
+    public static Command getNearestAlgae() {
+       return AutoUtils.getSingleTrajectory("NearestAlgae");
+ 
+    }
+
+    public static Command getTest2() {
+        return AutoUtils.getSingleTrajectory("Test2");
+    }
+
+    public static Command getNearestAlgaeTest() {
+        return AutoUtils.getSingleTrajectory("NearestAlgaeTest");
+    }
+
+    public static Command getTeamTaxi2() {
+        return AutoUtils.getSingleTrajectory("TeamTaxi2");
+    }
 }
