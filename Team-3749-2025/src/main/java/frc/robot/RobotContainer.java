@@ -33,6 +33,6 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // return new DriveStraight();
-    return Autos.autoCommand();
+    return Autos.getSelectedCommand();
   }
 }

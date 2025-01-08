@@ -84,6 +84,7 @@ public class AutoUtils {
         chooser.addCmd("Print", () -> Autos.getPrint());
         chooser.addCmd("Split", () -> Autos.getSplitRoutine());
         chooser.addCmd("Straight", () -> Autos.getStraight());
+        chooser.addCmd("Chair", () -> Autos.getChairGame());
         // Default
         chooser.select("Straight");
 

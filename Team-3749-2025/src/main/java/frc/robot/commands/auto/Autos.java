@@ -100,8 +100,4 @@ public class Autos {
 
     }
 
-    public static Command autoCommand() {
-        return AutoUtils.getChooser().selectedCommand();
-
-    }
 }
