@@ -30,7 +30,6 @@ public class AutoUtils {
     public static void initAuto() {
         setupFactory();
         setupChooser();
-
     }
 
     /**
@@ -81,17 +80,21 @@ public class AutoUtils {
 
         // Made sendable, use SmartDashbaord now
         chooser = new AutoChooser();
-        // SmartDashboard.putData("Auto: Auto Chooser", chooser);
         chooser.addCmd("My Routine", () -> Autos.getMyRoutine());
         chooser.addCmd("Print", () -> Autos.getPrint());
         chooser.addCmd("Split", () -> Autos.getSplitRoutine());
         chooser.addCmd("Straight", () -> Autos.getStraight());
-        chooser.addCmd("Big", () -> Autos.getBig());
+        chooser.addCmd("Chair", () -> Autos.getChairGame());
+        chooser.addCmd("Team Taxi", () -> Autos.getTeamTaxi());
+        chooser.addCmd("Push Right and Taxi", () -> Autos.getPushRightAndTaxi());
+        chooser.addCmd("Push Left and Taxi", () -> Autos.getPushLeftAndTaxi());
+        chooser.addCmd("3 Piece", () -> Autos.get3Piece());
+        chooser.addCmd("1 Piece", () -> Autos.get1Piece());
         // Default
         chooser.select("Straight");
 
         SmartDashboard.putData("Auto: Auto Chooser", chooser);
-
+        
     }
 
     public static Command getSingleTrajectory(String trajectoryName) {

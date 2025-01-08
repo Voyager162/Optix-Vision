@@ -100,18 +100,10 @@ public class Autos {
 
     }
 
-    public static Command getTestReefscape() {
-        return AutoUtils.getSingleTrajectory("1-reef-3");
+    public static Command get1Piece() {
+        return AutoUtils.getSingleTrajectory("1-r3");
     }
 
-    public static Command getTaxi() {
-        return AutoUtils.getSingleTrajectory("taxi");
-    }
-
-    /*
-    Push alliance member's robot on the left side ahead for LEAVE
-    Go back to original spot and taxi for LEAVE
-    */
     public static Command getPushLeftAndTaxi() {
         return AutoUtils.getSingleTrajectory("push-left-and-taxi");
     }
@@ -120,7 +112,7 @@ public class Autos {
         return AutoUtils.getSingleTrajectory("push-right-and-taxi");
     }
 
-    public static Command getBig() {
+    public static Command get3Piece() {
         return AutoUtils.getSingleTrajectory("1-r1-c1-r2-c1-r3");
     }
 
