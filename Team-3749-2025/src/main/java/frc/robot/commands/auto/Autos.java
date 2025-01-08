@@ -123,4 +123,9 @@ public class Autos {
     public static Command getBig() {
         return AutoUtils.getSingleTrajectory("1-r1-c1-r2-c1-r3");
     }
+
+    public static Command getTeamTaxi() {
+        return AutoUtils.getSingleTrajectory("TeamTaxi");
+
+    }
 }
