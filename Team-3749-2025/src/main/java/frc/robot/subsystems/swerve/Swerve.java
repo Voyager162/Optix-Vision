@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.swerve;
 
+import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -28,6 +29,7 @@ import frc.robot.subsystems.swerve.SwerveConstants.DriveConstants;
 import frc.robot.subsystems.swerve.real.*;
 import frc.robot.subsystems.swerve.sim.*;
 import frc.robot.utils.*;
+
 
 /***
  * Subsystem class for swerve drive, used to manage four swerve
@@ -215,6 +217,7 @@ public class Swerve extends SubsystemBase {
     ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(
         DriveConstants.driveKinematics.toChassisSpeeds(states),
         getRotation2d());
+        
     return speeds;
   }
 
@@ -334,12 +337,12 @@ public class Swerve extends SubsystemBase {
           path,
           this::getPose, // Robot pose supplier
           this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-          this::driveFF, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds, AND
+          (speeds, feedforwards) -> setChassisSpeeds(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds, AND
                          // feedforwards
           new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
                                           // holonomic drive trains
-              new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+              new PIDConstants(AutoConstants.kPDrive, 0, AutoConstants.kPDrive), // Translation PID constants
+              new PIDConstants(AutoConstants.kPTurn, 0.0, AutoConstants.kDTurn) // Rotation PID constants
           ),
           RobotConfig.fromGUISettings(), // The robot configuration
           () -> {
