@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.swerve;
 
+import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
+
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -432,6 +434,31 @@ public class Swerve extends SubsystemBase {
     setpointAccelerationLog.set(acceleration);
     setpointRotationalAccelerationLog.set(accelerations[2]);
 
+  }
+
+  public void logSetpoints(PathPlannerTrajectoryState state)
+  {
+    // setpoint logging for automated driving
+    Double[] positions = new Double[] { state.pose.getX(), state.pose.getY(), state.heading.getRadians() };
+    setpointPositionLog.set(positions);
+
+    Double[] velocities = new Double[] { state.fieldSpeeds.vxMetersPerSecond, state.fieldSpeeds.vyMetersPerSecond, state.fieldSpeeds.omegaRadiansPerSecond};
+    double velocity = 0;
+    for (int i = 0; i < 2; i++) {
+      velocity += Math.pow(velocities[i], 2);
+    }
+    velocity = Math.sqrt(velocity);
+    setpointVelocityLog.set(velocity);
+    setpointRotationalVelocityLog.set(velocities[2]);
+
+    Double[] accelerations = new Double[] { 0.0, 0.0, 0.0 }; //TODO: find the actual values for this
+    double acceleration = 0;
+    for (int i = 0; i < 2; i++) {
+      acceleration += Math.pow(accelerations[i], 2);
+    }
+    acceleration = Math.sqrt(acceleration);
+    setpointAccelerationLog.set(acceleration);
+    setpointRotationalAccelerationLog.set(accelerations[2]);
   }
 
   /**
