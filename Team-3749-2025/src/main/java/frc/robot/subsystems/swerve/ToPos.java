@@ -22,8 +22,7 @@ public class ToPos {
             double maxVelocity,
             double maxAcceleration,
             double maxAngularVelocity,
-            double maxAngularAcceleration,
-            Rotation2d finalHeading
+            double maxAngularAcceleration
     ) {
         // Create waypoints from the initial and final poses
         List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
@@ -44,12 +43,11 @@ public class ToPos {
                 waypoints,
                 constraints,
                 null, // Ideal starting state, not needed for on-the-fly paths
-                new GoalEndState(0.0, finalHeading) // Goal end state with final heading
+                new GoalEndState(0.0, finalPose.getRotation()) // Goal end state with final heading
         );
     
         // Prevent the path from being flipped if coordinates are correct
         path.preventFlipping = true;
-    
         return path;
      }
 }
