@@ -99,6 +99,10 @@ public class Autos {
        return AutoUtils.getSingleTrajectory("Chair Game");
 
     }
+    public static Command getScore_Pick() {
+        return AutoUtils.getSingleTrajectory("Score and Pick Note");
+ 
+     }
 
     public static Command get1Piece() {
         return AutoUtils.getSingleTrajectory("1-r3");

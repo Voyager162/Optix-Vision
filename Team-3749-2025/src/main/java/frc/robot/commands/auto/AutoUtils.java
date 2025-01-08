@@ -85,6 +85,7 @@ public class AutoUtils {
         chooser.addCmd("Split", () -> Autos.getSplitRoutine());
         chooser.addCmd("Straight", () -> Autos.getStraight());
         chooser.addCmd("Chair", () -> Autos.getChairGame());
+        chooser.addCmd("Score/pick note", () -> Autos.getScore_Pick());
         chooser.addCmd("Team Taxi", () -> Autos.getTeamTaxi());
         chooser.addCmd("Push Right and Taxi", () -> Autos.getPushRightAndTaxi());
         chooser.addCmd("Push Left and Taxi", () -> Autos.getPushLeftAndTaxi());
@@ -107,7 +108,12 @@ public class AutoUtils {
                 factory.resetOdometry(trajectoryName).andThen(
                         trajectoy1Command));
         
-        System.out.println(trajectory1.getInitialPose().get());
+        try {
+            System.out.println(trajectory1.getInitialPose().get());
+        } catch(Exception e) {
+            System.out.println("Error in getSingleTrajectory");
+        }
+        
         return Commands.print(trajectoryName).andThen(routine.cmd());
 
     }
