@@ -1,7 +1,8 @@
 package frc.robot.subsystems.arm;
 
 /**
- * arm interface holding data for the sim and real versions of the arm
+ * Interface file for arm subsystem
+ * 
  * @author Weston Gardner
  */
 public interface ArmIO {
