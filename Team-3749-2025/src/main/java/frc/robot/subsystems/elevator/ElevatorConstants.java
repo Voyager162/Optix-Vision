@@ -19,4 +19,14 @@ public class ElevatorConstants {
         public static final double kGSim = 0;
         // public static final double kSSim = 0;
     }
+
+    public enum ElevatorStates{
+        STOP,
+        GO,
+        L1,
+        L2,
+        L3,
+        L4,
+        MAX
+    }
 }
