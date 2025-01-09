@@ -7,7 +7,7 @@ package frc.robot.subsystems.arm;
  */
 public interface ArmIO {
 
-  public static class SubsystemData {
+  public static class ArmData {
     public double positionUnits = 0;
     public double velocityUnits = 0;
     public double accelerationUnits = 0;
@@ -18,7 +18,7 @@ public interface ArmIO {
   }
 
   /* Updates the set of loggable inputs. */
-  public default void updateData(SubsystemData data) {
+  public default void updateData(ArmData data) {
   };
 
   /* Run the motor at the specified voltage. */
