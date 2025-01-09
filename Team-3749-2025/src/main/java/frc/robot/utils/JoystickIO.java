@@ -56,7 +56,7 @@ public class JoystickIO {
         pilot.a().whileTrue(DriveStraight);
 
         // Example binding
-        operator.a().whileTrue(new ExampleSubsystemCommand());
+        operator.a().whileTrue(sample);
 
     }
 
@@ -65,7 +65,7 @@ public class JoystickIO {
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
 
         // Example binding
-        pilot.a().whileTrue(new ExampleSubsystemCommand());
+        pilot.a().whileTrue(sample);
     }
 
     public static void simBindings() {
