@@ -62,7 +62,6 @@ public class JoystickIO {
         operator.a().whileTrue(new ExampleSubsystemCommand());
 
     }
-
     public static void pilotBindings() {
         // gyro reset
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
