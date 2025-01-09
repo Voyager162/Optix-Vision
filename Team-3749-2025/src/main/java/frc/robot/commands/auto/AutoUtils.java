@@ -6,6 +6,7 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoTrajectory;
 import choreo.auto.AutoRoutine;
 import choreo.trajectory.SwerveSample;
+import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -99,17 +100,16 @@ public class AutoUtils {
 
     public static Command getSingleTrajectory(String trajectoryName) {
         AutoRoutine routine = factory.newRoutine(trajectoryName);
-        AutoTrajectory trajectory1 = routine.trajectory(trajectoryName);
+        AutoTrajectory trajectory = routine.trajectory(trajectoryName);
 
-        Command trajectoy1Command = trajectory1.cmd();
+        Command trajectory1Command = trajectory.cmd();
 
         routine.active().onTrue(
                 factory.resetOdometry(trajectoryName).andThen(
-                        trajectoy1Command));
+                        trajectory1Command));
         
-        System.out.println(trajectory1.getInitialPose().get());
+        System.out.println(trajectory.getInitialPose().get());
         return Commands.print(trajectoryName).andThen(routine.cmd());
 
     }
-
 }
