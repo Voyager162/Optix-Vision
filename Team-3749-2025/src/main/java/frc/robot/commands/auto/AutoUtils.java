@@ -86,6 +86,7 @@ public class AutoUtils {
         chooser.addCmd("Split", () -> Autos.getSplitRoutine());
         chooser.addCmd("Straight", () -> Autos.getStraight());
         chooser.addCmd("Chair", () -> Autos.getChairGame());
+        chooser.addCmd("Score/pick note", () -> Autos.getScore_Pick());
         chooser.addCmd("Team Taxi", () -> Autos.getTeamTaxi());
         chooser.addCmd("Push Right and Taxi", () -> Autos.getPushRightAndTaxi());
         chooser.addCmd("Push Left and Taxi", () -> Autos.getPushLeftAndTaxi());
@@ -102,11 +103,11 @@ public class AutoUtils {
         AutoRoutine routine = factory.newRoutine(trajectoryName);
         AutoTrajectory trajectory = routine.trajectory(trajectoryName);
 
-        Command trajectory1Command = trajectory.cmd();
+        Command trajectoryCommand = trajectory.cmd();
 
         routine.active().onTrue(
                 factory.resetOdometry(trajectoryName).andThen(
-                        trajectory1Command));
+                        trajectoryCommand));
         
         System.out.println(trajectory.getInitialPose().get());
         return Commands.print(trajectoryName).andThen(routine.cmd());
