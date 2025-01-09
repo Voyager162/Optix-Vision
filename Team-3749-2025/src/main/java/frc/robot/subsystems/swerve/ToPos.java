@@ -44,22 +44,6 @@ public class ToPos {
         pathfinder.setDynamicObstacles(reefBoundingBoxes, initialPose.getTranslation());
 
         // Wait for the pathfinder to calculate a new path with a timeout
-        long startTime = System.currentTimeMillis();
-        long timeoutMillis = 2000; // 2-second timeout
-        while (!pathfinder.isNewPathAvailable()) {
-            if (System.currentTimeMillis() - startTime > timeoutMillis) {
-                System.err.println("Pathfinding timeout: No new path available within the specified time.");
-                return null; // Or handle the timeout scenario appropriately
-            }
-            // Optionally, add a short sleep to prevent tight looping
-            try {
-                Thread.sleep(50); // Sleep for 50 milliseconds
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                System.err.println("Thread was interrupted while waiting for a new path.");
-                return null;
-            }
-        }
 
         // Retrieve the calculated path
         PathPlannerPath path = pathfinder.getCurrentPath(
