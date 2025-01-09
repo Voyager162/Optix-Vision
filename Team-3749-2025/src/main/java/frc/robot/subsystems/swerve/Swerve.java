@@ -451,7 +451,8 @@ public class Swerve extends SubsystemBase {
     setpointVelocityLog.set(velocity);
     setpointRotationalVelocityLog.set(velocities[2]);
 
-    Double[] accelerations = new Double[] { 0.0, 0.0, 0.0 }; //TODO: find the actual values for this
+    Double[] accelerations = new Double[] {state.feedforwards.accelerationsMPSSq()[0], 
+    state.feedforwards.accelerationsMPSSq()[1], state.feedforwards.accelerationsMPSSq()[2] }; //this might be wrong
     double acceleration = 0;
     for (int i = 0; i < 2; i++) {
       acceleration += Math.pow(accelerations[i], 2);
