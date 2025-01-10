@@ -22,7 +22,8 @@ public class JoystickIO {
     private static final CommandXboxController operator = new CommandXboxController(1);
     private static final Command sample = new ExampleSubsystemCommand();
     private static final Command DriveStraight = new DriveStraight();
-    private static final setVoltage setVoltage = new setVoltage(10);
+    private static final setVoltage setArmVoltagePositive = new setVoltage(.1);
+    private static final setVoltage setArmVoltageNegative = new setVoltage(-.1);
 
     public JoystickIO() {
     }
@@ -60,7 +61,8 @@ public class JoystickIO {
         // Example binding
         operator.a().whileTrue(sample);
 
-        operator.b().whileTrue(setVoltage);
+        operator.b().whileTrue(setArmVoltagePositive);
+        operator.x().whileTrue(setArmVoltageNegative);
 
     }
 

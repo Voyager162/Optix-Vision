@@ -29,10 +29,13 @@ public class ArmSim implements ArmIO {
             ArmConstants.armMinAngle_degrees * Math.PI / 180,
             ArmConstants.armMaxAngle_degrees * Math.PI / 180,
             true,
-            ArmConstants.armMass_kg,
+            ArmConstants.armStartingAngle_degrees * Math.PI / 180,
             new double[] {0, 0}
         );
     }
+
+
+
 
     private double appliedVolts = 0;
     private double previousVelocity = 0;
@@ -50,9 +53,9 @@ public class ArmSim implements ArmIO {
 
         previousVelocity = velocity;
         velocity = armSim.getVelocityRadPerSec() * conversionFactor;
-        data.positionUnits += velocity * 0.02;
+        data.positionUnits = armSim.getAngleRads() * conversionFactor; // Directly use the angle from the simulation
         data.velocityUnits = velocity;
-        data.accelerationUnits = (velocity - previousVelocity) / 0.02;
+        data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
         data.currentAmps = armSim.getCurrentDrawAmps();
         data.inputVolts = appliedVolts;
         data.appliedVolts = appliedVolts;

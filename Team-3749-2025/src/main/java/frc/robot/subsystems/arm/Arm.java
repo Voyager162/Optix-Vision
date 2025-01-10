@@ -32,7 +32,9 @@ public class Arm extends SubsystemBase {
         if (Robot.isSimulation()) {
             armIO = new ArmSim();
         } 
-        else {}
+        else {
+            // Initialize armIO for real robot
+        }
     }
 
     public double getPositionRad() {
