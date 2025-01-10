@@ -289,7 +289,7 @@ public class Swerve extends SubsystemBase {
 
     double yPos = isFlipped ? flipper.flipY(sample.y) : sample.y;
     double yVel = isFlipped ? -sample.vy : sample.vy;
-    double aPos = isFlipped ? -sample.heading : sample.heading;
+    double aPos = isFlipped ? flipper.flipHeading(sample.heading) : sample.heading;
     double aVel = isFlipped ? -sample.omega : sample.omega;
 
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
