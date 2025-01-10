@@ -64,9 +64,9 @@ public class JoystickIO {
         // Example binding
         operator.a().whileTrue(sample);
 
-        operator.y().onTrue(armStow);
-        operator.b().onTrue(fullyExtendArm);
-        operator.x().onTrue(halfExtendArm);
+        operator.y().whileTrue(armStow);
+        operator.b().whileTrue(fullyExtendArm);
+        operator.x().whileTrue(halfExtendArm);
 
     }
 

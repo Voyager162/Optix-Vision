@@ -19,8 +19,13 @@ public class ArmConstants {
 
     public static final double armMass_kg = 5.0;
     public static final double armGearing = 255;
+
     public static double Kg = 1.81006138; // a little specific but hey, why not
+    public static double Ks = 0.0;
+
     public static double Kp = 13;
+    public static double Ki = 0.0;
+    public static double Kd = 0.65;
 
 
     public enum ArmStates {

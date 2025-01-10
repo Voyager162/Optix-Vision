@@ -27,7 +27,7 @@ public class Arm extends SubsystemBase {
 
     private double setPoint;
 
-    private PIDController controller = new PIDController(ArmConstants.Kp, 0, 0);;
+    private PIDController controller = new PIDController(ArmConstants.Kp, ArmConstants.Ki, ArmConstants.Kd);
     
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     public ShuffleData<Double> positionUnitsLog = new ShuffleData<Double>("Arm", "position units", 0.0);
