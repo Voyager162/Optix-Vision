@@ -7,12 +7,14 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorData;
 import frc.robot.utils.ShuffleData;
 
 public class Elevator extends SubsystemBase {
     ElevatorIO elevatorio;
     ElevatorData data = new ElevatorData();
+    private ElevatorStates state = ElevatorStates.STOP;
 
     PIDController pidController = new PIDController(ElevatorConstants.ElevatorControl.kPSim, 0, ElevatorConstants.ElevatorControl.kDSim); 
 
@@ -41,6 +43,29 @@ public class Elevator extends SubsystemBase {
         }
     }
 
+    private void runState() {
+        switch (state) {
+            case STOP:
+                break;
+            case GO:
+                break;
+            case L1:
+                break;
+            case L2:
+                break;
+            case L3:
+                break;
+            case L4:
+                break;
+            case MAX:
+                break;
+        }
+    }
+
+    public ElevatorStates getState() {
+        return state;
+    }
+
     public double getPositionRad() {
         return data.positionUnits;
     }
@@ -66,6 +91,7 @@ public class Elevator extends SubsystemBase {
     @Override
     public void periodic() {
         elevatorio.updateData(data);
+        runState();
         logData();
         pidController.setP(kPData.get());
         pidController.setD(kDData.get());
