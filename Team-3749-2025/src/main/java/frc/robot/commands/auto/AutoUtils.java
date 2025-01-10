@@ -1,13 +1,17 @@
 package frc.robot.commands.auto;
 
-
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoTrajectory;
 import choreo.auto.AutoRoutine;
+import choreo.util.ChoreoAllianceFlipUtil;
+import choreo.trajectory.TrajectorySample;
+import choreo.trajectory.DifferentialSample;
+import choreo.trajectory.EventMarker;
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -24,6 +28,7 @@ public class AutoUtils {
 
     private static AutoFactory factory;
     private static AutoChooser chooser;
+    private static ChoreoAllianceFlipUtil.Flipper flipper = ChoreoAllianceFlipUtil.getFlipper();
 
     /**
      * run all necessary auto setup methods
@@ -61,14 +66,13 @@ public class AutoUtils {
         // will now take a reset odometry
 
         factory = new AutoFactory(() -> Robot.swerve.getPose(),
-                (Pose2d startingPose) -> Robot.swerve.setOdometry(startingPose),
-                (SwerveSample sample) -> Robot.swerve.followSample(sample),
+                (Pose2d startingPose) -> Robot.swerve.setOdometry(getXFlippedPose(startingPose)), // startingPose --> getFlippedPose(startingPose)
+                (SwerveSample sample) -> Robot.swerve.followSample(sample.flipped()), // sample --> sample.flipped()
                 true,
                 Robot.swerve);
 
-        // Event Binding 
+        // Event Binding
         factory.bind("Marker", Commands.print("Marker Passed"));
-
 
     }
 
@@ -76,6 +80,7 @@ public class AutoUtils {
      * setup the choreo auto chooser and assign it to the Shuffleboard/Auto tab of
      * networktables
      */
+
     private static void setupChooser() {
         // interface for choreo
 
@@ -96,7 +101,7 @@ public class AutoUtils {
         chooser.select("Straight");
 
         SmartDashboard.putData("Auto: Auto Chooser", chooser);
-        
+
     }
 
     public static Command getSingleTrajectory(String trajectoryName) {
@@ -108,9 +113,21 @@ public class AutoUtils {
         routine.active().onTrue(
                 factory.resetOdometry(trajectoryName).andThen(
                         trajectoryCommand));
-        
+
         System.out.println(trajectory.getInitialPose().get());
         return Commands.print(trajectoryName).andThen(routine.cmd());
 
     }
+
+    /**
+     * Each pos will be flipped across the X-axis using Choreo's Flip Util
+     * Returns new pos
+     * Used in auto factory for flipped paths
+     */
+    private static Pose2d getXFlippedPose(Pose2d pos) {
+
+        return new Pose2d(flipper.flipX(pos.getX()), pos.getY(),
+                new Rotation2d(flipper.flipHeading(pos.getRotation().getRadians())));
+    }
+
 }
