@@ -62,7 +62,7 @@ public class AutoUtils {
         // will now take a reset odometry
 
         factory = new AutoFactory(() -> Robot.swerve.getPose(),
-                (Pose2d startingPose) -> Robot.swerve.setOdometry(startingPose), // startingPose --> getXFlippedPose(startingPose)
+                (Pose2d startingPose) -> Robot.swerve.setOdometry(getXFlippedPose(startingPose)), // startingPose --> getXFlippedPose(startingPose)
                 (SwerveSample sample) -> Robot.swerve.followSample(sample), // sample --> sample.flipped()
                 true, // true --> false
                 Robot.swerve);
@@ -121,8 +121,13 @@ public class AutoUtils {
      * Used in auto factory for flipped paths
      */
     private static Pose2d getXFlippedPose(Pose2d pos) {
-        return new Pose2d(flipper.flipX(pos.getX()), pos.getY(),
-                new Rotation2d());
+
+        double newX = pos.getX();
+        double newY = flipper.flipY(pos.getY());
+        double newHeading = pos.getRotation().getRadians() * -1;
+
+        return new Pose2d(newX, newY,
+                new Rotation2d(newHeading));
     }
 
 }
