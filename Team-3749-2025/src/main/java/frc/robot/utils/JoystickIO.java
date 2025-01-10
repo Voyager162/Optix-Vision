@@ -10,7 +10,6 @@ import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
 import frc.robot.commands.arm.FullyExtend;
 import frc.robot.commands.arm.HalfExtend;
-import frc.robot.commands.arm.Move;
 import frc.robot.commands.arm.Stow;
 
 /**
