@@ -42,7 +42,7 @@ public class OnTheFly extends Command {
         PathPlannerPath path = ToPos.generateDynamicPath(Robot.swerve.getPose(),
             new Pose2d(1, 2, new Rotation2d(Math.toRadians(90))),
             Robot.swerve.getMaxDriveSpeed(), SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
-            Robot.swerve.getMaxAngularSpeed(), SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared,new Translation2d(4,4),2);
+            Robot.swerve.getMaxAngularSpeed(), SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared,new Translation2d(4.5,4),2);
         try {
             trajectory = path.generateTrajectory(Robot.swerve.getChassisSpeeds(), Robot.swerve.getRotation2d(), 
             RobotConfig.fromGUISettings());
