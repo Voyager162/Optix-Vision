@@ -5,6 +5,10 @@ import frc.robot.Robot;
 import frc.robot.subsystems.arm.ArmIO.ArmData;
 import frc.robot.subsystems.arm.sim.ArmSim;
 import frc.robot.utils.ShuffleData;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Subsystem class for the arm
@@ -26,7 +30,13 @@ public class Arm extends SubsystemBase {
     public ShuffleData<Double> appliedVoltsLog = new ShuffleData<Double>("Arm", "applied volts", 0.0);
     public ShuffleData<Double> currentAmpsLog = new ShuffleData<Double>("Arm", "current amps", 0.0);
     public ShuffleData<Double> tempCelciusLog = new ShuffleData<Double>("Arm", "temp celcius", 0.0);
+    public ShuffleData<Double> kGLog = new ShuffleData<Double>("Arm", "kG", 4.0);
 
+    private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
+    private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
+    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Arm", 30, 0));
+
+    private double commandedVoltage = 0;
 
     public Arm() {
         if (Robot.isSimulation()) {
@@ -35,6 +45,7 @@ public class Arm extends SubsystemBase {
         else {
             // Initialize armIO for real robot
         }
+        SmartDashboard.putData("Arm Mechanism", mechanism2d);
     }
 
     public double getPositionRad() {
@@ -49,6 +60,14 @@ public class Arm extends SubsystemBase {
         armIO.setVoltage(volts);
     }
 
+    public double getAppliedVoltage() {
+        return data.appliedVolts;
+    }
+
+    public void setCommandedVoltage(double volts) {
+        this.commandedVoltage = volts;
+    }
+
     private void logData() {
         currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
         positionUnitsLog.set(data.positionUnits);
@@ -57,16 +76,15 @@ public class Arm extends SubsystemBase {
         appliedVoltsLog.set(data.appliedVolts);
         currentAmpsLog.set(data.currentAmps);
         tempCelciusLog.set(data.tempCelcius);
-
+        armLigament.setAngle(Math.toDegrees(data.positionUnits));
     }
-
-
-
 
     @Override
     public void periodic() {
+        ArmConstants.Kg = kGLog.get();
         armIO.updateData(data);
-
+        double gravityCompensation = ArmConstants.Kg * Math.cos(data.positionUnits);
+        armIO.setVoltage(commandedVoltage + gravityCompensation);
         logData();
     }
 
