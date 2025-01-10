@@ -5,6 +5,7 @@ package frc.robot.subsystems.arm;
  * 
  * @author Weston Gardner
  */
+
 public interface ArmIO {
 
   public static class ArmData {
@@ -15,6 +16,7 @@ public interface ArmIO {
     public double appliedVolts = 0;
     public double currentAmps = 0;
     public double tempCelcius = 0;
+
   }
 
   /* Updates the set of loggable inputs. */

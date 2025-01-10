@@ -8,6 +8,7 @@ import frc.robot.Robot;
 import frc.robot.commands.example.ExampleSubsystemCommand;
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
+import frc.robot.commands.arm.setVoltage;
 
 /**
  * Util class for button bindings
@@ -21,6 +22,7 @@ public class JoystickIO {
     private static final CommandXboxController operator = new CommandXboxController(1);
     private static final Command sample = new ExampleSubsystemCommand();
     private static final Command DriveStraight = new DriveStraight();
+    private static final setVoltage setVoltage = new setVoltage(10);
 
     public JoystickIO() {
     }
@@ -57,6 +59,8 @@ public class JoystickIO {
 
         // Example binding
         operator.a().whileTrue(sample);
+
+        operator.b().whileTrue(setVoltage);
 
     }
 

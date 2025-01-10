@@ -12,7 +12,9 @@ import frc.robot.utils.ShuffleData;
  * @author Weston Gardner
  */
 
-public class Arm extends SubsystemBase{
+public class Arm extends SubsystemBase {
+
+
     private ArmIO armIO;
     private ArmData data = new ArmData();
     
@@ -25,14 +27,12 @@ public class Arm extends SubsystemBase{
     public ShuffleData<Double> currentAmpsLog = new ShuffleData<Double>("Arm", "current amps", 0.0);
     public ShuffleData<Double> tempCelciusLog = new ShuffleData<Double>("Arm", "temp celcius", 0.0);
 
+
     public Arm() {
         if (Robot.isSimulation()) {
             armIO = new ArmSim();
         } 
-        
-        else {
-
-        }
+        else {}
     }
 
     public double getPositionRad() {
@@ -55,7 +55,11 @@ public class Arm extends SubsystemBase{
         appliedVoltsLog.set(data.appliedVolts);
         currentAmpsLog.set(data.currentAmps);
         tempCelciusLog.set(data.tempCelcius);
+
     }
+
+
+
 
     @Override
     public void periodic() {

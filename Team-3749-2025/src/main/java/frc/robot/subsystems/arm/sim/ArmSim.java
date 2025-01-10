@@ -15,28 +15,29 @@ import frc.robot.utils.MiscConstants.SimConstants;
 
 public class ArmSim implements ArmIO {
 
-    SingleJointedArmSim arm = new SingleJointedArmSim(
+    private SingleJointedArmSim armSim;
 
-        DCMotor.getNEO(1), 
-        6, 
-        0.04, 
-        ArmConstants.armLength_meters, 
-        ArmConstants.armSimMinAngle_degrees, 
-        ArmConstants.armSimMaxAngle_degrees, 
-        true, 
-        ArmConstants.armSimStartingAngle_degrees, 
-        0.0
+    public ArmSim() {
+        System.out.println("[Init] Creating ArmSim");
 
-    );
+
+        armSim = new SingleJointedArmSim(
+            DCMotor.getVex775Pro(2),
+            ArmConstants.armGearing,
+            0.755,
+            ArmConstants.armLength_meters,
+            ArmConstants.armMinAngle_degrees * Math.PI / 180,
+            ArmConstants.armMaxAngle_degrees * Math.PI / 180,
+            true,
+            ArmConstants.armMass_kg,
+            new double[] {0, 0}
+        );
+    }
 
     private double appliedVolts = 0;
     private double previousVelocity = 0;
     private double velocity = 0;
     private double conversionFactor = 1;
-
-    public ArmSim() {
-        System.out.println("[Init] Creating ArmSim");
-    }
 
     /**
      * Updates the set of loggable inputs for the sim.
@@ -45,14 +46,14 @@ public class ArmSim implements ArmIO {
 
     @Override
     public void updateData(ArmData data) {
-        arm.update(SimConstants.loopPeriodSec);
+        armSim.update(SimConstants.loopPeriodSec);
 
         previousVelocity = velocity;
-        velocity = arm.getVelocityRadPerSec() * conversionFactor;
+        velocity = armSim.getVelocityRadPerSec() * conversionFactor;
         data.positionUnits += velocity * 0.02;
         data.velocityUnits = velocity;
         data.accelerationUnits = (velocity - previousVelocity) / 0.02;
-        data.currentAmps = arm.getCurrentDrawAmps();
+        data.currentAmps = armSim.getCurrentDrawAmps();
         data.inputVolts = appliedVolts;
         data.appliedVolts = appliedVolts;
 
@@ -67,6 +68,6 @@ public class ArmSim implements ArmIO {
     @Override
     public void setVoltage(double volts) {
         appliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
-        arm.setInputVoltage(appliedVolts);
+        armSim.setInputVoltage(appliedVolts);
     }
 }
