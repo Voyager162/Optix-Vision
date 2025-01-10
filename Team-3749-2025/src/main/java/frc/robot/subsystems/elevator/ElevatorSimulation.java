@@ -29,7 +29,7 @@ public class ElevatorSimulation implements ElevatorIO {
     @Override
     public void updateData(ElevatorData data) {
         elevatorSimSystem.update(0.02);
-        data.positionUnits = elevatorSimSystem.getPositionMeters();
+        data.positionMeters = elevatorSimSystem.getPositionMeters();
         data.velocityUnits = elevatorSimSystem.getVelocityMetersPerSecond();
         data.accelerationUnits = 0;
         data.inputVolts = inputVolts;
@@ -38,7 +38,7 @@ public class ElevatorSimulation implements ElevatorIO {
         // Sim has no temp
         data.tempCelcius = 0;
 
-        Elevator.elevatorMech.setLength(Units.feetToMeters(3.25) + data.positionUnits);
+        Elevator.elevatorMech.setLength(Units.feetToMeters(3.25) + data.positionMeters);
     }
 
     @Override

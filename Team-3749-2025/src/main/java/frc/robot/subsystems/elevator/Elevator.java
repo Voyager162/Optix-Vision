@@ -24,7 +24,7 @@ public class Elevator extends SubsystemBase {
     PIDController pidController = new PIDController(ElevatorConstants.ElevatorControl.kPSim, 0, ElevatorConstants.ElevatorControl.kDSim); 
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
-    public ShuffleData<Double> positionUnitsLog = new ShuffleData<Double>("Elevator", "position units", 0.0);
+    public ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position meters", 0.0);
     public ShuffleData<Double> velocityUnitsLog = new ShuffleData<Double>("Elevator", "velocity units", 0.0);
     public ShuffleData<Double> accelerationUnitsLog = new ShuffleData<Double>("Elevator", "acceleration units", 0.0);
     public ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Elevator", "input volts", 0.0);
@@ -76,8 +76,8 @@ public class Elevator extends SubsystemBase {
         return state;
     }
 
-    public double getPositionRad() {
-        return data.positionUnits;
+    public double getPositionMeters() {
+        return data.positionMeters;
     }
 
     public double getVelocityRadPerSec() {
@@ -90,7 +90,7 @@ public class Elevator extends SubsystemBase {
 
     private void logData() {
         currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-        positionUnitsLog.set(data.positionUnits);
+        positionMetersLog.set(data.positionMeters);
         velocityUnitsLog.set(data.velocityUnits);
         inputVoltsLog.set(data.inputVolts);
         appliedVoltsLog.set(data.appliedVolts);
@@ -99,15 +99,11 @@ public class Elevator extends SubsystemBase {
     }
 
     private void runStateStop() {
-        setVoltage(0);
-    }
-
-    private void setVoltage(double volts) {
-        elevatorio.setVoltage(volts);
+        elevatorio.setVoltage(0);
     }
 
     public void movetosetpoint(double setpoint){
-        elevatorio.setVoltage(pidController.calculate(getPositionRad(), setpoint));
+        elevatorio.setVoltage(pidController.calculate(getPositionMeters(), setpoint));
     }
 
     private void setHeight(double inches){
@@ -117,7 +113,7 @@ public class Elevator extends SubsystemBase {
     @Override
     public void periodic() {
         elevatorio.updateData(data);
-        runState();
+        // runState();
         logData();
         pidController.setP(kPData.get());
         pidController.setD(kDData.get());

@@ -16,7 +16,7 @@ import frc.robot.utils.JoystickIO;
 
 public class RobotContainer {
   final CommandXboxController controller = new CommandXboxController(0);
-  private final movetosetpoint test = new movetosetpoint(3);
+  private final movetosetpoint test = new movetosetpoint(2);
   public RobotContainer() {
     // DriverStation.silenceJoystickConnectionWarning(true);
     // DriverStation.removeRefreshedDataEventHandle(44000);

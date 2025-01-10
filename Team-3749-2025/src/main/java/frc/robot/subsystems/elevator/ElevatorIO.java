@@ -8,7 +8,7 @@ package frc.robot.subsystems.elevator;
 
 public interface ElevatorIO {
     public static class ElevatorData {
-        public double positionUnits = 0;
+        public double positionMeters = 0;
         public double velocityUnits = 0;
         public double accelerationUnits = 0;
         public double inputVolts = 0;
