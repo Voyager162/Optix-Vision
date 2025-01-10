@@ -5,6 +5,7 @@
 package frc.robot.subsystems.swerve;
 
 import choreo.trajectory.SwerveSample;
+import choreo.util.ChoreoAllianceFlipUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -47,7 +48,7 @@ public class Swerve extends SubsystemBase {
   private PIDController xController = new PIDController(AutoConstants.kPDrive, 0, AutoConstants.kDDrive);
   private PIDController yController = new PIDController(AutoConstants.kPDrive, 0, AutoConstants.kDDrive);
   private PIDController turnController = new PIDController(AutoConstants.kPTurn, 0, AutoConstants.kDTurn);
-
+  private static ChoreoAllianceFlipUtil.Flipper flipper = ChoreoAllianceFlipUtil.getFlipper();
   private boolean utilizeVision = true;
 
   // equivilant to a odometer, but also intakes vision
@@ -283,17 +284,37 @@ public class Swerve extends SubsystemBase {
    * @see https://choreo.autos/choreolib/getting-started/#setting-up-the-drive-subsystem
    */
 
-  public void followSample(SwerveSample sample) {
+  public void followSample(SwerveSample sample, boolean isFlipped) {
     Robot.swerve.logSetpoints(sample);
+
+    double yPos = isFlipped ? flipper.flipY(sample.y) : sample.y;
+    double yVel = isFlipped ? -sample.vy : sample.vy;
+    double aPos = isFlipped ? -sample.heading : sample.heading;
+    double aVel = isFlipped ? -sample.omega : sample.omega;
+
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         new ChassisSpeeds(
             xController.calculate(getPose().getX(), sample.x) + sample.vx,
-            yController.calculate(getPose().getY(), sample.y) + sample.vy,
-            turnController.calculate(getPose().getRotation().getRadians(), sample.heading) + sample.omega),
+            yController.calculate(getPose().getY(), yPos) + yVel,
+            turnController.calculate(getPose().getRotation().getRadians(), aPos) + aVel),
         getPose().getRotation());
 
     Robot.swerve.setChassisSpeeds(speeds);
   }
+
+  // public void followFlippedSample(SwerveSample sample) {
+  // Robot.swerve.logSetpoints(sample);
+  // ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+  // new ChassisSpeeds(
+  // xController.calculate(getPose().getX(), sample.x) + sample.vx,
+  // yController.calculate(getPose().getY(), flipper.flipY(sample.y)) +
+  // -sample.vy,
+  // turnController.calculate(getPose().getRotation().getRadians(),
+  // -sample.heading) + -sample.omega),
+  // getPose().getRotation());
+
+  // Robot.swerve.setChassisSpeeds(speeds);
+  // }
 
   public void setBreakMode(boolean enable) {
     for (int i = 0; i < 4; i++) {
@@ -433,7 +454,6 @@ public class Swerve extends SubsystemBase {
         modules[3].getState().angle.getRadians(),
         modules[3].getState().speedMetersPerSecond
     };
-
 
     // SmartDashboard.puTarr("Swerve: Real States",realSwerveModuleStates);
     Double[] desiredStates = {

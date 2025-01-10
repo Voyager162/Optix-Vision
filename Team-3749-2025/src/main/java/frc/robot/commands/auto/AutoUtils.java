@@ -30,7 +30,7 @@ public class AutoUtils {
      * run all necessary auto setup methods
      */
     public static void initAuto() {
-        setupFactory();
+        setupFactory(true);
         setupChooser();
     }
 
@@ -49,7 +49,7 @@ public class AutoUtils {
     /**
      * setup the choreo factor object with bindings, controller, etc.
      */
-    private static void setupFactory() {
+    private static void setupFactory(boolean isFlipped) {
         /**
          * Swerve Pose Supplier
          * Reset Odometry Method
@@ -62,11 +62,11 @@ public class AutoUtils {
         // will now take a reset odometry
 
         factory = new AutoFactory(() -> Robot.swerve.getPose(),
-                (Pose2d startingPose) -> Robot.swerve.setOdometry(getXFlippedPose(startingPose)), // startingPose --> getXFlippedPose(startingPose)
-                (SwerveSample sample) -> Robot.swerve.followSample(sample), // sample --> sample.flipped()
-                true, // true --> false
+                (Pose2d startingPose) -> Robot.swerve
+                        .setOdometry(isFlipped ? getXFlippedPose(startingPose) : startingPose),
+                (SwerveSample sample) -> Robot.swerve.followSample(sample, isFlipped),
+                true,
                 Robot.swerve);
-
         // Event Binding
         factory.bind("Marker", Commands.print("Marker Passed"));
 
