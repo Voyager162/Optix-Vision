@@ -36,7 +36,7 @@ public class Elevator extends SubsystemBase {
 
     // Temporary?
     private ShuffleData<Double> kPData = new ShuffleData<Double>("Elevator", "kPData", ElevatorConstants.ElevatorControl.kPSim);
-    private ShuffleData<Double> kDData = new ShuffleData<Double>("Elevator", "kDData", ElevatorConstants.ElevatorControl.kPSim); 
+    private ShuffleData<Double> kDData = new ShuffleData<Double>("Elevator", "kDData", ElevatorConstants.ElevatorControl.kDSim); 
     private ShuffleData<Double> kGData = new ShuffleData<Double>("Elevator", "kGData", ElevatorConstants.ElevatorControl.kGSim); 
 
     public static Mechanism2d mech = new Mechanism2d(3, 3);
@@ -106,7 +106,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void movetosetpoint(double setpoint){
-        elevatorio.setVoltage(pidController.calculate(getPositionMeters(), setpoint) + kGData.get() * Math.cos(Math.toRadians(20)));
+        elevatorio.setVoltage(pidController.calculate(getPositionMeters(), setpoint) + kGData.get());
     }
 
     public void setVoltage(double volts){
@@ -122,8 +122,8 @@ public class Elevator extends SubsystemBase {
         elevatorio.updateData(data);
         // runState();
         logData();
-        pidController.setP(kPData.get());
-        pidController.setD(kDData.get());
+        // pidController.setP(kPData.get());
+        // pidController.setD(kDData.get());
         SmartDashboard.putData("elevator mechanism", mech);
     }
 }

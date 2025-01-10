@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
@@ -17,7 +18,7 @@ import frc.robot.utils.JoystickIO;
 
 public class RobotContainer {
   final CommandXboxController controller = new CommandXboxController(0);
-  private final movetosetpoint test = new movetosetpoint(2);
+  private final movetosetpoint test = new movetosetpoint(Units.feetToMeters(4));
   private final elevatorstop reset = new elevatorstop();
   public RobotContainer() {
     // DriverStation.silenceJoystickConnectionWarning(true);
