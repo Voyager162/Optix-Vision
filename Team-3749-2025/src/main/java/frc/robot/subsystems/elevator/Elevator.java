@@ -2,6 +2,7 @@ package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -15,6 +16,7 @@ public class Elevator extends SubsystemBase {
     ElevatorIO elevatorio;
     ElevatorData data = new ElevatorData();
     private ElevatorStates state = ElevatorStates.STOP;
+    double setpoint;
 
     PIDController pidController = new PIDController(ElevatorConstants.ElevatorControl.kPSim, 0, ElevatorConstants.ElevatorControl.kDSim); 
 
@@ -46,16 +48,21 @@ public class Elevator extends SubsystemBase {
     private void runState() {
         switch (state) {
             case STOP:
+                runStateStop();
                 break;
             case GO:
                 break;
             case L1:
+                setHeight(18);
                 break;
             case L2:
+                setHeight(31.875);
                 break;
             case L3:
+                setHeight(47.625);
                 break;
             case L4:
+                setHeight(72);
                 break;
             case MAX:
                 break;
@@ -86,6 +93,18 @@ public class Elevator extends SubsystemBase {
         appliedVoltsLog.set(data.appliedVolts);
         currentAmpsLog.set(data.currentAmps);
         tempCelciusLog.set(data.tempCelcius);
+    }
+
+    private void runStateStop() {
+        setVoltage(0);
+    }
+
+    private void setVoltage(double volts) {
+        elevatorio.setVoltage(volts);
+    }
+
+    private void setHeight(double inches){
+        
     }
 
     @Override
