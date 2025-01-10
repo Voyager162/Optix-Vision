@@ -8,7 +8,10 @@ import frc.robot.Robot;
 import frc.robot.commands.example.ExampleSubsystemCommand;
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
+import frc.robot.commands.arm.FullyExtend;
+import frc.robot.commands.arm.HalfExtend;
 import frc.robot.commands.arm.Move;
+import frc.robot.commands.arm.Stow;
 
 /**
  * Util class for button bindings
@@ -22,8 +25,9 @@ public class JoystickIO {
     private static final CommandXboxController operator = new CommandXboxController(1);
     private static final Command sample = new ExampleSubsystemCommand();
     private static final Command DriveStraight = new DriveStraight();
-    private static final Move moveArmUp = new Move(1);
-    private static final Move moveArmDown = new Move(-1);
+    private static final Stow armStow = new Stow();
+    private static final FullyExtend fullyExtendArm = new FullyExtend();
+    private static final HalfExtend halfExtendArm = new HalfExtend();
 
     public JoystickIO() {
     }
@@ -61,8 +65,9 @@ public class JoystickIO {
         // Example binding
         operator.a().whileTrue(sample);
 
-        operator.b().whileTrue(moveArmUp);
-        operator.x().whileTrue(moveArmDown);
+        operator.y().onTrue(armStow);
+        operator.b().onTrue(fullyExtendArm);
+        operator.x().onTrue(halfExtendArm);
 
     }
 
