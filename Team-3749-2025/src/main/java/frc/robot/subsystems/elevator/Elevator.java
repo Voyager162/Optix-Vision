@@ -106,6 +106,10 @@ public class Elevator extends SubsystemBase {
         elevatorio.setVoltage(volts);
     }
 
+    public void movetosetpoint(double setpoint){
+        elevatorio.setVoltage(pidController.calculate(getPositionRad(), setpoint));
+    }
+
     private void setHeight(double inches){
         
     }
