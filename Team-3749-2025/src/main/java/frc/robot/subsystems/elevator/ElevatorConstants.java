@@ -13,8 +13,8 @@ public class ElevatorConstants {
     } 
 
     public static class ElevatorControl {
-        public static final double kPSim = 0;
-        public static final double kDSim = 0;
+        public static final double kPSim = 2;
+        public static final double kDSim = 0.01;
         public static final double kASim = 0;
         public static final double kGSim = 0;
         // public static final double kSSim = 0;

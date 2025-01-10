@@ -8,27 +8,31 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.auto.AutoUtils;
 import frc.robot.commands.auto.Autos;
+import frc.robot.commands.elevator.movetosetpoint;
 import frc.robot.utils.JoystickIO;
 
 public class RobotContainer {
-
+  final CommandXboxController controller = new CommandXboxController(0);
+  private final movetosetpoint test = new movetosetpoint(3);
   public RobotContainer() {
-    DriverStation.silenceJoystickConnectionWarning(true);
-    DriverStation.removeRefreshedDataEventHandle(44000);
+    // DriverStation.silenceJoystickConnectionWarning(true);
+    // DriverStation.removeRefreshedDataEventHandle(44000);
 
-    // data logs
-    DataLogManager.start();
-    DataLogManager.logNetworkTables(true);
-    DriverStation.startDataLog(DataLogManager.getLog(), true);
+    // // data logs
+    // DataLogManager.start();
+    // DataLogManager.logNetworkTables(true);
+    // DriverStation.startDataLog(DataLogManager.getLog(), true);
 
-    // When to go into brownout protection
-    RobotController.setBrownoutVoltage(7.0);
+    // // When to go into brownout protection
+    // RobotController.setBrownoutVoltage(7.0);
 
-    // robot setup
-    JoystickIO.getButtonBindings();
-    AutoUtils.initAuto();
+    // // robot setup
+    // JoystickIO.getButtonBindings();
+    // AutoUtils.initAuto();
+    controller.a().onTrue(test);
   }
 
   public Command getAutonomousCommand() {
