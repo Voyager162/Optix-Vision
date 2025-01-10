@@ -20,7 +20,7 @@ public class JoystickIO {
 
     private static final CommandXboxController pilot = new CommandXboxController(0);
     private static final CommandXboxController operator = new CommandXboxController(1);
-    private static final Command sample = new ExampleSubsystemCommand();
+    //private static final Command sample = new ExampleSubsystemCommand(); it was getting on my nerves seeing the warning
     private static final Command DriveStraight = new DriveStraight();
     private static final Command OnTheFly = new OnTheFly();
 
