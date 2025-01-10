@@ -462,6 +462,32 @@ public class Swerve extends SubsystemBase {
     setpointRotationalAccelerationLog.set(accelerations[2]);
   }
 
+  public Pose2d[] ppSetpoints = new Pose2d[] {ToPosConstants.Setpoints.coralBottom,
+    ToPosConstants.Setpoints.coralTop,
+    ToPosConstants.Setpoints.processor,
+    ToPosConstants.Setpoints.reef17,
+    ToPosConstants.Setpoints.reef18,
+    ToPosConstants.Setpoints.reef19,
+    ToPosConstants.Setpoints.reef20,
+    ToPosConstants.Setpoints.reef21,
+    ToPosConstants.Setpoints.reef22
+  };
+
+  int currentPPSetpointIndex = 0;
+  public void cyclePPSetpoint()
+  {
+    currentPPSetpointIndex++;
+    if(currentPPSetpointIndex >= ppSetpoints.length)
+    {
+      currentPPSetpointIndex = 0;
+    }
+  }
+
+  public Pose2d getPPSetpoint()
+  {
+    return ppSetpoints[currentPPSetpointIndex];
+  }
+
   /**
    * log all serve data
    */

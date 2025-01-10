@@ -57,6 +57,7 @@ public class JoystickIO {
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
         pilot.a().whileTrue(DriveStraight);
         pilot.x().whileTrue(OnTheFly);
+        pilot.b().onTrue(Commands.runOnce(() -> Robot.swerve.cyclePPSetpoint()));
 
         // Example binding
         operator.a().whileTrue(new ExampleSubsystemCommand());
