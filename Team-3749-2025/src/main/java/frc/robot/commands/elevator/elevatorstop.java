@@ -24,7 +24,7 @@ public class elevatorstop extends Command {
         if (Robot.subsystem.getIsStableState()) {
             Robot.subsystem.setState(SubsystemStates.STOP);
         }
-        Robot.elevator.setVoltage(0);;
+        Robot.elevator.setVoltage(12);;
     }
 
     @Override
