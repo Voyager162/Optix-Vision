@@ -25,12 +25,12 @@ public class Move extends Command {
 
     @Override
     public void execute() {
-        Robot.arm.setCommandedVoltage(voltage);
+        Robot.arm.setVoltage(voltage);
     }
 
     @Override
     public void end(boolean interrupted) {
-        Robot.arm.setCommandedVoltage(0);
+        Robot.arm.setVoltage(0);
     }
 
     @Override

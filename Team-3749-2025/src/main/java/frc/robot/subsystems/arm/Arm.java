@@ -30,13 +30,12 @@ public class Arm extends SubsystemBase {
     public ShuffleData<Double> appliedVoltsLog = new ShuffleData<Double>("Arm", "applied volts", 0.0);
     public ShuffleData<Double> currentAmpsLog = new ShuffleData<Double>("Arm", "current amps", 0.0);
     public ShuffleData<Double> tempCelciusLog = new ShuffleData<Double>("Arm", "temp celcius", 0.0);
-    public ShuffleData<Double> kGLog = new ShuffleData<Double>("Arm", "kG", 4.0);
 
     private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
     private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Arm", 30, 0));
 
-    private double commandedVoltage = 0;
+    private double Voltage = 0;
 
     public Arm() {
         if (Robot.isSimulation()) {
@@ -56,16 +55,12 @@ public class Arm extends SubsystemBase {
         return data.velocityUnits;
     }
 
-    public void setVoltage(double volts) {
-        armIO.setVoltage(volts);
-    }
-
     public double getAppliedVoltage() {
         return data.appliedVolts;
     }
 
-    public void setCommandedVoltage(double volts) {
-        this.commandedVoltage = volts;
+    public void setVoltage(double volts) {
+        this.Voltage = volts;
     }
 
     private void logData() {
@@ -81,11 +76,13 @@ public class Arm extends SubsystemBase {
 
     @Override
     public void periodic() {
-        ArmConstants.Kg = kGLog.get();
         armIO.updateData(data);
-        double gravityCompensation = ArmConstants.Kg * Math.cos(data.positionUnits);
-        armIO.setVoltage(commandedVoltage + gravityCompensation);
+        armIO.setVoltage(Voltage + calculateFeedForward());
         logData();
+    }
+
+    private double calculateFeedForward() {
+        return ArmConstants.Kg * Math.cos(data.positionUnits);
     }
 
 }
