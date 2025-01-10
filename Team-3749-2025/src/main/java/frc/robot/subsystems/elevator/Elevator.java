@@ -13,6 +13,8 @@ import frc.robot.subsystems.elevator.ElevatorIO.ElevatorData;
 import frc.robot.utils.ShuffleData;
 
 public class Elevator extends SubsystemBase {
+    // armIO.setVoltage(pidController.calculate(getPosition(), setpoint) + ArmConstants.armControl.armkG);
+    
     ElevatorIO elevatorio;
     ElevatorData data = new ElevatorData();
     private ElevatorStates state = ElevatorStates.STOP;
