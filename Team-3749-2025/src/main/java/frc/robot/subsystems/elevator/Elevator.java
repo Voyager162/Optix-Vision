@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorData;
+import frc.robot.subsystems.example.ExampleSubsystemConstants.SubsystemStates;
 import frc.robot.utils.ShuffleData;
 
 public class Elevator extends SubsystemBase {
@@ -20,6 +21,7 @@ public class Elevator extends SubsystemBase {
     ElevatorIO elevatorio;
     ElevatorData data = new ElevatorData();
     private ElevatorStates state = ElevatorStates.STOP;
+    private ElevatorConstants constants = new ElevatorConstants();
     double setpoint;
 
     PIDController pidController = new PIDController(ElevatorConstants.ElevatorControl.kPSim, 0, ElevatorConstants.ElevatorControl.kDSim);
@@ -59,21 +61,41 @@ public class Elevator extends SubsystemBase {
             case GO:
                 break;
             case L1:
-                setHeight(18);
+                setHeight(constants.l1Height);
                 break;
             case L2:
-                setHeight(31.875);
+                setHeight(constants.l2Height);
                 break;
             case L3:
-                setHeight(47.625);
+                setHeight(constants.l3Height);
                 break;
             case L4:
-                setHeight(72);
+                setHeight(constants.l4Height);
                 break;
             case MAX:
                 break;
         }
     }
+
+    // returns true when the state is reached
+    /*public boolean getIsStableState() {
+        //this stuff doesnt work
+        switch (state) {
+            case STOP:
+                return data.velocityUnits == 0;
+            case L1:
+                return data.positionMeters > Units.inchesToMeters(constants.l1Height) - 0.1 && data.positionMeters < Units.inchesToMeters(constants.l1Height) - 0.1;
+            case L2:
+                return data.positionMeters > Units.inchesToMeters(constants.l2Height) - 0.1 && data.positionMeters < Units.inchesToMeters(constants.l2Height) - 0.1;
+            case L3:
+                return data.positionMeters > Units.inchesToMeters(constants.l3Height) - 0.1 && data.positionMeters < Units.inchesToMeters(constants.l3Height) - 0.1;
+            case L4:
+                return data.positionMeters > Units.inchesToMeters(constants.l4Height) - 0.1 && data.positionMeters < Units.inchesToMeters(constants.l4Height) - 0.1;
+            default:
+                return false;
+        }
+    }*/
+    
 
     public ElevatorStates getState() {
         return state;
@@ -113,14 +135,20 @@ public class Elevator extends SubsystemBase {
         elevatorio.setVoltage(volts);
     }
 
-    private void setHeight(double inches){
-        
+    private void setHeight(double setpoint){
+        elevatorio.setVoltage(pidController.calculate(getPositionMeters(), setpoint) + kGData.get() * Math.cos(Math.toRadians(20)));
+    }
+
+    public void setState(ElevatorStates state) {
+        this.state = state;
     }
 
     @Override
     public void periodic() {
         elevatorio.updateData(data);
-        // runState();
+
+        System.out.println(state);
+        runState();
         logData();
         pidController.setP(kPData.get());
         pidController.setD(kDData.get());
