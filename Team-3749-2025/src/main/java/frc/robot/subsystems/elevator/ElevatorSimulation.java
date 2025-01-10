@@ -1,9 +1,12 @@
 package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import frc.robot.utils.MiscConstants;
+import frc.robot.subsystems.elevator.Elevator;
 
 public class ElevatorSimulation implements ElevatorIO {
     private double inputVolts = 0;
@@ -32,9 +35,10 @@ public class ElevatorSimulation implements ElevatorIO {
         data.inputVolts = inputVolts;
         data.appliedVolts = 0;
         data.currentAmps = 0;
-
         // Sim has no temp
         data.tempCelcius = 0;
+
+        Elevator.elevatorMech.setLength(Units.feetToMeters(3.25) + data.positionUnits);
     }
 
     @Override
