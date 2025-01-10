@@ -1,5 +1,6 @@
 package frc.robot.subsystems.elevator;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Unit;
@@ -21,7 +22,8 @@ public class Elevator extends SubsystemBase {
     private ElevatorStates state = ElevatorStates.STOP;
     double setpoint;
 
-    PIDController pidController = new PIDController(ElevatorConstants.ElevatorControl.kPSim, 0, ElevatorConstants.ElevatorControl.kDSim); 
+    PIDController pidController = new PIDController(ElevatorConstants.ElevatorControl.kPSim, 0, ElevatorConstants.ElevatorControl.kDSim);
+    ElevatorFeedforward feedForward = new ElevatorFeedforward(ElevatorConstants.ElevatorControl.kASim, ElevatorConstants.ElevatorControl.kGSim, ElevatorConstants.ElevatorControl.kSSim, ElevatorConstants.ElevatorControl.kASim);
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     public ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position meters", 0.0);
@@ -35,6 +37,7 @@ public class Elevator extends SubsystemBase {
     // Temporary?
     private ShuffleData<Double> kPData = new ShuffleData<Double>("Elevator", "kPData", ElevatorConstants.ElevatorControl.kPSim);
     private ShuffleData<Double> kDData = new ShuffleData<Double>("Elevator", "kDData", ElevatorConstants.ElevatorControl.kPSim); 
+    private ShuffleData<Double> kGData = new ShuffleData<Double>("Elevator", "kGData", ElevatorConstants.ElevatorControl.kGSim); 
 
     public static Mechanism2d mech = new Mechanism2d(3, 3);
     public static MechanismRoot2d root = mech.getRoot("elevator", 2, 0);
@@ -103,7 +106,11 @@ public class Elevator extends SubsystemBase {
     }
 
     public void movetosetpoint(double setpoint){
-        elevatorio.setVoltage(pidController.calculate(getPositionMeters(), setpoint));
+        elevatorio.setVoltage(pidController.calculate(getPositionMeters(), setpoint) + kGData.get() * Math.cos(Math.toRadians(20)));
+    }
+
+    public void setVoltage(double volts){
+        elevatorio.setVoltage(volts);
     }
 
     private void setHeight(double inches){

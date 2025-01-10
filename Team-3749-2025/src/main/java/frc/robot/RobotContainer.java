@@ -11,12 +11,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.auto.AutoUtils;
 import frc.robot.commands.auto.Autos;
+import frc.robot.commands.elevator.elevatorstop;
 import frc.robot.commands.elevator.movetosetpoint;
 import frc.robot.utils.JoystickIO;
 
 public class RobotContainer {
   final CommandXboxController controller = new CommandXboxController(0);
   private final movetosetpoint test = new movetosetpoint(2);
+  private final elevatorstop reset = new elevatorstop();
   public RobotContainer() {
     // DriverStation.silenceJoystickConnectionWarning(true);
     // DriverStation.removeRefreshedDataEventHandle(44000);
@@ -33,6 +35,7 @@ public class RobotContainer {
     // JoystickIO.getButtonBindings();
     // AutoUtils.initAuto();
     controller.a().onTrue(test);
+    controller.b().onTrue(reset);
   }
 
   public Command getAutonomousCommand() {
