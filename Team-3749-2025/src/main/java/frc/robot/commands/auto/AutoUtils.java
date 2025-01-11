@@ -26,7 +26,8 @@ public class AutoUtils {
     private static AutoFactory factory;
     private static AutoFactory factoryFlipped;
     private static AutoChooser chooser;
-    private static SendableChooser<Boolean> filppedChooser = new SendableChooser<Boolean>();
+    // private static AutoChooser flipChooser;
+    private static SendableChooser<Boolean> flippedChooser;
     private static ChoreoAllianceFlipUtil.Flipper flipper = ChoreoAllianceFlipUtil.getFlipper();
 
     /**
@@ -35,12 +36,10 @@ public class AutoUtils {
     public static void initAuto() {
         // seems like this method is setup before the automonous command is clicked which makes it not possible
         // for us to choose before hitting the automonous button
-        filppedChooser.addOption("true", true);
-        filppedChooser.addOption("false", false);
-        filppedChooser.setDefaultOption("false",false);
-        SmartDashboard.putData("truefalse", filppedChooser);
+
         setupFactory();
         setupChooser();
+        setupFlipChooser();
     }
 
     /**
@@ -52,11 +51,10 @@ public class AutoUtils {
     }
 
     public static AutoFactory getAutoFactory() {
-        if (filppedChooser.getSelected() == true){
+        if (flippedChooser.getSelected()){
             return factoryFlipped;
-        } else {
-            return factory;
         }
+        return factory;
     }
 
     /**
@@ -119,6 +117,16 @@ public class AutoUtils {
 
         SmartDashboard.putData("Auto: Auto Chooser", chooser);
 
+    }
+
+    private static void setupFlipChooser() {
+        flippedChooser = new SendableChooser<Boolean>();
+
+        flippedChooser.addOption("Yes", true);
+        flippedChooser.addOption("No", false);
+        flippedChooser.setDefaultOption("No", false);
+
+        SmartDashboard.putData("Flip Auto Path?", flippedChooser);
     }
 
     public static Command getSingleTrajectory(String trajectoryName) {
