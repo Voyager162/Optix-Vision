@@ -117,11 +117,11 @@ public class Autos {
     }
 
     public static Command get3Piece() {
-        return AutoUtils.getSingleTrajectory("1-r1-c1-r2-c1-r3");
+        return AutoUtils.getSingleTrajectory("3-piece-new");
     }
 
     public static Command getTeamTaxi() {
-        return AutoUtils.getSingleTrajectory("TeamTaxi");
-
+        return AutoUtils.getSingleTrajectory("Team Taxi");
     }
+
 }
