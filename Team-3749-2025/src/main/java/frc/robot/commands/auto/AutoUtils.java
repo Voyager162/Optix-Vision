@@ -8,6 +8,7 @@ import choreo.util.ChoreoAllianceFlipUtil;
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -24,13 +25,18 @@ public class AutoUtils {
 
     private static AutoFactory factory;
     private static AutoChooser chooser;
+    private static SendableChooser<Boolean> filppedChooser = new SendableChooser<Boolean>();
     private static ChoreoAllianceFlipUtil.Flipper flipper = ChoreoAllianceFlipUtil.getFlipper();
 
     /**
      * run all necessary auto setup methods
      */
     public static void initAuto() {
-        setupFactory(true);
+        filppedChooser.addOption("true", true);
+        filppedChooser.addOption("false", false);
+        filppedChooser.setDefaultOption("true",true);
+        SmartDashboard.putData("truefalse", filppedChooser);
+        setupFactory(filppedChooser.getSelected());
         setupChooser();
     }
 
