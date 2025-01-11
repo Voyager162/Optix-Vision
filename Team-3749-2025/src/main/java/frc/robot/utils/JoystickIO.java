@@ -10,8 +10,6 @@ import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
 import frc.robot.commands.arm.FullyExtend;
 import frc.robot.commands.arm.HalfExtend;
-import frc.robot.commands.arm.MoveDown;
-import frc.robot.commands.arm.MoveUp;
 import frc.robot.commands.arm.Stow;
 
 /**
@@ -29,8 +27,6 @@ public class JoystickIO {
     private static final Stow armStow = new Stow();
     private static final FullyExtend fullyExtendArm = new FullyExtend();
     private static final HalfExtend halfExtendArm = new HalfExtend();
-    private static final MoveUp moveUpArm = new MoveUp();
-    private static final MoveDown moveDownArm = new MoveDown();
 
     public JoystickIO() {
     }
