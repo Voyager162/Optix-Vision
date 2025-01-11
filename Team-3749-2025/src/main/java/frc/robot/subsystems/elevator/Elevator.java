@@ -56,8 +56,6 @@ public class Elevator extends SubsystemBase {
             case STOP:
                 runStateStop();
                 break;
-            case GO:
-                break;
             case L1:
                 setHeight(constants.l1Height);
                 break;
@@ -71,6 +69,8 @@ public class Elevator extends SubsystemBase {
                 setHeight(constants.l4Height);
                 break;
             case MAX:
+                break;
+            case STOW:
                 break;
         }
     }

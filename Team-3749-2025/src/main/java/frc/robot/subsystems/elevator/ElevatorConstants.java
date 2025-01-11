@@ -30,11 +30,11 @@ public class ElevatorConstants {
 
     public enum ElevatorStates{
         STOP,
-        GO,
         L1,
         L2,
         L3,
         L4,
-        MAX
+        MAX,
+        STOW
     }
 }

@@ -7,15 +7,15 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.auto.Autos;
-import frc.robot.commands.elevator.setstate;
+import frc.robot.commands.elevator.setElevatorState;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 
 public class RobotContainer {
   final CommandXboxController controller = new CommandXboxController(0);
-  private final setstate l1 = new setstate(ElevatorStates.L1);
-  private final setstate l2 = new setstate(ElevatorStates.L2);
-  private final setstate l3 = new setstate(ElevatorStates.L3);
-  private final setstate l4 = new setstate(ElevatorStates.L4);
+  private final setElevatorState l1 = new setElevatorState(ElevatorStates.L1);
+  private final setElevatorState l2 = new setElevatorState(ElevatorStates.L2);
+  private final setElevatorState l3 = new setElevatorState(ElevatorStates.L3);
+  private final setElevatorState l4 = new setElevatorState(ElevatorStates.L4);
   // private final setstate stop = new setstate(ElevatorStates.STOP);
   public RobotContainer() {
     // DriverStation.silenceJoystickConnectionWarning(true);

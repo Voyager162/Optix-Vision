@@ -9,9 +9,9 @@ import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
  * 
  * @author Noah Simon
  */
-public class setstate extends Command {
+public class setElevatorState extends Command {
     ElevatorStates states;
-    public setstate(ElevatorStates states) {
+    public setElevatorState(ElevatorStates states) {
         this.states = states;
         super.addRequirements(Robot.elevator);
     }
@@ -31,7 +31,7 @@ public class setstate extends Command {
 
     @Override
     public void end(boolean interupted) {
-        Robot.elevator.setState(ElevatorStates.STOP);
+        Robot.elevator.setState(ElevatorStates.STOW);
     }
 
     @Override
