@@ -43,6 +43,8 @@ public class Arm extends SubsystemBase {
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
     private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Arm", 24, 0));
 
+    public ShuffleData<Double> kPLog = new ShuffleData<Double>(this.getName(), "kP", ArmConstants.kP);
+
 
     public Arm() {
         if (Robot.isSimulation()) {
@@ -108,13 +110,27 @@ public class Arm extends SubsystemBase {
             case STOPPED:
                 runStateStopped();
                 break;
+            case MOVING_DOWN:
+                runMovingDown();
+                break;
+            case MOVING_UP:
+                runMovingUp();
+                break;
             default:
                 break;
         }
     }
 
+    private void runMovingUp() {
+        setVoltage(1 + calculateFeedForward());
+    }
+
+    private void runMovingDown() {
+        setVoltage(-1 + calculateFeedForward());
+    }
+
     private void runStateStopped() {
-        setVoltage(0);
+        setVoltage(0 + calculateFeedForward());
     }
 
     private void runStateFullyExtended() {
@@ -153,11 +169,14 @@ public class Arm extends SubsystemBase {
         logData();
 
         runState();
+
+        ArmConstants.kP = kPLog.get();
+
+        controller = new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
     }
 
     private double calculateFeedForward() {
-        return 0;
-        // return ArmConstants.kG * Math.cos(data.positionUnits);
+        return ArmConstants.kG * Math.cos(data.positionUnits);
     }
 
 }

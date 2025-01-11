@@ -20,10 +20,10 @@ public class ArmConstants {
     public static final double armMass_kg = 5.0;
     public static final double armGearing = 255;
 
-    // public static final double kG = 1.81006138; // a little specific but hey, why not
+    public static double kG = 0.494286; // a little specific but hey, why not
     public static final double kS = 0.0;
 
-    public static final double kP = 20;
+    public static double kP = 50; // extremely high but works in simulation
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
@@ -32,6 +32,8 @@ public class ArmConstants {
     public static final double fullyExtendedSetPoint = Math.PI;
 
     public enum ArmStates {
+        MOVING_DOWN,
+        MOVING_UP,
         HALFWAY_EXTENDED,
         FULLY_EXTENDED,
         STOWED,
