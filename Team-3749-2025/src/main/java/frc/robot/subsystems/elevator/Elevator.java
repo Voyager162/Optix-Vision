@@ -40,9 +40,9 @@ public class Elevator extends SubsystemBase {
     // private ShuffleData<Double> kDData = new ShuffleData<Double>("Elevator", "kDData", ElevatorConstants.ElevatorControl.kDSim); 
     // private ShuffleData<Double> kGData = new ShuffleData<Double>("Elevator", "kGData", ElevatorConstants.ElevatorControl.kGSim); 
 
-    public Mechanism2d mech = new Mechanism2d(3, 3);
-    public MechanismRoot2d root = mech.getRoot("elevator", 2, 0);
-    public MechanismLigament2d elevatorMech = root.append(new MechanismLigament2d("elevator", Units.feetToMeters(3.25), 90));
+    private Mechanism2d mech = new Mechanism2d(3, 3);
+    private MechanismRoot2d root = mech.getRoot("elevator", 2, 0);
+    private MechanismLigament2d elevatorMech = root.append(new MechanismLigament2d("elevator", Units.feetToMeters(3.25), 90));
 
     public Elevator(){
         if (Robot.isSimulation()) {
