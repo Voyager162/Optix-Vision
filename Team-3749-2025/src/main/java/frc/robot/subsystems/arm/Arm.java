@@ -26,7 +26,7 @@ public class Arm extends SubsystemBase {
 
     private double setPoint;
 
-    private PIDController controller = new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
+    private PIDController controller = new PIDController(ArmConstants.kPSim, ArmConstants.kISim, ArmConstants.kDSim);
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     public ShuffleData<Double> positionUnitsLog = new ShuffleData<Double>(this.getName(), "position units", 0.0);
@@ -43,7 +43,6 @@ public class Arm extends SubsystemBase {
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
     private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Arm", 24, 0));
 
-    public ShuffleData<Double> kPLog = new ShuffleData<Double>(this.getName(), "kP", ArmConstants.kP);
 
 
     public Arm() {
@@ -169,14 +168,10 @@ public class Arm extends SubsystemBase {
         logData();
 
         runState();
-
-        ArmConstants.kP = kPLog.get();
-
-        controller = new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
     }
 
     private double calculateFeedForward() {
-        return ArmConstants.kG * Math.cos(data.positionUnits);
+        return ArmConstants.kGSim * Math.cos(data.positionUnits);
     }
 
 }

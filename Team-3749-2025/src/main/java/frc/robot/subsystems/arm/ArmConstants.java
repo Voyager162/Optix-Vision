@@ -20,12 +20,14 @@ public class ArmConstants {
     public static final double armMass_kg = 5.0;
     public static final double armGearing = 255;
 
-    public static double kG = 0.494286; // a little specific but hey, why not
-    public static final double kS = 0.0;
+    public static double kPSim = 50; // extremely high but works in simulation
+    public static final double kISim = 0.0;
+    public static final double kDSim = 0.0;
 
-    public static double kP = 50; // extremely high but works in simulation
-    public static final double kI = 0.0;
-    public static final double kD = 0.0;
+    public static double kGSim = 0.494286; // a little specific but hey, why not
+    public static final double kSSim = 0.0;
+    public static final double kASim = 0.0;
+    public static final double kVSim = 0.0;
 
     public static final double stowSetPoint = Math.PI / 2;
     public static final double halfwayExtendedSetPoint = Math.PI * 3 / 4;
