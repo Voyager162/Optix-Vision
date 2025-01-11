@@ -127,16 +127,12 @@ public class Elevator extends SubsystemBase {
         elevatorio.setVoltage(0);
     }
 
-    public void movetosetpoint(double setpoint){
-        elevatorio.setVoltage(pidController.calculate(getPositionMeters(), setpoint) + kGData.get());
-    }
-
     public void setVoltage(double volts){
         elevatorio.setVoltage(volts);
     }
 
     private void setHeight(double setpoint){
-        elevatorio.setVoltage(pidController.calculate(getPositionMeters(), setpoint) + kGData.get() * Math.cos(Math.toRadians(20)));
+        elevatorio.setVoltage(pidController.calculate(getPositionMeters(), setpoint) + ElevatorConstants.ElevatorControl.kGSim);
     }
 
     public void setState(ElevatorStates state) {
