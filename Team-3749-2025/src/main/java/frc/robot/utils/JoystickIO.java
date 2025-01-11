@@ -5,9 +5,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot;
+import frc.robot.commands.elevator.setElevatorState;
 import frc.robot.commands.example.ExampleSubsystemCommand;
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
+import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 
 /**
  * Util class for button bindings
@@ -21,6 +23,11 @@ public class JoystickIO {
     private static final CommandXboxController operator = new CommandXboxController(1);
     private static final Command sample = new ExampleSubsystemCommand();
     private static final Command DriveStraight = new DriveStraight();
+
+    private static final setElevatorState l1 = new setElevatorState(ElevatorStates.L1);
+    private static final setElevatorState l2 = new setElevatorState(ElevatorStates.L2);
+    private static final setElevatorState l3 = new setElevatorState(ElevatorStates.L3);
+    private static final setElevatorState l4 = new setElevatorState(ElevatorStates.L4);
 
     public JoystickIO() {
     }
@@ -57,6 +64,11 @@ public class JoystickIO {
 
         // Example binding
         operator.a().whileTrue(new ExampleSubsystemCommand());
+
+        operator.a().onTrue(l1);
+        operator.b().onTrue(l2);
+        operator.x().onTrue(l3);
+        operator.y().onTrue(l4);
 
     }
 

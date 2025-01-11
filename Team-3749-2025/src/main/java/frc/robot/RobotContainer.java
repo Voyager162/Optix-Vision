@@ -4,38 +4,36 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.auto.AutoUtils;
 import frc.robot.commands.auto.Autos;
 import frc.robot.commands.elevator.setElevatorState;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
+import frc.robot.utils.JoystickIO;
 
 public class RobotContainer {
-  final CommandXboxController controller = new CommandXboxController(0);
-  private final setElevatorState l1 = new setElevatorState(ElevatorStates.L1);
-  private final setElevatorState l2 = new setElevatorState(ElevatorStates.L2);
-  private final setElevatorState l3 = new setElevatorState(ElevatorStates.L3);
-  private final setElevatorState l4 = new setElevatorState(ElevatorStates.L4);
+  
   // private final setstate stop = new setstate(ElevatorStates.STOP);
   public RobotContainer() {
-    // DriverStation.silenceJoystickConnectionWarning(true);
-    // DriverStation.removeRefreshedDataEventHandle(44000);
+    DriverStation.silenceJoystickConnectionWarning(true);
+    DriverStation.removeRefreshedDataEventHandle(44000);
 
-    // // data logs
-    // DataLogManager.start();
-    // DataLogManager.logNetworkTables(true);
-    // DriverStation.startDataLog(DataLogManager.getLog(), true);
+    // data logs
+    DataLogManager.start();
+    DataLogManager.logNetworkTables(true);
+    DriverStation.startDataLog(DataLogManager.getLog(), true);
 
-    // // When to go into brownout protection
-    // RobotController.setBrownoutVoltage(7.0);
+    // When to go into brownout protection
+    RobotController.setBrownoutVoltage(7.0);
 
-    // // robot setup
-    // JoystickIO.getButtonBindings();
-    // AutoUtils.initAuto();P
-    controller.a().onTrue(l1);
-    controller.b().onTrue(l2);
-    controller.x().onTrue(l3);
-    controller.y().onTrue(l4);
+    // robot setup
+    JoystickIO.getButtonBindings();
+    AutoUtils.initAuto();
+    
   }
 
   public Command getAutonomousCommand() {
