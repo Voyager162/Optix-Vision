@@ -22,7 +22,7 @@ public class ElevatorConstants {
         public static final double kDSim = 0;
         public static final double kSSim = 0;
         public static final double kGSim = 2.3;
-        public static final double kVSim = 0;
+        public static final double kVSim = 2.365; // 12 - 2.3 / 4.1
         public static final double kASim = 0;
         
         // public static final double kSSim = 0;

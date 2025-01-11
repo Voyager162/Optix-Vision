@@ -2,6 +2,8 @@ package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -22,9 +24,13 @@ public class Elevator extends SubsystemBase {
     private ElevatorStates state = ElevatorStates.STOP;
     private ElevatorConstants constants = new ElevatorConstants();
     
-    private PIDController pidController = new PIDController(ElevatorConstants.ElevatorControl.kPSim, 0, ElevatorConstants.ElevatorControl.kDSim);
+    private ProfiledPIDController pidController = new ProfiledPIDController(
+        ElevatorConstants.ElevatorControl.kPSim, 
+        0, 
+        ElevatorConstants.ElevatorControl.kDSim,
+        new TrapezoidProfile.Constraints(ElevatorConstants.ElevatorControl.kVSim, ElevatorConstants.ElevatorControl.kASim));
     // maybe later
-    private ElevatorFeedforward feedForward = new ElevatorFeedforward(ElevatorConstants.ElevatorControl.kASim, ElevatorConstants.ElevatorControl.kGSim, ElevatorConstants.ElevatorControl.kSSim, ElevatorConstants.ElevatorControl.kASim);
+    // private ElevatorFeedforward feedForward = new ElevatorFeedforward(ElevatorConstants.ElevatorControl.kASim, ElevatorConstants.ElevatorControl.kGSim, ElevatorConstants.ElevatorControl.kSSim, ElevatorConstants.ElevatorControl.kASim);
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position meters", 0.0);

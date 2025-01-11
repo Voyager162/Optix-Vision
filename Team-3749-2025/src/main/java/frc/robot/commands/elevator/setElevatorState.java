@@ -5,9 +5,10 @@ import frc.robot.Robot;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 
 /**
- * An example subsystem command
+ * Elevator states command
  * 
- * @author Noah Simon
+ * @author Dhyan Soni
+ * @author Andrew Ge
  */
 public class setElevatorState extends Command {
     ElevatorStates states;
