@@ -24,6 +24,7 @@ public class AutoUtils {
     // make sure to properly log the robot's setpoints
 
     private static AutoFactory factory;
+    private static AutoFactory factoryFlipped;
     private static AutoChooser chooser;
     private static SendableChooser<Boolean> filppedChooser = new SendableChooser<Boolean>();
     private static ChoreoAllianceFlipUtil.Flipper flipper = ChoreoAllianceFlipUtil.getFlipper();
@@ -38,7 +39,7 @@ public class AutoUtils {
         filppedChooser.addOption("false", false);
         filppedChooser.setDefaultOption("false",false);
         SmartDashboard.putData("truefalse", filppedChooser);
-        setupFactory(filppedChooser.getSelected());
+        setupFactory();
         setupChooser();
     }
 
@@ -51,13 +52,17 @@ public class AutoUtils {
     }
 
     public static AutoFactory getAutoFactory() {
-        return factory;
+        if (filppedChooser.getSelected() == true){
+            return factoryFlipped;
+        } else {
+            return factory;
+        }
     }
 
     /**
      * setup the choreo factor object with bindings, controller, etc.
      */
-    private static void setupFactory(boolean isFlipped) {
+    private static void setupFactory() {
         /**
          * Swerve Pose Supplier
          * Reset Odometry Method
@@ -71,12 +76,20 @@ public class AutoUtils {
 
         factory = new AutoFactory(() -> Robot.swerve.getPose(),
                 (Pose2d startingPose) -> Robot.swerve
-                        .setOdometry(isFlipped ? getXFlippedPose(startingPose) : startingPose),
-                (SwerveSample sample) -> Robot.swerve.followSample(sample, isFlipped),
+                        .setOdometry(false ? getXFlippedPose(startingPose) : startingPose),
+                (SwerveSample sample) -> Robot.swerve.followSample(sample, false),
+                true,
+                Robot.swerve);
+        
+        factoryFlipped = new AutoFactory(() -> Robot.swerve.getPose(),
+                (Pose2d startingPose) -> Robot.swerve
+                        .setOdometry(true ? getXFlippedPose(startingPose) : startingPose),
+                (SwerveSample sample) -> Robot.swerve.followSample(sample, true),
                 true,
                 Robot.swerve);
         // Event Binding
         factory.bind("Marker", Commands.print("Marker Passed"));
+        factoryFlipped.bind("Marker", Commands.print("Marker Passed"));
 
     }
 
@@ -109,13 +122,13 @@ public class AutoUtils {
     }
 
     public static Command getSingleTrajectory(String trajectoryName) {
-        AutoRoutine routine = factory.newRoutine(trajectoryName);
+        AutoRoutine routine = getAutoFactory().newRoutine(trajectoryName);
         AutoTrajectory trajectory = routine.trajectory(trajectoryName);
 
         Command trajectoryCommand = trajectory.cmd();
 
         routine.active().onTrue(
-                factory.resetOdometry(trajectoryName).andThen(
+            getAutoFactory().resetOdometry(trajectoryName).andThen(
                         trajectoryCommand));
 
         System.out.println(trajectory.getInitialPose().get());
