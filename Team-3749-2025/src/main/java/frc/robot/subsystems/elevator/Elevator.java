@@ -12,6 +12,7 @@ import frc.robot.Robot;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorData;
 import frc.robot.utils.ShuffleData;
+import frc.robot.utils.UtilityFunctions;
 
 public class Elevator extends SubsystemBase {
     // armIO.setVoltage(pidController.calculate(getPosition(), setpoint) + ArmConstants.armControl.armkG);
@@ -76,23 +77,22 @@ public class Elevator extends SubsystemBase {
     }
 
     // returns true when the state is reached
-    /*public boolean getIsStableState() {
-        //this stuff doesnt work
+    public boolean getIsStableState() {
         switch (state) {
             case STOP:
                 return data.velocityUnits == 0;
             case L1:
-                return data.positionMeters > Units.inchesToMeters(constants.l1Height) - 0.1 && data.positionMeters < Units.inchesToMeters(constants.l1Height) - 0.1;
+                return UtilityFunctions.withinMargin(0.1, data.positionMeters, Units.inchesToMeters(constants.l1Height)); 
             case L2:
-                return data.positionMeters > Units.inchesToMeters(constants.l2Height) - 0.1 && data.positionMeters < Units.inchesToMeters(constants.l2Height) - 0.1;
+                return UtilityFunctions.withinMargin(0.1, data.positionMeters, Units.inchesToMeters(constants.l2Height));
             case L3:
-                return data.positionMeters > Units.inchesToMeters(constants.l3Height) - 0.1 && data.positionMeters < Units.inchesToMeters(constants.l3Height) - 0.1;
+                return UtilityFunctions.withinMargin(0.1, data.positionMeters, Units.inchesToMeters(constants.l3Height));
             case L4:
-                return data.positionMeters > Units.inchesToMeters(constants.l4Height) - 0.1 && data.positionMeters < Units.inchesToMeters(constants.l4Height) - 0.1;
+                return UtilityFunctions.withinMargin(0.1, data.positionMeters, Units.inchesToMeters(constants.l4Height));
             default:
                 return false;
         }
-    }*/
+    }
     
 
     public ElevatorStates getState() {
