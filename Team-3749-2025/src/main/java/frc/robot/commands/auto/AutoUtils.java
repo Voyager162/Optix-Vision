@@ -32,9 +32,11 @@ public class AutoUtils {
      * run all necessary auto setup methods
      */
     public static void initAuto() {
+        // seems like this method is setup before the automonous command is clicked which makes it not possible
+        // for us to choose before hitting the automonous button
         filppedChooser.addOption("true", true);
         filppedChooser.addOption("false", false);
-        filppedChooser.setDefaultOption("true",true);
+        filppedChooser.setDefaultOption("false",false);
         SmartDashboard.putData("truefalse", filppedChooser);
         setupFactory(filppedChooser.getSelected());
         setupChooser();
