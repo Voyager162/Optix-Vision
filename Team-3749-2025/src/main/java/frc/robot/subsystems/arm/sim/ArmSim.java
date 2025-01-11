@@ -22,7 +22,7 @@ public class ArmSim implements ArmIO {
 
 
         armSim = new SingleJointedArmSim(
-            DCMotor.getVex775Pro(2),
+            DCMotor.getNEO(2),
             ArmConstants.armGearing,
             0.755,
             ArmConstants.armLength_meters,

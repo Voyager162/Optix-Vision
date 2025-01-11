@@ -20,37 +20,34 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Arm extends SubsystemBase {
 
-
     private ArmIO armIO;
     private ArmData data = new ArmData();
     private ArmStates state = ArmStates.STOPPED;
 
     private double setPoint;
 
-    private PIDController controller = new PIDController(ArmConstants.Kp, ArmConstants.Ki, ArmConstants.Kd);
-    
+    private PIDController controller = new PIDController(ArmConstants.kP, ArmConstants.kI, ArmConstants.kD);
+
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
-    public ShuffleData<Double> positionUnitsLog = new ShuffleData<Double>("Arm", "position units", 0.0);
-    public ShuffleData<Double> velocityUnitsLog = new ShuffleData<Double>("Arm", "velocity units", 0.0);
-    public ShuffleData<Double> accelerationUnitsLog = new ShuffleData<Double>("Arm", "acceleration units", 0.0);
-    public ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Arm", "input volts", 0.0);
-    public ShuffleData<Double> appliedVoltsLog = new ShuffleData<Double>("Arm", "applied volts", 0.0);
-    public ShuffleData<Double> currentAmpsLog = new ShuffleData<Double>("Arm", "current amps", 0.0);
-    public ShuffleData<Double> tempCelciusLog = new ShuffleData<Double>("Arm", "temp celcius", 0.0);
+    public ShuffleData<Double> positionUnitsLog = new ShuffleData<Double>(this.getName(), "position units", 0.0);
+    public ShuffleData<Double> velocityUnitsLog = new ShuffleData<Double>(this.getName(), "velocity units", 0.0);
+    public ShuffleData<Double> accelerationUnitsLog = new ShuffleData<Double>(this.getName(), "acceleration units",0.0);
+    public ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>(this.getName(), "input volts", 0.0);
+    public ShuffleData<Double> appliedVoltsLog = new ShuffleData<Double>(this.getName(), "applied volts", 0.0);
+    public ShuffleData<Double> currentAmpsLog = new ShuffleData<Double>(this.getName(), "current amps", 0.0);
+    public ShuffleData<Double> tempCelciusLog = new ShuffleData<Double>(this.getName(), "temp celcius", 0.0);
 
     private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
     private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
-    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Arm", 30, 0));
+    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Arm", 24, 0));
 
-    private double Voltage = 0;
 
     public Arm() {
         if (Robot.isSimulation()) {
             armIO = new ArmSim();
-        } 
-        else {
+        } else {
             // Initialize armIO for real robot
         }
         SmartDashboard.putData("Arm Mechanism", mechanism2d);
@@ -71,8 +68,6 @@ public class Arm extends SubsystemBase {
     public boolean getIsStableState() {
 
         switch (state) {
-            case MOVING:
-                return true;
             case HALFWAY_EXTENDED:
                 return data.positionUnits == (Math.PI * 3) / 4;
             case FULLY_EXTENDED:
@@ -95,28 +90,12 @@ public class Arm extends SubsystemBase {
     }
 
     public void setVoltage(double volts) {
-        this.Voltage = volts;
-    }
-
-    private void logData() {
-        currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-        positionUnitsLog.set(data.positionUnits);
-        velocityUnitsLog.set(data.velocityUnits);
-        inputVoltsLog.set(data.inputVolts);
-        appliedVoltsLog.set(data.appliedVolts);
-        currentAmpsLog.set(data.currentAmps);
-        tempCelciusLog.set(data.tempCelcius);
-
-        armLigament.setAngle(Math.toDegrees(data.positionUnits));
-
-        stateLog.set(state.name());
+        // this.voltage = volts;
+        armIO.setVoltage(volts);
     }
 
     private void runState() {
         switch (state) {
-            case MOVING:
-                runStateMoving();
-                break;
             case FULLY_EXTENDED:
                 runStateFullyExtended();
                 break;
@@ -134,33 +113,42 @@ public class Arm extends SubsystemBase {
         }
     }
 
-    private void runStateMoving() {
-        // no action needed
-    }
-
     private void runStateStopped() {
         setVoltage(0);
     }
 
     private void runStateFullyExtended() {
-        setPoint = Math.PI;
-        setVoltage(controller.calculate(data.positionUnits, setPoint));
+        setPoint = ArmConstants.fullyExtendedSetPoint;
+        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
     }
 
     private void runStateHalfway() {
-        setPoint = (Math.PI * 3) / 4;
-        setVoltage(controller.calculate(data.positionUnits, setPoint));
+        setPoint = ArmConstants.halfwayExtendedSetPoint;
+        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
     }
 
     private void runStateStowed() {
-        setPoint = Math.PI / 2;
-        setVoltage(controller.calculate(data.positionUnits, setPoint));
+        setPoint = ArmConstants.stowSetPoint;
+        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
+    }
+
+    private void logData() {
+        currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
+        positionUnitsLog.set(data.positionUnits);
+        velocityUnitsLog.set(data.velocityUnits);
+        inputVoltsLog.set(data.inputVolts);
+        appliedVoltsLog.set(data.appliedVolts);
+        currentAmpsLog.set(data.currentAmps);
+        tempCelciusLog.set(data.tempCelcius);
+
+        armLigament.setAngle(Math.toDegrees(data.positionUnits));
+
+        stateLog.set(state.name());
     }
 
     @Override
     public void periodic() {
         armIO.updateData(data);
-        armIO.setVoltage(Voltage + calculateFeedForward());
 
         logData();
 
@@ -168,7 +156,8 @@ public class Arm extends SubsystemBase {
     }
 
     private double calculateFeedForward() {
-        return ArmConstants.Kg * Math.cos(data.positionUnits);
+        return 0;
+        // return ArmConstants.kG * Math.cos(data.positionUnits);
     }
 
 }
