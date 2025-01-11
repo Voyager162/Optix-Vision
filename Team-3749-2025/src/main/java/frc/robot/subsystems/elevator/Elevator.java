@@ -146,6 +146,7 @@ public class Elevator extends SubsystemBase {
         logData();
         // pidController.setP(kPData.get());
         // pidController.setD(kDData.get());
+        elevatorMech.setLength(Units.feetToMeters(3.25) + data.positionMeters);
         SmartDashboard.putData("elevator mechanism", mech);
     }
 }

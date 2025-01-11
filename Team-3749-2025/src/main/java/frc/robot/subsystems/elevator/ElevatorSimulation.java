@@ -35,7 +35,7 @@ public class ElevatorSimulation implements ElevatorIO {
         // Sim has no temp
         data.tempCelcius = 0;
 
-        Elevator.elevatorMech.setLength(Units.feetToMeters(3.25) + data.positionMeters);
+        
     }
 
     @Override
