@@ -6,7 +6,9 @@ import choreo.auto.AutoFactory;
 import choreo.auto.AutoTrajectory;
 import choreo.auto.AutoRoutine;
 import choreo.trajectory.SwerveSample;
+import choreo.util.ChoreoAllianceFlipUtil;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -28,7 +30,7 @@ public class AutoUtils {
      * run all necessary auto setup methods
      */
     public static void initAuto() {
-        setupFactory();
+        setupFactory(true);
         setupChooser();
     }
 
@@ -47,7 +49,7 @@ public class AutoUtils {
     /**
      * setup the choreo factor object with bindings, controller, etc.
      */
-    private static void setupFactory() {
+    private static void setupFactory(boolean isFlipped) {
         /**
          * Swerve Pose Supplier
          * Reset Odometry Method
@@ -60,14 +62,13 @@ public class AutoUtils {
         // will now take a reset odometry
 
         factory = new AutoFactory(() -> Robot.swerve.getPose(),
-                (Pose2d startingPose) -> Robot.swerve.setOdometry(startingPose),
-                (SwerveSample sample) -> Robot.swerve.followSample(sample),
+                (Pose2d startingPose) -> Robot.swerve
+                        .setOdometry(isFlipped ? getFlippedPose(startingPose) : startingPose),
+                (SwerveSample sample) -> Robot.swerve.followSample(sample, isFlipped),
                 true,
                 Robot.swerve);
-
-        // Event Binding 
+        // Event Binding
         factory.bind("Marker", Commands.print("Marker Passed"));
-
 
     }
 
@@ -106,5 +107,20 @@ public class AutoUtils {
         return Commands.print(trajectoryName).andThen(routine.cmd());
 
     }
+
+    private static ChoreoAllianceFlipUtil.Flipper flipper = ChoreoAllianceFlipUtil.getFlipper();
+
+    private static Pose2d getFlippedPose(Pose2d pos) {
+
+        double newX = pos.getX();
+        double newY = flipper.flipY(pos.getY());
+        Rotation2d newHeading = new Rotation2d(pos.getRotation().getRadians());
+        
+
+        return new Pose2d(newX, newY,
+                newHeading);
+    }
+
+
 
 }

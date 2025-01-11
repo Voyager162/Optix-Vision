@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.swerve;
 
+import choreo.util.ChoreoAllianceFlipUtil;
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -172,11 +173,12 @@ public class Swerve extends SubsystemBase {
         VecBuilder.fill(0.04, 0.04, 0.00),
         VecBuilder.fill(0.965, 0.965, 5000));
 
+    turnController.enableContinuousInput(-Math.PI, Math.PI);
+
     // put us on the field with a default orientation
     resetGyro();
     setOdometry(new Pose2d(1.33, 5.53, new Rotation2d(0)));
-    logSetpoints(
-        new SwerveSample(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, new double[] { 0, 0, 0, 0 }, new double[] { 0, 0, 0, 0 }));
+    logSetpoints(1.33, 0, 0, 5.53, 0, 0, 0, 0, 0);
 
   }
 
@@ -281,15 +283,35 @@ public class Swerve extends SubsystemBase {
    *                forces
    * 
    * @see https://choreo.autos/choreolib/getting-started/#setting-up-the-drive-subsystem
+   * 
+   * @note verticle flipping relies on choreo detecting rotational symetry on the field
    */
+    private static ChoreoAllianceFlipUtil.Flipper flipper = ChoreoAllianceFlipUtil.getFlipper();
+    
+    public void followSample(SwerveSample sample, boolean isFlipped) {
+      
+      // veritcle flipping
+      double xPos = sample.x;
 
-  public void followSample(SwerveSample sample) {
-    Robot.swerve.logSetpoints(sample);
+      double xVel = sample.vx;
+      double xAcc = sample.ax;
+      double yPos = isFlipped ? flipper.flipY(sample.y) : sample.y;
+
+      double yVel = isFlipped ? -sample.vy : sample.vy;
+      double yAcc = isFlipped ? -sample.ay : sample.ay;
+
+      double heading = isFlipped ? new Rotation2d(Math.PI-sample.heading).rotateBy(new Rotation2d(Math.PI)).getRadians(): sample.heading;
+
+      double omega = isFlipped ? -sample.omega : sample.omega;
+      double alpha = isFlipped ? -sample.alpha : sample.alpha;
+      
+      Robot.swerve.logSetpoints(xPos, xVel, xAcc, yPos, yVel, yAcc, heading, omega, alpha);
+
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         new ChassisSpeeds(
-            xController.calculate(getPose().getX(), sample.x) + sample.vx,
-            yController.calculate(getPose().getY(), sample.y) + sample.vy,
-            turnController.calculate(getPose().getRotation().getRadians(), sample.heading) + sample.omega),
+            xController.calculate(getPose().getX(), xPos) + xVel,
+            yController.calculate(getPose().getY(), yPos) + yVel,
+            turnController.calculate(getPose().getRotation().getRadians(), heading) + omega),
         getPose().getRotation());
 
     Robot.swerve.setChassisSpeeds(speeds);
@@ -391,14 +413,14 @@ public class Swerve extends SubsystemBase {
   /**
    * logs all setpoints for the swerve subsystem in autonomous functions
    * 
-   * @param sample the swerve sample of setpoints
+   * @param the swerve sample of setpoints
    */
-  public void logSetpoints(SwerveSample sample) {
+  public void logSetpoints(double posX, double velX, double accX, double posY, double velY, double accY, double heading, double omega, double alpha) {
     // setpoint logging for automated driving
-    Double[] positions = new Double[] { sample.x, sample.y, sample.heading };
+    Double[] positions = new Double[] { posX, posY, heading };
     setpointPositionLog.set(positions);
 
-    Double[] velocities = new Double[] { sample.vx, sample.vy, sample.omega };
+    Double[] velocities = new Double[] { velX, velY, omega };
     double velocity = 0;
     for (int i = 0; i < 2; i++) {
       velocity += Math.pow(velocities[i], 2);
@@ -407,7 +429,7 @@ public class Swerve extends SubsystemBase {
     setpointVelocityLog.set(velocity);
     setpointRotationalVelocityLog.set(velocities[2]);
 
-    Double[] accelerations = new Double[] { sample.ax, sample.ay, sample.alpha };
+    Double[] accelerations = new Double[] { accX, accY, alpha };
     double acceleration = 0;
     for (int i = 0; i < 2; i++) {
       acceleration += Math.pow(accelerations[i], 2);
