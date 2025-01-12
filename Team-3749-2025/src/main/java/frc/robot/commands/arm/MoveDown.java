@@ -2,22 +2,22 @@ package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.arm.ArmConstants.ArmStates;
+import frc.robot.subsystems.arm.ArmConstants.algeaArmConstants.ArmStates;
 
 public class MoveDown extends Command {
 
     public MoveDown() {
-        super.addRequirements(Robot.arm);
+        super.addRequirements(Robot.algeaArm);
     }
 
     @Override
     public void initialize() {
-        Robot.arm.setState(ArmStates.MOVING_DOWN);
+        Robot.algeaArm.setState(ArmStates.MOVING_DOWN);
     }
 
         @Override
     public void end(boolean interupted) {
-        Robot.arm.setState(ArmStates.STOPPED);
+        Robot.algeaArm.setState(ArmStates.STOPPED);
     }
 
     @Override

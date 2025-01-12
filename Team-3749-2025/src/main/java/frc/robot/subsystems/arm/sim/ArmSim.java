@@ -3,7 +3,7 @@ package frc.robot.subsystems.arm.sim;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import frc.robot.subsystems.arm.ArmConstants;
+import frc.robot.subsystems.arm.ArmConstants.algeaArmConstants;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.utils.MiscConstants.SimConstants;
 
@@ -23,13 +23,13 @@ public class ArmSim implements ArmIO {
 
         armSim = new SingleJointedArmSim(
             DCMotor.getNEO(2),
-            ArmConstants.armGearing,
+            algeaArmConstants.armGearing,
             0.755,
-            ArmConstants.armLength_meters,
-            ArmConstants.armMinAngle_degrees * Math.PI / 180,
-            ArmConstants.armMaxAngle_degrees * Math.PI / 180,
+            algeaArmConstants.armLength_meters,
+            algeaArmConstants.armMinAngle_degrees * Math.PI / 180,
+            algeaArmConstants.armMaxAngle_degrees * Math.PI / 180,
             true,
-            ArmConstants.armStartingAngle_degrees * Math.PI / 180,
+            algeaArmConstants.armStartingAngle_degrees * Math.PI / 180,
             new double[] {0, 0}
         );
     }

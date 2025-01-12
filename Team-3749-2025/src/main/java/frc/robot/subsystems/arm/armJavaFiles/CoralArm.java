@@ -1,13 +1,15 @@
-package frc.robot.subsystems.arm;
+package frc.robot.subsystems.arm.armJavaFiles;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.subsystems.arm.ArmConstants.ArmStates;
+import frc.robot.subsystems.arm.ArmIO;
+import frc.robot.subsystems.arm.ArmConstants.coralArmConstants;
 import frc.robot.subsystems.arm.ArmIO.ArmData;
 import frc.robot.subsystems.arm.real.ArmSparkMax;
 import frc.robot.subsystems.arm.sim.ArmSim;
 import frc.robot.utils.ShuffleData;
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -19,15 +21,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Weston Gardner
  */
 
-public class Arm extends SubsystemBase {
+public class CoralArm extends SubsystemBase {
 
     private ArmIO armIO;
     private ArmData data = new ArmData();
-    private ArmStates state = ArmStates.STOPPED;
+    private coralArmConstants.ArmStates state = coralArmConstants.ArmStates.STOPPED;
 
     private double setPoint;
 
-    private PIDController controller = new PIDController(ArmConstants.kPSim, ArmConstants.kISim, ArmConstants.kDSim);
+    private ProfiledPIDController controller = new ProfiledPIDController(coralArmConstants.kPSim, coralArmConstants.kISim, coralArmConstants.kDSim, new TrapezoidProfile.Constraints(coralArmConstants.maxVelocity, coralArmConstants.maxAcceleration));
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     public ShuffleData<Double> positionUnitsLog = new ShuffleData<Double>(this.getName(), "position units", 0.0);
@@ -42,17 +44,17 @@ public class Arm extends SubsystemBase {
 
     private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
-    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Arm", 24, 0));
+    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Coral Arm", 24, 0));
 
 
 
-    public Arm() {
+    public CoralArm() {
         if (Robot.isSimulation()) {
             armIO = new ArmSim();
         } else {
-            armIO = new ArmSparkMax(ArmConstants.motorId);
+            armIO = new ArmSparkMax(coralArmConstants.motorId);
         }
-        SmartDashboard.putData("Arm Mechanism", mechanism2d);
+        SmartDashboard.putData("Coral Arm Mechanism", mechanism2d);
     }
 
     public double getPositionRad() {
@@ -63,7 +65,7 @@ public class Arm extends SubsystemBase {
         return data.velocityUnits;
     }
 
-    public ArmStates getState() {
+    public coralArmConstants.ArmStates getState() {
         return state;
     }
 
@@ -83,7 +85,7 @@ public class Arm extends SubsystemBase {
         }
     }
 
-    public void setState(ArmStates state) {
+    public void setState(coralArmConstants.ArmStates state) {
         this.state = state;
     }
 
@@ -134,17 +136,17 @@ public class Arm extends SubsystemBase {
     }
 
     private void runStateFullyExtended() {
-        setPoint = ArmConstants.fullyExtendedSetPoint;
+        setPoint = coralArmConstants.fullyExtendedSetPoint;
         setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
     }
 
     private void runStateHalfway() {
-        setPoint = ArmConstants.halfwayExtendedSetPoint;
+        setPoint = coralArmConstants.halfwayExtendedSetPoint;
         setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
     }
 
     private void runStateStowed() {
-        setPoint = ArmConstants.stowSetPoint;
+        setPoint = coralArmConstants.stowSetPoint;
         setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
     }
 
@@ -172,7 +174,7 @@ public class Arm extends SubsystemBase {
     }
 
     private double calculateFeedForward() {
-        return ArmConstants.kGSim * Math.cos(data.positionUnits);
+        return coralArmConstants.kGSim * Math.cos(data.positionUnits);
     }
 
 }
