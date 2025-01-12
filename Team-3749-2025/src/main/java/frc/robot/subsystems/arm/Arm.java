@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.ArmConstants.ArmStates;
 import frc.robot.subsystems.arm.ArmIO.ArmData;
+import frc.robot.subsystems.arm.real.ArmSparkMax;
 import frc.robot.subsystems.arm.sim.ArmSim;
 import frc.robot.utils.ShuffleData;
 import edu.wpi.first.math.controller.PIDController;
@@ -49,7 +50,7 @@ public class Arm extends SubsystemBase {
         if (Robot.isSimulation()) {
             armIO = new ArmSim();
         } else {
-            // Initialize armIO for real robot
+            armIO = new ArmSparkMax(ArmConstants.motorId);
         }
         SmartDashboard.putData("Arm Mechanism", mechanism2d);
     }
