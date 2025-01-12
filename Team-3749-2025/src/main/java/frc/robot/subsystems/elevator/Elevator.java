@@ -28,7 +28,7 @@ public class Elevator extends SubsystemBase {
         ElevatorConstants.ElevatorControl.kPSim, 
         0, 
         ElevatorConstants.ElevatorControl.kDSim,
-        new TrapezoidProfile.Constraints(ElevatorConstants.ElevatorControl.kVSim, ElevatorConstants.ElevatorControl.kASim));
+        new TrapezoidProfile.Constraints(ElevatorConstants.ElevatorControl.maxV, ElevatorConstants.ElevatorControl.maxA));
     // maybe later
     // private ElevatorFeedforward feedForward = new ElevatorFeedforward(ElevatorConstants.ElevatorControl.kASim, ElevatorConstants.ElevatorControl.kGSim, ElevatorConstants.ElevatorControl.kSSim, ElevatorConstants.ElevatorControl.kASim);
 
