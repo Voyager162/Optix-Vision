@@ -70,6 +70,48 @@ public class Elevator extends SubsystemBase {
         }
     }
 
+    public ElevatorStates getState() {
+        return state;
+    }
+
+    public double getPositionMeters() {
+        return data.positionMeters;
+    }
+
+    public double getVelocityRadPerSec() {
+        return data.velocityUnits;
+    }
+
+    // returns true when the state is reached
+    public boolean getIsStableState() {
+        switch (state) {
+            case STOP:
+                return data.velocityUnits == 0;
+            case L1:
+                return UtilityFunctions.withinMargin(0.1, data.positionMeters, Units.inchesToMeters(constants.l1Height)); 
+            case L2:
+                return UtilityFunctions.withinMargin(0.1, data.positionMeters, Units.inchesToMeters(constants.l2Height));
+            case L3:
+                return UtilityFunctions.withinMargin(0.1, data.positionMeters, Units.inchesToMeters(constants.l3Height));
+            case L4:
+                return UtilityFunctions.withinMargin(0.1, data.positionMeters, Units.inchesToMeters(constants.l4Height));
+            default:
+                return false;
+        }
+    }
+
+    public void setVoltage(double volts){
+        elevatorio.setVoltage(volts);
+    }
+
+    private void setHeight(double setpoint){
+        elevatorio.setVoltage(pidController.calculate(getPositionMeters(), setpoint) + ElevatorConstants.ElevatorControl.kGSim);
+    }
+
+    public void setState(ElevatorStates state) {
+        this.state = state;
+    }
+
     private void runState() {
         switch (state) {
             case STOP:
