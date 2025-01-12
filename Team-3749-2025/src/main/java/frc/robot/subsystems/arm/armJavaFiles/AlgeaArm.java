@@ -8,6 +8,7 @@ import frc.robot.subsystems.arm.ArmIO.ArmData;
 import frc.robot.subsystems.arm.real.ArmSparkMax;
 import frc.robot.subsystems.arm.sim.ArmSim;
 import frc.robot.utils.ShuffleData;
+import frc.robot.utils.UtilityFunctions;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -44,7 +45,7 @@ public class AlgeaArm extends SubsystemBase {
 
     private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
-    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Algea Arm", 24, 0));
+    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Algea Arm", 17, 0));
 
 
 
@@ -83,14 +84,18 @@ public class AlgeaArm extends SubsystemBase {
     public boolean getIsStableState() {
 
         switch (state) {
-            case HALFWAY_EXTENDED:
-                return data.positionUnits == (Math.PI * 3) / 4;
-            case FULLY_EXTENDED:
-                return data.positionUnits == Math.PI;
             case STOWED:
-                return data.positionUnits == Math.PI / 2;
+                return data.positionUnits == algeaArmConstants.stowSetPoint_rad;
+            case PROCESSOR:
+                return data.positionUnits == algeaArmConstants.processorSetPoint_rad;
+            case ALGEA_PICKUP:
+                return data.positionUnits == algeaArmConstants.algeaPickUpSetPoint_rad;
+            case MOVING_DOWN:
+                return data.velocityUnits < 0;
+            case MOVING_UP:
+                return data.velocityUnits > 0;
             case STOPPED:
-                return data.velocityUnits == 0;
+                return UtilityFunctions.withinMargin(0.001, 0, data.velocityUnits);
             default:
                 return false;
         }
@@ -111,14 +116,14 @@ public class AlgeaArm extends SubsystemBase {
 
     private void runState() {
         switch (state) {
-            case FULLY_EXTENDED:
-                runStateFullyExtended();
-                break;
-            case HALFWAY_EXTENDED:
-                runStateHalfway();
-                break;
             case STOWED:
                 runStateStowed();
+                break;
+            case PROCESSOR:
+                runStateProccessor();
+                break;
+            case ALGEA_PICKUP:
+                runStateAlgeaPickup();
                 break;
             case STOPPED:
                 runStateStopped();
@@ -134,6 +139,21 @@ public class AlgeaArm extends SubsystemBase {
         }
     }
 
+    private void runStateStowed() {
+        setPoint = algeaArmConstants.stowSetPoint_rad;
+        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
+    }
+
+    private void runStateProccessor() {
+        setPoint = algeaArmConstants.processorSetPoint_rad;
+        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
+    }
+
+    private void runStateAlgeaPickup() {
+        setPoint = algeaArmConstants.algeaPickUpSetPoint_rad;
+        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
+    }
+
     private void runMovingUp() {
         setVoltage(1 + calculateFeedForward());
     }
@@ -144,21 +164,6 @@ public class AlgeaArm extends SubsystemBase {
 
     private void runStateStopped() {
         setVoltage(0 + calculateFeedForward());
-    }
-
-    private void runStateFullyExtended() {
-        setPoint = algeaArmConstants.fullyExtendedSetPoint;
-        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
-    }
-
-    private void runStateHalfway() {
-        setPoint = algeaArmConstants.halfwayExtendedSetPoint;
-        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
-    }
-
-    private void runStateStowed() {
-        setPoint = algeaArmConstants.stowSetPoint;
-        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
     }
 
     private void logData() {

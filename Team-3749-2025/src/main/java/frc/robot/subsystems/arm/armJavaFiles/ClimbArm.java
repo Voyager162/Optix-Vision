@@ -8,6 +8,7 @@ import frc.robot.subsystems.arm.ArmIO.ArmData;
 import frc.robot.subsystems.arm.real.ArmSparkMax;
 import frc.robot.subsystems.arm.sim.ArmSim;
 import frc.robot.utils.ShuffleData;
+import frc.robot.utils.UtilityFunctions;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
@@ -84,14 +85,18 @@ public class ClimbArm extends SubsystemBase {
     public boolean getIsStableState() {
 
         switch (state) {
-            case HALFWAY_EXTENDED:
-                return data.positionUnits == (Math.PI * 3) / 4;
-            case FULLY_EXTENDED:
-                return data.positionUnits == Math.PI;
             case STOWED:
-                return data.positionUnits == Math.PI / 2;
+                return data.positionUnits == climbArmConstants.stowSetPoint_rad;
+            case PREPARE_FOR_CLIMB:
+                return data.positionUnits == climbArmConstants.PrepareForClimbSetPoint_Rad;
+            case CLIMB:
+                return data.positionUnits == climbArmConstants.climbSetPoint_rad;
+            case MOVING_DOWN:
+                return data.velocityUnits < 0;
+            case MOVING_UP:
+                return data.velocityUnits > 0;
             case STOPPED:
-                return data.velocityUnits == 0;
+                return UtilityFunctions.withinMargin(0.001, 0, data.velocityUnits);
             default:
                 return false;
         }
@@ -112,11 +117,11 @@ public class ClimbArm extends SubsystemBase {
 
     private void runState() {
         switch (state) {
-            case FULLY_EXTENDED:
-                runStateFullyExtended();
+            case PREPARE_FOR_CLIMB:
+                runStatePrepareForClimb();
                 break;
-            case HALFWAY_EXTENDED:
-                runStateHalfway();
+            case CLIMB:
+                runStateClimb();
                 break;
             case STOWED:
                 runStateStowed();
@@ -147,18 +152,18 @@ public class ClimbArm extends SubsystemBase {
         setVoltage(0 + calculateFeedForward());
     }
 
-    private void runStateFullyExtended() {
-        setPoint = climbArmConstants.fullyExtendedSetPoint;
+    private void runStatePrepareForClimb() {
+        setPoint = climbArmConstants.PrepareForClimbSetPoint_Rad;
         setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
     }
 
-    private void runStateHalfway() {
-        setPoint = climbArmConstants.halfwayExtendedSetPoint;
+    private void runStateClimb() {
+        setPoint = climbArmConstants.climbSetPoint_rad;
         setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
     }
 
     private void runStateStowed() {
-        setPoint = climbArmConstants.stowSetPoint;
+        setPoint = climbArmConstants.stowSetPoint_rad;
         setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
     }
 

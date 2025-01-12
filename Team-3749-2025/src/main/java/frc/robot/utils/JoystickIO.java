@@ -8,9 +8,9 @@ import frc.robot.Robot;
 import frc.robot.commands.example.ExampleSubsystemCommand;
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
-import frc.robot.commands.arm.FullyExtend;
-import frc.robot.commands.arm.HalfExtend;
-import frc.robot.commands.arm.Stow;
+import frc.robot.commands.arm.algeaArmCommands.AlgeaPickup;
+import frc.robot.commands.arm.algeaArmCommands.Proccessor;
+import frc.robot.commands.arm.algeaArmCommands.Stow;
 
 /**
  * Util class for button bindings
@@ -25,8 +25,8 @@ public class JoystickIO {
     private static final Command sample = new ExampleSubsystemCommand();
     private static final Command DriveStraight = new DriveStraight();
     private static final Stow armStow = new Stow();
-    private static final FullyExtend fullyExtendArm = new FullyExtend();
-    private static final HalfExtend halfExtendArm = new HalfExtend();
+    private static final AlgeaPickup fullyExtendArm = new AlgeaPickup();
+    private static final Proccessor halfExtendArm = new Proccessor();
 
     public JoystickIO() {
     }
