@@ -1,7 +1,5 @@
 package frc.robot.subsystems.elevator;
 
-import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
@@ -41,7 +39,7 @@ public class Elevator extends SubsystemBase {
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position meters", 0.0);
     private ShuffleData<Double> velocityUnitsLog = new ShuffleData<Double>("Elevator", "velocity units", 0.0);
-    private ShuffleData<Double> accelerationUnitsLog = new ShuffleData<Double>("Elevator", "acceleration units", 0.0);
+    // private ShuffleData<Double> accelerationUnitsLog = new ShuffleData<Double>("Elevator", "acceleration units", 0.0);
     private ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Elevator", "input volts", 0.0);
     private ShuffleData<Double> appliedVoltsLog = new ShuffleData<Double>("Elevator", "applied volts", 0.0);
     private ShuffleData<Double> currentAmpsLog = new ShuffleData<Double>("Elevator", "current amps", 0.0);
@@ -88,13 +86,13 @@ public class Elevator extends SubsystemBase {
             case STOP:
                 return data.velocityUnits == 0;
             case L1:
-                return UtilityFunctions.withinMargin(0.1, data.positionMeters, Units.inchesToMeters(constants.l1Height)); 
+                return UtilityFunctions.withinMargin(0.1, data.positionMeters, Units.inchesToMeters(ElevatorConstants.stateHeights.l1Height)); 
             case L2:
-                return UtilityFunctions.withinMargin(0.1, data.positionMeters, Units.inchesToMeters(constants.l2Height));
+                return UtilityFunctions.withinMargin(0.1, data.positionMeters, Units.inchesToMeters(ElevatorConstants.stateHeights.l2Height));
             case L3:
-                return UtilityFunctions.withinMargin(0.1, data.positionMeters, Units.inchesToMeters(constants.l3Height));
+                return UtilityFunctions.withinMargin(0.1, data.positionMeters, Units.inchesToMeters(ElevatorConstants.stateHeights.l3Height));
             case L4:
-                return UtilityFunctions.withinMargin(0.1, data.positionMeters, Units.inchesToMeters(constants.l4Height));
+                return UtilityFunctions.withinMargin(0.1, data.positionMeters, Units.inchesToMeters(ElevatorConstants.stateHeights.l4Height));
             default:
                 return false;
         }
@@ -104,12 +102,34 @@ public class Elevator extends SubsystemBase {
         elevatorio.setVoltage(volts);
     }
 
-    private void setHeight(double setpoint){
-        elevatorio.setVoltage(pidController.calculate(getPositionMeters(), setpoint) + ElevatorConstants.ElevatorControl.kGSim);
-    }
-
     public void setState(ElevatorStates state) {
         this.state = state;
+        switch (state) {
+            case L1:
+                setGoal(ElevatorConstants.stateHeights.l1Height);
+                break;
+            case L2:
+                setGoal(ElevatorConstants.stateHeights.l2Height);
+                break;
+            case L3:
+                setGoal(ElevatorConstants.stateHeights.l3Height);
+                break;
+            case L4:
+                setGoal(ElevatorConstants.stateHeights.l4Height);
+                break;
+            case MAX:
+                setGoal(6);
+                break;
+            case STOW:
+                setGoal(0);
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void setGoal(double height) {
+        pidController.setGoal(height);
     }
 
     private void runState() {
@@ -141,42 +161,22 @@ public class Elevator extends SubsystemBase {
         }
     }
 
+    private void moveToGoal() {
+        State pidControllerState = pidController.getSetpoint();
+        // pidControllerState.velocity
+
+        double accelerationSetpoint = (pidControllerState.velocity - prevSetpointVelocity) / 0.02;
+
+        double pidVoltage = pidController.calculate(getPositionMeters());
+        double ffVoltage = pidControllerState.velocity * ElevatorConstants.ElevatorControl.kVSim +
+                accelerationSetpoint * ElevatorConstants.ElevatorControl.kASim;
+
+        elevatorio.setVoltage(ffVoltage + pidVoltage
+                + ElevatorConstants.ElevatorControl.kGSim);
+    }
+
     private void runStateStop() {
         elevatorio.setVoltage(0);
-    }
-
-    // returns true when the state is reached
-    public boolean getIsStableState() {
-        switch (state) {
-            case STOW:
-                return data.velocityUnits == 0;
-            case L1:
-                return UtilityFunctions.withinMargin(0.1, data.positionMeters,
-                        Units.inchesToMeters(ElevatorConstants.stateHeights.l1Height));
-            case L2:
-                return UtilityFunctions.withinMargin(0.1, data.positionMeters,
-                        Units.inchesToMeters(ElevatorConstants.stateHeights.l2Height));
-            case L3:
-                return UtilityFunctions.withinMargin(0.1, data.positionMeters,
-                        Units.inchesToMeters(ElevatorConstants.stateHeights.l3Height));
-            case L4:
-                return UtilityFunctions.withinMargin(0.1, data.positionMeters,
-                        Units.inchesToMeters(ElevatorConstants.stateHeights.l4Height));
-            default:
-                return false;
-        }
-    }
-
-    public ElevatorStates getState() {
-        return state;
-    }
-
-    public double getPositionMeters() {
-        return data.positionMeters;
-    }
-
-    public double getVelocityRadPerSec() {
-        return data.velocityUnits;
     }
 
     public void stop() {
@@ -196,54 +196,6 @@ public class Elevator extends SubsystemBase {
         elevatorMech.setLength(Units.feetToMeters(3.25) + data.positionMeters);
         SmartDashboard.putData("elevator mechanism", mech);
 
-    }
-
-    public void setVoltage(double volts) {
-        elevatorio.setVoltage(volts);
-    }
-
-    public void setGoal(double height) {
-        pidController.setGoal(height);
-    }
-
-    private void moveToGoal() {
-        State pidControllerState = pidController.getSetpoint();
-        // pidControllerState.velocity
-
-        double accelerationSetpoint = (pidControllerState.velocity - prevSetpointVelocity) / 0.02;
-
-        double pidVoltage = pidController.calculate(getPositionMeters());
-        double ffVoltage = pidControllerState.velocity * ElevatorConstants.ElevatorControl.kVSim +
-                accelerationSetpoint * ElevatorConstants.ElevatorControl.kASim;
-
-        elevatorio.setVoltage(ffVoltage + pidVoltage
-                + ElevatorConstants.ElevatorControl.kGSim);
-    }
-
-    public void setState(ElevatorStates state) {
-        this.state = state;
-        switch (state) {
-            case L1:
-                setGoal(ElevatorConstants.stateHeights.l1Height);
-                break;
-            case L2:
-                setGoal(ElevatorConstants.stateHeights.l2Height);
-                break;
-            case L3:
-                setGoal(ElevatorConstants.stateHeights.l3Height);
-                break;
-            case L4:
-                setGoal(ElevatorConstants.stateHeights.l4Height);
-                break;
-            case MAX:
-                setGoal(6);
-                break;
-            case STOW:
-                setGoal(0);
-                break;
-            default:
-                break;
-        }
     }
 
     @Override
