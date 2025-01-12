@@ -5,7 +5,7 @@ import frc.robot.Robot;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmConstants.climbArmConstants;
 import frc.robot.subsystems.arm.ArmIO.ArmData;
-import frc.robot.subsystems.arm.real.ArmSparkMax;
+import frc.robot.subsystems.arm.real.ClimbSparkMax;
 import frc.robot.subsystems.arm.sim.ArmSim;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
@@ -30,7 +30,17 @@ public class ClimbArm extends SubsystemBase {
 
     private double setPoint;
 
-    private ProfiledPIDController controller = new ProfiledPIDController(climbArmConstants.kPSim, climbArmConstants.kISim, climbArmConstants.kDSim, new TrapezoidProfile.Constraints(climbArmConstants.maxVelocity, climbArmConstants.maxAcceleration));
+    private ProfiledPIDController controller = new ProfiledPIDController
+    (
+        climbArmConstants.kP, 
+        climbArmConstants.kI, 
+        climbArmConstants.kD, 
+        new TrapezoidProfile.Constraints
+        (
+            climbArmConstants.maxVelocity, 
+            climbArmConstants.maxAcceleration
+        )
+    );
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     public ShuffleData<Double> positionUnitsLog = new ShuffleData<Double>(this.getName(), "position units", 0.0);
@@ -46,6 +56,9 @@ public class ClimbArm extends SubsystemBase {
     private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
     private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Climb Arm", 24, 0));
+
+    public ShuffleData<Double> kGLog = new ShuffleData<Double>(this.getName(), "kG", 0.0);
+    public ShuffleData<Double> kPLog = new ShuffleData<Double>(this.getName(), "kP", 0.0);
 
 
 
@@ -65,7 +78,7 @@ public class ClimbArm extends SubsystemBase {
             );
 
         } else {
-            armIO = new ArmSparkMax(climbArmConstants.motorId);
+            armIO = new ClimbSparkMax(climbArmConstants.firstMotorId, climbArmConstants.secondMotorId);
         }
         SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
     }
@@ -183,6 +196,23 @@ public class ClimbArm extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        climbArmConstants.kG = kGLog.get();
+        climbArmConstants.kP = kPLog.get();
+
+        controller = new ProfiledPIDController
+        (
+            climbArmConstants.kP, 
+            climbArmConstants.kI, 
+            climbArmConstants.kD, 
+            new TrapezoidProfile.Constraints
+            (
+                climbArmConstants.maxVelocity, 
+                climbArmConstants.maxAcceleration
+            )
+
+        );
+
         armIO.updateData(data);
 
         logData();
@@ -191,7 +221,7 @@ public class ClimbArm extends SubsystemBase {
     }
 
     private double calculateFeedForward() {
-        return climbArmConstants.kGSim * Math.cos(data.positionUnits);
+        return climbArmConstants.kG * Math.cos(data.positionUnits);
     }
 
 }

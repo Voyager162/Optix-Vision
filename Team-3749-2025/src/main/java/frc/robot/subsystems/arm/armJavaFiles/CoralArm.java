@@ -30,7 +30,17 @@ public class CoralArm extends SubsystemBase {
 
     private double setPoint;
 
-    private ProfiledPIDController controller = new ProfiledPIDController(coralArmConstants.kPSim, coralArmConstants.kISim, coralArmConstants.kDSim, new TrapezoidProfile.Constraints(coralArmConstants.maxVelocity, coralArmConstants.maxAcceleration));
+    private ProfiledPIDController controller = new ProfiledPIDController
+    (
+        coralArmConstants.kP,
+        coralArmConstants.kI, 
+        coralArmConstants.kD, 
+        new TrapezoidProfile.Constraints
+        (
+            coralArmConstants.maxVelocity, 
+            coralArmConstants.maxAcceleration
+        )
+    );
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     public ShuffleData<Double> positionUnitsLog = new ShuffleData<Double>(this.getName(), "position units", 0.0);
@@ -46,6 +56,9 @@ public class CoralArm extends SubsystemBase {
     private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
     private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Coral Arm", 24, 0));
+
+    public ShuffleData<Double> kGLog = new ShuffleData<Double>(this.getName(), "kG", 0.0);
+    public ShuffleData<Double> kPLog = new ShuffleData<Double>(this.getName(), "kP", 0.0);
 
 
 
@@ -183,6 +196,23 @@ public class CoralArm extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        coralArmConstants.kG = kGLog.get();
+        coralArmConstants.kP = kPLog.get();
+
+        controller = new ProfiledPIDController
+        (
+            coralArmConstants.kP, 
+            coralArmConstants.kI, 
+            coralArmConstants.kD, 
+            new TrapezoidProfile.Constraints
+            (
+                coralArmConstants.maxVelocity, 
+                coralArmConstants.maxAcceleration
+            )
+
+        );
+
         armIO.updateData(data);
 
         logData();
@@ -191,7 +221,7 @@ public class CoralArm extends SubsystemBase {
     }
 
     private double calculateFeedForward() {
-        return coralArmConstants.kGSim * Math.cos(data.positionUnits);
+        return coralArmConstants.kG * Math.cos(data.positionUnits);
     }
 
 }

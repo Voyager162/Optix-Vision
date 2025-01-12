@@ -6,9 +6,9 @@ import frc.robot.subsystems.arm.ArmConstants.coralArmConstants;
 import frc.robot.subsystems.arm.ArmConstants.coralArmConstants.ArmStates;
 import frc.robot.utils.UtilityFunctions;
 
-public class coralPickup extends Command {
+public class CoralPickup extends Command {
 
-    public coralPickup() {
+    public CoralPickup() {
         super.addRequirements(Robot.coralArm);
     }
 

@@ -23,14 +23,14 @@ public class ArmConstants {
         public static final double armMass_kg = 50.92; // rough estimate for a volume of 395.071 in^3, and the material being polycarbonate steel, density = 7.86 g/cm^3
         public static final double armGearing = 49; // rough estimate
 
-        public static double kPSim = 50; // extremely high but works in simulation
-        public static final double kISim = 0.0;
-        public static final double kDSim = 0.0;
+        public static double kP = 4;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
 
-        public static double kGSim = 0.494286; // a little specific but hey, why not
-        public static final double kSSim = 0.0;
-        public static final double kASim = 0.0;
-        public static final double kVSim = 0.0;
+        public static double kG = 2.48513;
+        public static final double kS = 0.0;
+        public static final double kA = 0.0;
+        public static final double kV = 0.0;
 
         public static final double stowSetPoint_rad = 80 * Math.PI / 180; // 80 degrees
         public static final double processorSetPoint_rad = Math.PI / 2; // 90 degrees
@@ -66,14 +66,14 @@ public class ArmConstants {
         public static final double armMass_kg = 15.32;
         public static final double armGearing = 40;
 
-        public static double kPSim = 50; // extremely high but works in simulation
-        public static final double kISim = 0.0;
-        public static final double kDSim = 0.0;
+        public static double kP = 2;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
 
-        public static double kGSim = 0.494286; // a little specific but hey, why not
-        public static final double kSSim = 0.0;
-        public static final double kASim = 0.0;
-        public static final double kVSim = 0.0;
+        public static double kG = 5.1752;
+        public static final double kS = 0.0;
+        public static final double kA = 0.0;
+        public static final double kV = 0.0;
 
         public static final double stowSetPoint_rad = 70 * Math.PI / 180; // 70
         public static final double handOffSetPoint_rad = 40 * Math.PI / 180; // 40
@@ -96,7 +96,8 @@ public class ArmConstants {
     }
 
     public class climbArmConstants {
-        public static final int motorId = 0;
+        public static final int firstMotorId = 0;
+        public static final int secondMotorId = 1;
         public static final int numMotors = 1;
 
         public static final int armLength_inches = 16;
@@ -109,17 +110,17 @@ public class ArmConstants {
         public static final double armMass_kg = 8.44;
         public static final double armGearing = 255;
 
-        public static double kPSim = 50; // extremely high but works in simulation
-        public static final double kISim = 0.0;
-        public static final double kDSim = 0.0;
+        public static double kP = 15;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
 
-        public static double kGSim = 0.494286; // a little specific but hey, why not
-        public static final double kSSim = 0.0;
-        public static final double kASim = 0.0;
-        public static final double kVSim = 0.0;
+        public static double kG = 0.50738;
+        public static final double kS = 0.0;
+        public static final double kA = 0.0;
+        public static final double kV = 0.0;
 
         public static final double stowSetPoint_rad = 0;
-        public static final double PrepareForClimbSetPoint_Rad = Math.PI * 2; // 90
+        public static final double PrepareForClimbSetPoint_Rad = Math.PI / 2; // 90
         public static final double climbSetPoint_rad = 20 * Math.PI / 180; // 20
 
         public static final double maxVelocity = 2.4223698370699234;

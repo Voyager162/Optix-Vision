@@ -30,7 +30,17 @@ public class AlgeaArm extends SubsystemBase {
 
     private double setPoint;
 
-    private ProfiledPIDController controller = new ProfiledPIDController(algeaArmConstants.kPSim, algeaArmConstants.kISim, algeaArmConstants.kDSim, new TrapezoidProfile.Constraints(algeaArmConstants.maxVelocity, algeaArmConstants.maxAcceleration));
+    private ProfiledPIDController controller = new ProfiledPIDController
+    (
+        algeaArmConstants.kP, 
+        algeaArmConstants.kI, 
+        algeaArmConstants.kD, 
+        new TrapezoidProfile.Constraints
+        (
+            algeaArmConstants.maxVelocity, 
+            algeaArmConstants.maxAcceleration
+        )
+    );
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     public ShuffleData<Double> positionUnitsLog = new ShuffleData<Double>(this.getName(), "position units", 0.0);
@@ -46,6 +56,9 @@ public class AlgeaArm extends SubsystemBase {
     private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
     private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Algea Arm", 17, 0));
+
+    public ShuffleData<Double> kGLog = new ShuffleData<Double>(this.getName(), "kG", 0.0);
+    public ShuffleData<Double> kPLog = new ShuffleData<Double>(this.getName(), "kP", 0.0);
 
 
 
@@ -182,6 +195,23 @@ public class AlgeaArm extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        algeaArmConstants.kG = kGLog.get();
+        algeaArmConstants.kP = kPLog.get();
+
+        controller = new ProfiledPIDController
+        (
+            algeaArmConstants.kP, 
+            algeaArmConstants.kI, 
+            algeaArmConstants.kD, 
+            new TrapezoidProfile.Constraints
+            (
+                algeaArmConstants.maxVelocity, 
+                algeaArmConstants.maxAcceleration
+            )
+
+        );
+
         armIO.updateData(data);
 
         logData();
@@ -190,7 +220,7 @@ public class AlgeaArm extends SubsystemBase {
     }
 
     private double calculateFeedForward() {
-        return algeaArmConstants.kGSim * Math.cos(data.positionUnits);
+        return algeaArmConstants.kG * Math.cos(data.positionUnits);
     }
 
 }

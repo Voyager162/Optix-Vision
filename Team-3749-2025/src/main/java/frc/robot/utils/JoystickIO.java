@@ -5,12 +5,21 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot;
+import frc.robot.commands.arm.algeaArmCommands.AlgeaMoveDown;
+import frc.robot.commands.arm.algeaArmCommands.AlgeaMoveUp;
+import frc.robot.commands.arm.algeaArmCommands.AlgeaPickup;
+import frc.robot.commands.arm.algeaArmCommands.AlgeaStow;
+import frc.robot.commands.arm.climbArmCommands.Climb;
+import frc.robot.commands.arm.climbArmCommands.ClimbArmPrepareForClimb;
+import frc.robot.commands.arm.climbArmCommands.ClimbMoveDown;
+import frc.robot.commands.arm.climbArmCommands.ClimbMoveUp;
+import frc.robot.commands.arm.coralArmCommands.CoralMoveDown;
+import frc.robot.commands.arm.coralArmCommands.CoralMoveUp;
+import frc.robot.commands.arm.coralArmCommands.CoralPickup;
+import frc.robot.commands.arm.coralArmCommands.CoralStow;
 import frc.robot.commands.example.ExampleSubsystemCommand;
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
-import frc.robot.commands.arm.algeaArmCommands.AlgeaPickup;
-import frc.robot.commands.arm.algeaArmCommands.Proccessor;
-import frc.robot.commands.arm.algeaArmCommands.Stow;
 
 /**
  * Util class for button bindings
@@ -24,9 +33,12 @@ public class JoystickIO {
     private static final CommandXboxController operator = new CommandXboxController(1);
     private static final Command sample = new ExampleSubsystemCommand();
     private static final Command DriveStraight = new DriveStraight();
-    private static final Stow armStow = new Stow();
-    private static final AlgeaPickup fullyExtendArm = new AlgeaPickup();
-    private static final Proccessor halfExtendArm = new Proccessor();
+    private static final AlgeaPickup algeaPickup = new AlgeaPickup();
+    private static final AlgeaStow algeaStow = new AlgeaStow();
+    private static final CoralPickup coralPickup = new CoralPickup();
+    private static final CoralStow coralStow = new CoralStow();
+    private static final Climb climb = new Climb();
+    private static final ClimbArmPrepareForClimb climbArmPrepareForClimb = new ClimbArmPrepareForClimb();
 
     public JoystickIO() {
     }
@@ -62,13 +74,13 @@ public class JoystickIO {
         pilot.a().whileTrue(DriveStraight);
 
         // Example binding
-        operator.a().whileTrue(sample);
+        operator.a().whileTrue(coralPickup);
+        operator.b().whileTrue(coralStow);
+        operator.x().whileTrue(algeaPickup);
+        operator.y().whileTrue(algeaStow);
 
-
-        operator.b().whileTrue(fullyExtendArm); // Keyboard: x
-        operator.x().whileTrue(halfExtendArm); // Keyboard: C
-        operator.y().whileTrue(armStow); // Keyboard: V
-
+        pilot.x().whileTrue(climb);
+        pilot.y().whileTrue(climbArmPrepareForClimb);
     }
 
     public static void pilotBindings() {

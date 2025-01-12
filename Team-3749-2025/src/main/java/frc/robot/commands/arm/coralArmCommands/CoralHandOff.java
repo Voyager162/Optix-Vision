@@ -6,9 +6,9 @@ import frc.robot.subsystems.arm.ArmConstants.coralArmConstants;
 import frc.robot.subsystems.arm.ArmConstants.coralArmConstants.ArmStates;
 import frc.robot.utils.UtilityFunctions;
 
-public class HandOff extends Command {
+public class CoralHandOff extends Command {
 
-    public HandOff() {
+    public CoralHandOff() {
         super.addRequirements(Robot.coralArm);
     }
 

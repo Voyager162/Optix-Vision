@@ -6,24 +6,24 @@ import frc.robot.subsystems.arm.ArmConstants.algeaArmConstants;
 import frc.robot.subsystems.arm.ArmConstants.algeaArmConstants.ArmStates;
 import frc.robot.utils.UtilityFunctions;
 
-public class Proccessor extends Command {
+public class AlgeaStow extends Command {
 
-    public Proccessor() {
+    public AlgeaStow() {
         super.addRequirements(Robot.algeaArm);
     }
 
     @Override
     public void initialize() {
-        Robot.algeaArm.setState(ArmStates.PROCESSOR);
+        Robot.algeaArm.setState(ArmStates.STOWED);
     }
 
-    @Override
+        @Override
     public void end(boolean interupted) {
     }
 
     @Override
     public boolean isFinished() {
         double position = Robot.algeaArm.getPositionRad();
-        return UtilityFunctions.withinMargin(0.001, algeaArmConstants.processorSetPoint_rad, position);
+        return UtilityFunctions.withinMargin(0.001, algeaArmConstants.stowSetPoint_rad, position);
     }
 }

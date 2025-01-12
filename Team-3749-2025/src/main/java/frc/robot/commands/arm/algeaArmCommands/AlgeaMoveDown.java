@@ -4,9 +4,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.ArmConstants.algeaArmConstants.ArmStates;
 
-public class MoveDown extends Command {
+public class AlgeaMoveDown extends Command {
 
-    public MoveDown() {
+    public AlgeaMoveDown() {
         super.addRequirements(Robot.algeaArm);
     }
 
