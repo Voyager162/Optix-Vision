@@ -2,19 +2,19 @@ package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.arm.ArmConstants.algeaArmConstants;
-import frc.robot.subsystems.arm.ArmConstants.algeaArmConstants.ArmStates;
+import frc.robot.subsystems.arm.ArmConstants.coralArmConstants;
+import frc.robot.subsystems.arm.ArmConstants.coralArmConstants.ArmStates;
 import frc.robot.utils.UtilityFunctions;
 
 public class Stow extends Command {
 
     public Stow() {
-        super.addRequirements(Robot.algeaArm);
+        super.addRequirements(Robot.coralArm);
     }
 
     @Override
     public void initialize() {
-        Robot.algeaArm.setState(ArmStates.STOWED);
+        Robot.coralArm.setState(ArmStates.STOWED);
     }
 
         @Override
@@ -23,7 +23,7 @@ public class Stow extends Command {
 
     @Override
     public boolean isFinished() {
-        double position = Robot.algeaArm.getPositionRad();
-        return UtilityFunctions.withinMargin(0.001, algeaArmConstants.stowSetPoint, position);
+        double position = Robot.coralArm.getPositionRad();
+        return UtilityFunctions.withinMargin(0.001, coralArmConstants.stowSetPoint, position);
     }
 }

@@ -11,6 +11,7 @@ public class ArmConstants {
 
     public class algeaArmConstants {
         public static final int motorId = 0;
+        public static final int numMotors = 1;
 
         public static final int armLength_inches = 8;
         public static final double armLength_meters = 0.2032;
@@ -37,6 +38,9 @@ public class ArmConstants {
 
         public static final double maxVelocity = 2.4223698370699234;
         public static final double maxAcceleration = 0.0;
+
+        public static final double momentOfInertia = 0.775;
+        public static final boolean simulateGravity = true;
 
         public enum ArmStates {
             MOVING_DOWN,
@@ -50,6 +54,7 @@ public class ArmConstants {
 
     public class coralArmConstants {
         public static final int motorId = 0;
+        public static final int numMotors = 1;
 
         public static final int armLength_inches = 8;
         public static final double armLength_meters = 0.2032;
@@ -76,6 +81,9 @@ public class ArmConstants {
 
         public static final double maxVelocity = 2.4223698370699234;
         public static final double maxAcceleration = 0.0;
+
+        public static final double momentOfInertia = 0.775;
+        public static final boolean simulateGravity = true;
 
         public enum ArmStates {
             MOVING_DOWN,
@@ -89,6 +97,7 @@ public class ArmConstants {
 
     public class climbArmConstants {
         public static final int motorId = 0;
+        public static final int numMotors = 1;
 
         public static final int armLength_inches = 8;
         public static final double armLength_meters = 0.2032;
@@ -115,6 +124,9 @@ public class ArmConstants {
 
         public static final double maxVelocity = 2.4223698370699234;
         public static final double maxAcceleration = 0.0;
+
+        public static final double momentOfInertia = 0.775;
+        public static final boolean simulateGravity = true;
 
         public enum ArmStates {
             MOVING_DOWN,

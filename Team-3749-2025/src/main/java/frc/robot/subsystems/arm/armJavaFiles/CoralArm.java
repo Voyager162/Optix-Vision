@@ -50,7 +50,19 @@ public class CoralArm extends SubsystemBase {
 
     public CoralArm() {
         if (Robot.isSimulation()) {
-            armIO = new ArmSim();
+            
+            armIO = new ArmSim
+            (
+                coralArmConstants.numMotors, 
+                coralArmConstants.armGearing, 
+                coralArmConstants.momentOfInertia, 
+                coralArmConstants.armLength_meters, 
+                coralArmConstants.armMinAngle_degrees, 
+                coralArmConstants.armMaxAngle_degrees, 
+                coralArmConstants.simulateGravity, 
+                coralArmConstants.armStartingAngle_degrees
+            );
+
         } else {
             armIO = new ArmSparkMax(coralArmConstants.motorId);
         }

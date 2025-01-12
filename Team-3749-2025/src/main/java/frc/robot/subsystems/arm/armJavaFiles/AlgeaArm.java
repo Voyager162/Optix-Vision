@@ -50,7 +50,18 @@ public class AlgeaArm extends SubsystemBase {
 
     public AlgeaArm() {
         if (Robot.isSimulation()) {
-            armIO = new ArmSim();
+
+            armIO = new ArmSim
+            (1, 
+            algeaArmConstants.armGearing, 
+            algeaArmConstants.momentOfInertia, 
+            algeaArmConstants.armLength_meters, 
+            algeaArmConstants.armMinAngle_degrees, 
+            algeaArmConstants.armMaxAngle_degrees, 
+            algeaArmConstants.simulateGravity, 
+            algeaArmConstants.armStartingAngle_degrees
+            );
+
         } else {
             armIO = new ArmSparkMax(algeaArmConstants.motorId);
         }
