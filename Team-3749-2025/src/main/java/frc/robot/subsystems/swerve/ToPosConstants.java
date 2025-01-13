@@ -24,5 +24,10 @@ public class ToPosConstants {
         public static final Pose2d reef20 = new Pose2d(5.22,5.37,new Rotation2d(Math.toRadians(-120)));
         public static final Pose2d reef19 = new Pose2d(3.73,5.24,new Rotation2d(Math.toRadians(-60)));
     }
+
+    public static final class Obstacles
+    {
+        
+    }
     
 }
