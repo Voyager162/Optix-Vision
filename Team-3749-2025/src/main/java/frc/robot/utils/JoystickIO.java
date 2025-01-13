@@ -70,8 +70,8 @@ public class JoystickIO {
 
         operator.a().onTrue(l1);
         operator.b().onTrue(l2);
-        operator.x().onTrue(l3);
-        operator.y().onTrue(l4);
+        operator.x().onTrue(test);
+        operator.y().onTrue(stop);
 
     }
 

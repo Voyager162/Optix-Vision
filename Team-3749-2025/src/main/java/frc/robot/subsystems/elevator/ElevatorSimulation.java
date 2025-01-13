@@ -4,6 +4,12 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 
+/**
+ * Simulation for elevator subsystem
+ * 
+ * @author Dhyan Soni
+ */
+
 public class ElevatorSimulation implements ElevatorIO {
     private double inputVolts = 0;
 

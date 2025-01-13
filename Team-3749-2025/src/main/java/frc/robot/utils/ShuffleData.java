@@ -9,8 +9,6 @@ import edu.wpi.first.networktables.NetworkTableValue;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Stores data that can be seen/edited in ShuffleBoard
@@ -24,7 +22,6 @@ public class ShuffleData<T> {
     private ShuffleboardTab tab;
     private GenericEntry entry;
     private Map<Integer, T> lastHasChangedVals = new HashMap<>();
-    private Map<String, SendableChooser<?>> choosers = new HashMap<>();
 
     /**
      * Creates a new SmartData instance
@@ -95,19 +92,5 @@ public class ShuffleData<T> {
     public static void put(String tabName, String key, Object data) {
         ShuffleboardTab tab = Shuffleboard.getTab(tabName);
         tab.add(key, data);
-    }
-
-    // might need to change the options?
-    // still need to make a getter func
-    public static <U> void createChooser(String name, U defaultval, Map<String, U> options){
-        SendableChooser<U> chooser = new SendableChooser<U>();
-        chooser.setDefaultOption("defaultVal", defaultval);
-    
-        for (Map.Entry<String, U> entry : options.entrySet()) {
-            chooser.addOption(entry.getKey(), entry.getValue());
-        }
-
-        // choosers.put(name, chooser)
-        SmartDashboard.putData(name, chooser);
     }
 }

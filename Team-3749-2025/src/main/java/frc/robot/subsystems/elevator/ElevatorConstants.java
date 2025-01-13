@@ -1,5 +1,12 @@
 package frc.robot.subsystems.elevator;
 
+/**
+ * Elevator constants
+ * 
+ * @author Dhyan Soni
+ * @author Andrew Ge
+ */
+
 import edu.wpi.first.math.util.Units;
 public class ElevatorConstants {
     public static class ElevatorSpecs {
@@ -13,14 +20,14 @@ public class ElevatorConstants {
     } 
 
     public static class ElevatorControl {
-        public static final double kPSim = 1;
-        public static final double kDSim = 0.02; // 1/20 of kP for now
+        public static final double kPSim = 0.7;
+        public static final double kDSim = 0; // 1/20 of kP for now
         public static final double kSSim = 0;
         public static final double kGSim = 2.3;
-        public static final double kVSim = 2.365; // 12 - 2.3 / 4.1 NOT USED
+        public static final double kVSim = 2.345; // 12 - 2.3 / 4.139
         public static final double kASim = 0;
-        public static final double maxV = 4.112;
-        public static final double maxA = 6.588; // change in velocity / seconds
+        public static final double maxV = 4.139;
+        public static final double maxA = 3.988; // change in velocity / seconds
         
         // public static final double kSSim = 0;
     }

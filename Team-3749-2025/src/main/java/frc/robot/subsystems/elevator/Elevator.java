@@ -15,6 +15,14 @@ import frc.robot.subsystems.elevator.ElevatorIO.ElevatorData;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 
+/**
+ * Elevator subsystem
+ * 
+ * @author Dhyan Soni
+ * @author Andrew Ge
+ */
+
+
 public class Elevator extends SubsystemBase {
     // armIO.setVoltage(pidController.calculate(getPosition(), setpoint) +
     // ArmConstants.armControl.armkG);
@@ -198,7 +206,6 @@ public class Elevator extends SubsystemBase {
         // make 3.25 a constant "elevatorBaseHeight"
         elevatorMech.setLength(Units.feetToMeters(3.25) + data.positionMeters);
         SmartDashboard.putData("elevator mechanism", mech);
-
     }
 
     @Override
