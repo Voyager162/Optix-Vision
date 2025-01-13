@@ -21,7 +21,7 @@ public class Elevator extends SubsystemBase {
 
     private ElevatorIO elevatorio;
     private ElevatorData data = new ElevatorData();
-    private ElevatorStates state = ElevatorStates.STOW;
+    private ElevatorStates state = ElevatorStates.STOP;
 
     private ProfiledPIDController pidController = new ProfiledPIDController(
             ElevatorConstants.ElevatorControl.kPSim,
@@ -105,6 +105,9 @@ public class Elevator extends SubsystemBase {
     public void setState(ElevatorStates state) {
         this.state = state;
         switch (state) {
+            case STOP:
+                runStateStop();
+                break;
             case L1:
                 setGoal(ElevatorConstants.stateHeights.l1Height);
                 break;
