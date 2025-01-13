@@ -63,7 +63,7 @@ public class ArmConstants {
         public static final int armMaxAngle_degrees = 180;
         public static final int armStartingAngle_degrees = 90;
 
-        public static final double armMass_kg = 15.32;
+        public static final double armMass_kg = 1.132; // from cad, I highlighted all of the components on the arm and used the mass feature
         public static final double armGearing = 40;
 
         public static double kP = 2;
