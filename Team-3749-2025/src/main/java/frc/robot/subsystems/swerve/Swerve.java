@@ -284,28 +284,30 @@ public class Swerve extends SubsystemBase {
    * 
    * @see https://choreo.autos/choreolib/getting-started/#setting-up-the-drive-subsystem
    * 
-   * @note verticle flipping relies on choreo detecting rotational symetry on the field
+   * @note verticle flipping relies on choreo detecting rotational symetry on the
+   *       field
    */
-    private static ChoreoAllianceFlipUtil.Flipper flipper = ChoreoAllianceFlipUtil.getFlipper();
-    
-    public void followSample(SwerveSample sample, boolean isFlipped) {
-      
-      // veritcle flipping
-      double xPos = sample.x;
+  private static ChoreoAllianceFlipUtil.Flipper flipper = ChoreoAllianceFlipUtil.getFlipper();
 
-      double xVel = sample.vx;
-      double xAcc = sample.ax;
-      double yPos = isFlipped ? flipper.flipY(sample.y) : sample.y;
+  public void followSample(SwerveSample sample, boolean isFlipped) {
 
-      double yVel = isFlipped ? -sample.vy : sample.vy;
-      double yAcc = isFlipped ? -sample.ay : sample.ay;
+    // ternaries are for x-axis flipping
+    double xPos = sample.x;
 
-      double heading = isFlipped ? new Rotation2d(Math.PI-sample.heading).rotateBy(new Rotation2d(Math.PI)).getRadians(): sample.heading;
+    double xVel = sample.vx;
+    double xAcc = sample.ax;
+    double yPos = isFlipped ? flipper.flipY(sample.y) : sample.y;
 
-      double omega = isFlipped ? -sample.omega : sample.omega;
-      double alpha = isFlipped ? -sample.alpha : sample.alpha;
-      
-      Robot.swerve.logSetpoints(xPos, xVel, xAcc, yPos, yVel, yAcc, heading, omega, alpha);
+    double yVel = isFlipped ? -sample.vy : sample.vy;
+    double yAcc = isFlipped ? -sample.ay : sample.ay;
+
+    double heading = isFlipped ? new Rotation2d(Math.PI - sample.heading).rotateBy(new Rotation2d(Math.PI)).getRadians()
+        : sample.heading;
+
+    double omega = isFlipped ? -sample.omega : sample.omega;
+    double alpha = isFlipped ? -sample.alpha : sample.alpha;
+
+    Robot.swerve.logSetpoints(xPos, xVel, xAcc, yPos, yVel, yAcc, heading, omega, alpha);
 
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         new ChassisSpeeds(
@@ -415,7 +417,8 @@ public class Swerve extends SubsystemBase {
    * 
    * @param the swerve sample of setpoints
    */
-  public void logSetpoints(double posX, double velX, double accX, double posY, double velY, double accY, double heading, double omega, double alpha) {
+  public void logSetpoints(double posX, double velX, double accX, double posY, double velY, double accY, double heading,
+      double omega, double alpha) {
     // setpoint logging for automated driving
     Double[] positions = new Double[] { posX, posY, heading };
     setpointPositionLog.set(positions);
@@ -455,7 +458,6 @@ public class Swerve extends SubsystemBase {
         modules[3].getState().angle.getRadians(),
         modules[3].getState().speedMetersPerSecond
     };
-
 
     // SmartDashboard.puTarr("Swerve: Real States",realSwerveModuleStates);
     Double[] desiredStates = {
