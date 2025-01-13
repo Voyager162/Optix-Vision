@@ -224,9 +224,9 @@ public class AlgeaArm extends SubsystemBase {
         double acceleration = data.accelerationUnits; // Current acceleration of the arm (rad/s^2)
     
         // Keep using Math.cos for position, and add velocity and acceleration terms
-        double feedForward = algeaArmConstants.kGSim * Math.cos(data.positionUnits) 
-                             + algeaArmConstants.kVSim * velocity 
-                             + algeaArmConstants.kASim * acceleration;
+        double feedForward = algeaArmConstants.kG * Math.cos(data.positionUnits) 
+                             + algeaArmConstants.kV * velocity 
+                             + algeaArmConstants.kA * acceleration;
         return feedForward;
     }
 

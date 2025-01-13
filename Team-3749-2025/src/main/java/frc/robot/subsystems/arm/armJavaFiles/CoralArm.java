@@ -225,9 +225,9 @@ public class CoralArm extends SubsystemBase {
         double acceleration = data.accelerationUnits; // Current acceleration of the arm (rad/s^2)
     
         // Keep using Math.cos for position, and add velocity and acceleration terms
-        double feedForward = coralArmConstants.kGSim * Math.cos(data.positionUnits) 
-                             + coralArmConstants.kVSim * velocity 
-                             + coralArmConstants.kASim * acceleration;
+        double feedForward = coralArmConstants.kG * Math.cos(data.positionUnits) 
+                             + coralArmConstants.kV * velocity 
+                             + coralArmConstants.kA * acceleration;
         return feedForward;
     }
 
