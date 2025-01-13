@@ -79,8 +79,8 @@ public class ArmConstants {
         public static final double handOffSetPoint_rad = 40 * Math.PI / 180; // 40
         public static final double coralPickUpSetPoint_Rad = 175 * Math.PI / 180; // 175
 
-        public static final double maxVelocity = 2.4223698370699234;
-        public static final double maxAcceleration = 0.0;
+        public static final double maxVelocity = 12.786;
+        public static final double maxAcceleration = 644.076;
 
         public static final double momentOfInertia = 0.775; // from last years MOI
         public static final boolean simulateGravity = true;

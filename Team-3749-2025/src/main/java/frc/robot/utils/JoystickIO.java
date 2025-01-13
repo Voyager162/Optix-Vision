@@ -9,6 +9,8 @@ import frc.robot.commands.arm.algeaArmCommands.AlgeaPickup;
 import frc.robot.commands.arm.algeaArmCommands.AlgeaStow;
 import frc.robot.commands.arm.climbArmCommands.Climb;
 import frc.robot.commands.arm.climbArmCommands.ClimbArmPrepareForClimb;
+import frc.robot.commands.arm.coralArmCommands.CoralMoveDown;
+import frc.robot.commands.arm.coralArmCommands.CoralMoveUp;
 import frc.robot.commands.arm.coralArmCommands.CoralPickup;
 import frc.robot.commands.arm.coralArmCommands.CoralStow;
 import frc.robot.commands.example.ExampleSubsystemCommand;
@@ -27,12 +29,10 @@ public class JoystickIO {
     private static final CommandXboxController operator = new CommandXboxController(1);
     private static final Command sample = new ExampleSubsystemCommand();
     private static final Command DriveStraight = new DriveStraight();
-    private static final AlgeaPickup algeaPickup = new AlgeaPickup();
-    private static final AlgeaStow algeaStow = new AlgeaStow();
+    private static final CoralMoveUp coralMoveUp = new CoralMoveUp();
+    private static final CoralMoveDown coralMoveDown = new CoralMoveDown();
     private static final CoralPickup coralPickup = new CoralPickup();
     private static final CoralStow coralStow = new CoralStow();
-    private static final Climb climb = new Climb();
-    private static final ClimbArmPrepareForClimb climbArmPrepareForClimb = new ClimbArmPrepareForClimb();
 
     public JoystickIO() {
     }
@@ -70,11 +70,8 @@ public class JoystickIO {
         // Example binding
         operator.a().whileTrue(coralPickup);
         operator.b().whileTrue(coralStow);
-        operator.x().whileTrue(algeaPickup);
-        operator.y().whileTrue(algeaStow);
-
-        pilot.x().whileTrue(climb);
-        pilot.y().whileTrue(climbArmPrepareForClimb);
+        operator.x().whileTrue(coralMoveDown);
+        operator.y().whileTrue(coralMoveUp);
     }
 
     public static void pilotBindings() {

@@ -34,7 +34,7 @@ public class CoralArm extends SubsystemBase {
     (
         coralArmConstants.kP,
         coralArmConstants.kI, 
-        coralArmConstants.kD, 
+        coralArmConstants.kD,
         new TrapezoidProfile.Constraints
         (
             coralArmConstants.maxVelocity, 
@@ -57,8 +57,9 @@ public class CoralArm extends SubsystemBase {
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
     private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Coral Arm", 24, 0));
 
-    public ShuffleData<Double> kGLog = new ShuffleData<Double>(this.getName(), "kG", 0.0);
-    public ShuffleData<Double> kPLog = new ShuffleData<Double>(this.getName(), "kP", 0.0);
+    public ShuffleData<Double> kGLog = new ShuffleData<Double>(this.getName(), "kG", 5.1752);
+    public ShuffleData<Double> kPLog = new ShuffleData<Double>(this.getName(), "kP", 2.0);
+
 
 
 
@@ -154,11 +155,11 @@ public class CoralArm extends SubsystemBase {
     }
 
     private void runMovingUp() {
-        setVoltage(1 + calculateFeedForward());
+        setVoltage(12 + calculateFeedForward());
     }
 
     private void runMovingDown() {
-        setVoltage(-1 + calculateFeedForward());
+        setVoltage(-12 + calculateFeedForward());
     }
 
     private void runStateStopped() {
@@ -204,7 +205,7 @@ public class CoralArm extends SubsystemBase {
         (
             coralArmConstants.kP, 
             coralArmConstants.kI, 
-            coralArmConstants.kD, 
+            coralArmConstants.kD,
             new TrapezoidProfile.Constraints
             (
                 coralArmConstants.maxVelocity, 
@@ -225,9 +226,9 @@ public class CoralArm extends SubsystemBase {
         double acceleration = data.accelerationUnits; // Current acceleration of the arm (rad/s^2)
     
         // Keep using Math.cos for position, and add velocity and acceleration terms
-        double feedForward = coralArmConstants.kG * Math.cos(data.positionUnits) 
-                             + coralArmConstants.kV * velocity 
-                             + coralArmConstants.kA * acceleration;
+        double feedForward = coralArmConstants.kG * Math.cos(data.positionUnits);
+                            //  + coralArmConstants.kV * velocity 
+                            //  + coralArmConstants.kA * acceleration;
         return feedForward;
     }
 
