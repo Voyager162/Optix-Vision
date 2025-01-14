@@ -22,11 +22,7 @@ import frc.robot.utils.UtilityFunctions;
  * @author Andrew Ge
  */
 
-
 public class Elevator extends SubsystemBase {
-    // armIO.setVoltage(pidController.calculate(getPosition(), setpoint) +
-    // ArmConstants.armControl.armkG);
-
     private ElevatorIO elevatorio;
     private ElevatorData data = new ElevatorData();
     private ElevatorStates state = ElevatorStates.STOP;
@@ -47,7 +43,7 @@ public class Elevator extends SubsystemBase {
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position meters", 0.0);
     private ShuffleData<Double> velocityUnitsLog = new ShuffleData<Double>("Elevator", "velocity units", 0.0);
-    // private ShuffleData<Double> accelerationUnitsLog = new ShuffleData<Double>("Elevator", "acceleration units", 0.0);
+    private ShuffleData<Double> accelerationUnitsLog = new ShuffleData<Double>("Elevator", "acceleration units", 0.0);
     private ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Elevator", "input volts", 0.0);
     private ShuffleData<Double> appliedVoltsLog = new ShuffleData<Double>("Elevator", "applied volts", 0.0);
     private ShuffleData<Double> currentAmpsLog = new ShuffleData<Double>("Elevator", "current amps", 0.0);
@@ -183,6 +179,8 @@ public class Elevator extends SubsystemBase {
 
         elevatorio.setVoltage(ffVoltage + pidVoltage
                 + ElevatorConstants.ElevatorControl.kGSim);
+        
+        prevSetpointVelocity = pidControllerState.velocity;
     }
 
     private void runStateStop() {
@@ -197,6 +195,7 @@ public class Elevator extends SubsystemBase {
         currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
         positionMetersLog.set(data.positionMeters);
         velocityUnitsLog.set(data.velocityUnits);
+        accelerationUnitsLog.set(data.accelerationUnits);
         inputVoltsLog.set(data.inputVolts);
         appliedVoltsLog.set(data.appliedVolts);
         currentAmpsLog.set(data.currentAmps);

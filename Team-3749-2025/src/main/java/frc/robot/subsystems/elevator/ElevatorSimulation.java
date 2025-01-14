@@ -3,6 +3,7 @@ package frc.robot.subsystems.elevator;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
  * Simulation for elevator subsystem
@@ -12,6 +13,8 @@ import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 
 public class ElevatorSimulation implements ElevatorIO {
     private double inputVolts = 0;
+    private double previousVelocity = 0;
+    private double velocity = 0;
 
     private final ElevatorSim elevatorSimSystem = new ElevatorSim(
         DCMotor.getNEO(2),
@@ -31,16 +34,15 @@ public class ElevatorSimulation implements ElevatorIO {
     @Override
     public void updateData(ElevatorData data) {
         elevatorSimSystem.update(0.02);
+        previousVelocity = velocity;
+        velocity = elevatorSimSystem.getVelocityMetersPerSecond();
         data.positionMeters = elevatorSimSystem.getPositionMeters();
         data.velocityUnits = elevatorSimSystem.getVelocityMetersPerSecond();
-        data.accelerationUnits = 0;
+        data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;;
         data.inputVolts = inputVolts;
-        data.appliedVolts = 0;
-        data.currentAmps = 0;
-        // Sim has no temp
-        data.tempCelcius = 0;
-
-        
+        data.appliedVolts = inputVolts;
+        data.currentAmps = elevatorSimSystem.getCurrentDrawAmps();
+        data.tempCelcius = 0; // Sim has no temp
     }
 
     @Override
@@ -48,7 +50,5 @@ public class ElevatorSimulation implements ElevatorIO {
         inputVolts = MathUtil.clamp(volts, -12, 12);
         // inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
         elevatorSimSystem.setInputVoltage(inputVolts);
-        // main periodic
-        // SmartDashboard.putNumber("applied volts: " + index, voltage);
     } 
 }

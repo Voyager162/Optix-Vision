@@ -17,6 +17,9 @@ public class ElevatorConstants {
         public static final double maxHeightMeters = Units.feetToMeters(25); // remeasure maxV and A
         // public static final boolean simulateGravity = true;
         public static final double startingHeightMeters = 0;
+
+        public static boolean[] isInverted = {true, false};
+        public static int[] motorIds = {1,2};
     } 
 
     public static class ElevatorControl {
