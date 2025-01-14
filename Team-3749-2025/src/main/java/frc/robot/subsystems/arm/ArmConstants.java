@@ -70,17 +70,17 @@ public class ArmConstants {
         public static final double kI = 0.0;
         public static final double kD = 0.0;
 
-        public static double kG = 5.1752;
+        public static double kG = 2.90811;
         public static final double kS = 0.0;
         public static final double kA = 0.0;
         public static final double kV = 0.0;
 
-        public static final double stowSetPoint_rad = 70 * Math.PI / 180; // 70
+        public static final double stowSetPoint_rad = 70 * Math.PI / 180; // 70, 1.2217304764
         public static final double handOffSetPoint_rad = 40 * Math.PI / 180; // 40
-        public static final double coralPickUpSetPoint_Rad = 175 * Math.PI / 180; // 175
+        public static final double coralPickUpSetPoint_Rad = 175 * Math.PI / 180; // 175, 3.05432619099
 
-        public static final double maxVelocity = 12.786;
-        public static final double maxAcceleration = 644.076;
+        public static final double maxVelocity = 0;
+        public static final double maxAcceleration = 0;
 
         public static final double momentOfInertia = 0.775; // from last years MOI
         public static final boolean simulateGravity = true;

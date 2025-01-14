@@ -9,8 +9,7 @@ import frc.robot.subsystems.arm.real.ArmSparkMax;
 import frc.robot.subsystems.arm.sim.ArmSim;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -30,16 +29,11 @@ public class CoralArm extends SubsystemBase {
 
     private double setPoint;
 
-    private ProfiledPIDController controller = new ProfiledPIDController
+    private PIDController controller = new PIDController
     (
         coralArmConstants.kP,
         coralArmConstants.kI, 
-        coralArmConstants.kD,
-        new TrapezoidProfile.Constraints
-        (
-            coralArmConstants.maxVelocity, 
-            coralArmConstants.maxAcceleration
-        )
+        coralArmConstants.kD
     );
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
@@ -57,8 +51,9 @@ public class CoralArm extends SubsystemBase {
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
     private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Coral Arm", 24, 0));
 
-    public ShuffleData<Double> kGLog = new ShuffleData<Double>(this.getName(), "kG", 5.1752);
-    public ShuffleData<Double> kPLog = new ShuffleData<Double>(this.getName(), "kP", 2.0);
+    public ShuffleData<Double> kPLog = new ShuffleData<Double>(this.getName(), "kP", coralArmConstants.kP);
+
+    public ShuffleData<Double> setPointLog = new ShuffleData<Double>(this.getName(), "setPoint", setPoint);
 
 
 
@@ -173,7 +168,7 @@ public class CoralArm extends SubsystemBase {
 
     private void runStateHandOff() {
         setPoint = coralArmConstants.handOffSetPoint_rad;
-        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
+        setVoltage(controller.calculate(data.positionUnits, setPoint));
     }
 
     private void runStateStowed() {
@@ -198,20 +193,15 @@ public class CoralArm extends SubsystemBase {
     @Override
     public void periodic() {
 
-        coralArmConstants.kG = kGLog.get();
         coralArmConstants.kP = kPLog.get();
 
-        controller = new ProfiledPIDController
+        setPointLog.set(setPoint);
+
+        controller = new PIDController
         (
             coralArmConstants.kP, 
             coralArmConstants.kI, 
-            coralArmConstants.kD,
-            new TrapezoidProfile.Constraints
-            (
-                coralArmConstants.maxVelocity, 
-                coralArmConstants.maxAcceleration
-            )
-
+            coralArmConstants.kD
         );
 
         armIO.updateData(data);
@@ -222,8 +212,8 @@ public class CoralArm extends SubsystemBase {
     }
 
     private double calculateFeedForward() {
-        double velocity = data.velocityUnits; // Current velocity of the arm (rad/s)
-        double acceleration = data.accelerationUnits; // Current acceleration of the arm (rad/s^2)
+        // double velocity = data.velocityUnits; // Current velocity of the arm (rad/s)
+        // double acceleration = data.accelerationUnits; // Current acceleration of the arm (rad/s^2)
     
         // Keep using Math.cos for position, and add velocity and acceleration terms
         double feedForward = coralArmConstants.kG * Math.cos(data.positionUnits);
