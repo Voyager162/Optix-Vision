@@ -72,8 +72,6 @@ public class Elevator extends SubsystemBase {
     private MechanismLigament2d elevatorMech = root
             .append(new MechanismLigament2d("elevator", Units.feetToMeters(3.25), 90));
 
-    // private double prevSetpointVelocity = 0;
-
     public Elevator() {
         if (Robot.isSimulation()) {
             elevatorio = new ElevatorSimulation();
@@ -95,7 +93,6 @@ public class Elevator extends SubsystemBase {
     }
 
     // returns true when the state is reached
-    // fix this later
     public boolean getIsStableState() {
         switch (state) {
             case L1:
@@ -182,21 +179,13 @@ public class Elevator extends SubsystemBase {
     }
 
     private void moveToGoal() {
-        State pidControllerState = pidController.getSetpoint();
-        // pidControllerState.velocity
-
-        // double accelerationSetpoint = (pidControllerState.velocity - prevSetpointVelocity) / 0.02;
-
+        State state = pidController.getSetpoint();
         double pidVoltage = pidController.calculate(getPositionMeters());
-        // does pidcontroller update here to get the new setpoint?
-        State nextPidControllerState = pidController.getSetpoint();
-        double ffVoltage = feedforward.calculate(pidControllerState.velocity,nextPidControllerState.velocity);
-        // double ffVoltage = pidControllerState.velocity * ElevatorConstants.ElevatorControl.kVSim +
-        //         accelerationSetpoint * ElevatorConstants.ElevatorControl.kASim;
+
+        State nextState = pidController.getSetpoint();
+        double ffVoltage = feedforward.calculate(state.velocity,nextState.velocity);
 
         elevatorio.setVoltage(ffVoltage + pidVoltage);
-
-        // prevSetpointVelocity = pidControllerState.velocity;
     }
 
     private void runStateStop() {
