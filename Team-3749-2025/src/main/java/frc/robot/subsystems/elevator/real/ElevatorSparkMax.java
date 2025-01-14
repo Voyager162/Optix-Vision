@@ -1,4 +1,4 @@
-package frc.robot.subsystems.elevator;
+package frc.robot.subsystems.elevator.real;
 
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -8,6 +8,10 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
+import frc.robot.subsystems.elevator.ElevatorConstants;
+import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorSpecs;
+import frc.robot.subsystems.elevator.ElevatorIO.ElevatorData;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
@@ -26,7 +30,7 @@ public class ElevatorSparkMax implements ElevatorIO {
     private double previousVelocity = 0;
     private double velocity = 0;
 
-    ElevatorSparkMax (){
+    public ElevatorSparkMax (){
         System.out.println("[Init] Creating Elevator");
 
         leftConfig.smartCurrentLimit(30, 50);
