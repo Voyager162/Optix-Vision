@@ -143,7 +143,7 @@ public class Swerve extends SubsystemBase {
       "setpoint rotational acceleration",
       0.0);
 
-  public final Pose2d[] ppSetpoints = new Pose2d[] { ToPosConstants.Setpoints.coralBottom,
+  public static final Pose2d[] ppSetpoints = new Pose2d[] { ToPosConstants.Setpoints.coralBottom,
       ToPosConstants.Setpoints.coralTop,
       ToPosConstants.Setpoints.processor,
       ToPosConstants.Setpoints.reef17,
