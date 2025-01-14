@@ -9,8 +9,7 @@ import frc.robot.subsystems.arm.real.ArmSparkMax;
 import frc.robot.subsystems.arm.sim.ArmSim;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -30,16 +29,11 @@ public class AlgeaArm extends SubsystemBase {
 
     private double setPoint;
 
-    private ProfiledPIDController controller = new ProfiledPIDController
+    private PIDController controller = new PIDController
     (
         algeaArmConstants.kP, 
         algeaArmConstants.kI, 
-        algeaArmConstants.kD, 
-        new TrapezoidProfile.Constraints
-        (
-            algeaArmConstants.maxVelocity, 
-            algeaArmConstants.maxAcceleration
-        )
+        algeaArmConstants.kD
     );
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
@@ -199,17 +193,11 @@ public class AlgeaArm extends SubsystemBase {
         algeaArmConstants.kG = kGLog.get();
         algeaArmConstants.kP = kPLog.get();
 
-        controller = new ProfiledPIDController
+        controller = new PIDController
         (
             algeaArmConstants.kP, 
             algeaArmConstants.kI, 
-            algeaArmConstants.kD, 
-            new TrapezoidProfile.Constraints
-            (
-                algeaArmConstants.maxVelocity, 
-                algeaArmConstants.maxAcceleration
-            )
-
+            algeaArmConstants.kD
         );
 
         armIO.updateData(data);
