@@ -9,8 +9,7 @@ import frc.robot.subsystems.arm.real.ClimbSparkMax;
 import frc.robot.subsystems.arm.sim.ArmSim;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -30,16 +29,11 @@ public class ClimbArm extends SubsystemBase {
 
     private double setPoint;
 
-    private ProfiledPIDController controller = new ProfiledPIDController
+    private PIDController controller = new PIDController
     (
         climbArmConstants.kP, 
         climbArmConstants.kI, 
-        climbArmConstants.kD, 
-        new TrapezoidProfile.Constraints
-        (
-            climbArmConstants.maxVelocity, 
-            climbArmConstants.maxAcceleration
-        )
+        climbArmConstants.kD
     );
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
@@ -200,16 +194,11 @@ public class ClimbArm extends SubsystemBase {
         climbArmConstants.kG = kGLog.get();
         climbArmConstants.kP = kPLog.get();
 
-        controller = new ProfiledPIDController
+        controller = new PIDController
         (
             climbArmConstants.kP, 
             climbArmConstants.kI, 
-            climbArmConstants.kD, 
-            new TrapezoidProfile.Constraints
-            (
-                climbArmConstants.maxVelocity, 
-                climbArmConstants.maxAcceleration
-            )
+            climbArmConstants.kD
 
         );
 
