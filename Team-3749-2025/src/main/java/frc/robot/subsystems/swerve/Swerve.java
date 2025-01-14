@@ -13,8 +13,6 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
 import frc.robot.commands.auto.AutoConstants;
@@ -23,7 +21,6 @@ import frc.robot.subsystems.swerve.SwerveConstants.DriveConstants;
 import frc.robot.subsystems.swerve.real.*;
 import frc.robot.subsystems.swerve.sim.*;
 import frc.robot.utils.*;
-
 
 /***
  * Subsystem class for swerve drive, used to manage four swerve
@@ -46,7 +43,6 @@ public class Swerve extends SubsystemBase {
 
   private GyroIO gyro;
   private GyroData gyroData = new GyroData();
-  private Field2d m_field = new Field2d();
 
   private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
@@ -147,6 +143,19 @@ public class Swerve extends SubsystemBase {
       "setpoint rotational acceleration",
       0.0);
 
+  public final Pose2d[] ppSetpoints = new Pose2d[] { ToPosConstants.Setpoints.coralBottom,
+      ToPosConstants.Setpoints.coralTop,
+      ToPosConstants.Setpoints.processor,
+      ToPosConstants.Setpoints.reef17,
+      ToPosConstants.Setpoints.reef18,
+      ToPosConstants.Setpoints.reef19,
+      ToPosConstants.Setpoints.reef20,
+      ToPosConstants.Setpoints.reef21,
+      ToPosConstants.Setpoints.reef22
+  };
+
+  private int currentPPSetpointIndex = 0;
+
   public Swerve() {
 
     // if simulation
@@ -182,8 +191,7 @@ public class Swerve extends SubsystemBase {
     resetGyro();
     setOdometry(new Pose2d(1.33, 5.53, new Rotation2d(0)));
     logSetpoints(
-      new SwerveSample(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, new double[] { 0, 0, 0, 0 }, new double[] { 0, 0, 0, 0 }));
-    SmartDashboard.putData(m_field);
+        new SwerveSample(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, new double[] { 0, 0, 0, 0 }, new double[] { 0, 0, 0, 0 }));
   }
 
   /**
@@ -211,7 +219,7 @@ public class Swerve extends SubsystemBase {
     ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(
         DriveConstants.driveKinematics.toChassisSpeeds(states),
         getRotation2d());
-        
+
     return speeds;
   }
 
@@ -329,6 +337,17 @@ public class Swerve extends SubsystemBase {
     utilizeVision = utilize;
   }
 
+  public void cyclePPSetpoint() {
+    currentPPSetpointIndex++;
+    if (currentPPSetpointIndex >= ppSetpoints.length) {
+      currentPPSetpointIndex = 0;
+    }
+  }
+
+  public Pose2d getPPSetpoint() {
+    return ppSetpoints[currentPPSetpointIndex];
+  }
+
   /**
    * Manually sets our odometry position
    * 
@@ -436,13 +455,13 @@ public class Swerve extends SubsystemBase {
 
   }
 
-  public void logSetpoints(PathPlannerTrajectoryState state)
-  {
+  public void logSetpoints(PathPlannerTrajectoryState state) {
     // setpoint logging for automated driving
     Double[] positions = new Double[] { state.pose.getX(), state.pose.getY(), state.heading.getRadians() };
     setpointPositionLog.set(positions);
 
-    Double[] velocities = new Double[] { state.fieldSpeeds.vxMetersPerSecond, state.fieldSpeeds.vyMetersPerSecond, state.fieldSpeeds.omegaRadiansPerSecond};
+    Double[] velocities = new Double[] { state.fieldSpeeds.vxMetersPerSecond, state.fieldSpeeds.vyMetersPerSecond,
+        state.fieldSpeeds.omegaRadiansPerSecond };
     double velocity = 0;
     for (int i = 0; i < 2; i++) {
       velocity += Math.pow(velocities[i], 2);
@@ -451,8 +470,8 @@ public class Swerve extends SubsystemBase {
     setpointVelocityLog.set(velocity);
     setpointRotationalVelocityLog.set(velocities[2]);
 
-    Double[] accelerations = new Double[] {state.feedforwards.accelerationsMPSSq()[0], 
-    state.feedforwards.accelerationsMPSSq()[1], state.feedforwards.accelerationsMPSSq()[2] }; //this might be wrong
+    Double[] accelerations = new Double[] { state.feedforwards.accelerationsMPSSq()[0],
+        state.feedforwards.accelerationsMPSSq()[1], state.feedforwards.accelerationsMPSSq()[2] }; // this might be wrong
     double acceleration = 0;
     for (int i = 0; i < 2; i++) {
       acceleration += Math.pow(accelerations[i], 2);
@@ -460,32 +479,6 @@ public class Swerve extends SubsystemBase {
     acceleration = Math.sqrt(acceleration);
     setpointAccelerationLog.set(acceleration);
     setpointRotationalAccelerationLog.set(accelerations[2]);
-  }
-
-  public Pose2d[] ppSetpoints = new Pose2d[] {ToPosConstants.Setpoints.coralBottom,
-    ToPosConstants.Setpoints.coralTop,
-    ToPosConstants.Setpoints.processor,
-    ToPosConstants.Setpoints.reef17,
-    ToPosConstants.Setpoints.reef18,
-    ToPosConstants.Setpoints.reef19,
-    ToPosConstants.Setpoints.reef20,
-    ToPosConstants.Setpoints.reef21,
-    ToPosConstants.Setpoints.reef22
-  };
-
-  int currentPPSetpointIndex = 0;
-  public void cyclePPSetpoint()
-  {
-    currentPPSetpointIndex++;
-    if(currentPPSetpointIndex >= ppSetpoints.length)
-    {
-      currentPPSetpointIndex = 0;
-    }
-  }
-
-  public Pose2d getPPSetpoint()
-  {
-    return ppSetpoints[currentPPSetpointIndex];
   }
 
   /**
@@ -536,7 +529,6 @@ public class Swerve extends SubsystemBase {
     gyroConnectedLog.set(gyroData.isConnected);
     gyroCalibratingLog.set(gyroData.isCalibrating);
     headingLog.set(getRotation2d().getDegrees());
-    m_field.setRobotPose(getPose());
 
     // velocity and acceleration logging
     double robotVelocity = Math.hypot(getChassisSpeeds().vxMetersPerSecond,
