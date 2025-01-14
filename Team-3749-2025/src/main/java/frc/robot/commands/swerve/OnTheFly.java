@@ -40,7 +40,7 @@ public class OnTheFly extends Command {
         PathPlannerPath path = ToPos.generateDynamicPath(Robot.swerve.getPose(),
         Robot.swerve.getPPSetpoint(),
             Robot.swerve.getMaxDriveSpeed(), SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
-            Robot.swerve.getMaxAngularSpeed(), SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared,new Translation2d(4.5,4),2);
+            Robot.swerve.getMaxAngularSpeed(), SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared,new Translation2d(4.5,4),0.940816);
         try {
             trajectory = path.generateTrajectory(Robot.swerve.getChassisSpeeds(), Robot.swerve.getRotation2d(), 
             RobotConfig.fromGUISettings());
@@ -65,7 +65,27 @@ public class OnTheFly extends Command {
 
     @Override
     public boolean isFinished() {
+        // Check if the timer has exceeded the trajectory duration
+        boolean trajectoryComplete = timer.get() >= trajectory.getTotalTimeSeconds();
+    
+        // Optional: Add a positional tolerance check for more precise completion
+        if (trajectoryComplete) {
+            double positionTolerance = 0.05; // meters
+            double rotationTolerance = 2.0; // degrees
+            
+            Translation2d currentPosition = Robot.swerve.getPose().getTranslation();
+            Translation2d finalPosition = trajectory.getEndState().pose.getTranslation();
+            double positionError = currentPosition.getDistance(finalPosition);
+    
+            double currentRotation = Robot.swerve.getPose().getRotation().getDegrees();
+            double finalRotation = trajectory.getEndState().pose.getRotation().getDegrees();
+            double rotationError = Math.abs(currentRotation - finalRotation);
+    
+            return positionError <= positionTolerance && rotationError <= rotationTolerance;
+        }
+    
         return false;
     }
+    
 
 }
