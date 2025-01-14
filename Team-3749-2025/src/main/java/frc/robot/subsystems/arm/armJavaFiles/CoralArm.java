@@ -212,13 +212,7 @@ public class CoralArm extends SubsystemBase {
     }
 
     private double calculateFeedForward() {
-        // double velocity = data.velocityUnits; // Current velocity of the arm (rad/s)
-        // double acceleration = data.accelerationUnits; // Current acceleration of the arm (rad/s^2)
-    
-        // Keep using Math.cos for position, and add velocity and acceleration terms
         double feedForward = coralArmConstants.kG * Math.cos(data.positionUnits);
-                            //  + coralArmConstants.kV * velocity 
-                            //  + coralArmConstants.kA * acceleration;
         return feedForward;
     }
 
