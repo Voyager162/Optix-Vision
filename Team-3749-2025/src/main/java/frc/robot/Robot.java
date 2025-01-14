@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.arm.armJavaFiles.AlgeaArm;
+import frc.robot.subsystems.arm.armJavaFiles.AlgaeArm;
 import frc.robot.subsystems.arm.armJavaFiles.ClimbArm;
 import frc.robot.subsystems.arm.armJavaFiles.CoralArm;
 import frc.robot.subsystems.example.ExampleSubsystem;
@@ -22,7 +22,7 @@ public class Robot extends TimedRobot {
 
   public static Swerve swerve = new Swerve();
   public static ExampleSubsystem subsystem = new ExampleSubsystem();
-  public static AlgeaArm algeaArm = new AlgeaArm();
+  public static AlgaeArm algaeArm = new AlgaeArm();
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
 

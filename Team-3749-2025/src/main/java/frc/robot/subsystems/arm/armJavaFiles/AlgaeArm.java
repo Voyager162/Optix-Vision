@@ -3,7 +3,7 @@ package frc.robot.subsystems.arm.armJavaFiles;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.ArmIO;
-import frc.robot.subsystems.arm.ArmConstants.algeaArmConstants;
+import frc.robot.subsystems.arm.ArmConstants.algaeArmConstants;
 import frc.robot.subsystems.arm.ArmIO.ArmData;
 import frc.robot.subsystems.arm.real.ArmSparkMax;
 import frc.robot.subsystems.arm.sim.ArmSim;
@@ -21,19 +21,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Weston Gardner
  */
 
-public class AlgeaArm extends SubsystemBase {
+public class AlgaeArm extends SubsystemBase {
 
     private ArmIO armIO;
     private ArmData data = new ArmData();
-    private algeaArmConstants.ArmStates state = algeaArmConstants.ArmStates.STOPPED;
+    private algaeArmConstants.ArmStates state = algaeArmConstants.ArmStates.STOPPED;
 
     private double setPoint;
 
     private PIDController controller = new PIDController
     (
-        algeaArmConstants.kP, 
-        algeaArmConstants.kI, 
-        algeaArmConstants.kD
+        algaeArmConstants.kP, 
+        algaeArmConstants.kI, 
+        algaeArmConstants.kD
     );
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
@@ -49,31 +49,31 @@ public class AlgeaArm extends SubsystemBase {
 
     private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
-    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Algea Arm", 17, 0));
+    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Algae Arm", 17, 0));
 
     public ShuffleData<Double> kGLog = new ShuffleData<Double>(this.getName(), "kG", 0.0);
     public ShuffleData<Double> kPLog = new ShuffleData<Double>(this.getName(), "kP", 0.0);
 
 
 
-    public AlgeaArm() {
+    public AlgaeArm() {
         if (Robot.isSimulation()) {
 
             armIO = new ArmSim
             (1, 
-            algeaArmConstants.armGearing, 
-            algeaArmConstants.momentOfInertia, 
-            algeaArmConstants.armLength_meters, 
-            algeaArmConstants.armMinAngle_degrees, 
-            algeaArmConstants.armMaxAngle_degrees, 
-            algeaArmConstants.simulateGravity, 
-            algeaArmConstants.armStartingAngle_degrees
+            algaeArmConstants.armGearing, 
+            algaeArmConstants.momentOfInertia, 
+            algaeArmConstants.armLength_meters, 
+            algaeArmConstants.armMinAngle_degrees, 
+            algaeArmConstants.armMaxAngle_degrees, 
+            algaeArmConstants.simulateGravity, 
+            algaeArmConstants.armStartingAngle_degrees
             );
 
         } else {
-            armIO = new ArmSparkMax(algeaArmConstants.motorId);
+            armIO = new ArmSparkMax(algaeArmConstants.motorId);
         }
-        SmartDashboard.putData("Algea Arm Mechanism", mechanism2d);
+        SmartDashboard.putData("Algae Arm Mechanism", mechanism2d);
     }
 
     public double getPositionRad() {
@@ -84,7 +84,7 @@ public class AlgeaArm extends SubsystemBase {
         return data.velocityUnits;
     }
 
-    public algeaArmConstants.ArmStates getState() {
+    public algaeArmConstants.ArmStates getState() {
         return state;
     }
 
@@ -92,11 +92,11 @@ public class AlgeaArm extends SubsystemBase {
 
         switch (state) {
             case STOWED:
-                return data.positionUnits == algeaArmConstants.stowSetPoint_rad;
+                return data.positionUnits == algaeArmConstants.stowSetPoint_rad;
             case PROCESSOR:
-                return data.positionUnits == algeaArmConstants.processorSetPoint_rad;
-            case ALGEA_PICKUP:
-                return data.positionUnits == algeaArmConstants.algeaPickUpSetPoint_rad;
+                return data.positionUnits == algaeArmConstants.processorSetPoint_rad;
+            case ALGAE_PICKUP:
+                return data.positionUnits == algaeArmConstants.algaePickUpSetPoint_rad;
             case MOVING_DOWN:
                 return data.velocityUnits < 0;
             case MOVING_UP:
@@ -108,7 +108,7 @@ public class AlgeaArm extends SubsystemBase {
         }
     }
 
-    public void setState(algeaArmConstants.ArmStates state) {
+    public void setState(algaeArmConstants.ArmStates state) {
         this.state = state;
     }
 
@@ -129,8 +129,8 @@ public class AlgeaArm extends SubsystemBase {
             case PROCESSOR:
                 runStateProccessor();
                 break;
-            case ALGEA_PICKUP:
-                runStateAlgeaPickup();
+            case ALGAE_PICKUP:
+                runStateAlgaePickup();
                 break;
             case STOPPED:
                 runStateStopped();
@@ -147,17 +147,17 @@ public class AlgeaArm extends SubsystemBase {
     }
 
     private void runStateStowed() {
-        setPoint = algeaArmConstants.stowSetPoint_rad;
+        setPoint = algaeArmConstants.stowSetPoint_rad;
         setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
     }
 
     private void runStateProccessor() {
-        setPoint = algeaArmConstants.processorSetPoint_rad;
+        setPoint = algaeArmConstants.processorSetPoint_rad;
         setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
     }
 
-    private void runStateAlgeaPickup() {
-        setPoint = algeaArmConstants.algeaPickUpSetPoint_rad;
+    private void runStateAlgaePickup() {
+        setPoint = algaeArmConstants.algaePickUpSetPoint_rad;
         setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
     }
 
@@ -190,14 +190,14 @@ public class AlgeaArm extends SubsystemBase {
     @Override
     public void periodic() {
 
-        algeaArmConstants.kG = kGLog.get();
-        algeaArmConstants.kP = kPLog.get();
+        algaeArmConstants.kG = kGLog.get();
+        algaeArmConstants.kP = kPLog.get();
 
         controller = new PIDController
         (
-            algeaArmConstants.kP, 
-            algeaArmConstants.kI, 
-            algeaArmConstants.kD
+            algaeArmConstants.kP, 
+            algaeArmConstants.kI, 
+            algaeArmConstants.kD
         );
 
         armIO.updateData(data);
@@ -208,7 +208,7 @@ public class AlgeaArm extends SubsystemBase {
     }
 
     private double calculateFeedForward() {
-        double feedForward = algeaArmConstants.kG * Math.cos(data.positionUnits);
+        double feedForward = algaeArmConstants.kG * Math.cos(data.positionUnits);
         return feedForward;
     }
 

@@ -9,7 +9,7 @@ import frc.robot.utils.UtilityFunctions;
 public class Climb extends Command {
 
     public Climb() {
-        super.addRequirements(Robot.algeaArm);
+        super.addRequirements(Robot.algaeArm);
     }
 
     @Override

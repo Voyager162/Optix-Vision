@@ -9,7 +9,7 @@ package frc.robot.subsystems.arm;
 
 public class ArmConstants {
 
-    public class algeaArmConstants {
+    public class algaeArmConstants {
         public static final int motorId = 0;
         public static final int numMotors = 1;
 
@@ -34,7 +34,7 @@ public class ArmConstants {
 
         public static final double stowSetPoint_rad = 80 * Math.PI / 180; // 80 degrees
         public static final double processorSetPoint_rad = Math.PI / 2; // 90 degrees
-        public static final double algeaPickUpSetPoint_rad = 160 * Math.PI / 180; // 160 degrees
+        public static final double algaePickUpSetPoint_rad = 160 * Math.PI / 180; // 160 degrees
 
         public static final double maxVelocity = 0.0;
         public static final double maxAcceleration = 0.0;
@@ -47,7 +47,7 @@ public class ArmConstants {
             MOVING_UP,
             STOWED,
             PROCESSOR,
-            ALGEA_PICKUP,
+            ALGAE_PICKUP,
             STOPPED
         }
     }
