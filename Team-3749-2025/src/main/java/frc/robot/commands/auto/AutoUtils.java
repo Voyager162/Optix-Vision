@@ -24,7 +24,8 @@ public class AutoUtils {
 
     private static AutoFactory factory;
     private static AutoChooser chooser;
-    private static ChoreoAllianceFlipUtil.Flipper flipper = ChoreoAllianceFlipUtil.getFlipper();
+
+    public static ChoreoAllianceFlipUtil.Flipper flipper = ChoreoAllianceFlipUtil.getFlipper();
 
     /**
      * run all necessary auto setup methods
