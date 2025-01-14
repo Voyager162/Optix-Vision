@@ -27,7 +27,10 @@ public class setElevatorState extends Command {
         /*if (Robot.elevator.getIsStableState()) {
             Robot.elevator.setState(ElevatorStates.STOP);
         }*/
+        
         Robot.elevator.setState(states);
+
+        
     }
 
     @Override
