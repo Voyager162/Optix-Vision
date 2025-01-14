@@ -23,10 +23,9 @@ public interface ElevatorIO {
         public double tempCelcius = 0;
     }
 
-    public default void updateData(ElevatorData data){
+    public default void updateData(ElevatorData data) {
     };
 
-    public default void setVoltage(double volts){
+    public default void setVoltage(double volts) {
     };
 }
-

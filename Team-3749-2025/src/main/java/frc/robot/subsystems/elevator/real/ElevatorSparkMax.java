@@ -15,6 +15,7 @@ import frc.robot.utils.MiscConstants.SimConstants;
 /**
  * SparkMax for elevator subsystem
  * A
+ * 
  * @author Dhyan Soni
  */
 
@@ -28,10 +29,11 @@ public class ElevatorSparkMax implements ElevatorIO {
     private double previousVelocity = 0;
     private double velocity = 0;
 
-    public ElevatorSparkMax (){
+    public ElevatorSparkMax() {
         System.out.println("[Init] Creating Elevator");
 
-        leftConfig.smartCurrentLimit(30, 50);
+        leftConfig.smartCurrentLimit(ElevatorConstants.ElevatorSpecs.stallLimit,
+                ElevatorConstants.ElevatorSpecs.freeLimit);
         leftConfig.encoder.inverted(false);
         leftConfig.inverted(false);
         leftConfig.idleMode(IdleMode.kBrake);
@@ -39,7 +41,8 @@ public class ElevatorSparkMax implements ElevatorIO {
         leftConfig.encoder.velocityConversionFactor(2 * Math.PI / 60.0);
         leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        leftConfig.smartCurrentLimit(30, 50);
+        leftConfig.smartCurrentLimit(ElevatorConstants.ElevatorSpecs.stallLimit,
+                ElevatorConstants.ElevatorSpecs.freeLimit);
         rightConfig.encoder.inverted(true);
         rightConfig.inverted(true);
         leftConfig.idleMode(IdleMode.kBrake);
@@ -48,7 +51,7 @@ public class ElevatorSparkMax implements ElevatorIO {
         rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public void setIdleMode(IdleMode idleMode){
+    public void setIdleMode(IdleMode idleMode) {
         leftConfig.idleMode(idleMode);
         rightConfig.idleMode(idleMode);
         leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -72,10 +75,10 @@ public class ElevatorSparkMax implements ElevatorIO {
     }
 
     @Override
-    public void setVoltage(double volts){
+    public void setVoltage(double volts) {
         inputVolts = MathUtil.clamp(volts, -12, 12);
         // inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
         leftMotor.setVoltage(inputVolts);
         rightMotor.setVoltage(inputVolts);
-    } 
+    }
 }

@@ -19,17 +19,16 @@ public class ElevatorSimulation implements ElevatorIO {
     private double velocity = 0;
 
     private final ElevatorSim elevatorSimSystem = new ElevatorSim(
-        DCMotor.getNEO(2),
-        ElevatorConstants.ElevatorSpecs.gearing,
-        ElevatorConstants.ElevatorSpecs.carriageMassKg,
-        ElevatorConstants.ElevatorSpecs.drumRadiusMeters,
-        ElevatorConstants.ElevatorSpecs.minHeightMeters,
-        ElevatorConstants.ElevatorSpecs.maxHeightMeters,
-        true,
-        ElevatorConstants.ElevatorSpecs.startingHeightMeters
-    );
+            DCMotor.getNEO(2),
+            ElevatorConstants.ElevatorSpecs.gearing,
+            ElevatorConstants.ElevatorSpecs.carriageMassKg,
+            ElevatorConstants.ElevatorSpecs.drumRadiusMeters,
+            ElevatorConstants.ElevatorSpecs.minHeightMeters,
+            ElevatorConstants.ElevatorSpecs.maxHeightMeters,
+            true,
+            ElevatorConstants.ElevatorSpecs.startingHeightMeters);
 
-    public ElevatorSimulation (){
+    public ElevatorSimulation() {
         System.out.println("[Init] Creating ElevatorSimulation");
     }
 
@@ -40,7 +39,8 @@ public class ElevatorSimulation implements ElevatorIO {
         velocity = elevatorSimSystem.getVelocityMetersPerSecond();
         data.positionMeters = elevatorSimSystem.getPositionMeters();
         data.velocityUnits = elevatorSimSystem.getVelocityMetersPerSecond();
-        data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;;
+        data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
+        ;
         data.inputVolts = inputVolts;
         data.appliedVolts = inputVolts;
         data.currentAmps = elevatorSimSystem.getCurrentDrawAmps();
@@ -48,9 +48,9 @@ public class ElevatorSimulation implements ElevatorIO {
     }
 
     @Override
-    public void setVoltage(double volts){
+    public void setVoltage(double volts) {
         inputVolts = MathUtil.clamp(volts, -12, 12);
         // inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
         elevatorSimSystem.setInputVoltage(inputVolts);
-    } 
+    }
 }

@@ -8,6 +8,7 @@ package frc.robot.subsystems.elevator;
  */
 
 import edu.wpi.first.math.util.Units;
+
 public class ElevatorConstants {
     public static class ElevatorSpecs {
         public static final double gearing = 6.0;
@@ -18,9 +19,11 @@ public class ElevatorConstants {
         // public static final boolean simulateGravity = true;
         public static final double startingHeightMeters = 0;
 
-        public static boolean[] isInverted = {true, false};
-        public static int[] motorIds = {1,2};
-    } 
+        public static boolean[] isInverted = { true, false };
+        public static int[] motorIds = { 1, 2 };
+        public static int stallLimit = 30;
+        public static int freeLimit = 50;
+    }
 
     public static class ElevatorControl {
         public static final double kPSim = 0.02;
@@ -31,11 +34,11 @@ public class ElevatorConstants {
         public static final double kASim = 0;
         public static final double maxV = 4.139;
         public static final double maxA = 3.988; // change in velocity / seconds
-        
+
         // public static final double kSSim = 0;
     }
 
-    public enum ElevatorStates{
+    public enum ElevatorStates {
         STOP,
         L1,
         L2,
@@ -44,6 +47,7 @@ public class ElevatorConstants {
         MAX,
         STOW
     }
+
     public static class stateHeights {
         public static final double l1Height = Units.inchesToMeters(18);
         public static final double l2Height = Units.inchesToMeters(31.875);

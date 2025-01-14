@@ -35,12 +35,6 @@ public class Elevator extends SubsystemBase {
             ElevatorConstants.ElevatorControl.kDSim,
             new TrapezoidProfile.Constraints(ElevatorConstants.ElevatorControl.maxV,
                     ElevatorConstants.ElevatorControl.maxA));
-    // maybe later
-    // private ElevatorFeedforward feedForward = new
-    // ElevatorFeedforward(ElevatorConstants.ElevatorControl.kASim,
-    // ElevatorConstants.ElevatorControl.kGSim,
-    // ElevatorConstants.ElevatorControl.kSSim,
-    // ElevatorConstants.ElevatorControl.kASim);
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position meters", 0.0);
@@ -51,13 +45,17 @@ public class Elevator extends SubsystemBase {
     private ShuffleData<Double> currentAmpsLog = new ShuffleData<Double>("Elevator", "current amps", 0.0);
     private ShuffleData<Double> tempCelciusLog = new ShuffleData<Double>("Elevator", "temp celcius", 0.0);
 
-    // Temporary?
+    // For tuning on real
     // private ShuffleData<Double> kPData = new ShuffleData<Double>("Elevator",
     // "kPData", ElevatorConstants.ElevatorControl.kPSim);
     // private ShuffleData<Double> kDData = new ShuffleData<Double>("Elevator",
     // "kDData", ElevatorConstants.ElevatorControl.kDSim);
     // private ShuffleData<Double> kGData = new ShuffleData<Double>("Elevator",
     // "kGData", ElevatorConstants.ElevatorControl.kGSim);
+    // private ShuffleData<Double> kVData = new ShuffleData<Double>("Elevator",
+    // "kVData", ElevatorConstants.ElevatorControl.kVSim);
+    // private ShuffleData<Double> kAData = new ShuffleData<Double>("Elevator",
+    // "kAData", ElevatorConstants.ElevatorControl.kASim);
 
     private Mechanism2d mech = new Mechanism2d(3, 3);
     private MechanismRoot2d root = mech.getRoot("elevator", 2, 0);
@@ -87,23 +85,27 @@ public class Elevator extends SubsystemBase {
     }
 
     // returns true when the state is reached
-    //fix this later
+    // fix this later
     public boolean getIsStableState() {
         switch (state) {
             case L1:
-                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.stateHeights.l1Height, data.positionMeters); 
+                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.stateHeights.l1Height,
+                        data.positionMeters);
             case L2:
-                return UtilityFunctions.withinMargin(0.01, data.positionMeters, ElevatorConstants.stateHeights.l2Height);
+                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
+                        ElevatorConstants.stateHeights.l2Height);
             case L3:
-                return UtilityFunctions.withinMargin(0.01, data.positionMeters, ElevatorConstants.stateHeights.l3Height);
+                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
+                        ElevatorConstants.stateHeights.l3Height);
             case L4:
-                return UtilityFunctions.withinMargin(0.01, data.positionMeters, ElevatorConstants.stateHeights.l4Height);
+                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
+                        ElevatorConstants.stateHeights.l4Height);
             default:
                 return false;
         }
     }
 
-    public void setVoltage(double volts){
+    public void setVoltage(double volts) {
         elevatorio.setVoltage(volts);
     }
 
@@ -181,7 +183,7 @@ public class Elevator extends SubsystemBase {
 
         elevatorio.setVoltage(ffVoltage + pidVoltage
                 + ElevatorConstants.ElevatorControl.kGSim);
-        
+
         prevSetpointVelocity = pidControllerState.velocity;
     }
 
@@ -215,7 +217,6 @@ public class Elevator extends SubsystemBase {
         System.out.println(state);
         runState();
         logData();
-        // pidController.setP(kPData.get());
-        // pidController.setD(kDData.get());
+        // pidController.setPID(kPData.get(),0,kDData.get())
     }
 }
