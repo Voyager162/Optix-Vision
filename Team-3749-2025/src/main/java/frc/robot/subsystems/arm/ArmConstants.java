@@ -13,14 +13,14 @@ public class ArmConstants {
         public static final int motorId = 0;
         public static final int numMotors = 1;
 
-        public static final int armLength_inches = 17;
+        public static final double armLength_inches = 25.47; // from cad
         public static final double armLength_meters = armLength_inches / 39.3701; // 0.4318
 
         public static final int armMinAngle_degrees = 80;
         public static final int armMaxAngle_degrees = 210;
         public static final int armStartingAngle_degrees = 90;
 
-        public static final double armMass_kg = 50.92; // rough estimate for a volume of 395.071 in^3, and the material being polycarbonate steel, density = 7.86 g/cm^3
+        public static final double armMass_kg = 1.5952844;
         public static final double armGearing = 49; // rough estimate
 
         public static double kP = 4;
@@ -36,10 +36,10 @@ public class ArmConstants {
         public static final double processorSetPoint_rad = Math.PI / 2; // 90 degrees
         public static final double algeaPickUpSetPoint_rad = 160 * Math.PI / 180; // 160 degrees
 
-        public static final double maxVelocity = 2.4223698370699234;
+        public static final double maxVelocity = 0.0;
         public static final double maxAcceleration = 0.0;
 
-        public static final double momentOfInertia = 0.775; // from last years MOI
+        public static final double momentOfInertia = -57.929; // from cad
         public static final boolean simulateGravity = true;
 
         public enum ArmStates {
@@ -123,7 +123,7 @@ public class ArmConstants {
         public static final double PrepareForClimbSetPoint_Rad = Math.PI / 2; // 90
         public static final double climbSetPoint_rad = 20 * Math.PI / 180; // 20
 
-        public static final double maxVelocity = 2.4223698370699234;
+        public static final double maxVelocity = 0.0;
         public static final double maxAcceleration = 0.0;
 
         public static final double momentOfInertia = 0.775;
