@@ -36,13 +36,12 @@ public class Elevator extends SubsystemBase {
             ElevatorConstants.ElevatorControl.kDSim,
             new TrapezoidProfile.Constraints(ElevatorConstants.ElevatorControl.maxV,
                     ElevatorConstants.ElevatorControl.maxA));
-    
+
     private ElevatorFeedforward feedforward = new ElevatorFeedforward(
-        ElevatorConstants.ElevatorControl.kSSim,
-        ElevatorConstants.ElevatorControl.kGSim,
-        ElevatorConstants.ElevatorControl.kVSim,
-        ElevatorConstants.ElevatorControl.kASim
-        );
+            ElevatorConstants.ElevatorControl.kSSim,
+            ElevatorConstants.ElevatorControl.kGSim,
+            ElevatorConstants.ElevatorControl.kVSim,
+            ElevatorConstants.ElevatorControl.kASim);
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position meters", 0.0);
@@ -177,11 +176,11 @@ public class Elevator extends SubsystemBase {
     }
 
     private void moveToGoal() {
-        State state = pidController.getSetpoint();
+        State firstState = pidController.getSetpoint();
         double pidVoltage = pidController.calculate(getPositionMeters());
 
         State nextState = pidController.getSetpoint();
-        double ffVoltage = feedforward.calculate(state.velocity,nextState.velocity);
+        double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
 
         elevatorio.setVoltage(ffVoltage + pidVoltage);
     }
@@ -213,7 +212,6 @@ public class Elevator extends SubsystemBase {
     public void periodic() {
         elevatorio.updateData(data);
 
-        System.out.println(state);
         runState();
         logData();
         // pidController.setPID(kPData.get(),0,kDData.get())

@@ -14,7 +14,6 @@ import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
  * SparkMax for elevator subsystem
- * A
  * 
  * @author Dhyan Soni
  */
