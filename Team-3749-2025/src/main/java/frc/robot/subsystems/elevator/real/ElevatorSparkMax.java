@@ -10,8 +10,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO;
-import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorSpecs;
-import frc.robot.subsystems.elevator.ElevatorIO.ElevatorData;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
