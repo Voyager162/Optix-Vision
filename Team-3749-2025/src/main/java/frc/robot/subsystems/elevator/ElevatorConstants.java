@@ -15,27 +15,24 @@ public class ElevatorConstants {
         public static final double carriageMassKg = 12;
         public static final double drumRadiusMeters = Units.inchesToMeters(2);
         public static final double minHeightMeters = 0;
-        public static final double maxHeightMeters = Units.feetToMeters(25); // remeasure maxV and A
+        public static final double maxHeightMeters = Units.feetToMeters(6); // remeasure maxV and A
         // public static final boolean simulateGravity = true;
         public static final double startingHeightMeters = 0;
 
-        public static boolean[] isInverted = { true, false };
-        public static int[] motorIds = { 1, 2 };
+        public static int[] motorIds = {1, 2};
         public static int stallLimit = 30;
         public static int freeLimit = 50;
     }
 
     public static class ElevatorControl {
         public static final double kPSim = 0.02;
-        public static final double kDSim = 0; // 1/20 of kP for now
+        public static final double kDSim = 0;
         public static final double kSSim = 0;
         public static final double kGSim = 2.2977;
         public static final double kVSim = 2.35; // 12 - 2.3 / 4.139
         public static final double kASim = 0;
         public static final double maxV = 4.139;
         public static final double maxA = 3.988; // change in velocity / seconds
-
-        // public static final double kSSim = 0;
     }
 
     public enum ElevatorStates {

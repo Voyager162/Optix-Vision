@@ -2,7 +2,6 @@ package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
@@ -18,7 +17,6 @@ import frc.robot.subsystems.elevator.real.ElevatorSparkMax;
 import frc.robot.subsystems.elevator.sim.ElevatorSimulation;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
-import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
  * Elevator subsystem
