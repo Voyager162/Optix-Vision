@@ -1,6 +1,7 @@
 package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
@@ -35,6 +36,11 @@ public class Elevator extends SubsystemBase {
             ElevatorConstants.ElevatorControl.kDSim,
             new TrapezoidProfile.Constraints(ElevatorConstants.ElevatorControl.maxV,
                     ElevatorConstants.ElevatorControl.maxA));
+    
+    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(
+        ElevatorConstants.ElevatorControl.kSSim,
+        ElevatorConstants.ElevatorControl.kVSim,
+        ElevatorConstants.ElevatorControl.kASim);
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position meters", 0.0);
@@ -62,7 +68,7 @@ public class Elevator extends SubsystemBase {
     private MechanismLigament2d elevatorMech = root
             .append(new MechanismLigament2d("elevator", Units.feetToMeters(3.25), 90));
 
-    private double prevSetpointVelocity = 0;
+    // private double prevSetpointVelocity = 0;
 
     public Elevator() {
         if (Robot.isSimulation()) {
@@ -175,16 +181,19 @@ public class Elevator extends SubsystemBase {
         State pidControllerState = pidController.getSetpoint();
         // pidControllerState.velocity
 
-        double accelerationSetpoint = (pidControllerState.velocity - prevSetpointVelocity) / 0.02;
+        // double accelerationSetpoint = (pidControllerState.velocity - prevSetpointVelocity) / 0.02;
 
         double pidVoltage = pidController.calculate(getPositionMeters());
-        double ffVoltage = pidControllerState.velocity * ElevatorConstants.ElevatorControl.kVSim +
-                accelerationSetpoint * ElevatorConstants.ElevatorControl.kASim;
+        // does pidcontroller update here to get the new setpoint?
+        State nextPidControllerState = pidController.getSetpoint();
+        double ffVoltage = feedforward.calculate(pidControllerState.velocity,nextPidControllerState.velocity);
+        // double ffVoltage = pidControllerState.velocity * ElevatorConstants.ElevatorControl.kVSim +
+        //         accelerationSetpoint * ElevatorConstants.ElevatorControl.kASim;
 
         elevatorio.setVoltage(ffVoltage + pidVoltage
                 + ElevatorConstants.ElevatorControl.kGSim);
 
-        prevSetpointVelocity = pidControllerState.velocity;
+        // prevSetpointVelocity = pidControllerState.velocity;
     }
 
     private void runStateStop() {
