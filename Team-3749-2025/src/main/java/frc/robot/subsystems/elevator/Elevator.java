@@ -1,5 +1,6 @@
 package frc.robot.subsystems.elevator;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -17,6 +18,7 @@ import frc.robot.subsystems.elevator.real.ElevatorSparkMax;
 import frc.robot.subsystems.elevator.sim.ElevatorSimulation;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
+import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
  * Elevator subsystem
@@ -37,10 +39,12 @@ public class Elevator extends SubsystemBase {
             new TrapezoidProfile.Constraints(ElevatorConstants.ElevatorControl.maxV,
                     ElevatorConstants.ElevatorControl.maxA));
     
-    private SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(
+    private ElevatorFeedforward feedforward = new ElevatorFeedforward(
         ElevatorConstants.ElevatorControl.kSSim,
+        ElevatorConstants.ElevatorControl.kGSim,
         ElevatorConstants.ElevatorControl.kVSim,
-        ElevatorConstants.ElevatorControl.kASim);
+        ElevatorConstants.ElevatorControl.kASim
+        );
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position meters", 0.0);
@@ -190,8 +194,7 @@ public class Elevator extends SubsystemBase {
         // double ffVoltage = pidControllerState.velocity * ElevatorConstants.ElevatorControl.kVSim +
         //         accelerationSetpoint * ElevatorConstants.ElevatorControl.kASim;
 
-        elevatorio.setVoltage(ffVoltage + pidVoltage
-                + ElevatorConstants.ElevatorControl.kGSim);
+        elevatorio.setVoltage(ffVoltage + pidVoltage);
 
         // prevSetpointVelocity = pidControllerState.velocity;
     }
