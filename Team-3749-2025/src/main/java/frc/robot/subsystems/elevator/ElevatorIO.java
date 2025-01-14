@@ -11,7 +11,13 @@ public interface ElevatorIO {
         public double positionMeters = 0;
         public double velocityUnits = 0;
         public double accelerationUnits = 0;
+        public double leftCurrentAmps = 0;
+        public double rightCurrentAmps = 0;
         public double inputVolts = 0;
+        public double leftAppliedVolts = 0;
+        public double rightAppliedVolts = 0;
+        public double leftTempCelcius = 0;
+        public double rightTempCelcius = 0;
         public double appliedVolts = 0;
         public double currentAmps = 0;
         public double tempCelcius = 0;

@@ -56,20 +56,24 @@ public class ElevatorSparkMax implements ElevatorIO {
     @Override
     public void updateData(ElevatorData data) {
         previousVelocity = velocity;
-        velocity = motor.getEncoder().getVelocity();
-        data.positionMeters = motor.getEncoder().getPosition();
+        velocity = (leftMotor.getEncoder().getVelocity() + rightMotor.getEncoder().getVelocity()) / 2;
+        data.positionMeters = (leftMotor.getEncoder().getPosition() + rightMotor.getEncoder().getVelocity()) / 2;
         data.velocityUnits = velocity;
         data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
-        data.currentAmps = motor.getOutputCurrent();
+        data.leftCurrentAmps = leftMotor.getOutputCurrent();
+        data.rightCurrentAmps = rightMotor.getOutputCurrent();
         data.inputVolts = inputVolts;
-        data.appliedVolts = motor.getBusVoltage() * motor.getAppliedOutput();
-        data.tempCelcius = motor.getMotorTemperature();
+        data.leftAppliedVolts = leftMotor.getBusVoltage() * leftMotor.getAppliedOutput();
+        data.rightAppliedVolts = rightMotor.getBusVoltage() * rightMotor.getAppliedOutput();
+        data.leftTempCelcius = leftMotor.getMotorTemperature();
+        data.rightTempCelcius = rightMotor.getMotorTemperature();
     }
 
     @Override
     public void setVoltage(double volts){
         inputVolts = MathUtil.clamp(volts, -12, 12);
         // inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
-        motor.setVoltage(inputVolts);
+        leftMotor.setVoltage(inputVolts);
+        rightMotor.setVoltage(inputVolts);
     } 
 }
