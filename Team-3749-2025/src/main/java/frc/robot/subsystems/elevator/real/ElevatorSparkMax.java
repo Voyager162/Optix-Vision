@@ -3,6 +3,7 @@ package frc.robot.subsystems.elevator.real;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -23,6 +24,8 @@ public class ElevatorSparkMax implements ElevatorIO {
     private final SparkMax rightMotor = new SparkMax(ElevatorConstants.ElevatorSpecs.motorIds[1], MotorType.kBrushless);
     private SparkMaxConfig leftConfig = new SparkMaxConfig();
     private SparkMaxConfig rightConfig = new SparkMaxConfig();
+
+    private AbsoluteEncoder absoluteEncoder;
 
     private double inputVolts = 0;
     private double previousVelocity = 0;
