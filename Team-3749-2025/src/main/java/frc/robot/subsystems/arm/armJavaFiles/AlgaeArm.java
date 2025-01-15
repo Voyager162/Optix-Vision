@@ -16,18 +16,21 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * Subsystem class for the arm
- * 
+ * Subsystem class for the arm.
+ * Handles control, logging, and state transitions for the Algae Arm subsystem.
  * @author Weston Gardner
  */
 
 public class AlgaeArm extends SubsystemBase {
+    
+    // Arm I/O and state management
 
     private ArmIO armIO;
     private ArmData data = new ArmData();
     private algaeArmConstants.ArmStates state = algaeArmConstants.ArmStates.STOPPED;
 
     private double setPoint;
+    // PID Controller and setpoint for arm position
 
     private PIDController controller = new PIDController
     (
@@ -35,6 +38,8 @@ public class AlgaeArm extends SubsystemBase {
         algaeArmConstants.kI, 
         algaeArmConstants.kD
     );
+    
+    // Logging variables
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     public ShuffleData<Double> positionUnitsLog = new ShuffleData<Double>(this.getName(), "position units", 0.0);
@@ -46,15 +51,22 @@ public class AlgaeArm extends SubsystemBase {
     public ShuffleData<Double> tempCelciusLog = new ShuffleData<Double>(this.getName(), "temp celcius", 0.0);
 
     private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
+    
+    // Visualization for SmartDashboard
 
     private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
     private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Algae Arm", 17, 0));
+    
+    // Constants logging
 
     public ShuffleData<Double> kGLog = new ShuffleData<Double>(this.getName(), "kG", 0.0);
     public ShuffleData<Double> kPLog = new ShuffleData<Double>(this.getName(), "kP", 0.0);
 
-
+    /**
+     * Constructor for the AlgaeArm subsystem.
+     * Determines if simulation or real hardware is used.
+     */
 
     public AlgaeArm() {
         if (Robot.isSimulation()) {
@@ -75,19 +87,27 @@ public class AlgaeArm extends SubsystemBase {
         }
         SmartDashboard.putData("Algae Arm Mechanism", mechanism2d);
     }
-
+     /**
+     * @return the current arm position in radians.
+     */
     public double getPositionRad() {
         return data.positionUnits;
     }
-
+    /**
+     * @return the current arm velocity in radians per second.
+     */
     public double getVelocityRadPerSec() {
         return data.velocityUnits;
     }
-
+    /**
+     * @return the current arm state.
+     */
     public algaeArmConstants.ArmStates getState() {
         return state;
     }
-
+    /**
+     * @return whether the arm is in a stable state.
+     */
     public boolean getIsStableState() {
 
         switch (state) {
@@ -107,20 +127,30 @@ public class AlgaeArm extends SubsystemBase {
                 return false;
         }
     }
-
+    /**
+     * Sets the current state of the arm.
+     * @param state The new state for the arm.
+     */
     public void setState(algaeArmConstants.ArmStates state) {
         this.state = state;
     }
-
+    /**
+     * @return the applied voltage to the arm motor.
+     */
     public double getAppliedVoltage() {
         return data.appliedVolts;
     }
-
+    /**
+     * Sets the voltage applied to the arm motor.
+     * @param volts The voltage to apply.
+     */
     public void setVoltage(double volts) {
         // this.voltage = volts;
         armIO.setVoltage(volts);
     }
-
+    /**
+     * Runs the logic for the current arm state.
+     */
     private void runState() {
         switch (state) {
             case STOWED:
@@ -172,7 +202,9 @@ public class AlgaeArm extends SubsystemBase {
     private void runStateStopped() {
         setVoltage(0 + calculateFeedForward());
     }
-
+    /**
+     * Logs data to Shuffleboard.
+     */
     private void logData() {
         currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
         positionUnitsLog.set(data.positionUnits);
@@ -186,7 +218,9 @@ public class AlgaeArm extends SubsystemBase {
 
         stateLog.set(state.name());
     }
-
+    /**
+     * Periodic method for updating arm behavior.
+     */
     @Override
     public void periodic() {
 
@@ -206,7 +240,7 @@ public class AlgaeArm extends SubsystemBase {
 
         runState();
     }
-
+    // Feedforward Method for kG values, will add kA and kV later for feedforward
     private double calculateFeedForward() {
         double feedForward = algaeArmConstants.kG * Math.cos(data.positionUnits);
         return feedForward;
