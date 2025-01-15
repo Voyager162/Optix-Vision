@@ -24,6 +24,8 @@ public class ElevatorConstants {
         public static int[] motorIds = { 1, 2 };
         public static int stallLimit = 30;
         public static int freeLimit = 50;
+
+        public static int zeroOffset = 0;
     }
 
     public static class ElevatorControl {

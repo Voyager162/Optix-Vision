@@ -1,9 +1,9 @@
 package frc.robot.subsystems.elevator.real;
 
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -43,14 +43,13 @@ public class ElevatorSparkMax implements ElevatorIO {
         leftConfig.encoder.velocityConversionFactor(2 * Math.PI / 60.0);
         leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        rightConfig.smartCurrentLimit(ElevatorConstants.ElevatorSpecs.stallLimit,
-                ElevatorConstants.ElevatorSpecs.freeLimit);
+        rightConfig.apply(leftConfig);
         rightConfig.encoder.inverted(true);
         rightConfig.inverted(true);
-        rightConfig.idleMode(IdleMode.kBrake);
-        rightConfig.encoder.positionConversionFactor(2 * Math.PI);
-        rightConfig.encoder.velocityConversionFactor(2 * Math.PI / 60.0);
         rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        absoluteEncoder = leftMotor.getAbsoluteEncoder();
+        // absoluteEncoder.setZeroOffset(ElevatorConstants.ElevatorSpecs.zeroOffset);
     }
 
     public void setIdleMode(IdleMode idleMode) {
@@ -64,7 +63,8 @@ public class ElevatorSparkMax implements ElevatorIO {
     public void updateData(ElevatorData data) {
         previousVelocity = velocity;
         velocity = (leftMotor.getEncoder().getVelocity() + rightMotor.getEncoder().getVelocity()) / 2;
-        data.positionMeters = (leftMotor.getEncoder().getPosition() + rightMotor.getEncoder().getVelocity()) / 2;
+        data.positionMeters = (leftMotor.getEncoder().getPosition() + rightMotor.getEncoder().getVelocity()) / 2
+                + absoluteEncoder.getPosition();
         data.velocityUnits = velocity;
         data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
         data.leftCurrentAmps = leftMotor.getOutputCurrent();
