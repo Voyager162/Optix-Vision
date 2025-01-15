@@ -47,7 +47,7 @@ public class ElevatorSparkMax implements ElevatorIO {
         rightConfig.idleMode(IdleMode.kBrake);
         rightConfig.encoder.positionConversionFactor(2 * Math.PI);
         rightConfig.encoder.velocityConversionFactor(2 * Math.PI / 60.0);
-        rightConfig.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     public void setIdleMode(IdleMode idleMode) {

@@ -135,9 +135,9 @@ public class Elevator extends SubsystemBase {
                 setGoal(6);
                 break;
             case STOW:
-                default:
-                    setGoal(0);
-                    break;
+            default:
+                setGoal(0);
+                break;
         }
     }
 
