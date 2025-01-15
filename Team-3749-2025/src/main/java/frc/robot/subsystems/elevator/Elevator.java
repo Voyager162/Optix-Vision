@@ -67,7 +67,7 @@ public class Elevator extends SubsystemBase {
     private Mechanism2d mech = new Mechanism2d(3, 3);
     private MechanismRoot2d root = mech.getRoot("elevator", 2, 0);
     private MechanismLigament2d elevatorMech = root
-            .append(new MechanismLigament2d("elevator", Units.feetToMeters(3.25), 90));
+            .append(new MechanismLigament2d("elevator", ElevatorConstants.ElevatorSpecs.baseHeight, 90));
 
     public Elevator() {
         if (Robot.isSimulation()) {
@@ -135,10 +135,9 @@ public class Elevator extends SubsystemBase {
                 setGoal(6);
                 break;
             case STOW:
-                setGoal(0);
-                break;
-            default:
-                break;
+                default:
+                    setGoal(0);
+                    break;
         }
     }
 
@@ -204,7 +203,7 @@ public class Elevator extends SubsystemBase {
         tempCelciusLog.set(data.tempCelcius);
 
         // make 3.25 a constant "elevatorBaseHeight"
-        elevatorMech.setLength(Units.feetToMeters(3.25) + data.positionMeters);
+        elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
         SmartDashboard.putData("elevator mechanism", mech);
     }
 

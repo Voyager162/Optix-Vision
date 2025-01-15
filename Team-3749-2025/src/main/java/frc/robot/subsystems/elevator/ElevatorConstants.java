@@ -19,6 +19,8 @@ public class ElevatorConstants {
         // public static final boolean simulateGravity = true;
         public static final double startingHeightMeters = 0;
 
+        public static final double baseHeight = Units.feetToMeters(3.25);
+
         public static int[] motorIds = { 1, 2 };
         public static int stallLimit = 30;
         public static int freeLimit = 50;
