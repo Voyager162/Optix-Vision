@@ -1,4 +1,4 @@
-package frc.robot.commands.arm.climbArmCommands;
+package frc.robot.commands.arm.climb;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
@@ -6,15 +6,15 @@ import frc.robot.subsystems.arm.ArmConstants.climbArmConstants;
 import frc.robot.subsystems.arm.ArmConstants.climbArmConstants.ArmStates;
 import frc.robot.utils.UtilityFunctions;
 
-public class Climb extends Command {
+public class ClimbStow extends Command {
 
-    public Climb() {
-        super.addRequirements(Robot.algaeArm);
+    public ClimbStow() {
+        super.addRequirements(Robot.climbArm);
     }
 
     @Override
     public void initialize() {
-        Robot.climbArm.setState(ArmStates.CLIMB);
+        Robot.climbArm.setState(ArmStates.STOWED);
     }
 
         @Override
@@ -24,6 +24,6 @@ public class Climb extends Command {
     @Override
     public boolean isFinished() {
         double position = Robot.climbArm.getPositionRad();
-        return UtilityFunctions.withinMargin(0.001, climbArmConstants.climbSetPoint_rad, position);
+        return UtilityFunctions.withinMargin(0.001, climbArmConstants.stowSetPoint_rad, position);
     }
 }

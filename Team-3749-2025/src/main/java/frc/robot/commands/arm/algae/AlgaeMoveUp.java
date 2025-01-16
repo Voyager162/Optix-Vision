@@ -1,4 +1,4 @@
-package frc.robot.commands.arm.algaeArmCommands;
+package frc.robot.commands.arm.algae;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;

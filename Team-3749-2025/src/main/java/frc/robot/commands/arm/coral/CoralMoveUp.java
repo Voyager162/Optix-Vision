@@ -1,18 +1,18 @@
-package frc.robot.commands.arm.coralArmCommands;
+package frc.robot.commands.arm.coral;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.ArmConstants.coralArmConstants.ArmStates;
 
-public class CoralMoveDown extends Command {
+public class CoralMoveUp extends Command {
 
-    public CoralMoveDown() {
+    public CoralMoveUp() {
         super.addRequirements(Robot.coralArm);
     }
 
     @Override
     public void initialize() {
-        Robot.coralArm.setState(ArmStates.MOVING_DOWN);
+        Robot.coralArm.setState(ArmStates.MOVING_UP);
     }
 
         @Override

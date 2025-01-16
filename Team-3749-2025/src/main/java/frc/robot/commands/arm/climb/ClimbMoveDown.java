@@ -1,18 +1,18 @@
-package frc.robot.commands.arm.climbArmCommands;
+package frc.robot.commands.arm.climb;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.ArmConstants.climbArmConstants.ArmStates;
 
-public class ClimbMoveUp extends Command {
+public class ClimbMoveDown extends Command {
 
-    public ClimbMoveUp() {
+    public ClimbMoveDown() {
         super.addRequirements(Robot.climbArm);
     }
 
     @Override
     public void initialize() {
-        Robot.climbArm.setState(ArmStates.MOVING_UP);
+        Robot.climbArm.setState(ArmStates.MOVING_DOWN);
     }
 
         @Override

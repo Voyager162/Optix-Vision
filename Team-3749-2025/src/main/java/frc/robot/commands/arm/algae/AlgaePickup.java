@@ -1,4 +1,4 @@
-package frc.robot.commands.arm.algaeArmCommands;
+package frc.robot.commands.arm.algae;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
@@ -6,24 +6,24 @@ import frc.robot.subsystems.arm.ArmConstants.algaeArmConstants;
 import frc.robot.subsystems.arm.ArmConstants.algaeArmConstants.ArmStates;
 import frc.robot.utils.UtilityFunctions;
 
-public class AlgaeProccessor extends Command {
+public class AlgaePickup extends Command {
 
-    public AlgaeProccessor() {
+    public AlgaePickup() {
         super.addRequirements(Robot.algaeArm);
     }
 
     @Override
     public void initialize() {
-        Robot.algaeArm.setState(ArmStates.PROCESSOR);
+        Robot.algaeArm.setState(ArmStates.ALGAE_PICKUP);
     }
 
-    @Override
+        @Override
     public void end(boolean interupted) {
     }
 
     @Override
     public boolean isFinished() {
         double position = Robot.algaeArm.getPositionRad();
-        return UtilityFunctions.withinMargin(0.001, algaeArmConstants.processorSetPoint_rad, position);
+        return UtilityFunctions.withinMargin(0.001, algaeArmConstants.algaePickUpSetPoint_rad, position);
     }
 }
