@@ -49,8 +49,14 @@ public class Elevator extends SubsystemBase {
     private ShuffleData<Double> accelerationUnitsLog = new ShuffleData<Double>("Elevator", "acceleration units", 0.0);
     private ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Elevator", "input volts", 0.0);
     private ShuffleData<Double> appliedVoltsLog = new ShuffleData<Double>("Elevator", "applied volts", 0.0);
+    private ShuffleData<Double> leftAppliedVoltsLog = new ShuffleData<Double>("Elevator", "left applied volts", 0.0);
+    private ShuffleData<Double> rightAppliedVoltsLog = new ShuffleData<Double>("Elevator", "right applied volts", 0.0);
     private ShuffleData<Double> currentAmpsLog = new ShuffleData<Double>("Elevator", "current amps", 0.0);
+    private ShuffleData<Double> leftCurrentAmpsLog = new ShuffleData<Double>("Elevator", "left current amps", 0.0);
+    private ShuffleData<Double> rightCurrentAmpsLog = new ShuffleData<Double>("Elevator", "right current amps", 0.0);
     private ShuffleData<Double> tempCelciusLog = new ShuffleData<Double>("Elevator", "temp celcius", 0.0);
+    private ShuffleData<Double> leftTempCelciusLog = new ShuffleData<Double>("Elevator", "left temp celcius", 0.0);
+    private ShuffleData<Double> rightTempCelciusLog = new ShuffleData<Double>("Elevator", "right temp celcius", 0.0);
 
     // For tuning on real
     // private ShuffleData<Double> kPData = new ShuffleData<Double>("Elevator",
@@ -199,8 +205,14 @@ public class Elevator extends SubsystemBase {
         accelerationUnitsLog.set(data.accelerationUnits);
         inputVoltsLog.set(data.inputVolts);
         appliedVoltsLog.set(data.appliedVolts);
+        leftAppliedVoltsLog.set(data.leftAppliedVolts);
+        rightAppliedVoltsLog.set(data.rightAppliedVolts);
         currentAmpsLog.set(data.currentAmps);
+        leftCurrentAmpsLog.set(data.leftCurrentAmps);
+        rightCurrentAmpsLog.set(data.rightCurrentAmps);
         tempCelciusLog.set(data.tempCelcius);
+        leftTempCelciusLog.set(data.leftTempCelcius);
+        rightTempCelciusLog.set(data.rightTempCelcius);
 
         // make 3.25 a constant "elevatorBaseHeight"
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);

@@ -84,3 +84,4 @@ public class ElevatorSparkMax implements ElevatorIO {
         rightMotor.setVoltage(inputVolts);
     }
 }
+ 
