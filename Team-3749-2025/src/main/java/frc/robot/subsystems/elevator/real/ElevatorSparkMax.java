@@ -1,6 +1,7 @@
 package frc.robot.subsystems.elevator.real;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.sim.SparkAbsoluteEncoderSim;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -51,8 +52,7 @@ public class ElevatorSparkMax implements ElevatorIO {
         rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         absoluteEncoder = leftMotor.getAbsoluteEncoder();
-        absolutePos = absoluteEncoder.getPosition();
-        // .setZeroOffset
+        absolutePos = absoluteEncoder.getPosition() + ElevatorConstants.ElevatorSpecs.zeroOffset;
 
         leftMotor.getEncoder().setPosition(absolutePos);
         rightMotor.getEncoder().setPosition(absolutePos);
