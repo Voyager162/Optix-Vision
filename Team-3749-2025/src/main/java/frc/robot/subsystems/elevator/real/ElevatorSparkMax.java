@@ -26,6 +26,7 @@ public class ElevatorSparkMax implements ElevatorIO {
     private SparkMaxConfig rightConfig = new SparkMaxConfig();
 
     private AbsoluteEncoder absoluteEncoder;
+    private double absolutePos;
 
     private double inputVolts = 0;
     private double previousVelocity = 0;
@@ -49,6 +50,7 @@ public class ElevatorSparkMax implements ElevatorIO {
         rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         absoluteEncoder = leftMotor.getAbsoluteEncoder();
+        absolutePos = absoluteEncoder.getPosition();
         // absoluteEncoder.setZeroOffset(ElevatorConstants.ElevatorSpecs.zeroOffset);
     }
 
@@ -64,7 +66,7 @@ public class ElevatorSparkMax implements ElevatorIO {
         previousVelocity = velocity;
         velocity = (leftMotor.getEncoder().getVelocity() + rightMotor.getEncoder().getVelocity()) / 2;
         data.positionMeters = (leftMotor.getEncoder().getPosition() + rightMotor.getEncoder().getVelocity()) / 2
-                + absoluteEncoder.getPosition();
+                + absolutePos;
         data.velocityUnits = velocity;
         data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
         data.leftCurrentAmps = leftMotor.getOutputCurrent();
