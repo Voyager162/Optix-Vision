@@ -1,11 +1,10 @@
-package frc.robot.subsystems.arm.armJavaFiles;
+package frc.robot.subsystems.arm;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.subsystems.arm.ArmIO;
-import frc.robot.subsystems.arm.ArmConstants.climbArmConstants;
+import frc.robot.subsystems.arm.ArmConstants.algaeArmConstants;
 import frc.robot.subsystems.arm.ArmIO.ArmData;
-import frc.robot.subsystems.arm.real.ClimbSparkMax;
+import frc.robot.subsystems.arm.real.ArmSparkMax;
 import frc.robot.subsystems.arm.sim.ArmSim;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
@@ -16,25 +15,30 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * Subsystem class for the arm
- * 
+ * Subsystem class for the arm.
+ * Handles control, logging, and state transitions for the Algae Arm subsystem.
  * @author Weston Gardner
  */
 
-public class ClimbArm extends SubsystemBase {
+public class AlgaeArm extends SubsystemBase {
+    
+    // Arm I/O and state management
 
     private ArmIO armIO;
     private ArmData data = new ArmData();
-    private climbArmConstants.ArmStates state = climbArmConstants.ArmStates.STOPPED;
+    private algaeArmConstants.ArmStates state = algaeArmConstants.ArmStates.STOPPED;
 
     private double setPoint;
+    // PID Controller and setpoint for arm position
 
     private PIDController controller = new PIDController
     (
-        climbArmConstants.kP, 
-        climbArmConstants.kI, 
-        climbArmConstants.kD
+        algaeArmConstants.kP, 
+        algaeArmConstants.kI, 
+        algaeArmConstants.kD
     );
+    
+    // Logging variables
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     public ShuffleData<Double> positionUnitsLog = new ShuffleData<Double>(this.getName(), "position units", 0.0);
@@ -46,58 +50,72 @@ public class ClimbArm extends SubsystemBase {
     public ShuffleData<Double> tempCelciusLog = new ShuffleData<Double>(this.getName(), "temp celcius", 0.0);
 
     private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
+    
+    // Visualization for SmartDashboard
 
     private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
-    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Climb Arm", 24, 0));
+    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Algae Arm", 17, 0));
+    
+    // Constants logging
 
     public ShuffleData<Double> kGLog = new ShuffleData<Double>(this.getName(), "kG", 0.0);
     public ShuffleData<Double> kPLog = new ShuffleData<Double>(this.getName(), "kP", 0.0);
 
+    /**
+     * Constructor for the AlgaeArm subsystem.
+     * Determines if simulation or real hardware is used.
+     */
 
-
-    public ClimbArm() {
+    public AlgaeArm() {
         if (Robot.isSimulation()) {
-            
+
             armIO = new ArmSim
-            (
-                climbArmConstants.numMotors, 
-                climbArmConstants.armGearing, 
-                climbArmConstants.momentOfInertia, 
-                climbArmConstants.armLength_meters, 
-                climbArmConstants.armMinAngle_degrees, 
-                climbArmConstants.armMaxAngle_degrees, 
-                climbArmConstants.simulateGravity, 
-                climbArmConstants.armStartingAngle_degrees
+            (1, 
+            algaeArmConstants.armGearing, 
+            algaeArmConstants.momentOfInertia, 
+            algaeArmConstants.armLength_meters, 
+            algaeArmConstants.armMinAngle_degrees, 
+            algaeArmConstants.armMaxAngle_degrees, 
+            algaeArmConstants.simulateGravity, 
+            algaeArmConstants.armStartingAngle_degrees
             );
 
         } else {
-            armIO = new ClimbSparkMax(climbArmConstants.firstMotorId, climbArmConstants.secondMotorId);
+            armIO = new ArmSparkMax(algaeArmConstants.motorId);
         }
-        SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
+        SmartDashboard.putData("Algae Arm Mechanism", mechanism2d);
     }
-
+     /**
+     * @return the current arm position in radians.
+     */
     public double getPositionRad() {
         return data.positionUnits;
     }
-
+    /**
+     * @return the current arm velocity in radians per second.
+     */
     public double getVelocityRadPerSec() {
         return data.velocityUnits;
     }
-
-    public climbArmConstants.ArmStates getState() {
+    /**
+     * @return the current arm state.
+     */
+    public algaeArmConstants.ArmStates getState() {
         return state;
     }
-
+    /**
+     * @return whether the arm is in a stable state.
+     */
     public boolean getIsStableState() {
 
         switch (state) {
             case STOWED:
-                return data.positionUnits == climbArmConstants.stowSetPoint_rad;
-            case PREPARE_FOR_CLIMB:
-                return data.positionUnits == climbArmConstants.PrepareForClimbSetPoint_Rad;
-            case CLIMB:
-                return data.positionUnits == climbArmConstants.climbSetPoint_rad;
+                return data.positionUnits == algaeArmConstants.stowSetPoint_rad;
+            case PROCESSOR:
+                return data.positionUnits == algaeArmConstants.processorSetPoint_rad;
+            case ALGAE_PICKUP:
+                return data.positionUnits == algaeArmConstants.algaePickUpSetPoint_rad;
             case MOVING_DOWN:
                 return data.velocityUnits < 0;
             case MOVING_UP:
@@ -108,30 +126,40 @@ public class ClimbArm extends SubsystemBase {
                 return false;
         }
     }
-
-    public void setState(climbArmConstants.ArmStates state) {
+    /**
+     * Sets the current state of the arm.
+     * @param state The new state for the arm.
+     */
+    public void setState(algaeArmConstants.ArmStates state) {
         this.state = state;
     }
-
+    /**
+     * @return the applied voltage to the arm motor.
+     */
     public double getAppliedVoltage() {
         return data.appliedVolts;
     }
-
+    /**
+     * Sets the voltage applied to the arm motor.
+     * @param volts The voltage to apply.
+     */
     public void setVoltage(double volts) {
         // this.voltage = volts;
         armIO.setVoltage(volts);
     }
-
+    /**
+     * Runs the logic for the current arm state.
+     */
     private void runState() {
         switch (state) {
-            case PREPARE_FOR_CLIMB:
-                runStatePrepareForClimb();
-                break;
-            case CLIMB:
-                runStateClimb();
-                break;
             case STOWED:
                 runStateStowed();
+                break;
+            case PROCESSOR:
+                runStateProccessor();
+                break;
+            case ALGAE_PICKUP:
+                runStateAlgaePickup();
                 break;
             case STOPPED:
                 runStateStopped();
@@ -147,6 +175,21 @@ public class ClimbArm extends SubsystemBase {
         }
     }
 
+    private void runStateStowed() {
+        setPoint = algaeArmConstants.stowSetPoint_rad;
+        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
+    }
+
+    private void runStateProccessor() {
+        setPoint = algaeArmConstants.processorSetPoint_rad;
+        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
+    }
+
+    private void runStateAlgaePickup() {
+        setPoint = algaeArmConstants.algaePickUpSetPoint_rad;
+        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
+    }
+
     private void runMovingUp() {
         setVoltage(1 + calculateFeedForward());
     }
@@ -158,22 +201,9 @@ public class ClimbArm extends SubsystemBase {
     private void runStateStopped() {
         setVoltage(0 + calculateFeedForward());
     }
-
-    private void runStatePrepareForClimb() {
-        setPoint = climbArmConstants.PrepareForClimbSetPoint_Rad;
-        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
-    }
-
-    private void runStateClimb() {
-        setPoint = climbArmConstants.climbSetPoint_rad;
-        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
-    }
-
-    private void runStateStowed() {
-        setPoint = climbArmConstants.stowSetPoint_rad;
-        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
-    }
-
+    /**
+     * Logs data to Shuffleboard.
+     */
     private void logData() {
         currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
         positionUnitsLog.set(data.positionUnits);
@@ -187,19 +217,20 @@ public class ClimbArm extends SubsystemBase {
 
         stateLog.set(state.name());
     }
-
+    /**
+     * Periodic method for updating arm behavior.
+     */
     @Override
     public void periodic() {
 
-        climbArmConstants.kG = kGLog.get();
-        climbArmConstants.kP = kPLog.get();
+        algaeArmConstants.kG = kGLog.get();
+        algaeArmConstants.kP = kPLog.get();
 
         controller = new PIDController
         (
-            climbArmConstants.kP, 
-            climbArmConstants.kI, 
-            climbArmConstants.kD
-
+            algaeArmConstants.kP, 
+            algaeArmConstants.kI, 
+            algaeArmConstants.kD
         );
 
         armIO.updateData(data);
@@ -208,9 +239,9 @@ public class ClimbArm extends SubsystemBase {
 
         runState();
     }
-
+    // Feedforward Method for kG values, will add kA and kV later for feedforward
     private double calculateFeedForward() {
-        double feedForward = climbArmConstants.kG * Math.cos(data.positionUnits);
+        double feedForward = algaeArmConstants.kG * Math.cos(data.positionUnits);
         return feedForward;
     }
 

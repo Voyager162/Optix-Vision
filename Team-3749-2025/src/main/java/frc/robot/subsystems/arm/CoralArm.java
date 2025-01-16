@@ -1,8 +1,7 @@
-package frc.robot.subsystems.arm.armJavaFiles;
+package frc.robot.subsystems.arm;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmConstants.coralArmConstants;
 import frc.robot.subsystems.arm.ArmIO.ArmData;
 import frc.robot.subsystems.arm.real.ArmSparkMax;
