@@ -5,13 +5,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot;
-import frc.robot.commands.arm.coral.CoralMoveDown;
-import frc.robot.commands.arm.coral.CoralMoveUp;
-import frc.robot.commands.arm.coral.CoralPickup;
-import frc.robot.commands.arm.coral.CoralStow;
+import frc.robot.commands.arm.coral.SetCoralState;
 import frc.robot.commands.example.ExampleSubsystemCommand;
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
+import frc.robot.subsystems.arm.ArmConstants;
 
 /**
  * Util class for button bindings
@@ -25,10 +23,18 @@ public class JoystickIO {
     private static final CommandXboxController operator = new CommandXboxController(1);
     private static final Command sample = new ExampleSubsystemCommand();
     private static final Command DriveStraight = new DriveStraight();
-    private static final CoralMoveUp coralMoveUp = new CoralMoveUp();
-    private static final CoralMoveDown coralMoveDown = new CoralMoveDown();
-    private static final CoralPickup coralPickup = new CoralPickup();
-    private static final CoralStow coralStow = new CoralStow();
+    private static final SetCoralState coralPickup = new SetCoralState
+    (
+        Robot.coralArm, 
+        ArmConstants.coralArmConstants.ArmStates.CORAL_PICKUP, 
+        ArmConstants.coralArmConstants.coralPickUpSetPoint_Rad
+    );
+    private static final SetCoralState coralStow = new SetCoralState
+    (
+        Robot.coralArm, 
+        ArmConstants.coralArmConstants.ArmStates.STOWED, 
+        ArmConstants.coralArmConstants.stowSetPoint_rad
+    );
 
     public JoystickIO() {
     }
@@ -66,8 +72,6 @@ public class JoystickIO {
         // Example binding
         operator.a().whileTrue(coralPickup);
         operator.b().whileTrue(coralStow);
-        operator.x().whileTrue(coralMoveDown);
-        operator.y().whileTrue(coralMoveUp);
     }
 
     public static void pilotBindings() {

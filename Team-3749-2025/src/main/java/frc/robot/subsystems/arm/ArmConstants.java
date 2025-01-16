@@ -39,7 +39,7 @@ public class ArmConstants {
         public static final double maxVelocity = 0.0;
         public static final double maxAcceleration = 0.0;
 
-        public static final double momentOfInertia = -57.929; // from cad
+        public static final double momentOfInertia = 57.929; // from cad
         public static final boolean simulateGravity = true;
 
         public enum ArmStates {
