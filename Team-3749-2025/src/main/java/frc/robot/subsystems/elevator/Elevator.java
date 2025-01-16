@@ -4,7 +4,6 @@ import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -48,13 +47,10 @@ public class Elevator extends SubsystemBase {
     private ShuffleData<Double> velocityUnitsLog = new ShuffleData<Double>("Elevator", "velocity units", 0.0);
     private ShuffleData<Double> accelerationUnitsLog = new ShuffleData<Double>("Elevator", "acceleration units", 0.0);
     private ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Elevator", "input volts", 0.0);
-    private ShuffleData<Double> appliedVoltsLog = new ShuffleData<Double>("Elevator", "applied volts", 0.0);
     private ShuffleData<Double> leftAppliedVoltsLog = new ShuffleData<Double>("Elevator", "left applied volts", 0.0);
     private ShuffleData<Double> rightAppliedVoltsLog = new ShuffleData<Double>("Elevator", "right applied volts", 0.0);
-    private ShuffleData<Double> currentAmpsLog = new ShuffleData<Double>("Elevator", "current amps", 0.0);
     private ShuffleData<Double> leftCurrentAmpsLog = new ShuffleData<Double>("Elevator", "left current amps", 0.0);
     private ShuffleData<Double> rightCurrentAmpsLog = new ShuffleData<Double>("Elevator", "right current amps", 0.0);
-    private ShuffleData<Double> tempCelciusLog = new ShuffleData<Double>("Elevator", "temp celcius", 0.0);
     private ShuffleData<Double> leftTempCelciusLog = new ShuffleData<Double>("Elevator", "left temp celcius", 0.0);
     private ShuffleData<Double> rightTempCelciusLog = new ShuffleData<Double>("Elevator", "right temp celcius", 0.0);
 
@@ -92,24 +88,24 @@ public class Elevator extends SubsystemBase {
     }
 
     public double getVelocityRadPerSec() {
-        return data.velocityUnits;
+        return data.velocityMetersPerSecond;
     }
 
     // returns true when the state is reached
     public boolean getIsStableState() {
         switch (state) {
             case L1:
-                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.stateHeights.l1Height,
+                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.l1Height,
                         data.positionMeters);
             case L2:
                 return UtilityFunctions.withinMargin(0.01, data.positionMeters,
-                        ElevatorConstants.stateHeights.l2Height);
+                        ElevatorConstants.StateHeights.l2Height);
             case L3:
                 return UtilityFunctions.withinMargin(0.01, data.positionMeters,
-                        ElevatorConstants.stateHeights.l3Height);
+                        ElevatorConstants.StateHeights.l3Height);
             case L4:
                 return UtilityFunctions.withinMargin(0.01, data.positionMeters,
-                        ElevatorConstants.stateHeights.l4Height);
+                        ElevatorConstants.StateHeights.l4Height);
             default:
                 return false;
         }
@@ -126,16 +122,16 @@ public class Elevator extends SubsystemBase {
                 runStateStop();
                 break;
             case L1:
-                setGoal(ElevatorConstants.stateHeights.l1Height);
+                setGoal(ElevatorConstants.StateHeights.l1Height);
                 break;
             case L2:
-                setGoal(ElevatorConstants.stateHeights.l2Height);
+                setGoal(ElevatorConstants.StateHeights.l2Height);
                 break;
             case L3:
-                setGoal(ElevatorConstants.stateHeights.l3Height);
+                setGoal(ElevatorConstants.StateHeights.l3Height);
                 break;
             case L4:
-                setGoal(ElevatorConstants.stateHeights.l4Height);
+                setGoal(ElevatorConstants.StateHeights.l4Height);
                 break;
             case MAX:
                 setGoal(6);
@@ -156,24 +152,6 @@ public class Elevator extends SubsystemBase {
             case STOP:
                 runStateStop();
                 break;
-            case L1:
-                moveToGoal();
-                break;
-            case L2:
-                moveToGoal();
-                break;
-            case L3:
-                moveToGoal();
-
-                break;
-            case L4:
-                moveToGoal();
-
-                break;
-            case MAX:
-                moveToGoal();
-
-                break;
             default:
                 moveToGoal();
                 break;
@@ -191,7 +169,7 @@ public class Elevator extends SubsystemBase {
     }
 
     private void runStateStop() {
-        elevatorio.setVoltage(0);
+        stop();
     }
 
     public void stop() {
@@ -201,20 +179,16 @@ public class Elevator extends SubsystemBase {
     private void logData() {
         currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
         positionMetersLog.set(data.positionMeters);
-        velocityUnitsLog.set(data.velocityUnits);
+        velocityUnitsLog.set(data.velocityMetersPerSecond);
         accelerationUnitsLog.set(data.accelerationUnits);
         inputVoltsLog.set(data.inputVolts);
-        appliedVoltsLog.set(data.appliedVolts);
         leftAppliedVoltsLog.set(data.leftAppliedVolts);
         rightAppliedVoltsLog.set(data.rightAppliedVolts);
-        currentAmpsLog.set(data.currentAmps);
         leftCurrentAmpsLog.set(data.leftCurrentAmps);
         rightCurrentAmpsLog.set(data.rightCurrentAmps);
-        tempCelciusLog.set(data.tempCelcius);
         leftTempCelciusLog.set(data.leftTempCelcius);
         rightTempCelciusLog.set(data.rightTempCelcius);
 
-        // make 3.25 a constant "elevatorBaseHeight"
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
         SmartDashboard.putData("elevator mechanism", mech);
     }

@@ -38,19 +38,24 @@ public class ElevatorSimulation implements ElevatorIO {
         previousVelocity = velocity;
         velocity = elevatorSimSystem.getVelocityMetersPerSecond();
         data.positionMeters = elevatorSimSystem.getPositionMeters();
-        data.velocityUnits = elevatorSimSystem.getVelocityMetersPerSecond();
+        data.velocityMetersPerSecond = velocity;
         data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
-        ;
+        
         data.inputVolts = inputVolts;
-        data.appliedVolts = inputVolts;
-        data.currentAmps = elevatorSimSystem.getCurrentDrawAmps();
-        data.tempCelcius = 0; // Sim has no temp
+        data.leftAppliedVolts = inputVolts;
+        data.rightAppliedVolts = inputVolts;
+        data.leftCurrentAmps = elevatorSimSystem.getCurrentDrawAmps();
+        data.rightCurrentAmps = data.leftCurrentAmps;
+
+        // Sim has no temp
+        data.leftTempCelcius = 0;
+        data.rightTempCelcius = data.leftTempCelcius;
     }
 
     @Override
     public void setVoltage(double volts) {
         inputVolts = MathUtil.clamp(volts, -12, 12);
-        // inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
+        inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
         elevatorSimSystem.setInputVoltage(inputVolts);
     }
 }

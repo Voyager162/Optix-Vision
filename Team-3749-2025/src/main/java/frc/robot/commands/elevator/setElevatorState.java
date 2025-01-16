@@ -11,14 +11,15 @@ import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
  * @author Andrew Ge
  */
 public class SetElevatorState extends Command {
-    ElevatorStates states;
-    public SetElevatorState(ElevatorStates states) {
-        this.states = states;
+    ElevatorStates state;
+    public SetElevatorState(ElevatorStates state) {
+        this.state = state;
         super.addRequirements(Robot.elevator);
     }
 
     @Override
     public void initialize() {
+        Robot.elevator.setState(state);
     }
 
     // if further state change are needed over time, put them here with conditionals
@@ -27,10 +28,6 @@ public class SetElevatorState extends Command {
         /*if (Robot.elevator.getIsStableState()) {
             Robot.elevator.setState(ElevatorStates.STOP);
         }*/
-        
-        Robot.elevator.setState(states);
-
-        
     }
 
     @Override
