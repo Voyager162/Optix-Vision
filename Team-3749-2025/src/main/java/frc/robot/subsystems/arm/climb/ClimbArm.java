@@ -62,22 +62,6 @@ public class ClimbArm extends Arm {
         return state;
     }
 
-    /**
-     * sets the state to moving up
-     */
-    @Override
-    public void moveUp() {
-        setState(ClimbConstants.ArmStates.MOVING_UP);
-    }
-
-    /**
-     * sets the state to moving down
-     */
-    @Override
-    public void moveDown() {
-        setState(ClimbConstants.ArmStates.MOVING_DOWN);
-    }
-
     @Override
     public void stop() {
         setState(ClimbConstants.ArmStates.STOPPED);

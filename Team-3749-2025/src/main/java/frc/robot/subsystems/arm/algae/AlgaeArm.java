@@ -70,22 +70,6 @@ public class AlgaeArm extends Arm {
         return state;
     }
 
-    /**
-     * sets the state to moving up
-     */
-    @Override
-    public void moveUp() {
-        setState(AlgaeConstants.ArmStates.MOVING_UP);
-    }
-
-    /**
-     * sets the state to moving down
-     */
-    @Override
-    public void moveDown() {
-        setState(AlgaeConstants.ArmStates.MOVING_DOWN);
-    }
-
     @Override
     public void stop() {
         setState(AlgaeConstants.ArmStates.STOPPED);

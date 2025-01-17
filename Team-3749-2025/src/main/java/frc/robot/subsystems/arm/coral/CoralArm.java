@@ -64,22 +64,6 @@ public class CoralArm extends Arm {
         return state;
     }
 
-    /**
-     * sets the state to moving up
-     */
-    @Override
-    public void moveUp() {
-        setState(CoralConstants.ArmStates.MOVING_UP);
-    }
-
-    /**
-     * sets the state to moving down
-     */
-    @Override
-    public void moveDown() {
-        setState(CoralConstants.ArmStates.MOVING_DOWN);
-    }
-
     @Override
     public void stop() {
         setState(CoralConstants.ArmStates.STOPPED);

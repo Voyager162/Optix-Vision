@@ -53,9 +53,5 @@ public abstract class Arm extends SubsystemBase {
 
     public abstract void setState(Enum<?> state);
 
-    public abstract void moveUp();
-
-    public abstract void moveDown();
-
     public abstract void stop();
 }
