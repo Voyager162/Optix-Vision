@@ -34,7 +34,7 @@ public class ClimbConstants {
     public static final double kV = 0.0;
 
     public static final double stowSetPoint_rad = 0;
-    public static final double PrepareForClimbSetPoint_Rad = Math.PI / 2; // 90
+    public static final double PrepareForClimbSetPoint_rad = Math.PI / 2; // 90
     public static final double climbSetPoint_rad = 20 * Math.PI / 180; // 20
 
     public static final double maxVelocity = 0.0;

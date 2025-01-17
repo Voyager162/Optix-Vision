@@ -96,7 +96,7 @@ public class CoralArm extends Arm {
             case HAND_OFF:
                 return data.positionUnits == CoralConstants.handOffSetPoint_rad;
             case CORAL_PICKUP:
-                return data.positionUnits == CoralConstants.coralPickUpSetPoint_Rad;
+                return data.positionUnits == CoralConstants.coralPickUpSetPoint_rad;
             case MOVING_DOWN:
                 return data.velocityUnits < 0;
             case MOVING_UP:
@@ -123,23 +123,23 @@ public class CoralArm extends Arm {
      */
     private void runState() {
         switch (state) {
-            case CORAL_PICKUP:
-                runStateCoralPickup();
+            case STOWED:
+                setVoltage(controller.calculate(data.positionUnits, CoralConstants.stowSetPoint_rad) + calculateFeedForward());
                 break;
             case HAND_OFF:
-                runStateHandOff();
+                setVoltage(controller.calculate(data.positionUnits, CoralConstants.handOffSetPoint_rad) + calculateFeedForward());
                 break;
-            case STOWED:
-                runStateStowed();
+            case CORAL_PICKUP:
+                setVoltage(controller.calculate(data.positionUnits, CoralConstants.coralPickUpSetPoint_rad) + calculateFeedForward());
                 break;
             case STOPPED:
-                runStateStopped();
+                setVoltage(0 + calculateFeedForward());
                 break;
             case MOVING_DOWN:
-                runMovingDown();
+                setVoltage(-1 + calculateFeedForward());
                 break;
             case MOVING_UP:
-                runMovingUp();
+                setVoltage(1 + calculateFeedForward());
                 break;
             default:
                 break;
@@ -159,7 +159,7 @@ public class CoralArm extends Arm {
     }
 
     private void runStateCoralPickup() {
-        double setPoint = CoralConstants.coralPickUpSetPoint_Rad;
+        double setPoint = CoralConstants.coralPickUpSetPoint_rad;
         setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
     }
 

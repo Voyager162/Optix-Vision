@@ -94,7 +94,7 @@ public class ClimbArm extends Arm {
             case STOWED:
                 return data.positionUnits == ClimbConstants.stowSetPoint_rad;
             case PREPARE_FOR_CLIMB:
-                return data.positionUnits == ClimbConstants.PrepareForClimbSetPoint_Rad;
+                return data.positionUnits == ClimbConstants.PrepareForClimbSetPoint_rad;
             case CLIMB:
                 return data.positionUnits == ClimbConstants.climbSetPoint_rad;
             case MOVING_DOWN:
@@ -127,7 +127,7 @@ public class ClimbArm extends Arm {
                 setVoltage(controller.calculate(data.positionUnits, ClimbConstants.stowSetPoint_rad) + calculateFeedForward());
                 break;
             case PREPARE_FOR_CLIMB:
-                setVoltage(controller.calculate(data.positionUnits, ClimbConstants.PrepareForClimbSetPoint_Rad) + calculateFeedForward());
+                setVoltage(controller.calculate(data.positionUnits, ClimbConstants.PrepareForClimbSetPoint_rad) + calculateFeedForward());
                 break;
             case CLIMB:
                 setVoltage(controller.calculate(data.positionUnits, ClimbConstants.climbSetPoint_rad) + calculateFeedForward());
