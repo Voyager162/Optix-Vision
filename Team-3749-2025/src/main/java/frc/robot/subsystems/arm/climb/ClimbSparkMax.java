@@ -1,4 +1,4 @@
-package frc.robot.subsystems.arm.real;
+package frc.robot.subsystems.arm.climb;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
