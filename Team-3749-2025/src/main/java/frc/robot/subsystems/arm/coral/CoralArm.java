@@ -146,33 +146,6 @@ public class CoralArm extends Arm {
         }
     }
 
-    private void runMovingUp() {
-        setVoltage(12 + calculateFeedForward());
-    }
-
-    private void runMovingDown() {
-        setVoltage(-12 + calculateFeedForward());
-    }
-
-    private void runStateStopped() {
-        setVoltage(0 + calculateFeedForward());
-    }
-
-    private void runStateCoralPickup() {
-        double setPoint = CoralConstants.coralPickUpSetPoint_rad;
-        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
-    }
-
-    private void runStateHandOff() {
-        double setPoint = CoralConstants.handOffSetPoint_rad;
-        setVoltage(controller.calculate(data.positionUnits, setPoint));
-    }
-
-    private void runStateStowed() {
-        double setPoint = CoralConstants.stowSetPoint_rad;
-        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
-    }
-
     /**
      * Logs data to Shuffleboard.
      */
