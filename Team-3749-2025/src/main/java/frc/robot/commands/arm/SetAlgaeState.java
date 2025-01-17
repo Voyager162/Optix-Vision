@@ -5,6 +5,11 @@ import frc.robot.subsystems.arm.algae.AlgaeConstants.ArmStates;
 import frc.robot.subsystems.arm.algae.AlgaeArm;
 import frc.robot.utils.UtilityFunctions;
 
+/**
+ * Sets the selected state for a selected algae arm
+ * @author Weston Gardner
+ */
+
 public class SetAlgaeState extends Command {
 
     AlgaeArm arm;

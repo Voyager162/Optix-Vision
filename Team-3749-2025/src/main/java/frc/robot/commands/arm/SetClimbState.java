@@ -5,6 +5,11 @@ import frc.robot.subsystems.arm.climb.ClimbConstants.ArmStates;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.utils.UtilityFunctions;
 
+/**
+ * Sets the selected state for a selected Climb arm
+ * @author Weston Gardner
+ */
+
 public class SetClimbState extends Command {
 
     ClimbArm arm;

@@ -5,6 +5,11 @@ import frc.robot.subsystems.arm.coral.CoralConstants.ArmStates;
 import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.utils.UtilityFunctions;
 
+/**
+ * Sets the selected state for a selected coral arm
+ * @author Weston Gardner
+ */
+
 public class SetCoralState extends Command {
 
     CoralArm arm;
