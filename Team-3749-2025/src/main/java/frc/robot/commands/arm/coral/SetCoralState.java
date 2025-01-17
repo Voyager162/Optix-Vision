@@ -10,6 +10,7 @@ public class SetCoralState extends Command {
     CoralArm arm;
     ArmStates state;
     double setPoint;
+
     public SetCoralState(CoralArm arm, ArmStates state, double setPoint) {
         this.setPoint = setPoint;
         this.state = state;
@@ -22,7 +23,7 @@ public class SetCoralState extends Command {
         arm.setState(state);
     }
 
-        @Override
+    @Override
     public void end(boolean interupted) {
     }
 

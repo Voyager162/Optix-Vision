@@ -10,6 +10,7 @@ public class SetClimbState extends Command {
     ClimbArm arm;
     ArmStates state;
     double setPoint;
+
     public SetClimbState(ClimbArm arm, ArmStates state, double setPoint) {
         this.setPoint = setPoint;
         this.state = state;
@@ -22,7 +23,7 @@ public class SetClimbState extends Command {
         arm.setState(state);
     }
 
-        @Override
+    @Override
     public void end(boolean interupted) {
     }
 

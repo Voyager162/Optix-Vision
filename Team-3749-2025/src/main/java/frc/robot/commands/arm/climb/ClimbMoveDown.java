@@ -15,7 +15,7 @@ public class ClimbMoveDown extends Command {
         Robot.climbArm.setState(ArmStates.MOVING_DOWN);
     }
 
-        @Override
+    @Override
     public void end(boolean interupted) {
         Robot.climbArm.setState(ArmStates.STOPPED);
     }

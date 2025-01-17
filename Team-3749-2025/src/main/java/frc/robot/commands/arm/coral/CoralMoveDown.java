@@ -15,7 +15,7 @@ public class CoralMoveDown extends Command {
         Robot.coralArm.setState(ArmStates.MOVING_DOWN);
     }
 
-        @Override
+    @Override
     public void end(boolean interupted) {
         Robot.coralArm.setState(ArmStates.STOPPED);
     }

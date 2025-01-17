@@ -15,7 +15,7 @@ public class AlgaeMoveUp extends Command {
         Robot.algaeArm.setState(ArmStates.MOVING_UP);
     }
 
-        @Override
+    @Override
     public void end(boolean interupted) {
         Robot.algaeArm.setState(ArmStates.STOPPED);
     }

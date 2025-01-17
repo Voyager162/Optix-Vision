@@ -15,7 +15,7 @@ public class CoralMoveUp extends Command {
         Robot.coralArm.setState(ArmStates.MOVING_UP);
     }
 
-        @Override
+    @Override
     public void end(boolean interupted) {
         Robot.coralArm.setState(ArmStates.STOPPED);
     }

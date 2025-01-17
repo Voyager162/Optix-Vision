@@ -16,30 +16,27 @@ public class ArmSim implements ArmIO {
 
     private SingleJointedArmSim armSim;
 
-    public ArmSim
-    (
-        int numMotors, 
-        double gearing,
-        double momentOfInertia, 
-        double length_meters, 
-        double minAngle_degrees, 
-        double maxAngle_degrees, 
-        boolean simulateGravity, 
-        double startingAngle_Degrees
-    ){
+    public ArmSim(
+            int numMotors,
+            double gearing,
+            double momentOfInertia,
+            double length_meters,
+            double minAngle_degrees,
+            double maxAngle_degrees,
+            boolean simulateGravity,
+            double startingAngle_Degrees) {
 
         System.out.println("[Init] Creating ArmSim");
 
         armSim = new SingleJointedArmSim(
-            DCMotor.getNEO(numMotors),
-            gearing,
-            momentOfInertia,
-            length_meters,
-            minAngle_degrees * Math.PI / 180,
-            maxAngle_degrees * Math.PI / 180,
-            simulateGravity,
-            startingAngle_Degrees * Math.PI / 180
-        );
+                DCMotor.getNEO(numMotors),
+                gearing,
+                momentOfInertia,
+                length_meters,
+                minAngle_degrees * Math.PI / 180,
+                maxAngle_degrees * Math.PI / 180,
+                simulateGravity,
+                startingAngle_Degrees * Math.PI / 180);
 
     }
 
@@ -50,6 +47,7 @@ public class ArmSim implements ArmIO {
 
     /**
      * Updates the set of loggable inputs for the sim.
+     * 
      * @param data
      */
 
@@ -71,6 +69,7 @@ public class ArmSim implements ArmIO {
 
     /**
      * Run the motor at the specified voltage.
+     * 
      * @param volts
      */
 

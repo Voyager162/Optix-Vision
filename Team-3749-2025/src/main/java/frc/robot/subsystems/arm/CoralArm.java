@@ -28,17 +28,15 @@ public class CoralArm extends SubsystemBase {
 
     private double setPoint;
 
-    private PIDController controller = new PIDController
-    (
-        coralArmConstants.kP,
-        coralArmConstants.kI, 
-        coralArmConstants.kD
-    );
+    private PIDController controller = new PIDController(
+            coralArmConstants.kP,
+            coralArmConstants.kI,
+            coralArmConstants.kD);
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     public ShuffleData<Double> positionUnitsLog = new ShuffleData<Double>(this.getName(), "position units", 0.0);
     public ShuffleData<Double> velocityUnitsLog = new ShuffleData<Double>(this.getName(), "velocity units", 0.0);
-    public ShuffleData<Double> accelerationUnitsLog = new ShuffleData<Double>(this.getName(), "acceleration units",0.0);
+    public ShuffleData<Double> accelerationUnitsLog = new ShuffleData<Double>(this.getName(), "acceleration units", 0.0);
     public ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>(this.getName(), "input volts", 0.0);
     public ShuffleData<Double> appliedVoltsLog = new ShuffleData<Double>(this.getName(), "applied volts", 0.0);
     public ShuffleData<Double> currentAmpsLog = new ShuffleData<Double>(this.getName(), "current amps", 0.0);
@@ -54,23 +52,18 @@ public class CoralArm extends SubsystemBase {
 
     public ShuffleData<Double> setPointLog = new ShuffleData<Double>(this.getName(), "setPoint", setPoint);
 
-
-
-
     public CoralArm() {
         if (Robot.isSimulation()) {
-            
-            armIO = new ArmSim
-            (
-                coralArmConstants.numMotors, 
-                coralArmConstants.armGearing, 
-                coralArmConstants.momentOfInertia, 
-                coralArmConstants.armLength_meters, 
-                coralArmConstants.armMinAngle_degrees, 
-                coralArmConstants.armMaxAngle_degrees, 
-                coralArmConstants.simulateGravity, 
-                coralArmConstants.armStartingAngle_degrees
-            );
+
+            armIO = new ArmSim(
+                    coralArmConstants.numMotors,
+                    coralArmConstants.armGearing,
+                    coralArmConstants.momentOfInertia,
+                    coralArmConstants.armLength_meters,
+                    coralArmConstants.armMinAngle_degrees,
+                    coralArmConstants.armMaxAngle_degrees,
+                    coralArmConstants.simulateGravity,
+                    coralArmConstants.armStartingAngle_degrees);
 
         } else {
             armIO = new ArmSparkMax(coralArmConstants.motorId);
@@ -196,12 +189,10 @@ public class CoralArm extends SubsystemBase {
 
         setPointLog.set(setPoint);
 
-        controller = new PIDController
-        (
-            coralArmConstants.kP, 
-            coralArmConstants.kI, 
-            coralArmConstants.kD
-        );
+        controller = new PIDController(
+                coralArmConstants.kP,
+                coralArmConstants.kI,
+                coralArmConstants.kD);
 
         armIO.updateData(data);
 

@@ -15,7 +15,7 @@ public class ClimbMoveUp extends Command {
         Robot.climbArm.setState(ArmStates.MOVING_UP);
     }
 
-        @Override
+    @Override
     public void end(boolean interupted) {
         Robot.climbArm.setState(ArmStates.STOPPED);
     }

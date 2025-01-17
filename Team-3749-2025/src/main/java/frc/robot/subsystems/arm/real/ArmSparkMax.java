@@ -36,9 +36,12 @@ public class ArmSparkMax implements ArmIO {
         motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     }
+
     /**
-     * Takes in the data from ArmData and uses it to update the data on the 
-     * position of the motor, velocity, acceleration, applied volts on the motor, and the motor temperature
+     * Takes in the data from ArmData and uses it to update the data on the
+     * position of the motor, velocity, acceleration, applied volts on the motor,
+     * and the motor temperature
+     * 
      * @param data
      */
     @Override
@@ -56,9 +59,12 @@ public class ArmSparkMax implements ArmIO {
     }
 
     /**
-     * Takes the volts parameter, then uses inputVolts to set the motor voltage 
-     * Clamp takes the volts and makes sure that the amount of volts isn't above or below the boundary for the voltage
-     * Deadband makes it so that the value returns 0.0 if the volts is between -0.05 to 0.05
+     * Takes the volts parameter, then uses inputVolts to set the motor voltage
+     * Clamp takes the volts and makes sure that the amount of volts isn't above or
+     * below the boundary for the voltage
+     * Deadband makes it so that the value returns 0.0 if the volts is between -0.05
+     * to 0.05
+     * 
      * @param volts
      */
     @Override

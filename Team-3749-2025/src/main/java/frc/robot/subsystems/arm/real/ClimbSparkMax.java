@@ -13,8 +13,10 @@ import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
  * IO implementation for the climb subsystem's sparkmax
- * I had to make two different motors because we are using two motors on the climb
- * I have decided to have one of the motors be the primary motor taking care of all the data
+ * I had to make two different motors because we are using two motors on the
+ * climb
+ * I have decided to have one of the motors be the primary motor taking care of
+ * all the data
  * the secondary will just be there to provide more power to the climb
  * 
  * @author Elise Lin
@@ -44,9 +46,12 @@ public class ClimbSparkMax implements ArmIO {
         secondaryMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     }
+
     /**
-     * Takes in the data from ArmData and uses it to update the data on the 
-     * position of the motor, velocity, acceleration, applied volts on the motor, and the motor temperature
+     * Takes in the data from ArmData and uses it to update the data on the
+     * position of the motor, velocity, acceleration, applied volts on the motor,
+     * and the motor temperature
+     * 
      * @param data
      */
     @Override
@@ -64,9 +69,12 @@ public class ClimbSparkMax implements ArmIO {
     }
 
     /**
-     * Takes the volts parameter, then uses inputVolts to set the motor voltage 
-     * Clamp takes the volts and makes sure that the amount of volts isn't above or below the boundary for the voltage
-     * Deadband makes it so that the value returns 0.0 if the volts is between -0.05 to 0.05
+     * Takes the volts parameter, then uses inputVolts to set the motor voltage
+     * Clamp takes the volts and makes sure that the amount of volts isn't above or
+     * below the boundary for the voltage
+     * Deadband makes it so that the value returns 0.0 if the volts is between -0.05
+     * to 0.05
+     * 
      * @param volts
      */
     @Override
