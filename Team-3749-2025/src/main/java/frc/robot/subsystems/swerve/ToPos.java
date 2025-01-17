@@ -17,21 +17,20 @@ public class ToPos {
         private final double obstacleRadius;
 
         public Field(Translation2d obstacleCenter, double obstacleRadius) {
-            // Define the vertices of the octagonal field
+            // Define the vertices of the rectangular field
             vertices = List.of(
-                new Translation2d(0,0 ),   
-                new Translation2d(0, 8),  
-                new Translation2d(8, 8), 
-                new Translation2d(8, 0), 
-                new Translation2d(0, 0)
-                
+                new Translation2d(0, 0),   // Bottom-left
+                new Translation2d(0, 8),   // Top-left
+                new Translation2d(8, 8),   // Top-right
+                new Translation2d(8, 0),   // Bottom-right
+                new Translation2d(0, 0)    // Close loop
             );
             this.obstacleCenter = obstacleCenter;
             this.obstacleRadius = obstacleRadius;
         }
 
         public boolean isInsideField(Translation2d point) {
-            // Check if the point is within the octagonal field using ray-casting algorithm
+            // Check if the point is within the rectangular field using ray-casting algorithm
             int intersections = 0;
             for (int i = 0; i < vertices.size(); i++) {
                 Translation2d v1 = vertices.get(i);
@@ -104,7 +103,16 @@ public class ToPos {
 
     private static Translation2d calculateDetour(Translation2d start, Translation2d end, Translation2d center, double radius) {
         Translation2d direction = new Translation2d(end.getX() - start.getX(), end.getY() - start.getY()).div(start.getDistance(end));
-        Translation2d perpendicular = new Translation2d(-direction.getY(), direction.getX()).times(radius + 0.5);
-        return center.plus(perpendicular);
+        Translation2d perpendicular = new Translation2d(-direction.getY(), direction.getX());
+
+        // Calculate both tangent points
+        Translation2d tangentLeft = center.plus(perpendicular.times(radius + 0.5));
+        Translation2d tangentRight = center.minus(perpendicular.times(radius + 0.5));
+
+        // Evaluate which tangent results in a shorter path
+        double pathLeft = start.getDistance(tangentLeft) + tangentLeft.getDistance(end);
+        double pathRight = start.getDistance(tangentRight) + tangentRight.getDistance(end);
+
+        return (pathLeft < pathRight) ? tangentLeft : tangentRight;
     }
 }
