@@ -21,8 +21,7 @@ public class ClimbArm extends Arm {
 
     private ClimbConstants.ArmStates state = ClimbConstants.ArmStates.STOPPED;
 
-    private PIDController controller = new PIDController
-    (
+    private PIDController controller = new PIDController(
         ClimbConstants.kP, 
         ClimbConstants.kI, 
         ClimbConstants.kD
@@ -38,8 +37,7 @@ public class ClimbArm extends Arm {
     public ClimbArm() {
         if (Robot.isSimulation()) {
             
-            armIO = new ArmSim
-            (
+            armIO = new ArmSim(
                 ClimbConstants.numMotors, 
                 ClimbConstants.armGearing, 
                 ClimbConstants.momentOfInertia, 
@@ -113,10 +111,10 @@ public class ClimbArm extends Arm {
      * 
      * @param state The new state for the arm.
      */
-    public void setState(ClimbConstants.ArmStates state) {
-        this.state = state;
+    @Override
+    public void setState(Enum<?> state) {
+        this.state = (ClimbConstants.ArmStates) state;
     }
-
 
     /**
      * Runs the logic for the current arm state.
@@ -167,8 +165,6 @@ public class ClimbArm extends Arm {
         double feedForward = ClimbConstants.kG * Math.cos(data.positionUnits);
         return feedForward;
     }
-
-
 
     /**
      * Periodic method for updating arm behavior.

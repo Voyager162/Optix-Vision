@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 
 /**
  * Arm parent class to be inherited by the other arms
+ * 
  * @author Akhil
  * @author Weston Gardner
  */
@@ -29,8 +30,8 @@ public abstract class Arm extends SubsystemBase {
     protected MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
     protected MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Arm", 24, 0));
 
-
-    public Arm() {}
+    public Arm() {
+    }
 
     // Method to set the voltage for the arm
     public void setVoltage(double volts) {
@@ -50,8 +51,11 @@ public abstract class Arm extends SubsystemBase {
         return data.velocityUnits;
     }
 
+    public abstract void setState(Enum<?> state);
 
     public abstract void moveUp();
+
     public abstract void moveDown();
+
     public abstract void stop();
 }

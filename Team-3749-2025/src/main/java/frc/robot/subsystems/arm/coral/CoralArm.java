@@ -35,7 +35,7 @@ public class CoralArm extends Arm {
 
 
     /**
-     * Constructor for the AlgaeArm subsystem.
+     * Constructor for the CoralArm subsystem.
      * Determines if simulation or real hardware is used.
      */
     public CoralArm() {
@@ -80,7 +80,7 @@ public class CoralArm extends Arm {
         setState(CoralConstants.ArmStates.MOVING_DOWN);
     }
 
-        @Override
+    @Override
     public void stop() {
         setState(CoralConstants.ArmStates.STOPPED);
     }
@@ -108,14 +108,14 @@ public class CoralArm extends Arm {
         }
     }
 
-
     /**
      * Sets the current state of the arm.
      * 
      * @param state The new state for the arm.
      */
-    public void setState(CoralConstants.ArmStates state) {
-        this.state = state;
+    @Override
+    public void setState(Enum<?> state) {
+        this.state = (CoralConstants.ArmStates) state;
     }
 
     /**

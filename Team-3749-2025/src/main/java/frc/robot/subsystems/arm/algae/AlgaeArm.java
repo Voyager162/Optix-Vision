@@ -25,10 +25,12 @@ public class AlgaeArm extends Arm {
 
     private AlgaeConstants.ArmStates state = AlgaeConstants.ArmStates.STOPPED;
 
-    private PIDController controller = new PIDController(
+    private PIDController controller = new PIDController
+    (
         AlgaeConstants.kP,
         AlgaeConstants.kI,
-        AlgaeConstants.kD);
+        AlgaeConstants.kD
+    );
 
     private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
@@ -44,8 +46,7 @@ public class AlgaeArm extends Arm {
     public AlgaeArm() {
         if (Robot.isSimulation()) {
 
-            armIO = new ArmSim
-            (
+            armIO = new ArmSim(
                 AlgaeConstants.numMotors,
                 AlgaeConstants.armGearing,
                 AlgaeConstants.momentOfInertia,
@@ -69,7 +70,6 @@ public class AlgaeArm extends Arm {
         return state;
     }
 
-
     /**
      * sets the state to moving up
      */
@@ -90,7 +90,6 @@ public class AlgaeArm extends Arm {
     public void stop() {
         setState(AlgaeConstants.ArmStates.STOPPED);
     }
-
 
     /**
      * @return whether the arm is in a stable state.
@@ -120,8 +119,9 @@ public class AlgaeArm extends Arm {
      * 
      * @param state The new state for the arm.
      */
-    public void setState(AlgaeConstants.ArmStates state) {
-        this.state = state;
+    @Override
+    public void setState(Enum<?> state) {
+        this.state = (AlgaeConstants.ArmStates) state;
     }
 
     /**
@@ -173,7 +173,6 @@ public class AlgaeArm extends Arm {
         double feedForward = AlgaeConstants.kG * Math.cos(data.positionUnits);
         return feedForward;
     }
-
 
     /**
      * Periodic method for updating arm behavior.
