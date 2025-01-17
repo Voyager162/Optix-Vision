@@ -7,6 +7,12 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 
+/**
+ * Arm parent class to be inherited by the other arms
+ * @author Akhil
+ * @author Weston Gardner
+ */
+
 public abstract class Arm extends SubsystemBase {
 
     protected ArmIO armIO;

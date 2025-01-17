@@ -20,6 +20,7 @@ import frc.robot.utils.MiscConstants.SimConstants;
  * the secondary will just be there to provide more power to the climb
  * 
  * @author Elise Lin
+ * @author Weston Gardner
  */
 public class ClimbSparkMax implements ArmIO {
 
