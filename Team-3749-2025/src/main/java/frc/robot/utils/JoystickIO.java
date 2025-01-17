@@ -5,11 +5,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot;
-import frc.robot.commands.arm.coral.SetCoralState;
+import frc.robot.commands.arm.SetCoralState;
 import frc.robot.commands.example.ExampleSubsystemCommand;
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
-import frc.robot.subsystems.arm.ArmConstants;
+import frc.robot.subsystems.arm.coral.CoralConstants;
 
 /**
  * Util class for button bindings
@@ -26,14 +26,14 @@ public class JoystickIO {
     private static final SetCoralState coralPickup = new SetCoralState
     (
         Robot.coralArm, 
-        ArmConstants.coralArmConstants.ArmStates.CORAL_PICKUP, 
-        ArmConstants.coralArmConstants.coralPickUpSetPoint_Rad
+        CoralConstants.ArmStates.CORAL_PICKUP, 
+        CoralConstants.coralPickUpSetPoint_Rad
     );
     private static final SetCoralState coralStow = new SetCoralState
     (
         Robot.coralArm, 
-        ArmConstants.coralArmConstants.ArmStates.STOWED, 
-        ArmConstants.coralArmConstants.stowSetPoint_rad
+        CoralConstants.ArmStates.STOWED, 
+        CoralConstants.stowSetPoint_rad
     );
 
     public JoystickIO() {
