@@ -64,6 +64,11 @@ public class SwerveDefaultCommand extends Command {
     linearMagnitude = Math.copySign(linearMagnitude * linearMagnitude, linearMagnitude);
     turningMagnitude = Math.copySign(turningMagnitude * turningMagnitude, turningMagnitude);
 
+    if(Math.abs(linearMagnitude) > 0 || Math.abs(turningMagnitude) > 0)
+    {
+      Robot.swerve.isOTF=false;
+    }
+
     double driveSpeedMPS = linearMagnitude * Robot.swerve.getMaxDriveSpeed();
     double turningSpeedRadPerSecond = turningMagnitude * Robot.swerve.getMaxAngularSpeed();
 
