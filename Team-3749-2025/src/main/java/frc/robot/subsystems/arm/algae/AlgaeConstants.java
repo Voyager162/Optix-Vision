@@ -1,7 +1,7 @@
 package frc.robot.subsystems.arm.algae;
 
 /**
- * Constants file for the arm subsystem
+ * Constants file for the algae arm subsystem
  * 
  * @author Weston Gardner
  * 

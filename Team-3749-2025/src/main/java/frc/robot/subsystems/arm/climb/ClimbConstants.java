@@ -1,7 +1,7 @@
 package frc.robot.subsystems.arm.climb;
 
 /**
- * Constants file for the arm subsystem
+ * Constants file for the climb arm subsystem
  * 
  * @author Weston Gardner
  * 
