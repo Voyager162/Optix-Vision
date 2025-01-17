@@ -75,7 +75,6 @@ public class JoystickIO {
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
 
         // Example binding
-        pilot.a().whileTrue(sample);
     }
 
     public static void simBindings() {
