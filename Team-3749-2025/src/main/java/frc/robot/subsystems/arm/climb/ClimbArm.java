@@ -123,54 +123,27 @@ public class ClimbArm extends Arm {
      */
     private void runState() {
         switch (state) {
+            case STOWED:
+                setVoltage(controller.calculate(data.positionUnits, ClimbConstants.stowSetPoint_rad) + calculateFeedForward());
+                break;
             case PREPARE_FOR_CLIMB:
-                runStatePrepareForClimb();
+                setVoltage(controller.calculate(data.positionUnits, ClimbConstants.PrepareForClimbSetPoint_Rad) + calculateFeedForward());
                 break;
             case CLIMB:
-                runStateClimb();
-                break;
-            case STOWED:
-                runStateStowed();
+                setVoltage(controller.calculate(data.positionUnits, ClimbConstants.climbSetPoint_rad) + calculateFeedForward());
                 break;
             case STOPPED:
-                runStateStopped();
+                setVoltage(0 + calculateFeedForward());
                 break;
             case MOVING_DOWN:
-                runMovingDown();
+                setVoltage(-1 + calculateFeedForward());
                 break;
             case MOVING_UP:
-                runMovingUp();
+                setVoltage(1 + calculateFeedForward());
                 break;
             default:
                 break;
         }
-    }
-
-    private void runMovingUp() {
-        setVoltage(1 + calculateFeedForward());
-    }
-
-    private void runMovingDown() {
-        setVoltage(-1 + calculateFeedForward());
-    }
-
-    private void runStateStopped() {
-        setVoltage(0 + calculateFeedForward());
-    }
-
-    private void runStatePrepareForClimb() {
-        double setPoint = ClimbConstants.PrepareForClimbSetPoint_Rad;
-        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
-    }
-
-    private void runStateClimb() {
-        double setPoint = ClimbConstants.climbSetPoint_rad;
-        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
-    }
-
-    private void runStateStowed() {
-        double setPoint = ClimbConstants.stowSetPoint_rad;
-        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
     }
 
     /**
