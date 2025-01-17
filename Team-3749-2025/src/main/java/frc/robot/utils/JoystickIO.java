@@ -70,8 +70,7 @@ public class JoystickIO {
         pilot.a().whileTrue(DriveStraight);
 
         // Example binding
-        operator.a().whileTrue(coralPickup);
-        operator.b().whileTrue(coralStow);
+        operator.a().whileTrue(new ExampleSubsystemCommand());
     }
 
     public static void pilotBindings() {
