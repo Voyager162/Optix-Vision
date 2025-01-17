@@ -54,7 +54,7 @@ public class ElevatorSimulation implements ElevatorIO {
 
     @Override
     public void setVoltage(double volts) {
-        inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
+        // inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
         inputVolts = MathUtil.clamp(volts, -12, 12);
         elevatorSimSystem.setInputVoltage(inputVolts);
     }
