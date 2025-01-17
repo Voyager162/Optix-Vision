@@ -130,55 +130,27 @@ public class AlgaeArm extends Arm {
     private void runState() {
         switch (state) {
             case STOWED:
-                runStateStowed();
+                setVoltage(controller.calculate(data.positionUnits, AlgaeConstants.stowSetPoint_rad) + calculateFeedForward());
                 break;
             case PROCESSOR:
-                runStateProccessor();
+                setVoltage(controller.calculate(data.positionUnits, AlgaeConstants.processorSetPoint_rad) + calculateFeedForward());
                 break;
             case ALGAE_PICKUP:
-                runStateAlgaePickup();
+                setVoltage(controller.calculate(data.positionUnits, AlgaeConstants.algaePickUpSetPoint_rad) + calculateFeedForward());
                 break;
             case STOPPED:
-                runStateStopped();
+                setVoltage(0 + calculateFeedForward());
                 break;
             case MOVING_DOWN:
-                runMovingDown();
+                setVoltage(-1 + calculateFeedForward());
                 break;
             case MOVING_UP:
-                runMovingUp();
+                setVoltage(1 + calculateFeedForward());
                 break;
             default:
                 break;
         }
     }
-
-    private void runStateStowed() {
-        double setPoint = AlgaeConstants.stowSetPoint_rad;
-        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
-    }
-
-    private void runStateProccessor() {
-        double setPoint = AlgaeConstants.processorSetPoint_rad;
-        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
-    }
-
-    private void runStateAlgaePickup() {
-        double setPoint = AlgaeConstants.algaePickUpSetPoint_rad;
-        setVoltage(controller.calculate(data.positionUnits, setPoint) + calculateFeedForward());
-    }
-
-    private void runMovingUp() {
-        setVoltage(1 + calculateFeedForward());
-    }
-
-    private void runMovingDown() {
-        setVoltage(-1 + calculateFeedForward());
-    }
-
-    private void runStateStopped() {
-        setVoltage(0 + calculateFeedForward());
-    }
-
     /**
      * Logs data to Shuffleboard.
      */
