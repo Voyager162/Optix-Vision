@@ -23,18 +23,6 @@ public class JoystickIO {
     private static final CommandXboxController operator = new CommandXboxController(1);
     private static final Command sample = new ExampleSubsystemCommand();
     private static final Command DriveStraight = new DriveStraight();
-    private static final SetCoralState coralPickup = new SetCoralState
-    (
-        Robot.coralArm, 
-        CoralConstants.ArmStates.CORAL_PICKUP, 
-        CoralConstants.coralPickUpSetPoint_Rad
-    );
-    private static final SetCoralState coralStow = new SetCoralState
-    (
-        Robot.coralArm, 
-        CoralConstants.ArmStates.STOWED, 
-        CoralConstants.stowSetPoint_rad
-    );
 
     public JoystickIO() {
     }
