@@ -3,6 +3,11 @@ package frc.robot.commands.arm;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.arm.Arm;
 
+/**
+ * Command to set the chosen arm to move down
+ * @author Weston Gardner
+ */
+
 public class MoveDown extends Command {
 
     private Arm arm;
