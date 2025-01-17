@@ -12,11 +12,20 @@ public class SetArmState<ArmState extends Enum<ArmState>> extends Command {
     private final Arm arm;
     private final ArmState state;
     private final double setPoint;
+    private final boolean hasFinish;
 
     public SetArmState(Arm arm, ArmState state, double setPoint) {
         this.arm = arm;
         this.state = state;
         this.setPoint = setPoint;
+        this.hasFinish = true;
+        addRequirements(arm);
+    }
+    public SetArmState(Arm arm, ArmState state) {
+        this.arm = arm;
+        this.state = state;
+        this.setPoint = 0;
+        this.hasFinish = false;
         addRequirements(arm);
     }
 
@@ -27,11 +36,15 @@ public class SetArmState<ArmState extends Enum<ArmState>> extends Command {
 
     @Override
     public void end(boolean interrupted) {
+        if (!hasFinish) arm.stop();
     }
 
     @Override
     public boolean isFinished() {
-        double position = arm.getPositionRad();
-        return UtilityFunctions.withinMargin(0.0001, setPoint, position);
+        if (!hasFinish) return false;
+        else {
+            double position = arm.getPositionRad();
+            return UtilityFunctions.withinMargin(0.0001, setPoint, position);
+        }
     }
 }
