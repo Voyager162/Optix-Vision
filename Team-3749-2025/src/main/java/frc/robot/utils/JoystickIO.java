@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot;
+import frc.robot.commands.auto.SysIdCommand;
 import frc.robot.commands.elevator.SetElevatorState;
 import frc.robot.commands.elevator.boom;
 import frc.robot.commands.example.ExampleSubsystemCommand;
@@ -31,6 +32,9 @@ public class JoystickIO {
 
     private static final boom test = new boom(12);
     private static final boom reset = new boom(0);
+
+    private static final SysIdCommand.g andrew = new SysIdCommand();
+    private direction = andrew.sysIdDynamic(kForward);
 
     public JoystickIO() {
     }

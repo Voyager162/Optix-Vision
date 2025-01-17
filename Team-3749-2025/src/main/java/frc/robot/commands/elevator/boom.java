@@ -19,12 +19,13 @@ public class boom extends Command {
 
     @Override
     public void initialize() {
-        Robot.elevator.setVoltage(volts);
+        
     }
 
     // if further state change are needed over time, put them here with conditionals
     @Override
     public void execute() {
+        Robot.elevator.setVoltage(volts);
         /*if (Robot.elevator.getIsStableState()) {
             Robot.elevator.setState(ElevatorStates.STOP);
         }*/

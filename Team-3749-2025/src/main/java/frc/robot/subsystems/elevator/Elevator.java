@@ -1,14 +1,19 @@
 package frc.robot.subsystems.elevator;
 
+import java.util.function.Consumer;
+
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorData;
@@ -28,6 +33,17 @@ public class Elevator extends SubsystemBase {
     private ElevatorIO elevatorio;
     private ElevatorData data = new ElevatorData();
     private ElevatorStates state = ElevatorStates.STOP;
+
+    static Elevator staticElevator;
+
+   
+    static Consumer<Voltage> setVolts;
+    static Consumer<SysIdRoutineLog> log;
+
+    public static SysIdRoutine routine = new SysIdRoutine(
+        new SysIdRoutine.Config(),
+        new SysIdRoutine.Mechanism(setVolts, log, staticElevator, "elevatorSysId"));
+
 
     private ProfiledPIDController pidController = new ProfiledPIDController(
             ElevatorConstants.ElevatorControl.kPSim,
@@ -77,6 +93,8 @@ public class Elevator extends SubsystemBase {
         } else {
             elevatorio = new ElevatorSparkMax();
         }
+
+        setVolts = (Voltage volts) -> setVoltage(volts);
     }
 
     public ElevatorStates getState() {
@@ -109,6 +127,11 @@ public class Elevator extends SubsystemBase {
             default:
                 return false;
         }
+    }
+
+    public void setVoltage(Voltage volts){
+        elevatorio.setVoltage(volts.magnitude());
+
     }
 
     public void setVoltage(double volts) {
