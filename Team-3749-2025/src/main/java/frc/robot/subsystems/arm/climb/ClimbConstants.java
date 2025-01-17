@@ -1,5 +1,7 @@
 package frc.robot.subsystems.arm.climb;
 
+import edu.wpi.first.math.util.Units;
+
 /**
  * Constants file for the climb arm subsystem
  * 
@@ -13,7 +15,7 @@ public class ClimbConstants {
     public static final int numMotors = 1;
 
     public static final int armLength_inches = 16;
-    public static final double armLength_meters = armLength_inches / 39.3701;
+    public static final double armLength_meters = Units.inchesToMeters(armLength_inches);
 
     public static final int armMinAngle_degrees = -30;
     public static final int armMaxAngle_degrees = 200;

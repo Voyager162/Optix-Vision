@@ -1,5 +1,7 @@
 package frc.robot.subsystems.arm.algae;
 
+import edu.wpi.first.math.util.Units;
+
 /**
  * Constants file for the algae arm subsystem
  * 
@@ -13,7 +15,7 @@ public class AlgaeConstants {
     public static final int numMotors = 1;
 
     public static final double armLength_inches = 25.47; // from cad
-    public static final double armLength_meters = armLength_inches / 39.3701; // 0.4318
+    public static final double armLength_meters = Units.inchesToMeters(armLength_inches);
 
     public static final int armMinAngle_degrees = 80;
     public static final int armMaxAngle_degrees = 210;
