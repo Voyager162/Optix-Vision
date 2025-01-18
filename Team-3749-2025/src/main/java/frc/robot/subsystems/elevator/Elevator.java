@@ -115,7 +115,7 @@ public class Elevator extends SubsystemBase {
 
         sysIdRoutine = new SysIdRoutine(
                 // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
-                new SysIdRoutine.Config(),
+                new SysIdRoutine.Config(Volts.per(Seconds).of(0.5), Volts.of(12), Seconds.of(20)),
                 new SysIdRoutine.Mechanism(setVolts, setLog, this));
 
         // log = (SysIdRoutineLog log) -> SmartDashboard.put(log);
