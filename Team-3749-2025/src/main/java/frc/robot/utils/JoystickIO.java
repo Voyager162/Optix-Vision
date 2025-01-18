@@ -5,10 +5,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot;
-import frc.robot.commands.elevator.SetElevatorState;
+import frc.robot.commands.arm.SetArmState;
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
-import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
+import frc.robot.subsystems.arm.coral.CoralConstants;
 
 /**
  * Util class for button bindings
@@ -22,10 +22,25 @@ public class JoystickIO {
     private static final CommandXboxController operator = new CommandXboxController(1);
     private static final Command DriveStraight = new DriveStraight();
 
-    private static final SetElevatorState l1 = new SetElevatorState(ElevatorStates.L1);
-    private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
-    private static final SetElevatorState l3 = new SetElevatorState(ElevatorStates.L3);
-    private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
+    private static final SetArmState<CoralConstants.ArmStates> coralPickup = new SetArmState
+    <CoralConstants.ArmStates>
+    (
+        Robot.coralArm, 
+        CoralConstants.ArmStates.CORAL_PICKUP, 
+        CoralConstants.coralPickUpSetPoint_rad
+    );
+    private static final SetArmState<CoralConstants.ArmStates> coralMoveUp = new SetArmState
+    <CoralConstants.ArmStates>
+    (
+        Robot.coralArm, 
+        CoralConstants.ArmStates.MOVING_UP
+    );
+    private static final SetArmState<CoralConstants.ArmStates> coralMoveDown = new SetArmState
+    <CoralConstants.ArmStates>
+    (
+        Robot.coralArm, 
+        CoralConstants.ArmStates.MOVING_DOWN
+    );
     public JoystickIO() {
     }
 
@@ -62,10 +77,9 @@ public class JoystickIO {
         // Example binding 
         // operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        operator.a().onTrue(l1);
-        operator.b().onTrue(l2);
-        operator.x().onTrue(l3);
-        operator.y().onTrue(l4);
+        operator.a().whileTrue(coralMoveDown);
+        operator.b().whileTrue(coralMoveUp);
+        operator.x().whileTrue(coralPickup);
     }
 
     public static void pilotBindings() {
