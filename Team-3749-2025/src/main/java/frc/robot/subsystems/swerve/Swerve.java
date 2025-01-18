@@ -448,7 +448,7 @@ public class Swerve extends SubsystemBase {
 
   public void logSetpoints(PathPlannerTrajectoryState state) {
     // setpoint logging for automated driving
-    Double[] positions = new Double[] { state.pose.getX(), state.pose.getY(), state.heading.getRadians() };
+    Double[] positions = new Double[] { state.pose.getX(), state.pose.getY(), state.pose.getRotation().getRadians()};
     setpointPositionLog.set(positions);
 
     Double[] velocities = new Double[] { state.fieldSpeeds.vxMetersPerSecond, state.fieldSpeeds.vyMetersPerSecond,
