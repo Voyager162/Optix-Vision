@@ -4,14 +4,17 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Robot;
-import frc.robot.commands.auto.SysIdCommand;
+// import frc.robot.commands.auto.SysIdCommand;
 import frc.robot.commands.elevator.SetElevatorState;
-import frc.robot.commands.elevator.boom;
 import frc.robot.commands.example.ExampleSubsystemCommand;
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
+
+import frc.robot.subsystems.elevator.Elevator;
 
 /**
  * Util class for button bindings
@@ -30,11 +33,8 @@ public class JoystickIO {
     private static final SetElevatorState l3 = new SetElevatorState(ElevatorStates.L3);
     private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
 
-    private static final boom test = new boom(12);
-    private static final boom reset = new boom(0);
-
-    private static final SysIdCommand.g andrew = new SysIdCommand();
-    private direction = andrew.sysIdDynamic(kForward);
+    // private static final SysIdCommand andrew = new SysIdCommand();
+    // private direction = andrew.sysIdDynamic(kForward);
 
     public JoystickIO() {
     }
@@ -72,10 +72,10 @@ public class JoystickIO {
         // Example binding
         operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        operator.a().onTrue(l1);
-        operator.b().onTrue(l2);
-        operator.x().onTrue(test);
-        operator.y().onTrue(reset);
+        operator.a().onTrue(Robot.elevator.sysIdDynamic(Direction.kReverse));
+        operator.b().onTrue(Robot.elevator.sysIdQuasistatic(Direction.kReverse));
+        operator.x().onTrue(Robot.elevator.sysIdDynamic(Direction.kForward));
+        operator.y().onTrue(Robot.elevator.sysIdQuasistatic(Direction.kForward));
     }
 
     public static void pilotBindings() {

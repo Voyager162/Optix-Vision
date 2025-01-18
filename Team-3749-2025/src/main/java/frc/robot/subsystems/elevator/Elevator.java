@@ -4,14 +4,20 @@ import java.util.function.Consumer;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.estimator.SteadyStateKalmanFilter;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
@@ -21,6 +27,36 @@ import frc.robot.subsystems.elevator.real.ElevatorSparkMax;
 import frc.robot.subsystems.elevator.sim.ElevatorSimulation;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
+
+import edu.wpi.first.units.measure.Acceleration;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularMomentum;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Dimensionless;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Energy;
+import edu.wpi.first.units.measure.Force;
+import edu.wpi.first.units.measure.Frequency;
+import edu.wpi.first.units.measure.LinearAcceleration;
+import edu.wpi.first.units.measure.LinearMomentum;
+import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.Mass;
+import edu.wpi.first.units.measure.MomentOfInertia;
+import edu.wpi.first.units.measure.Mult;
+import edu.wpi.first.units.measure.MutDistance;
+import edu.wpi.first.units.measure.MutLinearVelocity;
+import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.units.measure.Per;
+import edu.wpi.first.units.measure.Power;
+import edu.wpi.first.units.measure.Resistance;
+import edu.wpi.first.units.measure.Temperature;
+import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.units.measure.Torque;
+import edu.wpi.first.units.measure.Velocity;
+import static edu.wpi.first.units.MutableMeasure.*;
+import static edu.wpi.first.units.Units.*;
 
 /**
  * Elevator subsystem
@@ -33,17 +69,6 @@ public class Elevator extends SubsystemBase {
     private ElevatorIO elevatorio;
     private ElevatorData data = new ElevatorData();
     private ElevatorStates state = ElevatorStates.STOP;
-
-    static Elevator staticElevator;
-
-   
-    static Consumer<Voltage> setVolts;
-    static Consumer<SysIdRoutineLog> log;
-
-    public static SysIdRoutine routine = new SysIdRoutine(
-        new SysIdRoutine.Config(),
-        new SysIdRoutine.Mechanism(setVolts, log, staticElevator, "elevatorSysId"));
-
 
     private ProfiledPIDController pidController = new ProfiledPIDController(
             ElevatorConstants.ElevatorControl.kPSim,
@@ -82,6 +107,12 @@ public class Elevator extends SubsystemBase {
     // private ShuffleData<Double> kAData = new ShuffleData<Double>("Elevator",
     // "kAData", ElevatorConstants.ElevatorControl.kASim);
 
+    // SysID voltage setter
+    private static Consumer<Voltage> setVolts;
+    private static Consumer<SysIdRoutineLog> setLog;
+
+    private final SysIdRoutine sysIdRoutine;
+
     private Mechanism2d mech = new Mechanism2d(3, 3);
     private MechanismRoot2d root = mech.getRoot("elevator", 2, 0);
     private MechanismLigament2d elevatorMech = root
@@ -95,7 +126,26 @@ public class Elevator extends SubsystemBase {
         }
 
         setVolts = (Voltage volts) -> setVoltage(volts);
+        setLog = (SysIdRoutineLog) -> setLog(SysIdRoutineLog);
+
+        sysIdRoutine = new SysIdRoutine(
+                // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+                new SysIdRoutine.Config(),
+                new SysIdRoutine.Mechanism(setVolts, setLog, this));
+
+        // log = (SysIdRoutineLog log) -> SmartDashboard.put(log);
     }
+
+    private void setLog(SysIdRoutineLog log) {
+        log.motor("motor").voltage(Voltage.ofBaseUnits((data.leftAppliedVolts + data.rightAppliedVolts) / 2.0, Volts));
+        log.motor("motor").linearPosition(Meters.ofBaseUnits(data.positionMeters));
+        log.motor("motor").linearVelocity(MetersPerSecond.ofBaseUnits(data.velocityMetersPerSecond));
+        log.motor("motor").linearAcceleration(MetersPerSecondPerSecond.ofBaseUnits(data.accelerationUnits));
+    }
+
+    public ElevatorData getElevatorData() {
+        return data;
+    };
 
     public ElevatorStates getState() {
         return state;
@@ -129,7 +179,7 @@ public class Elevator extends SubsystemBase {
         }
     }
 
-    public void setVoltage(Voltage volts){
+    public void setVoltage(Voltage volts) {
         elevatorio.setVoltage(volts.magnitude());
 
     }
@@ -223,5 +273,13 @@ public class Elevator extends SubsystemBase {
         runState();
         logData();
         // pidController.setPID(kPData.get(),0,kDData.get())
+    }
+
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return sysIdRoutine.quasistatic(direction);
+    }
+
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return sysIdRoutine.dynamic(direction);
     }
 }
