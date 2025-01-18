@@ -66,7 +66,7 @@ public class Autos {
      * @return "Split Routine" Command
      */
     public static Command getSplitRoutine() {
-        
+
         // becomes AutoRoutine
         AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("split routine");
         // loop.trajectory, or the new name
@@ -84,25 +84,52 @@ public class Autos {
 
     }
 
+    public static Command get3Piece() {
+        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("3-Piece");
+
+        // loop.trajectory, or the new name
+        AutoTrajectory trajectory1 = routine.trajectory("Start-L5");
+        AutoTrajectory trajectory2 = routine.trajectory("L5-Station");
+        AutoTrajectory trajectory3 = routine.trajectory("Station-L4");
+        AutoTrajectory trajectory4 = routine.trajectory("L4-Station");
+        AutoTrajectory trajectory5 = routine.trajectory("Station-L3");
+
+        AutoUtils.addScoreL4(trajectory1);
+        AutoUtils.addIntake(trajectory2);
+        AutoUtils.addScoreL4(trajectory3);
+        AutoUtils.addIntake(trajectory4);
+        AutoUtils.addScoreL4(trajectory5);
+
+        // reverse order here (connect 3 to 2, THEN 2 to 1)
+        AutoUtils.goNextAfterIntake(trajectory4, trajectory5);
+        AutoUtils.goNextAfterIntake(trajectory3, trajectory4);
+        AutoUtils.goNextAfterIntake(trajectory2, trajectory3);
+        AutoUtils.goNextAfterScored(trajectory1, trajectory2);
+
+        return Commands.print("2 piece auto!").andThen(
+                AutoUtils.startRoutine(routine, "L5-Station", trajectory1));
+    }
+
     /***
      * A routine that drives straight
      * 
      * @param factory the AutoFactory from AutoUtils
      * @return "Straight" Command
      */
-    public static Command getStraight(){
+    public static Command getStraight() {
         return AutoUtils.getSingleTrajectory("Straight");
 
     }
 
     public static Command getChairGame() {
-       return AutoUtils.getSingleTrajectory("Chair Game");
+        return AutoUtils.getSingleTrajectory("Chair Game");
 
     }
+
     public static Command getScore_Pick() {
         return AutoUtils.getSingleTrajectory("Score and Pick Note");
- 
-     }
+
+    }
 
     public static Command get1Piece() {
         return AutoUtils.getSingleTrajectory("1-r3");
@@ -116,9 +143,9 @@ public class Autos {
         return AutoUtils.getSingleTrajectory("push-right-and-taxi");
     }
 
-    public static Command get3Piece() {
-        return AutoUtils.getSingleTrajectory("3-piece-new");
-    }
+    // public static Command get3Piece() {
+    // return AutoUtils.getSingleTrajectory("3-piece-new");
+    // }
 
     public static Command getTeamTaxi() {
         return AutoUtils.getSingleTrajectory("Team Taxi");

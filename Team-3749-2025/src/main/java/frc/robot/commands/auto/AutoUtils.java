@@ -116,6 +116,37 @@ public class AutoUtils {
 
     }
 
+    public static Command startRoutine(AutoRoutine routine, String firstTrajectoryName,
+            AutoTrajectory firstTrajectory) {
+
+        routine.active().onTrue(
+                AutoUtils.getAutoFactory().resetOdometry(firstTrajectoryName).andThen(
+                        firstTrajectory.cmd()));
+        return routine.cmd();
+    }
+
+    public static void addScoreL4(AutoTrajectory trajectory) {
+        trajectory.atPose(trajectory.getFinalPose().get(), 0.2, Math.toRadians(20))
+                .whileTrue(Commands.print("score L4"));
+
+    }
+
+    public static void addIntake(AutoTrajectory trajectory) {
+        trajectory.atPose(trajectory.getFinalPose().get(), 0.2, Math.toRadians(20))
+                .whileTrue(Commands.print("intake"));
+
+    }
+
+    public static void goNextAfterScored(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory) {
+        // curTrajectory.done().and(!Robot.Chute.hasPiece()).onTrue(nextTrajectory.cmd());
+
+    }
+
+    public static void goNextAfterIntake(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory) {
+        // curTrajectory.done().and(Robot.Chute.hasPiece()).onTrue(nextTrajectory.cmd());
+
+    }
+
     /**
      * Each pos will be flipped across the X-axis using Choreo's Flip Util
      * Returns new pos
