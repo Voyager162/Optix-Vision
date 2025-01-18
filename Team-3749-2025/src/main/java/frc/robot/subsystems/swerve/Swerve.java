@@ -143,17 +143,6 @@ public class Swerve extends SubsystemBase {
       "setpoint rotational acceleration",
       0.0);
 
-  public static final Pose2d[] ppSetpoints = new Pose2d[] { ToPosConstants.Setpoints.coralBottom,
-      ToPosConstants.Setpoints.coralTop,
-      ToPosConstants.Setpoints.processor,
-      ToPosConstants.Setpoints.reef17,
-      ToPosConstants.Setpoints.reef18,
-      ToPosConstants.Setpoints.reef19,
-      ToPosConstants.Setpoints.reef20,
-      ToPosConstants.Setpoints.reef21,
-      ToPosConstants.Setpoints.reef22
-  };
-
   private int currentPPSetpointIndex = 0;
   public boolean isOTF = false;
 
@@ -340,13 +329,13 @@ public class Swerve extends SubsystemBase {
 
   public void cyclePPSetpoint() {
     currentPPSetpointIndex++;
-    if (currentPPSetpointIndex >= ppSetpoints.length) {
+    if (currentPPSetpointIndex >= ToPosConstants.Setpoints.ppSetpoints.length) {
       currentPPSetpointIndex = 0;
     }
   }
 
   public Pose2d getPPSetpoint() {
-    return ppSetpoints[currentPPSetpointIndex];
+    return ToPosConstants.Setpoints.buttonBoardSetpointMap(currentPPSetpointIndex);
   }
 
   /**
