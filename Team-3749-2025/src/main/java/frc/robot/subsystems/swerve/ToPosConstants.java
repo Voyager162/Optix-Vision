@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class ToPosConstants {
 
-    private final double hexOffset = SwerveConstants.DriveConstants.trackWidth / 2.0;
+    //private final double hexOffset = SwerveConstants.DriveConstants.trackWidth / 2.0;
 
     public static final class PathPlannerConstants {
 
