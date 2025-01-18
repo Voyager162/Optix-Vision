@@ -56,6 +56,11 @@ public class OnTheFly extends Command {
         ChassisSpeeds speeds = SwerveController.calculateRobotRelativeSpeeds(Robot.swerve.getPose(), goalState);
         Robot.swerve.setModuleStates(DriveConstants.driveKinematics.toSwerveModuleStates(speeds));
         Robot.swerve.logSetpoints(goalState);
+        if(isFinished())
+        {
+            this.end(true);
+            Robot.swerve.isOTF = false;
+        }
     }
 
     @Override
@@ -71,17 +76,17 @@ public class OnTheFly extends Command {
         // Optional: Add a positional tolerance check for more precise completion
         if (trajectoryComplete) {
             double positionTolerance = 0.05; // meters
-            double rotationTolerance = 2.0; // degrees
+            // double rotationTolerance = 2.0; // degrees
             
             Translation2d currentPosition = Robot.swerve.getPose().getTranslation();
             Translation2d finalPosition = trajectory.getEndState().pose.getTranslation();
             double positionError = currentPosition.getDistance(finalPosition);
     
-            double currentRotation = Robot.swerve.getPose().getRotation().getDegrees();
-            double finalRotation = trajectory.getEndState().pose.getRotation().getDegrees();
-            double rotationError = Math.abs(currentRotation - finalRotation);
+            // double currentRotation = Robot.swerve.getPose().getRotation().getDegrees();
+            // double finalRotation = trajectory.getEndState().pose.getRotation().getDegrees();
+            // double rotationError = Math.abs(currentRotation - finalRotation);
     
-            return positionError <= positionTolerance && rotationError <= rotationTolerance;
+            return positionError <= positionTolerance; //&& <= rotationError thing once the setpoint rotation isn't busted
         }
     
         return false;
