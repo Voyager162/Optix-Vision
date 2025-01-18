@@ -69,8 +69,8 @@ public class JoystickIO {
         // Example binding
         operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        operator.a().onTrue(Robot.elevator.sysIdDynamic(Direction.kReverse));
-        operator.b().onTrue(Robot.elevator.sysIdQuasistatic(Direction.kReverse));
+        operator.a().onTrue(l1);
+        operator.b().onTrue(l2);
         operator.x().onTrue(Robot.elevator.sysIdDynamic(Direction.kForward));
         operator.y().onTrue(Robot.elevator.sysIdQuasistatic(Direction.kForward));
     }

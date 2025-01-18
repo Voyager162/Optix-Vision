@@ -77,6 +77,10 @@ public class Elevator extends SubsystemBase {
     private ShuffleData<Double> leftTempCelciusLog = new ShuffleData<Double>("Elevator", "left temp celcius", 0.0);
     private ShuffleData<Double> rightTempCelciusLog = new ShuffleData<Double>("Elevator", "right temp celcius", 0.0);
 
+    private ShuffleData<Double> setpointVelocityLog = new ShuffleData<Double>("Elevator", "setpoint velocity", 0.0);
+    private ShuffleData<Double> setpointPositionLog = new ShuffleData<Double>("Elevator", "setpoint position", 0.0);
+
+
     // For tuning on real
     // private ShuffleData<Double> kPData = new ShuffleData<Double>("Elevator",
     // "kPData", ElevatorConstants.ElevatorControl.kPSim);
@@ -242,6 +246,9 @@ public class Elevator extends SubsystemBase {
         rightCurrentAmpsLog.set(data.rightCurrentAmps);
         leftTempCelciusLog.set(data.leftTempCelcius);
         rightTempCelciusLog.set(data.rightTempCelcius);
+
+        setpointVelocityLog.set(pidController.getSetpoint().velocity);
+        setpointPositionLog.set(pidController.getSetpoint().position);
 
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
         SmartDashboard.putData("elevator mechanism", mech);
