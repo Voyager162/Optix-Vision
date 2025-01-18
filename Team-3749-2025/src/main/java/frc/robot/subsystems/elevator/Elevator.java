@@ -123,7 +123,6 @@ public class Elevator extends SubsystemBase {
     // "kAData", ElevatorConstants.ElevatorControl.kASim);
 
     // SysID voltage setter
-    private static Consumer<Voltage> setVolts;
     private static Consumer<SysIdRoutineLog> setLog;
 
     private final SysIdRoutine sysIdRoutine;

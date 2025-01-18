@@ -81,8 +81,4 @@ public class ElevatorSimulation implements ElevatorIO {
         inputVolts = MathUtil.clamp(volts, -12, 12);
         elevatorSimSystem.setInputVoltage(inputVolts);
     }
-
-    public ElevatorSim getMotor(){
-        return elevatorSimSystem;
-    }
 }
