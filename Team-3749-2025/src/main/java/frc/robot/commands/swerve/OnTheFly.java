@@ -1,7 +1,9 @@
 package frc.robot.commands.swerve;
 
 import java.io.IOException;
+
 import org.json.simple.parser.ParseException;
+
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -17,81 +19,46 @@ import frc.robot.Robot;
 import frc.robot.commands.auto.AutoConstants;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.ToPos;
+import frc.robot.subsystems.swerve.SwerveConstants.DriveConstants;
 
 public class OnTheFly extends Command {
 
-    private PathPlannerTrajectory trajectory = null;
-    private final Timer timer = new Timer();
-    private boolean pathGenerated = false;
-    private boolean generationTimeout = false;
+    PathPlannerTrajectory trajectory;
+    Timer timer = new Timer();
+    PPHolonomicDriveController SwerveController = new PPHolonomicDriveController(
+        new PIDConstants(AutoConstants.kPDrive, 0, AutoConstants.kDDrive), 
+        new PIDConstants(AutoConstants.kPTurn,0,AutoConstants.kDTurn));
 
-    private final PPHolonomicDriveController swerveController = new PPHolonomicDriveController(
-        new PIDConstants(AutoConstants.kPDrive, 0, AutoConstants.kDDrive),
-        new PIDConstants(AutoConstants.kPTurn, 0, AutoConstants.kDTurn)
-    );
-
-    public OnTheFly() {}
+    public OnTheFly() {
+        
+    }
 
     @Override
     public void initialize() {
         timer.reset();
         timer.start();
-        pathGenerated = false;
-        generationTimeout = false;
-
-        // Start path generation asynchronously to avoid blocking the main thread
-        new Thread(() -> {
-            try {
-                System.out.println("Starting path generation...");
-                PathPlannerPath path = ToPos.generateDynamicPath(
-                    Robot.swerve.getPose(),
-                    Robot.swerve.getPPSetpoint(),
-                    Robot.swerve.getMaxDriveSpeed(),
-                    SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
-                    Robot.swerve.getMaxAngularSpeed(),
-                    SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared,
-                    new Translation2d(4.5, 4),
-                    0.940816
-                );
-
-                if (path == null) {
-                    System.out.println("Path generation failed: path is null.");
-                    return;
-                }
-
-                trajectory = path.generateTrajectory(
-                    Robot.swerve.getChassisSpeeds(),
-                    Robot.swerve.getRotation2d(),
-                    RobotConfig.fromGUISettings()
-                );
-
-                pathGenerated = true;
-                System.out.println("Path generation completed successfully.");
-            } catch (IOException | ParseException e) {
-                System.out.println("Path generation failed: " + e.getMessage());
-            }
-        }).start();
+        PathPlannerPath path = ToPos.generateDynamicPath(Robot.swerve.getPose(),
+        Robot.swerve.getPPSetpoint(),
+            Robot.swerve.getMaxDriveSpeed(), SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
+            Robot.swerve.getMaxAngularSpeed(), SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared);
+        try {
+            trajectory = path.generateTrajectory(Robot.swerve.getChassisSpeeds(), Robot.swerve.getRotation2d(), 
+            RobotConfig.fromGUISettings());
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void execute() {
-        if (!pathGenerated) {
-            if (timer.get() > 1.0 && !generationTimeout) {
-                generationTimeout = true;
-                System.out.println("Path generation taking longer than expected.");
-            }
-            return;
-        }
-
         double currentTime = timer.get();
         PathPlannerTrajectoryState goalState = trajectory.sample(currentTime);
-
-        ChassisSpeeds speeds = swerveController.calculateRobotRelativeSpeeds(Robot.swerve.getPose(), goalState);
-        Robot.swerve.setModuleStates(SwerveConstants.DriveConstants.driveKinematics.toSwerveModuleStates(speeds));
+        ChassisSpeeds speeds = SwerveController.calculateRobotRelativeSpeeds(Robot.swerve.getPose(), goalState);
+        Robot.swerve.setModuleStates(DriveConstants.driveKinematics.toSwerveModuleStates(speeds));
         Robot.swerve.logSetpoints(goalState);
-
-        if (isFinished()) {
-            end(true);
+        if(isFinished())
+        {
+            this.end(true);
             Robot.swerve.isOTF = false;
         }
     }
@@ -99,26 +66,31 @@ public class OnTheFly extends Command {
     @Override
     public void end(boolean interrupted) {
         timer.stop();
-        System.out.println(interrupted ? "Path execution interrupted." : "Path execution completed.");
     }
 
     @Override
     public boolean isFinished() {
-        if (trajectory == null) {
-            return false;
-        }
-
+        // Check if the timer has exceeded the trajectory duration
         boolean trajectoryComplete = timer.get() >= trajectory.getTotalTimeSeconds();
-
+    
+        // Optional: Add a positional tolerance check for more precise completion
         if (trajectoryComplete) {
-            double positionTolerance = 0.02; // Adjusted for better precision
+            double positionTolerance = 0.05; // meters
+            // double rotationTolerance = 2.0; // degrees
+            
             Translation2d currentPosition = Robot.swerve.getPose().getTranslation();
             Translation2d finalPosition = trajectory.getEndState().pose.getTranslation();
             double positionError = currentPosition.getDistance(finalPosition);
-
-            return positionError <= positionTolerance;
+    
+            // double currentRotation = Robot.swerve.getPose().getRotation().getDegrees();
+            // double finalRotation = trajectory.getEndState().pose.getRotation().getDegrees();
+            // double rotationError = Math.abs(currentRotation - finalRotation);
+    
+            return positionError <= positionTolerance; //&& <= rotationError thing once the setpoint rotation isn't busted
         }
-
+    
         return false;
     }
+    
+
 }
