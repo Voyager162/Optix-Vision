@@ -1,5 +1,9 @@
 package frc.robot.subsystems.elevator;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 import java.util.function.Consumer;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
@@ -69,6 +73,17 @@ public class Elevator extends SubsystemBase {
     private ElevatorIO elevatorio;
     private ElevatorData data = new ElevatorData();
     private ElevatorStates state = ElevatorStates.STOP;
+
+    static Elevator staticElevator;
+
+   
+    static Consumer<Voltage> setVolts;
+    static Consumer<SysIdRoutineLog> log;
+
+    public static SysIdRoutine routine = new SysIdRoutine(
+        new SysIdRoutine.Config(),
+        new SysIdRoutine.Mechanism(setVolts, log, staticElevator, "elevatorSysId"));
+
 
     private ProfiledPIDController pidController = new ProfiledPIDController(
             ElevatorConstants.ElevatorControl.kPSim,
