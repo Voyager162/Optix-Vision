@@ -8,6 +8,7 @@ import choreo.util.ChoreoAllianceFlipUtil;
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -23,16 +24,22 @@ public class AutoUtils {
     // make sure to properly log the robot's setpoints
 
     private static AutoFactory factory;
+    private static AutoFactory factoryFlipped;
     private static AutoChooser chooser;
-
-    public static ChoreoAllianceFlipUtil.Flipper flipper = ChoreoAllianceFlipUtil.getFlipper();
+    // private static AutoChooser flipChooser;
+    private static SendableChooser<Boolean> flippedChooser;
+    private static ChoreoAllianceFlipUtil.Flipper flipper = ChoreoAllianceFlipUtil.getFlipper();
 
     /**
      * run all necessary auto setup methods
      */
     public static void initAuto() {
-        setupFactory(true);
+        // seems like this method is setup before the automonous command is clicked which makes it not possible
+        // for us to choose before hitting the automonous button
+
+        setupFactory();
         setupChooser();
+        setupFlipChooser();
     }
 
     /**
@@ -44,13 +51,16 @@ public class AutoUtils {
     }
 
     public static AutoFactory getAutoFactory() {
+        if (flippedChooser.getSelected()){
+            return factoryFlipped;
+        }
         return factory;
     }
 
     /**
      * setup the choreo factor object with bindings, controller, etc.
      */
-    private static void setupFactory(boolean isFlipped) {
+    private static void setupFactory() {
         /**
          * Swerve Pose Supplier
          * Reset Odometry Method
@@ -64,12 +74,20 @@ public class AutoUtils {
 
         factory = new AutoFactory(() -> Robot.swerve.getPose(),
                 (Pose2d startingPose) -> Robot.swerve
-                        .setOdometry(isFlipped ? getXFlippedPose(startingPose) : startingPose),
-                (SwerveSample sample) -> Robot.swerve.followSample(sample, isFlipped),
+                        .setOdometry(false ? getXFlippedPose(startingPose) : startingPose),
+                (SwerveSample sample) -> Robot.swerve.followSample(sample, false),
+                true,
+                Robot.swerve);
+        
+        factoryFlipped = new AutoFactory(() -> Robot.swerve.getPose(),
+                (Pose2d startingPose) -> Robot.swerve
+                        .setOdometry(true ? getXFlippedPose(startingPose) : startingPose),
+                (SwerveSample sample) -> Robot.swerve.followSample(sample, true),
                 true,
                 Robot.swerve);
         // Event Binding
         factory.bind("Marker", Commands.print("Marker Passed"));
+        factoryFlipped.bind("Marker", Commands.print("Marker Passed"));
 
     }
 
@@ -101,49 +119,28 @@ public class AutoUtils {
 
     }
 
+    private static void setupFlipChooser() {
+        flippedChooser = new SendableChooser<Boolean>();
+
+        flippedChooser.addOption("Yes", true);
+        flippedChooser.addOption("No", false);
+        flippedChooser.setDefaultOption("No", false);
+
+        SmartDashboard.putData("Flip Auto Path?", flippedChooser);
+    }
+
     public static Command getSingleTrajectory(String trajectoryName) {
-        AutoRoutine routine = factory.newRoutine(trajectoryName);
+        AutoRoutine routine = getAutoFactory().newRoutine(trajectoryName);
         AutoTrajectory trajectory = routine.trajectory(trajectoryName);
 
         Command trajectoryCommand = trajectory.cmd();
 
         routine.active().onTrue(
-                factory.resetOdometry(trajectoryName).andThen(
+            getAutoFactory().resetOdometry(trajectoryName).andThen(
                         trajectoryCommand));
 
         System.out.println(trajectory.getInitialPose().get());
         return Commands.print(trajectoryName).andThen(routine.cmd());
-
-    }
-
-    public static Command startRoutine(AutoRoutine routine, String firstTrajectoryName,
-            AutoTrajectory firstTrajectory) {
-
-        routine.active().onTrue(
-                AutoUtils.getAutoFactory().resetOdometry(firstTrajectoryName).andThen(
-                        firstTrajectory.cmd()));
-        return routine.cmd();
-    }
-
-    public static void addScoreL4(AutoTrajectory trajectory) {
-        trajectory.atPose(trajectory.getFinalPose().get(), 0.2, Math.toRadians(20))
-                .whileTrue(Commands.print("score L4"));
-
-    }
-
-    public static void addIntake(AutoTrajectory trajectory) {
-        trajectory.atPose(trajectory.getFinalPose().get(), 0.2, Math.toRadians(20))
-                .whileTrue(Commands.print("intake"));
-
-    }
-
-    public static void goNextAfterScored(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory) {
-        // curTrajectory.done().and(!Robot.Chute.hasPiece()).onTrue(nextTrajectory.cmd());
-
-    }
-
-    public static void goNextAfterIntake(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory) {
-        // curTrajectory.done().and(Robot.Chute.hasPiece()).onTrue(nextTrajectory.cmd());
 
     }
 
