@@ -30,10 +30,12 @@ public class UtilityFunctions {
      * @return true if it is within the margin, false if not
      */
     public static boolean withinMargin(double margin, double a, double b) {
-        if (a + margin >= b && a - margin <= b) {
-            return true;
-        }
-        return false;
+        // if (a + margin >= b && a - margin <= b) {
+        //     return true;
+        // }
+        // return false;
+
+        return (a + margin >= b && a - margin <= b);
     }
 
     /**

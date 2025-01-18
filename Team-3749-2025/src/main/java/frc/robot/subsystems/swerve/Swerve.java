@@ -148,6 +148,12 @@ public class Swerve extends SubsystemBase {
 
   public Swerve() {
 
+    // if real
+    gyro = new PigeonGyro();
+    for (int i = 0; i < 4; i++) {
+      modules[i] = new SwerveModule(i, new SwerveModuleSparkMax(i));
+    }
+
     // if simulation
     if (Robot.isSimulation()) {
       gyro = new GyroSim();
@@ -155,14 +161,7 @@ public class Swerve extends SubsystemBase {
         modules[i] = new SwerveModule(i, new SwerveModuleSim());
       }
     }
-    // if real
-    else {
-      // gyro = new NavX2Gyro();
-      gyro = new PigeonGyro();
-      for (int i = 0; i < 4; i++) {
-        modules[i] = new SwerveModule(i, new SwerveModuleSparkMax(i));
-      }
-    }
+    
     // pose estimator
     swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
         DriveConstants.driveKinematics,
