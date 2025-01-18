@@ -3,10 +3,10 @@ package frc.robot.subsystems.arm;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.arm.ArmIO.ArmData;
 import frc.robot.utils.ShuffleData;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 /**
  * Arm parent class to be inherited by the other arms
  * 
@@ -26,9 +26,9 @@ public abstract class Arm extends SubsystemBase {
     protected ShuffleData<Double> tempCelciusLog = new ShuffleData<>(this.getName(), "temp celcius", 0.0);
     public ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>(this.getName(), "input volts", 0.0);
 
-    protected Mechanism2d mechanism2d = new Mechanism2d(60, 60);
-    protected MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
-    protected MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Arm", 24, 0));
+    protected LoggedMechanism2d mechanism2d = new LoggedMechanism2d(60, 60);
+    protected LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
+    protected LoggedMechanismLigament2d armLigament = armRoot.append(new LoggedMechanismLigament2d("Arm", 24, 0));
 
     public Arm() {
     }

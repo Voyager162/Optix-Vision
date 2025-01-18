@@ -5,11 +5,15 @@ import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.sim.ArmSim;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 /**
  * Subsystem class for the arm
@@ -29,9 +33,9 @@ public class ClimbArm extends Arm {
 
     private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
-    private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
-    private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
-    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Climb Arm", 24, 0));
+    private LoggedMechanism2d mechanism2d = new LoggedMechanism2d(60, 60);
+    private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
+    private LoggedMechanismLigament2d armLigament = armRoot.append(new LoggedMechanismLigament2d("Climb Arm", 24, 0));
 
 
     public ClimbArm() {
@@ -143,6 +147,8 @@ public class ClimbArm extends Arm {
         armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
         stateLog.set(state.name());
+
+        Logger.recordOutput(this.getName(), mechanism2d);
     }
 
     private double calculateFeedForward() {
