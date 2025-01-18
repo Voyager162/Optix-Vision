@@ -1,6 +1,5 @@
 package frc.robot.subsystems.swerve;
 
-import java.util.ArrayList;
 import java.util.List;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;

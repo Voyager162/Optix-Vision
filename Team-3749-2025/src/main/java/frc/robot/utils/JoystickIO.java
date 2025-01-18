@@ -59,7 +59,7 @@ public class JoystickIO {
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
         pilot.a().whileTrue(DriveStraight);
         pilot.x().onTrue(Commands.runOnce(()->Robot.swerve.isOTF=!Robot.swerve.isOTF));
-        new Trigger(()->Robot.swerve.isOTF).whileTrue(OnTheFly.withInterruptBehavior(InterruptionBehavior.kCancelSelf));
+        new Trigger(()->Robot.swerve.isOTF).whileTrue(OnTheFly);
         pilot.b().onTrue(Commands.runOnce(() -> Robot.swerve.cyclePPSetpoint()));
 
         // Example binding
