@@ -1,63 +1,17 @@
 package frc.robot.subsystems.swerve;
 
+import java.util.ArrayList;
 import java.util.List;
+
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class ToPos {
-
-    public static class Field {
-        private final List<Translation2d> vertices;
-        private final Translation2d obstacleCenter;
-        private final double obstacleRadius;
-
-        public Field(Translation2d obstacleCenter, double obstacleRadius) {
-            // Define the vertices of the rectangular field
-            vertices = List.of(
-                new Translation2d(0, 0),   // Bottom-left
-                new Translation2d(0, 8),   // Top-left
-                new Translation2d(8, 8),   // Top-right
-                new Translation2d(8, 0),   // Bottom-right
-                new Translation2d(0, 0)    // Close loop
-            );
-            this.obstacleCenter = obstacleCenter;
-            this.obstacleRadius = obstacleRadius;
-        }
-
-        public boolean isInsideField(Translation2d point) {
-            // Check if the point is within the rectangular field using ray-casting algorithm
-            int intersections = 0;
-            for (int i = 0; i < vertices.size(); i++) {
-                Translation2d v1 = vertices.get(i);
-                Translation2d v2 = vertices.get((i + 1) % vertices.size());
-
-                if ((point.getY() > Math.min(v1.getY(), v2.getY())) &&
-                    (point.getY() <= Math.max(v1.getY(), v2.getY())) &&
-                    (point.getX() <= Math.max(v1.getX(), v2.getX())) &&
-                    v1.getY() != v2.getY()) {
-
-                    double xinters = (point.getY() - v1.getY()) * (v2.getX() - v1.getX()) / (v2.getY() - v1.getY()) + v1.getX();
-                    if (v1.getX() == v2.getX() || point.getX() <= xinters) {
-                        intersections++;
-                    }
-                }
-            }
-            return intersections % 2 != 0;
-        }
-
-        public boolean intersectsObstacle(Translation2d start, Translation2d end) {
-            double distToLine = Math.abs((end.getY() - start.getY()) * obstacleCenter.getX() -
-                                         (end.getX() - start.getX()) * obstacleCenter.getY() +
-                                         end.getX() * start.getY() -
-                                         end.getY() * start.getX()) /
-                                start.getDistance(end);
-            return distToLine < obstacleRadius;
-        }
-    }
 
     public static PathPlannerPath generateDynamicPath(
             Pose2d initialPose,
@@ -69,49 +23,96 @@ public class ToPos {
             Translation2d obstacleCenter,
             double obstacleRadius
     ) {
-        Field field = new Field(obstacleCenter, obstacleRadius);
-        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(initialPose, finalPose);
+        List<Waypoint> waypoints = new ArrayList<>();
+        waypoints.add(new Waypoint(initialPose.getTranslation(), initialPose.getTranslation(), initialPose.getTranslation()));
 
-        // Check if the path intersects the field boundary or obstacle
-        if (!field.isInsideField(initialPose.getTranslation()) || 
-            !field.isInsideField(finalPose.getTranslation()) || 
-            field.intersectsObstacle(initialPose.getTranslation(), finalPose.getTranslation())) {
-            Translation2d detour = calculateDetour(initialPose.getTranslation(), finalPose.getTranslation(), obstacleCenter, obstacleRadius);
-            if (detour != null) {
-                waypoints.add(1, new Waypoint(detour, detour, detour));
+        // Check if the direct path intersects the obstacle
+        if (intersectsObstacle(initialPose.getTranslation(), finalPose.getTranslation(), obstacleCenter, obstacleRadius)) {
+            System.out.println("Obstacle detected! Adding detour waypoint...");
+
+            // Calculate detours
+            List<Translation2d> detours = calculateOptimizedDetours(
+                initialPose.getTranslation(), finalPose.getTranslation(), obstacleCenter, obstacleRadius
+            );
+
+            if (detours != null && !detours.isEmpty()) {
+                for (Translation2d detour : detours) {
+                    waypoints.add(new Waypoint(detour, detour, detour));
+                    System.out.println("Added detour waypoint: " + detour);
+                }
+            } else {
+                System.out.println("Failed to calculate detour. Path generation aborted.");
+                return null;
             }
+        } else {
+            System.out.println("No obstacle detected. Using direct path.");
         }
 
-        PathConstraints constraints = new PathConstraints(
-                maxVelocity,
-                maxAcceleration,
-                maxAngularVelocity,
-                maxAngularAcceleration
-        );
+        // Add final waypoint
+        waypoints.add(new Waypoint(finalPose.getTranslation(), finalPose.getTranslation(), finalPose.getTranslation()));
 
-        PathPlannerPath path = new PathPlannerPath(
-                waypoints,
-                constraints,
-                null,
-                new GoalEndState(0.0, finalPose.getRotation())
-        );
+        // Validate waypoints
+        if (waypoints.size() < 2) {
+            System.out.println("Invalid path: Not enough waypoints.");
+            return null;
+        }
 
-        path.preventFlipping = true;
-        return path;
+        // Generate and return the trajectory
+        try {
+            PathConstraints constraints = new PathConstraints(maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration);
+            PathPlannerPath path = new PathPlannerPath(
+                    waypoints, constraints, null, new GoalEndState(0.0, finalPose.getRotation()));
+
+            path.preventFlipping = true;
+            System.out.println("Path generation complete. Total waypoints: " + waypoints.size());
+            return path;
+        } catch (Exception e) {
+            System.out.println("Error during trajectory generation: " + e.getMessage());
+            return null;
+        }
     }
 
-    private static Translation2d calculateDetour(Translation2d start, Translation2d end, Translation2d center, double radius) {
-        Translation2d direction = new Translation2d(end.getX() - start.getX(), end.getY() - start.getY()).div(start.getDistance(end));
+    private static boolean intersectsObstacle(Translation2d start, Translation2d end, Translation2d center, double radius) {
+        Translation2d direction = end.minus(start).div(start.getDistance(end));
+        Translation2d toObstacle = center.minus(start);
+
+        double projection = toObstacle.getX() * direction.getX() + toObstacle.getY() * direction.getY();
+        Translation2d closestPoint = start.plus(direction.times(projection));
+
+        double distanceToObstacle = closestPoint.getDistance(center);
+        boolean intersects = distanceToObstacle < radius && projection > 0 && projection < start.getDistance(end);
+
+        if (intersects) {
+            System.out.println("Intersection detected! Closest point: " + closestPoint + ", Distance to obstacle: " + distanceToObstacle);
+        }
+
+        return intersects;
+    }
+
+    private static List<Translation2d> calculateOptimizedDetours(Translation2d start, Translation2d end, Translation2d center, double radius) {
+        // Generate two possible detours around the obstacle
+        Translation2d direction = end.minus(start).div(start.getDistance(end));
         Translation2d perpendicular = new Translation2d(-direction.getY(), direction.getX());
 
-        // Calculate both tangent points
-        Translation2d tangentLeft = center.plus(perpendicular.times(radius + 0.5));
-        Translation2d tangentRight = center.minus(perpendicular.times(radius + 0.5));
+        Translation2d detour1 = center.plus(perpendicular.times(radius + 0.5));
+        Translation2d detour2 = center.minus(perpendicular.times(radius + 0.5));
 
-        // Evaluate which tangent results in a shorter path
-        double pathLeft = start.getDistance(tangentLeft) + tangentLeft.getDistance(end);
-        double pathRight = start.getDistance(tangentRight) + tangentRight.getDistance(end);
+        // Calculate costs (distance + deviation angle)
+        double cost1 = detour1.getDistance(start) + detour1.getDistance(end);
+        double cost2 = detour2.getDistance(start) + detour2.getDistance(end);
 
-        return (pathLeft < pathRight) ? tangentLeft : tangentRight;
+        // Choose the lower-cost detour
+        List<Translation2d> selectedDetour = new ArrayList<>();
+        if (cost1 < cost2) {
+            selectedDetour.add(detour1);
+        } else {
+            selectedDetour.add(detour2);
+        }
+
+        // Add intermediate waypoints for smooth transitions
+        Translation2d midPoint = center.plus(direction.times(radius + 1.0));
+        selectedDetour.add(midPoint);
+
+        return selectedDetour;
     }
 }
