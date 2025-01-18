@@ -3,10 +3,12 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -20,7 +22,7 @@ import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.ShuffleData;
 
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   public static Swerve swerve = new Swerve();
@@ -39,6 +41,12 @@ public class Robot extends TimedRobot {
   private ShuffleData<String> allianceLog = new ShuffleData<String>("DS", "alliance", "Red");
   private ShuffleData<Boolean> FMSLog = new ShuffleData<Boolean>("DS", "FMS connected", false);
   private RobotContainer m_robotContainer;
+
+  public Robot() {
+    Logger.recordMetadata("ProjectName", "MyProject"); // Set a metadata value
+
+    Logger.start(); // Start logging! No more data receivers, replay sources, or metadata values may be added.
+  }
 
   @Override
   public void robotInit() {
