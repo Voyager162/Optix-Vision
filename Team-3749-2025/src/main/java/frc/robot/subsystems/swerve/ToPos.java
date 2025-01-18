@@ -26,29 +26,20 @@ public class ToPos {
         List<Waypoint> waypoints = new ArrayList<>();
         waypoints.add(new Waypoint(initialPose.getTranslation(), initialPose.getTranslation(), initialPose.getTranslation()));
 
-        // Check if the direct path intersects the obstacle
-        if (intersectsObstacle(initialPose.getTranslation(), finalPose.getTranslation(), obstacleCenter, obstacleRadius)) {
-            System.out.println("Obstacle detected! Adding detour waypoint...");
-
-            // Calculate detours
-            List<Translation2d> detours = calculateOptimizedDetours(
+        // Robust obstacle avoidance
+        List<Translation2d> detours = calculateOptimizedDetours(
                 initialPose.getTranslation(), finalPose.getTranslation(), obstacleCenter, obstacleRadius
-            );
+        );
 
-            if (detours != null && !detours.isEmpty()) {
-                for (Translation2d detour : detours) {
-                    waypoints.add(new Waypoint(detour, detour, detour));
-                    System.out.println("Added detour waypoint: " + detour);
-                }
-            } else {
-                System.out.println("Failed to calculate detour. Path generation aborted.");
-                return null;
+        if (detours != null && !detours.isEmpty()) {
+            for (Translation2d detour : detours) {
+                waypoints.add(new Waypoint(detour, detour, detour));
+                System.out.println("Added detour waypoint: " + detour);
             }
         } else {
-            System.out.println("No obstacle detected. Using direct path.");
+            System.out.println("No detours necessary. Using direct path.");
         }
 
-        // Add final waypoint
         waypoints.add(new Waypoint(finalPose.getTranslation(), finalPose.getTranslation(), finalPose.getTranslation()));
 
         // Validate waypoints
@@ -72,47 +63,34 @@ public class ToPos {
         }
     }
 
-    private static boolean intersectsObstacle(Translation2d start, Translation2d end, Translation2d center, double radius) {
-        Translation2d direction = end.minus(start).div(start.getDistance(end));
-        Translation2d toObstacle = center.minus(start);
+    private static List<Translation2d> calculateOptimizedDetours(Translation2d start, Translation2d end, Translation2d center, double radius) {
+        List<Translation2d> detours = new ArrayList<>();
 
-        double projection = toObstacle.getX() * direction.getX() + toObstacle.getY() * direction.getY();
+        // Vector-based approach to detect obstacle and calculate detours
+        Translation2d direction = end.minus(start).div(start.getDistance(end));
+        Translation2d obstacleVector = center.minus(start);
+        double projection = (obstacleVector.getX() * direction.getX() + obstacleVector.getY() * direction.getY());
         Translation2d closestPoint = start.plus(direction.times(projection));
 
-        double distanceToObstacle = closestPoint.getDistance(center);
-        boolean intersects = distanceToObstacle < radius && projection > 0 && projection < start.getDistance(end);
+        double distanceToCenter = closestPoint.getDistance(center);
 
-        if (intersects) {
-            System.out.println("Intersection detected! Closest point: " + closestPoint + ", Distance to obstacle: " + distanceToObstacle);
+        if (distanceToCenter < radius) {
+            System.out.println("Obstacle detected. Calculating detour...");
+
+            // Calculate tangent points around the obstacle
+            double offsetDistance = Math.sqrt(radius * radius - distanceToCenter * distanceToCenter);
+            Translation2d perpendicular = new Translation2d(-direction.getY(), direction.getX()).times(offsetDistance);
+
+            Translation2d detour1 = closestPoint.plus(perpendicular);
+            Translation2d detour2 = closestPoint.minus(perpendicular);
+
+            // Ensure detour points are outside the obstacle
+            if (detour1.getDistance(center) > radius) detours.add(detour1);
+            if (detour2.getDistance(center) > radius) detours.add(detour2);
+
+            System.out.println("Detour points calculated: " + detours);
         }
 
-        return intersects;
-    }
-
-    private static List<Translation2d> calculateOptimizedDetours(Translation2d start, Translation2d end, Translation2d center, double radius) {
-        // Generate two possible detours around the obstacle
-        Translation2d direction = end.minus(start).div(start.getDistance(end));
-        Translation2d perpendicular = new Translation2d(-direction.getY(), direction.getX());
-
-        Translation2d detour1 = center.plus(perpendicular.times(radius + 0.5));
-        Translation2d detour2 = center.minus(perpendicular.times(radius + 0.5));
-
-        // Calculate costs (distance + deviation angle)
-        double cost1 = detour1.getDistance(start) + detour1.getDistance(end);
-        double cost2 = detour2.getDistance(start) + detour2.getDistance(end);
-
-        // Choose the lower-cost detour
-        List<Translation2d> selectedDetour = new ArrayList<>();
-        if (cost1 < cost2) {
-            selectedDetour.add(detour1);
-        } else {
-            selectedDetour.add(detour2);
-        }
-
-        // Add intermediate waypoints for smooth transitions
-        Translation2d midPoint = center.plus(direction.times(radius + 1.0));
-        selectedDetour.add(midPoint);
-
-        return selectedDetour;
+        return detours;
     }
 }
