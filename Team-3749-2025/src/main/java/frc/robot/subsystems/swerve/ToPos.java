@@ -24,9 +24,11 @@ public class ToPos {
             double obstacleRadius
     ) {
         List<Waypoint> waypoints = new ArrayList<>();
+
+        // Add initial pose
         waypoints.add(new Waypoint(initialPose.getTranslation(), initialPose.getTranslation(), initialPose.getTranslation()));
 
-        // Robust obstacle avoidance
+        // Calculate detours for obstacle avoidance
         List<Translation2d> detours = calculateOptimizedDetours(
                 initialPose.getTranslation(), finalPose.getTranslation(), obstacleCenter, obstacleRadius
         );
@@ -40,6 +42,7 @@ public class ToPos {
             System.out.println("No detours necessary. Using direct path.");
         }
 
+        // Add final pose
         waypoints.add(new Waypoint(finalPose.getTranslation(), finalPose.getTranslation(), finalPose.getTranslation()));
 
         // Validate waypoints
@@ -54,7 +57,7 @@ public class ToPos {
             PathPlannerPath path = new PathPlannerPath(
                     waypoints, constraints, null, new GoalEndState(0.0, finalPose.getRotation()));
 
-            path.preventFlipping = true;
+            path.preventFlipping = true; // Prevents path flipping issues
             System.out.println("Path generation complete. Total waypoints: " + waypoints.size());
             return path;
         } catch (Exception e) {
@@ -63,7 +66,9 @@ public class ToPos {
         }
     }
 
-    private static List<Translation2d> calculateOptimizedDetours(Translation2d start, Translation2d end, Translation2d center, double radius) {
+    private static List<Translation2d> calculateOptimizedDetours(
+            Translation2d start, Translation2d end, Translation2d center, double radius) {
+
         List<Translation2d> detours = new ArrayList<>();
 
         // Vector-based approach to detect obstacle and calculate detours
@@ -84,11 +89,19 @@ public class ToPos {
             Translation2d detour1 = closestPoint.plus(perpendicular);
             Translation2d detour2 = closestPoint.minus(perpendicular);
 
-            // Ensure detour points are outside the obstacle
-            if (detour1.getDistance(center) > radius) detours.add(detour1);
-            if (detour2.getDistance(center) > radius) detours.add(detour2);
+            // Select the shortest detour based on total path length
+            double detour1Length = detour1.getDistance(start) + detour1.getDistance(end);
+            double detour2Length = detour2.getDistance(start) + detour2.getDistance(end);
+
+            if (detour1Length < detour2Length) {
+                detours.add(detour1);
+            } else {
+                detours.add(detour2);
+            }
 
             System.out.println("Detour points calculated: " + detours);
+        } else {
+            System.out.println("No obstacle interference detected.");
         }
 
         return detours;
