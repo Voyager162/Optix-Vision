@@ -26,11 +26,11 @@ public class SysIdCommand {
     }
 
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return Elevator.routine.quasistatic(direction);
+        return Elevator.sysIdRoutine.quasistatic(direction);
     }
 
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return Elevator.routine.dynamic(direction);
+        return Elevator.sysIdRoutine.dynamic(direction);
     }
 
 }

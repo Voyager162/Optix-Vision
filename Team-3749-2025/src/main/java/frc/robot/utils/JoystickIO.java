@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Robot;
 import frc.robot.commands.auto.SysIdCommand;
 import frc.robot.commands.elevator.SetElevatorState;
@@ -33,8 +34,7 @@ public class JoystickIO {
     private static final boom test = new boom(12);
     private static final boom reset = new boom(0);
 
-    private static final SysIdCommand.g andrew = new SysIdCommand();
-    private direction = andrew.sysIdDynamic(kForward);
+    private static final SysIdCommand andrew = new SysIdCommand();
 
     public JoystickIO() {
     }
@@ -75,7 +75,7 @@ public class JoystickIO {
         operator.a().onTrue(l1);
         operator.b().onTrue(l2);
         operator.x().onTrue(test);
-        operator.y().onTrue(reset);
+        operator.y().onTrue(andrew.sysIdDynamic(Direction.kForward));
     }
 
     public static void pilotBindings() {
