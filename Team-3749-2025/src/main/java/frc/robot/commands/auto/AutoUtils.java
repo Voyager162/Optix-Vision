@@ -74,14 +74,14 @@ public class AutoUtils {
 
         factory = new AutoFactory(() -> Robot.swerve.getPose(),
                 (Pose2d startingPose) -> Robot.swerve
-                        .setOdometry(false ? getXFlippedPose(startingPose) : startingPose),
+                        .setOdometry(startingPose),
                 (SwerveSample sample) -> Robot.swerve.followSample(sample, false),
                 true,
                 Robot.swerve);
         
         factoryFlipped = new AutoFactory(() -> Robot.swerve.getPose(),
                 (Pose2d startingPose) -> Robot.swerve
-                        .setOdometry(true ? getXFlippedPose(startingPose) : startingPose),
+                        .setOdometry(getXFlippedPose(startingPose)),
                 (SwerveSample sample) -> Robot.swerve.followSample(sample, true),
                 true,
                 Robot.swerve);
