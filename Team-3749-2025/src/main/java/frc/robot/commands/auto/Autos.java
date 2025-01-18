@@ -123,5 +123,48 @@ public class Autos {
     public static Command getTeamTaxi() {
         return AutoUtils.getSingleTrajectory("Team Taxi");
     }
+    public static Command getStartL5(){
+        return AutoUtils.getSingleTrajectory("Start-L5");
+    }
+    public static Command getStartL4(){
+        return AutoUtils.getSingleTrajectory("Start-L4");
+    }
+    public static Command getL5Station(){
+        return AutoUtils.getSingleTrajectory("L5-Station");
+    }
+    public static Command getStationL4(){
+        return AutoUtils.getSingleTrajectory("Station-L4");
+    }
+    public static Command getL4Station(){
+        return AutoUtils.getSingleTrajectory("L4-Station");
+    }
+    public static Command getStationL3(){
+        return AutoUtils.getSingleTrajectory("Station-L3");
+    }
+    public static Command getL3Station(){
+        return AutoUtils.getSingleTrajectory("L3-Station");
+    }
+    public static Command getStationL2(){
+        return AutoUtils.getSingleTrajectory("Station-L2");
+    }
+    public static Command getL2Station(){
+        return AutoUtils.getSingleTrajectory("L2-Station");
+    }
+    public static Command getL1Station(){
+        return AutoUtils.getSingleTrajectory("L1-Station");
+    }   
+    public static Command getStationL1(){
+        return AutoUtils.getSingleTrajectory("Station-L1");
+    }
+    public static Command getStartTeamTaxi(){
+        return AutoUtils.getSingleTrajectory("Start-TeamTaxi");
+    }
+    public static Command getTeamTaxiL5(){
+        return AutoUtils.getSingleTrajectory("TeamTaxi-L5");
+    }
+    public static Command getCenterL6(){
+        return AutoUtils.getSingleTrajectory("MidStart-L6");
+    }
+    
 
 }

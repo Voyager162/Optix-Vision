@@ -101,20 +101,23 @@ public class AutoUtils {
 
         // Made sendable, use SmartDashbaord now
         chooser = new AutoChooser();
-        chooser.addCmd("My Routine", () -> Autos.getMyRoutine());
-        chooser.addCmd("Print", () -> Autos.getPrint());
-        chooser.addCmd("Split", () -> Autos.getSplitRoutine());
-        chooser.addCmd("Straight", () -> Autos.getStraight());
-        chooser.addCmd("Chair", () -> Autos.getChairGame());
-        chooser.addCmd("Score/pick note", () -> Autos.getScore_Pick());
-        chooser.addCmd("Team Taxi", () -> Autos.getTeamTaxi());
-        chooser.addCmd("Push Right and Taxi", () -> Autos.getPushRightAndTaxi());
-        chooser.addCmd("Push Left and Taxi", () -> Autos.getPushLeftAndTaxi());
-        chooser.addCmd("3 Piece", () -> Autos.get3Piece());
-        chooser.addCmd("1 Piece", () -> Autos.get1Piece());
+        chooser.addCmd("Start to L5", () -> Autos.getStartL5());
+        chooser.addCmd("Start to L4", () -> Autos.getStartL4());
+        chooser.addCmd("Station to L4", () -> Autos.getStationL4());
+        chooser.addCmd("Station to L3", () -> Autos.getStationL3());
+        chooser.addCmd("Station to L2", () -> Autos.getStationL2());
+        chooser.addCmd("Station to L1", () -> Autos.getStationL1());
+        chooser.addCmd("L2 to Station", () -> Autos.getL2Station());
+        chooser.addCmd("L3 to Station", () -> Autos.getL3Station());
+        chooser.addCmd("L4 to Station", () -> Autos.getL4Station());
+        chooser.addCmd("L5 to Station", () -> Autos.getL5Station());
+        chooser.addCmd("L1 to Station", () -> Autos.getL1Station());
+        chooser.addCmd("Start to Team Taxi", () -> Autos.getStartTeamTaxi());
+        chooser.addCmd("Team Taxi to L5", () -> Autos.getTeamTaxiL5());
+        chooser.addCmd("MidStart to L6", () -> Autos.getCenterL6());
+
         // Default
         chooser.select("Straight");
-
         SmartDashboard.putData("Auto: Auto Chooser", chooser);
 
     }
