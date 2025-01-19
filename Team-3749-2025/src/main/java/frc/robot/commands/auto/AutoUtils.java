@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Robot;
+import frc.robot.subsystems.swerve.Swerve;
 
 /**
  * All setup and helper methods for auto routines, including the
@@ -101,23 +102,20 @@ public class AutoUtils {
 
         // Made sendable, use SmartDashbaord now
         chooser = new AutoChooser();
-        chooser.addCmd("Start to L5", () -> Autos.getStartL5());
-        chooser.addCmd("Start to L4", () -> Autos.getStartL4());
-        chooser.addCmd("Station to L4", () -> Autos.getStationL4());
-        chooser.addCmd("Station to L3", () -> Autos.getStationL3());
-        chooser.addCmd("Station to L2", () -> Autos.getStationL2());
-        chooser.addCmd("Station to L1", () -> Autos.getStationL1());
-        chooser.addCmd("L2 to Station", () -> Autos.getL2Station());
-        chooser.addCmd("L3 to Station", () -> Autos.getL3Station());
-        chooser.addCmd("L4 to Station", () -> Autos.getL4Station());
-        chooser.addCmd("L5 to Station", () -> Autos.getL5Station());
-        chooser.addCmd("L1 to Station", () -> Autos.getL1Station());
-        chooser.addCmd("Start to Team Taxi", () -> Autos.getStartTeamTaxi());
-        chooser.addCmd("Team Taxi to L5", () -> Autos.getTeamTaxiL5());
-        chooser.addCmd("MidStart to L6", () -> Autos.getCenterL6());
-
+        chooser.addCmd("My Routine", () -> Autos.getMyRoutine());
+        chooser.addCmd("Print", () -> Autos.getPrint());
+        chooser.addCmd("Split", () -> Autos.getSplitRoutine());
+        chooser.addCmd("Straight", () -> Autos.getStraight());
+        chooser.addCmd("Chair", () -> Autos.getChairGame());
+        chooser.addCmd("Score/pick note", () -> Autos.getScore_Pick());
+        chooser.addCmd("Team Taxi", () -> Autos.getTeamTaxi());
+        chooser.addCmd("Push Right and Taxi", () -> Autos.getPushRightAndTaxi());
+        chooser.addCmd("Push Left and Taxi", () -> Autos.getPushLeftAndTaxi());
+        chooser.addCmd("3 Piece", () -> Autos.get3Piece());
+        chooser.addCmd("1 Piece", () -> Autos.get1Piece());
         // Default
         chooser.select("Straight");
+
         SmartDashboard.putData("Auto: Auto Chooser", chooser);
 
     }
@@ -159,32 +157,34 @@ public class AutoUtils {
 
 
     public static void addScoreL4(AutoTrajectory trajectory) {
-        trajectory.done().onTrue(Commands.print(getFinalPose2d(trajectory).toString()));
-
-        trajectory.atPose(getFinalPose2d(trajectory), 200, Math.toRadians(20))
-                .onTrue(Commands.print("score L4"));
-
+        trajectory.atPose(getFinalPose2d(trajectory), 6, Math.toRadians(180))
+                .onTrue(Commands.print("Score Level 4"));
+                
     }
 
     public static void addScoreL3(AutoTrajectory trajectory) {
-        trajectory.atPose(getFinalPose2d(trajectory), 0.2, Math.toRadians(20))
-                .whileTrue(Commands.print("score L3"));
+        trajectory.atPose(getFinalPose2d(trajectory), 6, Math.toRadians(180))
+                .onTrue(Commands.print("score L3"));
 
     }
 
     public static void addIntake(AutoTrajectory trajectory) {
-        trajectory.atPose(getFinalPose2d(trajectory), 0.2, Math.toRadians(20))
-                .whileTrue(Commands.print("intake"));
+        trajectory.atPose(getFinalPose2d(trajectory), 6, Math.toRadians(180))
+                .onTrue(Commands.print("intake"));
 
     }
 
     public static void goNextAfterScored(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory) {
-        // curTrajectory.done().and(!Robot.Chute.hasPiece()).onTrue(nextTrajectory.cmd());
+        curTrajectory.atPose(getFinalPose2d(curTrajectory), 6, Math.toRadians(180))
+                .onTrue(nextTrajectory.cmd());
+                System.out.println("Start Trajectory started");
 
     }
 
     public static void goNextAfterIntake(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory) {
-        // curTrajectory.done().and(Robot.Chute.hasPiece()).onTrue(nextTrajectory.cmd());
+        curTrajectory.atPose(getFinalPose2d(curTrajectory), 6, Math.toRadians(180))
+                .onTrue(nextTrajectory.cmd());
+                System.out.println("Next Trajectory started");
 
     }
 
@@ -204,7 +204,7 @@ public class AutoUtils {
                 new Rotation2d(newHeading));
     }
 
-    private static Pose2d getFinalPose2d(AutoTrajectory trajectory) {
+    static Pose2d getFinalPose2d(AutoTrajectory trajectory) {
         if (flippedChooser.getSelected()){
             return getXFlippedPose(trajectory.getFinalPose().get());
         }

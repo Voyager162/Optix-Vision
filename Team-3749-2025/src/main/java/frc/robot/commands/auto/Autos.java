@@ -2,6 +2,7 @@ package frc.robot.commands.auto;
 
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
+import frc.robot.commands.auto.AutoUtils;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -101,10 +102,8 @@ public class Autos {
             )
         );
 
-        // Once the first trajectory is done, start the second one
-        StartToL5.done().onTrue((L5ToStation.cmd()));
-
-        Trigger atL5 = StartToL5.done();
+        Trigger atL5 = StartToL5.atPose(AutoUtils.getFinalPose2d(StartToL5), 0.2, Math.toRadians(20))
+        .onTrue(Commands.print("score L3"));
         atL5.onTrue((L5ToStation.cmd()));
 
         // Return the auto routine
@@ -123,17 +122,16 @@ public class Autos {
 
 
         AutoUtils.addScoreL4(trajectory1);
-        
         AutoUtils.addIntake(trajectory2);
-        // AutoUtils.addScore4(trajectory3);
-        // AutoUtils.addIntake(trajectory4);
-        // AutoUtils.addScore3(trajectory5);
+        AutoUtils.addScoreL4(trajectory3);
+        AutoUtils.addIntake(trajectory4);
+        AutoUtils.addScoreL4(trajectory5);
 
-        // // reverse order here (connect 3 to 2, THEN 2 to 1)
-        // AutoUtils.goNextAfterIntake(trajectory4, trajectory5);
-        // AutoUtils.goNextAfterIntake(trajectory3, trajectory4);
-        // AutoUtils.goNextAfterIntake(trajectory2, trajectory3);
-        // AutoUtils.goNextAfterScored(trajectory1, trajectory2);
+        // reverse order here (connect 3 to 2, THEN 2 to 1)
+        AutoUtils.goNextAfterIntake(trajectory4, trajectory5);
+        AutoUtils.goNextAfterIntake(trajectory3, trajectory4);
+        AutoUtils.goNextAfterIntake(trajectory2, trajectory3);
+        AutoUtils.goNextAfterScored(trajectory1, trajectory2);
 
         return Commands.print("3 piece auto!").andThen(
                 AutoUtils.startRoutine(routine, "Start-L5", trajectory1));

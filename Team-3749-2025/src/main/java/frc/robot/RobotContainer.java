@@ -32,6 +32,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return Autos.getTestRoutine();
+    return Autos.get3Piece();
   }
 }
