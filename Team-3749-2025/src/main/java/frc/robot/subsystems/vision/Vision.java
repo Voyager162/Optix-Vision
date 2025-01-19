@@ -1,25 +1,18 @@
 package frc.robot.subsystems.vision;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.subsystems.vision.real.VisionReal;
+import frc.robot.subsystems.vision.real.Photonvision;
 import frc.robot.subsystems.vision.VisionIO.*;
-import frc.robot.utils.ShuffleData;
 
 public class Vision extends SubsystemBase {
-    private ShuffleData<Double> visionLogX = new ShuffleData<Double>("Vision", "Pose: X", -1.0);
-    private ShuffleData<Double> visionLogY = new ShuffleData<Double>("Vision", "Pose: Y", -1.0);
-    private ShuffleData<Double> visionLogRotation = new ShuffleData<Double>("Vision", "Pose: Rotation", -1.0);
-
-    private ShuffleData<String> visionLogLatency = new ShuffleData<String>("Vision", "Latency", "-1.0");
-    private ShuffleData<String> visionLogTargetsSeen = new ShuffleData<String>("Vision", "Targets Seen", "-1.0");
-
     VisionIO visionIO;
     VisionData visionData = new VisionData();
 
     Vision() {
         if (Robot.isReal()) {
-            visionIO = new VisionReal(visionData);
+            visionIO = new Photonvision(visionData);
         } else {
             throw new Error("Vision simulation not implemented");
         }
@@ -29,24 +22,15 @@ public class Vision extends SubsystemBase {
     public void periodic() {
         visionIO.updatePose();
 
-        visionLogX.set(visionData.visionEstimatedPose.getTranslation().getX());
-        visionLogY.set(visionData.visionEstimatedPose.getTranslation().getY());
-        visionLogRotation.set(visionData.visionEstimatedPose.getRotation().getRadians());
+        for (int i = 0; i < visionData.visionEstimatedPoses.length; i++) {
+            SmartDashboard.putNumber("Vision/Cam" + i + "/latency", visionData.latencyMillis[i]);
+            SmartDashboard.putNumber("Vision/Cam" + i + "/targetsSeen", visionData.targetsSeen[i]);
 
+            double x = (visionData.visionEstimatedPoses[i].getX());
+            double y = (visionData.visionEstimatedPoses[i].getY());
+            double rotation = (visionData.visionEstimatedPoses[i].getRotation().getDegrees());
 
-        //? Did this weird string thing because the number of cameras we use can change so can't hardcode each log & im too lazy
-        String latencyStr = "[";
-        for (double latency : visionData.latencyMillis) {
-            latencyStr += latency + ", ";
+            SmartDashboard.putNumberArray("Vision/Cam" + i + "/pose", new double[] { x, y, rotation });
         }
-        latencyStr += "]";
-        visionLogLatency.set(latencyStr);
-
-        String targetsSeenStr = "[";
-        for (double targetsSeen : visionData.targetsSeen) {
-            targetsSeenStr += targetsSeen + ", ";
-        }
-        targetsSeenStr += "]";
-        visionLogTargetsSeen.set(targetsSeenStr);
     }
 }

@@ -242,6 +242,10 @@ public class Swerve extends SubsystemBase {
         : SwerveConstants.DriveConstants.autoMaxAngularSpeedRadPerSecond;
   }
 
+  public SwerveDrivePoseEstimator getPoseEstimator(){
+    return swerveDrivePoseEstimator;
+  }
+
   /**
    * Turns a set of coordinate and angular velocities into module states, then
    * sets all modules to those states
