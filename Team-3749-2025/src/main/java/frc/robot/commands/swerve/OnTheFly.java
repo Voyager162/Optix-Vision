@@ -26,7 +26,7 @@ public class OnTheFly extends Command {
     PathPlannerTrajectory trajectory;
     Timer timer = new Timer();
     PPHolonomicDriveController SwerveController = new PPHolonomicDriveController(
-        new PIDConstants(AutoConstants.kPDrive+2, 0, AutoConstants.kDDrive), 
+        new PIDConstants(AutoConstants.kPDrive, 0, AutoConstants.kDDrive), 
         new PIDConstants(AutoConstants.kPTurn,0,AutoConstants.kDTurn));
 
     public OnTheFly() {
