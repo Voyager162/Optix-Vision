@@ -59,7 +59,7 @@ public class JoystickIO {
         pilot.a().whileTrue(DriveStraight);
         pilot.x().onTrue(Commands.runOnce(()->Robot.swerve.isOTF=true));
         new Trigger(()->Robot.swerve.isOTF).whileTrue(OnTheFly);
-        pilot.b().onTrue(Commands.runOnce(() -> Robot.swerve.cyclePPSetpoint()));
+        pilot.b().onTrue(Commands.runOnce(() -> {Robot.swerve.cyclePPSetpoint();Robot.swerve.showSetpointEndGoal();}));
 
         // Example binding
         operator.a().whileTrue(new ExampleSubsystemCommand());
