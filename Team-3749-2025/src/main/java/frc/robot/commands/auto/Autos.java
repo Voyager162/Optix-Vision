@@ -4,6 +4,7 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * Class containing our auto routines. Referenced by the auto selector and
@@ -31,6 +32,7 @@ public class Autos {
         return Commands.print("Print Auto!");
     }
 
+    
     /***
      * An example, single route auto path
      * 
@@ -83,6 +85,59 @@ public class Autos {
         return Commands.print("split trajectory auto!").andThen(routine.cmd());
 
     }
+    
+    public static Command getTestRoutine() {
+        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("TEST");
+
+        // Get the trajectories for the routine
+        AutoTrajectory StartToL5 = routine.trajectory("Start-L5");
+        AutoTrajectory L5ToStation = routine.trajectory("L5-Station");
+
+        // Reset odometry and start the routine
+        routine.active().onTrue(
+            Commands.sequence(
+                StartToL5.resetOdometry(),
+                StartToL5.cmd()
+            )
+        );
+
+        // Once the first trajectory is done, start the second one
+        StartToL5.done().onTrue((L5ToStation.cmd()));
+
+        Trigger atL5 = StartToL5.done();
+        atL5.onTrue((L5ToStation.cmd()));
+
+        // Return the auto routine
+        return routine.cmd();
+    }
+
+    public static Command get3Piece() {
+        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("3-Piece");
+
+        // loop.trajectory, or the new name
+        AutoTrajectory trajectory1 = routine.trajectory("Start-L5");
+        AutoTrajectory trajectory2 = routine.trajectory("L5-Station");
+        AutoTrajectory trajectory3 = routine.trajectory("Station-L4");
+        AutoTrajectory trajectory4 = routine.trajectory("L4-Station");
+        AutoTrajectory trajectory5 = routine.trajectory("Station-L3");
+
+
+        AutoUtils.addScoreL4(trajectory1);
+        
+        AutoUtils.addIntake(trajectory2);
+        // AutoUtils.addScore4(trajectory3);
+        // AutoUtils.addIntake(trajectory4);
+        // AutoUtils.addScore3(trajectory5);
+
+        // // reverse order here (connect 3 to 2, THEN 2 to 1)
+        // AutoUtils.goNextAfterIntake(trajectory4, trajectory5);
+        // AutoUtils.goNextAfterIntake(trajectory3, trajectory4);
+        // AutoUtils.goNextAfterIntake(trajectory2, trajectory3);
+        // AutoUtils.goNextAfterScored(trajectory1, trajectory2);
+
+        return Commands.print("3 piece auto!").andThen(
+                AutoUtils.startRoutine(routine, "Start-L5", trajectory1));
+    }
 
     /***
      * A routine that drives straight
@@ -114,10 +169,6 @@ public class Autos {
 
     public static Command getPushRightAndTaxi() {
         return AutoUtils.getSingleTrajectory("push-right-and-taxi");
-    }
-
-    public static Command get3Piece() {
-        return AutoUtils.getSingleTrajectory("3-piece-new");
     }
 
     public static Command getTeamTaxi() {
