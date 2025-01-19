@@ -15,7 +15,7 @@ public class ToPos {
 
     private static final Translation2d HEXAGON_CENTER = new Translation2d(4.5, 4);
     private static final double HEXAGON_RADIUS = 1.0; // Radius of the hexagon
-    private static final double SAFETY_MARGIN = 0.2; // Increased safety margin for robust avoidance
+    private static final double SAFETY_MARGIN = 0.3; // Increased margin for better clearance
 
     // Closed-loop hexagon obstacle
     private static final List<Translation2d> HEXAGON_VERTICES = List.of(
@@ -30,6 +30,7 @@ public class ToPos {
 
     public static PathPlannerPath generateDynamicPath(
             Pose2d initialPose,
+            Pose2d beforeFinalPose,
             Pose2d finalPose,
             double maxVelocity,
             double maxAcceleration,
@@ -45,12 +46,18 @@ public class ToPos {
         ));
 
         // Add intermediate detour points if necessary
-        List<Translation2d> detours = calculateObstacleAvoidanceWaypoints(initialPose.getTranslation(), finalPose.getTranslation());
+        List<Translation2d> detours = calculateDetours(initialPose.getTranslation(), finalPose.getTranslation());
         for (Translation2d detour : detours) {
             waypoints.add(new Waypoint(detour, detour, detour));
         }
 
         // Add final pose
+        waypoints.add(new Waypoint(
+            beforeFinalPose.getTranslation(),
+            beforeFinalPose.getTranslation(),
+            finalPose.getTranslation()
+        ));
+
         waypoints.add(new Waypoint(
             finalPose.getTranslation(),
             finalPose.getTranslation(),
@@ -87,20 +94,37 @@ public class ToPos {
         }
     }
 
-    private static List<Translation2d> calculateObstacleAvoidanceWaypoints(Translation2d start, Translation2d end) {
+    private static List<Translation2d> calculateDetours(Translation2d start, Translation2d end) {
         List<Translation2d> detours = new ArrayList<>();
+        boolean obstacleDetected = false;
 
         for (int i = 0; i < HEXAGON_VERTICES.size() - 1; i++) {
             Translation2d vertex1 = HEXAGON_VERTICES.get(i);
             Translation2d vertex2 = HEXAGON_VERTICES.get(i + 1);
 
             if (linesIntersect(start, end, vertex1, vertex2)) {
+                obstacleDetected = true;
+                System.out.println("Obstacle detected! Intersecting edge: " + vertex1 + " to " + vertex2);
+
+                // Calculate detour points to avoid the obstacle
                 Translation2d midpoint = vertex1.plus(vertex2).div(2);
-                Translation2d direction = midpoint.minus(HEXAGON_CENTER).div(midpoint.getDistance(HEXAGON_CENTER));
-                Translation2d detour = midpoint.plus(direction.times(HEXAGON_RADIUS + SAFETY_MARGIN));
-                detours.add(detour);
-                System.out.println("Added detour waypoint at: " + detour);
+                Translation2d perpendicular = new Translation2d(
+                    -(end.getY() - start.getY()), end.getX() - start.getX()
+                ).div(start.getDistance(end)).times(SAFETY_MARGIN + 0.5); // Ensure perpendicular detour
+                Translation2d detour1 = midpoint.plus(perpendicular);
+                Translation2d detour2 = midpoint.minus(perpendicular);
+
+                // Choose the detour point closer to the trajectory's direction
+                double detour1Distance = detour1.getDistance(end);
+                double detour2Distance = detour2.getDistance(end);
+                detours.add(detour1Distance < detour2Distance ? detour1 : detour2);
+
+                System.out.println("Added detour waypoint: " + (detour1Distance < detour2Distance ? detour1 : detour2));
             }
+        }
+
+        if (!obstacleDetected) {
+            System.out.println("No obstacle detected on the path.");
         }
 
         return detours;
