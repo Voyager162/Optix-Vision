@@ -8,7 +8,6 @@ public class ToPosConstants {
     //private final double hexOffset = SwerveConstants.DriveConstants.trackWidth / 2.0;
 
     public static final class PathPlannerConstants {
-
         public static final double maxVelocity = 0;
         public static final double maxAcceleration = 0;
         public static final double maxAngularVelocity = 0;

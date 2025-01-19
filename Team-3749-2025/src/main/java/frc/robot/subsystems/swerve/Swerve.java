@@ -125,6 +125,12 @@ public class Swerve extends SubsystemBase {
       this.getName(),
       "setpoint position",
       new Double[] { 0.0, 0.0, 0.0 });
+
+  private ShuffleData<Double[]> setpointGoalStateLog = new ShuffleData<Double[]>(
+      this.getName(),
+      "setpoint end goal",
+      new Double[] { 0.0, 0.0, 0.0 });
+
   private ShuffleData<Double> setpointVelocityLog = new ShuffleData<Double>(
       this.getName(),
       "setpoint velocity",
@@ -148,21 +154,21 @@ public class Swerve extends SubsystemBase {
 
   public Swerve() {
 
-   // if simulation
-   if (Robot.isSimulation()) {
-    gyro = new GyroSim();
-    for (int i = 0; i < 4; i++) {
-      modules[i] = new SwerveModule(i, new SwerveModuleSim());
+    // if simulation
+    if (Robot.isSimulation()) {
+      gyro = new GyroSim();
+      for (int i = 0; i < 4; i++) {
+        modules[i] = new SwerveModule(i, new SwerveModuleSim());
+      }
     }
-  }
-  // if real
-  else {
-    // gyro = new NavX2Gyro();
-    gyro = new PigeonGyro();
-    for (int i = 0; i < 4; i++) {
-      modules[i] = new SwerveModule(i, new SwerveModuleSparkMax(i));
+    // if real
+    else {
+      // gyro = new NavX2Gyro();
+      gyro = new PigeonGyro();
+      for (int i = 0; i < 4; i++) {
+        modules[i] = new SwerveModule(i, new SwerveModuleSparkMax(i));
+      }
     }
-  }
 
     // pose estimator
     swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
@@ -446,9 +452,14 @@ public class Swerve extends SubsystemBase {
 
   }
 
+  public void showSetpointEndGoal()
+  {
+    setpointGoalStateLog.set(new Double[] { getPPSetpoint().getX(),getPPSetpoint().getY(),getPPSetpoint().getRotation().getRadians()});
+  }
+
   public void logSetpoints(PathPlannerTrajectoryState state) {
     // setpoint logging for automated driving
-    Double[] positions = new Double[] { state.pose.getX(), state.pose.getY(), state.pose.getRotation().getRadians()};
+    Double[] positions = new Double[] { state.pose.getX(), state.pose.getY(), state.pose.getRotation().getRadians() };
     setpointPositionLog.set(positions);
 
     Double[] velocities = new Double[] { state.fieldSpeeds.vxMetersPerSecond, state.fieldSpeeds.vyMetersPerSecond,
