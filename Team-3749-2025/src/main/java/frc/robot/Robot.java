@@ -3,11 +3,17 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+import java.util.Arrays;
+import java.util.List;
+
 import edu.wpi.first.hal.AllianceStationID;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.example.ExampleSubsystem;
@@ -15,6 +21,15 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.ShuffleData;
 
 public class Robot extends TimedRobot {
+    private static final List<Translation2d> HEXAGON_VERTICES = List.of(
+        new Translation2d(4.5 + 1.0, 4.0),
+        new Translation2d(4.5 + 0.5, 4.0 + Math.sqrt(3) / 2),
+        new Translation2d(4.5 - 0.5, 4.0 + Math.sqrt(3) / 2),
+        new Translation2d(4.5 - 1.0, 4.0),
+        new Translation2d(4.5 - 0.5, 4.0 - Math.sqrt(3) / 2),
+        new Translation2d(4.5 + 0.5, 4.0 - Math.sqrt(3) / 2),
+        new Translation2d(4.5 + 1.0, 4.0) // Close loop
+    );
   private Command m_autonomousCommand;
 
   public static Swerve swerve = new Swerve();
@@ -44,8 +59,23 @@ public class Robot extends TimedRobot {
     isBrownedOutLog.set(RobotController.isBrownedOut());
     allianceLog.set(DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get().name() : "None");
     FMSLog.set(DriverStation.isFMSAttached());
-
+    // Publish hexagon points to NetworkTables
+        double[][] hexagonArray = new double[HEXAGON_VERTICES.size()][2];
+        for (int i = 0; i < HEXAGON_VERTICES.size(); i++) {
+            hexagonArray[i][0] = HEXAGON_VERTICES.get(i).getX();
+            hexagonArray[i][1] = HEXAGON_VERTICES.get(i).getY();
+        }
+        NetworkTableInstance.getDefault()
+            .getTable("Field")
+            .getEntry("HexagonPoints")
+            .setDoubleArray(flattenArray(hexagonArray));
+        
+        // Optional: Display in SmartDashboard for debugging
+        SmartDashboard.putString("Hexagon Points", HEXAGON_VERTICES.toString());
   }
+   private double[] flattenArray(double[][] array) {
+        return Arrays.stream(array).flatMapToDouble(Arrays::stream).toArray();
+    }
 
   @Override
   public void disabledInit() {
