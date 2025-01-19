@@ -6,6 +6,8 @@ import org.photonvision.estimation.TargetModel;
 import org.photonvision.targeting.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Robot;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionConstants.*;
@@ -59,7 +61,8 @@ public class VisionReal implements VisionIO {
         Pose2d robotPose = optional_robotPose.get().estimatedPose.toPose2d();
         visionData.visionEstimatedPose = robotPose;
 
-        Robot.swerve.visionUpdateOdometry(robotPose, index);
+        double timestamp = Timer.getFPGATimestamp() - latencyMillis / 1000.0;
+        Robot.swerve.visionUpdateOdometry(robotPose, timestamp);
     }
 
     public void updatePose() {
