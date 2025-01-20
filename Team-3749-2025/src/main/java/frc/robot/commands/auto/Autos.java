@@ -119,7 +119,13 @@ public class Autos {
         AutoTrajectory trajectory3 = routine.trajectory("Station-L4");
         AutoTrajectory trajectory4 = routine.trajectory("L4-Station");
         AutoTrajectory trajectory5 = routine.trajectory("Station-L3");
-
+        
+        routine.active().onTrue(
+            Commands.sequence(
+                trajectory1.resetOdometry(),
+                trajectory1.cmd()
+            )
+        );
 
         AutoUtils.addScoreL4(trajectory1);
         AutoUtils.addIntake(trajectory2);

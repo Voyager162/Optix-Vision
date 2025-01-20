@@ -12,8 +12,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.utils.UtilityFunctions;
 
 /**
  * All setup and helper methods for auto routines, including the
@@ -157,14 +159,19 @@ public class AutoUtils {
 
 
     public static void addScoreL4(AutoTrajectory trajectory) {
-        trajectory.atPose(getFinalPose2d(trajectory), 6, Math.toRadians(180))
-                .onTrue(Commands.print("Score Level 4"));
-                
-    }
+        
+        UtilityFunctions.CheckPose(getFinalPose2d(trajectory), 0.26, Math.toRadians(2))
+                .onTrue(Commands.runOnce(() -> {
+                    System.out.println("score L4");
+                }));
 
+    }
+    
     public static void addScoreL3(AutoTrajectory trajectory) {
-        trajectory.atPose(getFinalPose2d(trajectory), 6, Math.toRadians(180))
-                .onTrue(Commands.print("score L3"));
+        UtilityFunctions.CheckPose(getFinalPose2d(trajectory), 0.5, Math.toRadians(10))
+                .onTrue(Commands.runOnce(() -> {
+                    System.out.println("score L3");
+                }));
 
     }
 
@@ -175,17 +182,23 @@ public class AutoUtils {
     }
 
     public static void goNextAfterScored(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory) {
-        curTrajectory.atPose(getFinalPose2d(curTrajectory), 6, Math.toRadians(180))
+        // curTrajectory.atPose(getFinalPose2d(curTrajectory), 5, Math.toRadians(180))
+        //         .onTrue(nextTrajectory.cmd());
+        //         System.out.println("Start Trajectory started");
+
+        curTrajectory.done().and(() -> true)
                 .onTrue(nextTrajectory.cmd());
                 System.out.println("Start Trajectory started");
-
     }
 
     public static void goNextAfterIntake(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory) {
-        curTrajectory.atPose(getFinalPose2d(curTrajectory), 6, Math.toRadians(180))
-                .onTrue(nextTrajectory.cmd());
-                System.out.println("Next Trajectory started");
+        // curTrajectory.atPose(getFinalPose2d(curTrajectory), 6, Math.toRadians(180))
+        //         .onTrue(nextTrajectory.cmd());
+        //         System.out.println("Next Trajectory started");
 
+        curTrajectory.done().and(() -> true)
+                .onTrue(nextTrajectory.cmd());
+                System.out.println("Start Trajectory started");
     }
 
 
@@ -195,7 +208,6 @@ public class AutoUtils {
      * Used in auto factory for flipped paths
      */
     private static Pose2d getXFlippedPose(Pose2d pos) {
-
         double newX = pos.getX();
         double newY = flipper.flipY(pos.getY());
         double newHeading = pos.getRotation().getRadians() * -1;
@@ -204,8 +216,9 @@ public class AutoUtils {
                 new Rotation2d(newHeading));
     }
 
-    static Pose2d getFinalPose2d(AutoTrajectory trajectory) {
+    public static Pose2d getFinalPose2d(AutoTrajectory trajectory) {
         if (flippedChooser.getSelected()){
+            System.out.println("Flipped Pose:"  + getXFlippedPose(trajectory.getFinalPose().get()));
             return getXFlippedPose(trajectory.getFinalPose().get());
         }
         else{
