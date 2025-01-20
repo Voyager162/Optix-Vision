@@ -5,13 +5,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
-import frc.robot.utils.UtilityFunctions;
 import frc.robot.utils.MiscConstants.*;
+import frc.robot.utils.UtilityFunctions;
 import java.util.function.Supplier;
 
 /***
  * Default command to control the swerve subsystem with joysticks
- * 
+ *
  * @author Noah Simon
  * @author Raadwan Masum
  * @author Rohin Sood
@@ -33,8 +33,7 @@ public class SwerveDefaultCommand extends Command {
   }
 
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
@@ -46,8 +45,8 @@ public class SwerveDefaultCommand extends Command {
     // one combined magnitutde
     double linearMagnitude = Math.hypot(xMagnitude, yMagnitude);
     // to make a 0,0 rotation 2d not throw an error
-    if (xMagnitude==0 && yMagnitude==0){
-      yMagnitude=0.0001;
+    if (xMagnitude == 0 && yMagnitude == 0) {
+      yMagnitude = 0.0001;
     }
     // one combined direction
     Rotation2d linearDirection = new Rotation2d(xMagnitude, yMagnitude);
@@ -56,9 +55,8 @@ public class SwerveDefaultCommand extends Command {
     // is always postive
     linearMagnitude = MathUtil.applyDeadband(linearMagnitude, ControllerConstants.deadband);
     // can be negative
-    turningMagnitude = Math.abs(turningMagnitude) > ControllerConstants.deadband
-        ? turningMagnitude
-        : 0.0;
+    turningMagnitude =
+        Math.abs(turningMagnitude) > ControllerConstants.deadband ? turningMagnitude : 0.0;
 
     // squaring the inputs for smoother driving at low speeds
     linearMagnitude = Math.copySign(linearMagnitude * linearMagnitude, linearMagnitude);
@@ -78,11 +76,12 @@ public class SwerveDefaultCommand extends Command {
     //     turningSpeedRadPerSecond,
     //     Robot.swerve.getRotation2d());
 
-    chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-        UtilityFunctions.isRedAlliance() ? ySpeed : -ySpeed,
-        UtilityFunctions.isRedAlliance() ? xSpeed : -xSpeed,
-        turningSpeedRadPerSecond,
-        Robot.swerve.getRotation2d());
+    chassisSpeeds =
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            UtilityFunctions.isRedAlliance() ? ySpeed : -ySpeed,
+            UtilityFunctions.isRedAlliance() ? xSpeed : -xSpeed,
+            turningSpeedRadPerSecond,
+            Robot.swerve.getRotation2d());
 
     // set chassis speeds
     Robot.swerve.setChassisSpeeds(chassisSpeeds);

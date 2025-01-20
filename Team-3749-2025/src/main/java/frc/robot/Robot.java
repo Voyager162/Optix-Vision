@@ -3,13 +3,6 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-import org.littletonrobotics.junction.LogFileUtil;
-import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.wpilog.WPILOGReader;
-import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-import org.littletonrobotics.urcl.URCL;
 
 import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -19,15 +12,19 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-
 import frc.robot.subsystems.arm.algae.AlgaeArm;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.subsystems.elevator.Elevator;
-
 import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.ShuffleData;
+import org.littletonrobotics.junction.LogFileUtil;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
@@ -40,15 +37,19 @@ public class Robot extends LoggedRobot {
   public static ClimbArm climbArm = new ClimbArm();
   public static Elevator elevator = new Elevator();
 
-  private ShuffleData<Double> batteryVoltageLog = new ShuffleData<Double>("DS", "battery voltage", 0.0);
+  private ShuffleData<Double> batteryVoltageLog =
+      new ShuffleData<Double>("DS", "battery voltage", 0.0);
   private ShuffleData<Boolean> isBrownedOutLog = new ShuffleData<Boolean>("DS", "brownout", false);
   private ShuffleData<Double> cpuTempLog = new ShuffleData<Double>("DS", "cpu temp", 0.0);
-  private ShuffleData<Double> CANUtilizationLog = new ShuffleData<Double>("DS", "CAN utilizaition", 0.0);
-  private ShuffleData<String> radioStatusLog = new ShuffleData<String>("DS", "radio status", "kOff");
+  private ShuffleData<Double> CANUtilizationLog =
+      new ShuffleData<Double>("DS", "CAN utilizaition", 0.0);
+  private ShuffleData<String> radioStatusLog =
+      new ShuffleData<String>("DS", "radio status", "kOff");
   private ShuffleData<String> allianceLog = new ShuffleData<String>("DS", "alliance", "Red");
   private ShuffleData<Boolean> FMSLog = new ShuffleData<Boolean>("DS", "FMS connected", false);
   private RobotContainer m_robotContainer;
-  PowerDistribution pdp = new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
+  PowerDistribution pdp =
+      new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
 
   public Robot() {
     // Record metadata
@@ -92,9 +93,6 @@ public class Robot extends LoggedRobot {
         break;
     }
 
-    // Initialize URCL
-    Logger.registerURCL(URCL.startExternal());
-
     // Start AdvantageKit logger
     Logger.start();
   }
@@ -112,9 +110,11 @@ public class Robot extends LoggedRobot {
     CANUtilizationLog.set(RobotController.getCANStatus().percentBusUtilization);
     radioStatusLog.set(RobotController.getRadioLEDState().name());
     isBrownedOutLog.set(RobotController.isBrownedOut());
-    allianceLog.set(DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get().name() : "None");
+    allianceLog.set(
+        DriverStation.getAlliance().isPresent()
+            ? DriverStation.getAlliance().get().name()
+            : "None");
     FMSLog.set(DriverStation.isFMSAttached());
-
   }
 
   @Override
@@ -123,9 +123,7 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void disabledPeriodic() {
-
-  }
+  public void disabledPeriodic() {}
 
   @Override
   public void disabledExit() {
@@ -143,12 +141,10 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void autonomousPeriodic() {
-  }
+  public void autonomousPeriodic() {}
 
   @Override
-  public void autonomousExit() {
-  }
+  public void autonomousExit() {}
 
   @Override
   public void teleopInit() {
@@ -158,12 +154,10 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {
-  }
+  public void teleopPeriodic() {}
 
   @Override
-  public void teleopExit() {
-  }
+  public void teleopExit() {}
 
   @Override
   public void testInit() {
@@ -171,14 +165,13 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void testPeriodic() {
-  }
+  public void testPeriodic() {}
 
   @Override
-  public void testExit() {
-  }
+  public void testExit() {}
+
   @Override
-  public void simulationInit(){
+  public void simulationInit() {
     DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
   }
 }

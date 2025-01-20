@@ -2,7 +2,7 @@ package frc.robot.subsystems.swerve;
 
 /**
  * IO interface for gyroscopes
- * 
+ *
  * @author Noah Simon
  */
 public interface GyroIO {
@@ -14,11 +14,7 @@ public interface GyroIO {
     public double rollDeg = 0;
   }
 
-  public default void updateData(GyroData data) {
+  public default void updateData(GyroData data) {}
 
-  }
-
-  public default void resetGyro() {
-
-  }
+  public default void resetGyro() {}
 }

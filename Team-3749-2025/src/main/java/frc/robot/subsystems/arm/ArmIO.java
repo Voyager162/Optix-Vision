@@ -2,10 +2,9 @@ package frc.robot.subsystems.arm;
 
 /**
  * Interface file for arm subsystem
- * 
+ *
  * @author Weston Gardner
  */
-
 public interface ArmIO {
 
   public static class ArmData {
@@ -16,20 +15,17 @@ public interface ArmIO {
     public double appliedVolts = 0;
     public double currentAmps = 0;
     public double tempCelcius = 0;
-
   }
 
   /* Updates the set of loggable inputs. */
-  public default void updateData(ArmData data) {
-  };
+  public default void updateData(ArmData data) {}
+  ;
 
   /* Run the motor at the specified voltage. */
-  public default void setVoltage(double volts) {
-  };
+  public default void setVoltage(double volts) {}
+  ;
 
   /* Enable or disable brake mode on the motor. */
-  public default void setBrakeMode(boolean enable) {
-
-  };
-
+  public default void setBrakeMode(boolean enable) {}
+  ;
 }

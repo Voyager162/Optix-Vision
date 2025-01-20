@@ -1,7 +1,8 @@
 package frc.robot.subsystems.example;
 
 /**
- *              Example subsystsem IO interfaces
+ * Example subsystsem IO interfaces
+ *
  * @author Noah Simon
  */
 public interface ExampleSubsystemIO {
@@ -14,20 +15,17 @@ public interface ExampleSubsystemIO {
     public double appliedVolts = 0;
     public double currentAmps = 0;
     public double tempCelcius = 0;
-
   }
 
   /* Updates the set of loggable inputs. */
-  public default void updateData(SubsystemData data) {
-  };
+  public default void updateData(SubsystemData data) {}
+  ;
 
   /* Run the motor at the specified voltage. */
-  public default void setVoltage(double volts) {
-  };
+  public default void setVoltage(double volts) {}
+  ;
 
   /* Enable or disable brake mode on the motor. */
-  public default void setBrakeMode(boolean enable) {
-
-  };
-
+  public default void setBrakeMode(boolean enable) {}
+  ;
 }

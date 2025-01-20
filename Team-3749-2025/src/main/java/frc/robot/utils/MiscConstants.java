@@ -4,7 +4,7 @@ import frc.robot.Robot;
 
 /**
  * Constants not specific to any given subsystem or commadn
- * 
+ *
  * @author Noah Simon
  */
 public class MiscConstants {
@@ -14,9 +14,7 @@ public class MiscConstants {
     SIM
   }
 
-  public static final RobotType ROBOT_TYPE = Robot.isReal()
-      ? RobotType.REAL
-      : RobotType.SIM;
+  public static final RobotType ROBOT_TYPE = Robot.isReal() ? RobotType.REAL : RobotType.SIM;
 
   public static final class SimConstants {
     public static final double loopPeriodSec = 0.02;
@@ -26,5 +24,4 @@ public class MiscConstants {
 
     public static final double deadband = 0.05;
   }
-
 }

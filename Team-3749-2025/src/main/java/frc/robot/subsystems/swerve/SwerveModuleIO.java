@@ -1,10 +1,9 @@
 package frc.robot.subsystems.swerve;
 
 /**
- * IO interface for swerve modules. This exists for modules, not
- * the subsystem, as that is what the motors are connected to and
- * interact with
- * 
+ * IO interface for swerve modules. This exists for modules, not the subsystem, as that is what the
+ * motors are connected to and interact with
+ *
  * @author Noah Simon
  */
 public interface SwerveModuleIO {
@@ -23,22 +22,17 @@ public interface SwerveModuleIO {
   }
 
   /** Updates the set of loggable inputs. */
-  public default void updateData(ModuleData data) {
-  }
+  public default void updateData(ModuleData data) {}
 
   /** Run the drive motor at the specified voltage. */
-  public default void setDriveVoltage(double volts) {
-  }
+  public default void setDriveVoltage(double volts) {}
 
   /** Run the turn motor at the specified voltage. */
-  public default void setTurnVoltage(double volts) {
-  }
+  public default void setTurnVoltage(double volts) {}
 
   /** Enable or disable brake mode on the drive motor. */
-  public default void setDriveBrakeMode(boolean enable) {
-  }
+  public default void setDriveBrakeMode(boolean enable) {}
 
   /** Enable or disable brake mode on the turn motor. */
-  public default void setTurningBrakeMode(boolean enable) {
-  }
+  public default void setTurningBrakeMode(boolean enable) {}
 }

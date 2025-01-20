@@ -6,13 +6,11 @@ import frc.robot.subsystems.swerve.GyroIO;
 
 /**
  * Simualtion implementatation for a gyroscope
- * 
+ *
  * @author Noah Simon
- * 
  */
 public class GyroSim implements GyroIO {
   private double yaw = 0;
-
 
   @Override
   public void updateData(GyroData data) {

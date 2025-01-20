@@ -6,37 +6,38 @@ import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 
 /**
  * Elevator states command
- * 
+ *
  * @author Dhyan Soni
  * @author Andrew Ge
  */
 public class SetElevatorState extends Command {
-    ElevatorStates state;
-    public SetElevatorState(ElevatorStates state) {
-        this.state = state;
-        super.addRequirements(Robot.elevator);
-    }
+  ElevatorStates state;
 
-    @Override
-    public void initialize() {
-        Robot.elevator.setState(state);
-    }
+  public SetElevatorState(ElevatorStates state) {
+    this.state = state;
+    super.addRequirements(Robot.elevator);
+  }
 
-    // if further state change are needed over time, put them here with conditionals
-    @Override
-    public void execute() {
-        /*if (Robot.elevator.getIsStableState()) {
-            Robot.elevator.setState(ElevatorStates.STOP);
-        }*/
-    }
+  @Override
+  public void initialize() {
+    Robot.elevator.setState(state);
+  }
 
-    @Override
-    public void end(boolean interupted) {
-        Robot.elevator.setState(ElevatorStates.STOW);
-    }
+  // if further state change are needed over time, put them here with conditionals
+  @Override
+  public void execute() {
+    /*if (Robot.elevator.getIsStableState()) {
+        Robot.elevator.setState(ElevatorStates.STOP);
+    }*/
+  }
 
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
+  @Override
+  public void end(boolean interupted) {
+    Robot.elevator.setState(ElevatorStates.STOW);
+  }
+
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
 }
