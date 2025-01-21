@@ -1,9 +1,5 @@
 package frc.robot.subsystems.elevator;
 
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Volts;
-
 import java.util.function.Consumer;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
@@ -40,17 +36,9 @@ public class Elevator extends SubsystemBase {
     private ElevatorIO elevatorio;
     private ElevatorData data = new ElevatorData();
     private ElevatorStates state = ElevatorStates.STOP;
-
-    static Elevator staticElevator;
-
    
     static Consumer<Voltage> setVolts;
     static Consumer<SysIdRoutineLog> log;
-
-    public static SysIdRoutine routine = new SysIdRoutine(
-        new SysIdRoutine.Config(),
-        new SysIdRoutine.Mechanism(setVolts, log, staticElevator, "elevatorSysId"));
-
 
     private ProfiledPIDController pidController = new ProfiledPIDController(
             ElevatorConstants.ElevatorControl.kPSim,
@@ -114,11 +102,8 @@ public class Elevator extends SubsystemBase {
         setLog = (SysIdRoutineLog) -> setLog(SysIdRoutineLog);
 
         sysIdRoutine = new SysIdRoutine(
-                // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
-                new SysIdRoutine.Config(Volts.per(Seconds).of(0.5), Volts.of(12), Seconds.of(20)),
-                new SysIdRoutine.Mechanism(setVolts, setLog, this));
-
-        // log = (SysIdRoutineLog log) -> SmartDashboard.put(log);
+                new SysIdRoutine.Config(Volts.per(Seconds).of(1.2), Volts.of(12), Seconds.of(10)),
+                new SysIdRoutine.Mechanism(setVolts, setLog, this, "elevatorSysId"));
     }
 
     private void setLog(SysIdRoutineLog log) {
@@ -127,10 +112,6 @@ public class Elevator extends SubsystemBase {
         log.motor("motor").linearVelocity(MetersPerSecond.ofBaseUnits(data.velocityMetersPerSecond));
         log.motor("motor").linearAcceleration(MetersPerSecondPerSecond.ofBaseUnits(data.accelerationUnits));
     }
-
-    public ElevatorData getElevatorData() {
-        return data;
-    };
 
     public ElevatorStates getState() {
         return state;
