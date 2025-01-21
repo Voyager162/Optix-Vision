@@ -1,5 +1,9 @@
 package frc.robot.commands.auto;
 
+import static edu.wpi.first.units.Units.Rotation;
+
+import java.util.Optional;
+
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoTrajectory;
@@ -8,6 +12,9 @@ import choreo.util.ChoreoAllianceFlipUtil;
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,13 +38,14 @@ public class AutoUtils {
     private static AutoChooser chooser;
     // private static AutoChooser flipChooser;
     private static SendableChooser<Boolean> flippedChooser;
-    private static ChoreoAllianceFlipUtil.Flipper flipper = ChoreoAllianceFlipUtil.getFlipper();
+    public static ChoreoAllianceFlipUtil.Flipper flipper = ChoreoAllianceFlipUtil.getFlipper();
 
     /**
      * run all necessary auto setup methods
      */
     public static void initAuto() {
-        // seems like this method is setup before the automonous command is clicked which makes it not possible
+        // seems like this method is setup before the automonous command is clicked
+        // which makes it not possible
         // for us to choose before hitting the automonous button
 
         setupFactory();
@@ -54,7 +62,7 @@ public class AutoUtils {
     }
 
     public static AutoFactory getAutoFactory() {
-        if (flippedChooser.getSelected()){
+        if (flippedChooser.getSelected()) {
             return factoryFlipped;
         }
         return factory;
@@ -81,10 +89,10 @@ public class AutoUtils {
                 (SwerveSample sample) -> Robot.swerve.followSample(sample, false),
                 true,
                 Robot.swerve);
-        
+
         factoryFlipped = new AutoFactory(() -> Robot.swerve.getPose(),
                 (Pose2d startingPose) -> Robot.swerve
-                        .setOdometry(getXFlippedPose(startingPose)),
+                        .setOdometry(getFlippedPose(startingPose)),
                 (SwerveSample sample) -> Robot.swerve.followSample(sample, true),
                 true,
                 Robot.swerve);
@@ -104,11 +112,6 @@ public class AutoUtils {
 
         // Made sendable, use SmartDashbaord now
         chooser = new AutoChooser();
-        chooser.addCmd("My Routine", () -> Autos.getMyRoutine());
-        chooser.addCmd("Print", () -> Autos.getPrint());
-        chooser.addCmd("Split", () -> Autos.getSplitRoutine());
-        chooser.addCmd("Straight", () -> Autos.getStraight());
-        chooser.addCmd("Chair", () -> Autos.getChairGame());
         chooser.addCmd("Score/pick note", () -> Autos.getScore_Pick());
         chooser.addCmd("Team Taxi", () -> Autos.getTeamTaxi());
         chooser.addCmd("Push Right and Taxi", () -> Autos.getPushRightAndTaxi());
@@ -139,7 +142,7 @@ public class AutoUtils {
         Command trajectoryCommand = trajectory.cmd();
 
         routine.active().onTrue(
-            getAutoFactory().resetOdometry(trajectoryName).andThen(
+                getAutoFactory().resetOdometry(trajectoryName).andThen(
                         trajectoryCommand));
 
         System.out.println(trajectory.getInitialPose().get());
@@ -147,7 +150,7 @@ public class AutoUtils {
 
     }
 
-     public static Command startRoutine(AutoRoutine routine, String firstTrajectoryName,
+    public static Command startRoutine(AutoRoutine routine, String firstTrajectoryName,
             AutoTrajectory firstTrajectory) {
 
         routine.active().onTrue(
@@ -156,17 +159,22 @@ public class AutoUtils {
         return routine.cmd();
     }
 
-
-
     public static void addScoreL4(AutoTrajectory trajectory) {
-        
-        UtilityFunctions.CheckPose(getFinalPose2d(trajectory), 0.26, Math.toRadians(2))
-                .onTrue(Commands.runOnce(() -> {
-                    System.out.println("score L4");
-                }));
+        Pose2d endingPose2d = getFinalPose2d(trajectory);
+        // unflip the alliance so that atPose can flip it; it's a quirk of referencing the trajectory
+        if (DriverStation.getAlliance().get() == Alliance.Red){
+            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
+        }
+
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(Commands.print("SCORE L4 \nSCORE L4 \n" + 
+                "SCORE L4 \n" + 
+                "SCORE L4 \n" + 
+                "SCORE L4 \n" + 
+                "SCORE L4 \n" ));
+
 
     }
-    
+
     public static void addScoreL3(AutoTrajectory trajectory) {
         UtilityFunctions.CheckPose(getFinalPose2d(trajectory), 0.5, Math.toRadians(10))
                 .onTrue(Commands.runOnce(() -> {
@@ -183,47 +191,49 @@ public class AutoUtils {
 
     public static void goNextAfterScored(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory) {
         // curTrajectory.atPose(getFinalPose2d(curTrajectory), 5, Math.toRadians(180))
-        //         .onTrue(nextTrajectory.cmd());
-        //         System.out.println("Start Trajectory started");
+        // .onTrue(nextTrajectory.cmd());
+        // System.out.println("Start Trajectory started");
 
         curTrajectory.done().and(() -> true)
                 .onTrue(nextTrajectory.cmd());
-                System.out.println("Start Trajectory started");
+        System.out.println("Start Trajectory started");
     }
 
     public static void goNextAfterIntake(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory) {
         // curTrajectory.atPose(getFinalPose2d(curTrajectory), 6, Math.toRadians(180))
-        //         .onTrue(nextTrajectory.cmd());
-        //         System.out.println("Next Trajectory started");
+        // .onTrue(nextTrajectory.cmd());
+        // System.out.println("Next Trajectory started");
 
         curTrajectory.done().and(() -> true)
                 .onTrue(nextTrajectory.cmd());
-                System.out.println("Start Trajectory started");
+        System.out.println("Start Trajectory started");
     }
-
 
     /**
      * Each pos will be flipped across the X-axis using Choreo's Flip Util
      * Returns new pos
      * Used in auto factory for flipped paths
      */
-    private static Pose2d getXFlippedPose(Pose2d pos) {
-        double newX = pos.getX();
-        double newY = flipper.flipY(pos.getY());
-        double newHeading = pos.getRotation().getRadians() * -1;
+    private static Pose2d getFlippedPose(Pose2d pos) {
+        Translation2d translation = new Translation2d(pos.getX(), flipper.flipY(pos.getY()));
 
-        return new Pose2d(newX, newY,
-                new Rotation2d(newHeading));
+        Rotation2d rotation = new Rotation2d(Math.PI - pos.getRotation().getRadians())
+                .rotateBy(new Rotation2d(Math.PI));
+
+        return new Pose2d(translation, rotation);
     }
 
     public static Pose2d getFinalPose2d(AutoTrajectory trajectory) {
-        if (flippedChooser.getSelected()){
-            System.out.println("Flipped Pose:"  + getXFlippedPose(trajectory.getFinalPose().get()));
-            return getXFlippedPose(trajectory.getFinalPose().get());
-        }
-        else{
+        if (flippedChooser.getSelected()) {
+            System.out.println("Flipped Pose:" + getFlippedPose(trajectory.getFinalPose().get()));
+
+            return getFlippedPose(trajectory.getFinalPose().get());
+        } else {
             return trajectory.getFinalPose().get();
         }
     }
+
+
+
 
 }

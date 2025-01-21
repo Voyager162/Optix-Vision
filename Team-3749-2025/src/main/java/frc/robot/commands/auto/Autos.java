@@ -119,25 +119,18 @@ public class Autos {
         AutoTrajectory trajectory3 = routine.trajectory("Station-L4");
         AutoTrajectory trajectory4 = routine.trajectory("L4-Station");
         AutoTrajectory trajectory5 = routine.trajectory("Station-L3");
-        
-        routine.active().onTrue(
-            Commands.sequence(
-                trajectory1.resetOdometry(),
-                trajectory1.cmd()
-            )
-        );
-
+      
         AutoUtils.addScoreL4(trajectory1);
-        AutoUtils.addIntake(trajectory2);
-        AutoUtils.addScoreL4(trajectory3);
-        AutoUtils.addIntake(trajectory4);
-        AutoUtils.addScoreL4(trajectory5);
+        // AutoUtils.addIntake(trajectory2);
+        // AutoUtils.addScoreL4(trajectory3);
+        // AutoUtils.addIntake(trajectory4);
+        // AutoUtils.addScoreL4(trajectory5);
 
         // reverse order here (connect 3 to 2, THEN 2 to 1)
-        AutoUtils.goNextAfterIntake(trajectory4, trajectory5);
-        AutoUtils.goNextAfterIntake(trajectory3, trajectory4);
-        AutoUtils.goNextAfterIntake(trajectory2, trajectory3);
-        AutoUtils.goNextAfterScored(trajectory1, trajectory2);
+        // AutoUtils.goNextAfterIntake(trajectory4, trajectory5);
+        // AutoUtils.goNextAfterIntake(trajectory3, trajectory4);
+        // AutoUtils.goNextAfterIntake(trajectory2, trajectory3);
+        // AutoUtils.goNextAfterScored(trajectory1, trajectory2);
 
         return Commands.print("3 piece auto!").andThen(
                 AutoUtils.startRoutine(routine, "Start-L5", trajectory1));
