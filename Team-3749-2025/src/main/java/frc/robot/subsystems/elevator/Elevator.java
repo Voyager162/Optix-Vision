@@ -43,9 +43,10 @@ public class Elevator extends SubsystemBase {
             ElevatorConstants.ElevatorControl.kASim);
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
-    private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position meters", 0.0);
-    private ShuffleData<Double> velocityUnitsLog = new ShuffleData<Double>("Elevator", "velocity units", 0.0);
-    private ShuffleData<Double> accelerationUnitsLog = new ShuffleData<Double>("Elevator", "acceleration units", 0.0);
+    private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position", 0.0);
+    private ShuffleData<Double> velocityMetersPerSecLog = new ShuffleData<Double>("Elevator", "velocity", 0.0);
+    private ShuffleData<Double> accelerationMetersPerSecSquaredLog = new ShuffleData<Double>("Elevator", "acceleration", 0.0);
+
     private ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Elevator", "input volts", 0.0);
     private ShuffleData<Double> leftAppliedVoltsLog = new ShuffleData<Double>("Elevator", "left applied volts", 0.0);
     private ShuffleData<Double> rightAppliedVoltsLog = new ShuffleData<Double>("Elevator", "right applied volts", 0.0);
@@ -179,8 +180,9 @@ public class Elevator extends SubsystemBase {
     private void logData() {
         currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
         positionMetersLog.set(data.positionMeters);
-        velocityUnitsLog.set(data.velocityMetersPerSecond);
-        accelerationUnitsLog.set(data.accelerationUnits);
+        velocityMetersPerSecLog.set(data.velocityMetersPerSecond);
+        accelerationMetersPerSecSquaredLog.set(data.accelerationMetersPerSecondSquared);
+
         inputVoltsLog.set(data.inputVolts);
         leftAppliedVoltsLog.set(data.leftAppliedVolts);
         rightAppliedVoltsLog.set(data.rightAppliedVolts);
