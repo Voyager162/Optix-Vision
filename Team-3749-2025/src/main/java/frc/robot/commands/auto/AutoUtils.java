@@ -1,8 +1,6 @@
 package frc.robot.commands.auto;
 
-import static edu.wpi.first.units.Units.Rotation;
 
-import java.util.Optional;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
@@ -19,10 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
-import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.utils.UtilityFunctions;
+
 
 /**
  * All setup and helper methods for auto routines, including the
@@ -112,12 +108,7 @@ public class AutoUtils {
 
         // Made sendable, use SmartDashbaord now
         chooser = new AutoChooser();
-        chooser.addCmd("Score/pick note", () -> Autos.getScore_Pick());
-        chooser.addCmd("Team Taxi", () -> Autos.getTeamTaxi());
-        chooser.addCmd("Push Right and Taxi", () -> Autos.getPushRightAndTaxi());
-        chooser.addCmd("Push Left and Taxi", () -> Autos.getPushLeftAndTaxi());
         chooser.addCmd("3 Piece", () -> Autos.get3Piece());
-        chooser.addCmd("1 Piece", () -> Autos.get1Piece());
         // Default
         chooser.select("Straight");
 
@@ -158,7 +149,8 @@ public class AutoUtils {
                         firstTrajectory.cmd()));
         return routine.cmd();
     }
-
+    
+    //This is scoring on Level 4
     public static void addScoreL4(AutoTrajectory trajectory) {
         Pose2d endingPose2d = getFinalPose2d(trajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing the trajectory
@@ -166,46 +158,45 @@ public class AutoUtils {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
 
-        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(Commands.print("SCORE L4 \nSCORE L4 \n" + 
-                "SCORE L4 \n" + 
-                "SCORE L4 \n" + 
-                "SCORE L4 \n" + 
-                "SCORE L4 \n" ));
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(Commands.print("SCORE L4"));
 
 
     }
 
+    //This is scoring on Level 3
     public static void addScoreL3(AutoTrajectory trajectory) {
-        UtilityFunctions.CheckPose(getFinalPose2d(trajectory), 0.5, Math.toRadians(10))
-                .onTrue(Commands.runOnce(() -> {
-                    System.out.println("score L3");
-                }));
+        Pose2d endingPose2d = getFinalPose2d(trajectory);
+        // unflip the alliance so that atPose can flip it; it's a quirk of referencing the trajectory
+        if (DriverStation.getAlliance().get() == Alliance.Red){
+            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
+        }
+
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(Commands.print("SCORE L3"));
+
 
     }
 
     public static void addIntake(AutoTrajectory trajectory) {
-        trajectory.atPose(getFinalPose2d(trajectory), 6, Math.toRadians(180))
-                .onTrue(Commands.print("intake"));
+        Pose2d endingPose2d = getFinalPose2d(trajectory);
+        // unflip the alliance so that atPose can flip it; it's a quirk of referencing the trajectory
+        if (DriverStation.getAlliance().get() == Alliance.Red){
+            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
+        }
+
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(Commands.print("Intaking"));
+
 
     }
 
     public static void goNextAfterScored(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory) {
-        // curTrajectory.atPose(getFinalPose2d(curTrajectory), 5, Math.toRadians(180))
-        // .onTrue(nextTrajectory.cmd());
-        // System.out.println("Start Trajectory started");
-
         curTrajectory.done().and(() -> true)
-                .onTrue(nextTrajectory.cmd());
-        System.out.println("Start Trajectory started");
+                .onTrue(Commands.waitSeconds(0.6).andThen(nextTrajectory.cmd()));
+        System.out.println("Next Trajectory started");
     }
 
     public static void goNextAfterIntake(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory) {
-        // curTrajectory.atPose(getFinalPose2d(curTrajectory), 6, Math.toRadians(180))
-        // .onTrue(nextTrajectory.cmd());
-        // System.out.println("Next Trajectory started");
-
         curTrajectory.done().and(() -> true)
-                .onTrue(nextTrajectory.cmd());
+                .onTrue(Commands.waitSeconds(0.6).andThen(nextTrajectory.cmd()));
         System.out.println("Start Trajectory started");
     }
 
