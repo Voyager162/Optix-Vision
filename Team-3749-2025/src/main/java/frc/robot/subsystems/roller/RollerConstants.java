@@ -61,7 +61,8 @@ public class RollerConstants {
     public enum RollerStates {
         RUN,
         MAINTAIN,
-        STOP
+        STOP,
+        SCORE
     }
 
     public enum Implementations {
