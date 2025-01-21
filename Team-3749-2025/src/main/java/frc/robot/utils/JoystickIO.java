@@ -5,7 +5,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot;
+
+import frc.robot.commands.example.ExampleSubsystemCommand;
+import frc.robot.commands.roller.MaintainCommand;
+import frc.robot.commands.roller.RunCommand;
+import frc.robot.commands.roller.StopCommand;
 import frc.robot.commands.elevator.SetElevatorState;
+
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
@@ -21,6 +27,10 @@ public class JoystickIO {
     private static final CommandXboxController pilot = new CommandXboxController(0);
     private static final CommandXboxController operator = new CommandXboxController(1);
     private static final Command DriveStraight = new DriveStraight();
+    private static final Command MaintainCommand = new MaintainCommand();
+    private static final Command RunCommand = new RunCommand();
+    private static final Command StopCommand = new StopCommand();
+
 
     private static final SetElevatorState l1 = new SetElevatorState(ElevatorStates.L1);
     private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
@@ -57,7 +67,9 @@ public class JoystickIO {
     public static void pilotAndOperatorBindings() {
         // gyro reset
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
-        pilot.a().whileTrue(DriveStraight);
+        pilot.a().whileTrue(RunCommand);
+        pilot.b().whileTrue(MaintainCommand);
+        pilot.x().whileTrue(StopCommand);
 
         // Example binding 
         // operator.a().whileTrue(new ExampleSubsystemCommand());

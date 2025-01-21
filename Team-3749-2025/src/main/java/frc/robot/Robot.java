@@ -7,6 +7,7 @@ import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -17,6 +18,10 @@ import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.subsystems.elevator.Elevator;
 
 import frc.robot.subsystems.example.ExampleSubsystem;
+import frc.robot.subsystems.roller.Roller;
+import frc.robot.subsystems.roller.implementations.AlgaeRoller;
+import frc.robot.subsystems.roller.implementations.CoralRoller;
+import frc.robot.subsystems.roller.implementations.ScoringRoller;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.ShuffleData;
 
@@ -24,6 +29,10 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   public static Swerve swerve = new Swerve();
+  public static Roller algaeRoller = new AlgaeRoller();
+  public static Roller coralRoller = new CoralRoller();
+  public static Roller scoringRoller = new ScoringRoller();
+  
   public static ExampleSubsystem subsystem = new ExampleSubsystem();
 
   public static AlgaeArm algaeArm = new AlgaeArm();
@@ -43,6 +52,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+    
   }
 
   @Override
@@ -65,7 +75,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-
   }
 
   @Override
@@ -95,10 +104,12 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
   }
 
   @Override
   public void teleopPeriodic() {
+    
   }
 
   @Override
