@@ -1,8 +1,7 @@
 package frc.robot.utils;
 
+import java.util.Map;
 import java.util.function.Consumer;
-
-import org.ejml.dense.block.VectorOps_DDRB;
 
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
@@ -25,41 +24,63 @@ public class SysIdTuner {
     private static Consumer<SysIdRoutineLog> setLog;
     private static Consumer<Voltage> setVolts;
 
-    private Subsystem subsystem;
-
-    private double appliedVolts;
-    private double position;
-    private double velocity;
-    private double acceleration;
+    private VoltageDrive io;
+    private Map<String, MotorData> motorData;
 
     // just use a list or map for this?
-    public SysIdTuner(String name, Subsystem subsystem, double appliedVolts, double position, double velocity,
-            double acceleration) {
-        this.subsystem = subsystem;
+    public SysIdTuner(String name, SysIdRoutine.Config config, Subsystem subsystem, VoltageDrive io,
+            Map<String, MotorData> motorData) {
 
-        this.appliedVolts = appliedVolts;
-        this.position = position;
-        this.velocity = velocity;
-        this.acceleration = acceleration;
+        this.io = io;
+        this.motorData = motorData;
 
         setVolts = (Voltage volts) -> setVoltage(volts);
         setLog = (SysIdRoutineLog) -> setLog(SysIdRoutineLog);
 
         sysIdRoutine = new SysIdRoutine(
-                new SysIdRoutine.Config(Volts.per(Seconds).of(1.2), Volts.of(12), Seconds.of(10)),
+                config,
                 new SysIdRoutine.Mechanism(setVolts, setLog, subsystem, name));
     }
 
     private void setLog(SysIdRoutineLog log) {
-        log.motor("motor").voltage(Voltage.ofBaseUnits(appliedVolts, Volts));
-        log.motor("motor").linearPosition(Meters.ofBaseUnits(position));
-        log.motor("motor").linearVelocity(MetersPerSecond.ofBaseUnits(velocity));
-        log.motor("motor").linearAcceleration(MetersPerSecondPerSecond.ofBaseUnits(acceleration));
+        motorData.forEach((motorName, data) -> {
+            log.motor(motorName)
+                    .voltage(Voltage.ofBaseUnits(data.appliedVolts, Volts))
+                    .linearPosition(Meters.ofBaseUnits(data.position))
+                    .linearVelocity(MetersPerSecond.ofBaseUnits(data.velocity))
+                    .linearAcceleration(MetersPerSecondPerSecond.ofBaseUnits(data.acceleration));
+        });
+
+        // log.motor("motor").voltage(Voltage.ofBaseUnits(appliedVolts, Volts));
+        // log.motor("motor").linearPosition(Meters.ofBaseUnits(position));
+        // log.motor("motor").linearVelocity(MetersPerSecond.ofBaseUnits(velocity));
+        // log.motor("motor").linearAcceleration(MetersPerSecondPerSecond.ofBaseUnits(acceleration));
     }
 
-    // ask user to make this? how can i import the IO
     public void setVoltage(Voltage volts) {
-        io.setVoltage(volts.magnitude());
+        try {
+            io.setVoltage(volts.magnitude());
+        } catch (Exception e) {
+            System.err.println("Failed to set voltage: " + e.getMessage());
+        }
+    }
+
+    public interface VoltageDrive {
+        void setVoltage(double volts);
+    }
+
+    public static class MotorData {
+        public double appliedVolts;
+        public double position;
+        public double velocity;
+        public double acceleration;
+
+        public MotorData(double appliedVolts, double position, double velocity, double acceleration) {
+            this.appliedVolts = appliedVolts;
+            this.position = position;
+            this.velocity = velocity;
+            this.acceleration = acceleration;
+        }
     }
 
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
@@ -70,3 +91,26 @@ public class SysIdTuner {
         return sysIdRoutine.dynamic(direction);
     }
 }
+
+
+/*
+ *  // Motor data obj
+        Map<String, MotorData> motorData = Map.of(
+            "motor", new MotorData(
+                0.0, // initial appliedVolts
+                0.0, // initial position
+                0.0, // initial velocity
+                0.0  // initial acceleration
+            )
+        );
+
+    // Configuration, here are previously tested values
+    SysIdRoutine.Config config = new SysIdRoutine.Config(
+        Volts.per(Seconds).of(1.2), // Voltage ramp rate
+        Volts.of(12),              // Max voltage
+        Seconds.of(10)             // Test duration
+    );
+
+    // Instantiate SysIdTuner
+    sysIdTuner = new SysIdTuner(config, this, motorController, motorData);
+ */
