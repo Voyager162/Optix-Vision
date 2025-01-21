@@ -4,7 +4,7 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 
 /**
  * Class containing our auto routines. Referenced by the auto selector and
@@ -86,6 +86,89 @@ public class Autos {
 
     }
 
+    public static Command getTaxi() {
+        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("Taxi");
+
+        // loop.trajectory, or the new name
+        AutoTrajectory trajectory1 = routine.trajectory("Start-L5");
+
+        AutoUtils.addScoreL4(trajectory1);
+ 
+        return Commands.print("Taxi!").andThen(
+                AutoUtils.startRoutine(routine, "Start-L5", trajectory1));
+    }
+
+    public static Command getTeamtaxi() {
+        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("Team Taxi");
+
+        // loop.trajectory, or the new name
+        AutoTrajectory trajectory1 = routine.trajectory("Start-TeamTaxi");     
+
+        return Commands.print("Team taxi").andThen(
+                AutoUtils.startRoutine(routine, "Start-TeamTaxi", trajectory1));
+    }
+
+    public static Command getOnePieceCenter() {
+        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("One-Piece-Center");
+
+        // loop.trajectory, or the new name
+        AutoTrajectory trajectory1 = routine.trajectory("MidStart-L6");
+      
+        AutoUtils.addScoreL4(trajectory1);
+
+        return Commands.print("One Piece Center").andThen(
+                AutoUtils.startRoutine(routine, "MidStart-L6", trajectory1));
+    }
+
+    public static Command getFullAutoRP() {
+        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("Full Auto RP");
+
+        // loop.trajectory, or the new name
+        AutoTrajectory trajectory1 = routine.trajectory("Start-TeamTaxi");
+        AutoTrajectory trajectory2 = routine.trajectory("TeamTaxi-L5");
+  
+      
+        AutoUtils.addScoreL4(trajectory2);
+
+        // reverse order here (connect 3 to 2, THEN 2 to 1)
+        AutoUtils.goNextAfterScored(trajectory1, trajectory2);
+
+        return Commands.print("Full Auto RP!").andThen(
+                AutoUtils.startRoutine(routine, "Start-TeamTaxi", trajectory1));
+    }
+
+    public static Command get4piece() {
+        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("4-Piece");
+
+        // loop.trajectory, or the new name
+        AutoTrajectory trajectory1 = routine.trajectory("Start-L5");
+        AutoTrajectory trajectory2 = routine.trajectory("L5-Station");
+        AutoTrajectory trajectory3 = routine.trajectory("Station-L4");
+        AutoTrajectory trajectory4 = routine.trajectory("L4-Station");
+        AutoTrajectory trajectory5 = routine.trajectory("Station-L3");
+        AutoTrajectory trajectory6 = routine.trajectory("L3-Station");
+        AutoTrajectory trajectory7 = routine.trajectory("Station-L2");
+      
+        AutoUtils.addScoreL4(trajectory1);
+        AutoUtils.addIntake(trajectory2);
+        AutoUtils.addScoreL4(trajectory3);
+        AutoUtils.addIntake(trajectory4);
+        AutoUtils.addScoreL4(trajectory5);
+        AutoUtils.addIntake(trajectory6);
+        AutoUtils.addScoreL4(trajectory7);
+
+        // reverse order here (connect 3 to 2, THEN 2 to 1)
+        AutoUtils.goNextAfterIntake(trajectory6, trajectory7);
+        AutoUtils.goNextAfterIntake(trajectory5, trajectory6);
+        AutoUtils.goNextAfterIntake(trajectory4, trajectory5);
+        AutoUtils.goNextAfterIntake(trajectory3, trajectory4);
+        AutoUtils.goNextAfterIntake(trajectory2, trajectory3);
+        AutoUtils.goNextAfterScored(trajectory1, trajectory2);
+
+        return Commands.print("4 piece auto!").andThen(
+                AutoUtils.startRoutine(routine, "Start-L5", trajectory1));
+    }
+    
     public static Command get3Piece() {
         AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("3-Piece");
 

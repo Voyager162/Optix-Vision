@@ -4,10 +4,10 @@ package frc.robot.commands.auto;
 
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
-import choreo.auto.AutoTrajectory;
 import choreo.auto.AutoRoutine;
-import choreo.util.ChoreoAllianceFlipUtil;
+import choreo.auto.AutoTrajectory;
 import choreo.trajectory.SwerveSample;
+import choreo.util.ChoreoAllianceFlipUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -109,6 +109,11 @@ public class AutoUtils {
         // Made sendable, use SmartDashbaord now
         chooser = new AutoChooser();
         chooser.addCmd("3 Piece", () -> Autos.get3Piece());
+        chooser.addCmd("4 Piece", () -> Autos.get4piece());
+        chooser.addCmd("Full Auto RP", () -> Autos.getFullAutoRP());
+        chooser.addCmd("One Piece Center", () -> Autos.getOnePieceCenter());
+        chooser.addCmd("Taxi", () -> Autos.getTaxi());
+        chooser.addCmd("Team Taxi", () -> Autos.getTeamtaxi());
         // Default
         chooser.select("Straight");
 
