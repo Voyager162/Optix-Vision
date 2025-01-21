@@ -181,7 +181,7 @@ public class Elevator extends SubsystemBase {
         currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
         positionMetersLog.set(data.positionMeters);
         velocityMetersPerSecLog.set(data.velocityMetersPerSecond);
-        accelerationMetersPerSecSquaredLog.set(data.accelerationUnits);
+        accelerationMetersPerSecSquaredLog.set(data.accelerationMetersPerSecondSquared);
 
         inputVoltsLog.set(data.inputVolts);
         leftAppliedVoltsLog.set(data.leftAppliedVolts);

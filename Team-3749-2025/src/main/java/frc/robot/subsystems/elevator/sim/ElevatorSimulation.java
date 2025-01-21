@@ -39,7 +39,7 @@ public class ElevatorSimulation implements ElevatorIO {
         velocity = elevatorSimSystem.getVelocityMetersPerSecond();
         data.positionMeters = elevatorSimSystem.getPositionMeters();
         data.velocityMetersPerSecond = velocity;
-        data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
+        data.accelerationMetersPerSecondSquared = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
         
         data.inputVolts = inputVolts;
         data.leftAppliedVolts = inputVolts;

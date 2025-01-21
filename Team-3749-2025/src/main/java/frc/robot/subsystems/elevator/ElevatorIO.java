@@ -10,7 +10,7 @@ public interface ElevatorIO {
     public static class ElevatorData {
         public double positionMeters = 0;
         public double velocityMetersPerSecond = 0;
-        public double accelerationUnits = 0;
+        public double accelerationMetersPerSecondSquared = 0;
         public double leftCurrentAmps = 0;
         public double rightCurrentAmps = 0;
         public double inputVolts = 0;
