@@ -232,15 +232,19 @@ public class Autos {
         AutoTrajectory trajectory2 = routine.trajectory("L4-Algae1");
         AutoTrajectory trajectory3 = routine.trajectory("Algae1 - Processor");
         AutoTrajectory trajectory4 = routine.trajectory("Processor-Algae3");
-        AutoTrajectory trajectory5 = routine.trajectory("Algae3- L1");
+        AutoTrajectory trajectory5 = routine.trajectory("Algae3-Processor");
+        AutoTrajectory trajectory6 = routine.trajectory("Processor-L1");
       
         AutoUtils.addScoreL4(trajectory1);
         AutoUtils.addAlgaeIntake(trajectory2);
         AutoUtils.addScoreAlgae(trajectory3);
         AutoUtils.addAlgaeIntake(trajectory4);
-        AutoUtils.addScoreL4(trajectory5);
+        AutoUtils.addScoreAlgae(trajectory5);
+        AutoUtils.addScoreL4(trajectory6);
+
 
         // reverse order here (connect 3 to 2, THEN 2 to 1)      
+        AutoUtils.goNextAfterIntake(trajectory5, trajectory6);
         AutoUtils.goNextAfterIntake(trajectory4, trajectory5);
         AutoUtils.goNextAfterIntake(trajectory3, trajectory4);
         AutoUtils.goNextAfterIntake(trajectory2, trajectory3);
