@@ -149,7 +149,7 @@ public class Swerve extends SubsystemBase {
       "setpoint rotational acceleration",
       0.0);
 
-  private int currentPPSetpointIndex = 0;
+  public int currentPPSetpointIndex = 0;
   public boolean isOTF = false;
 
   public Swerve() {
@@ -344,7 +344,6 @@ public class Swerve extends SubsystemBase {
   public Pose2d getPPSetpoint() {
     return ToPosConstants.Setpoints.buttonBoardSetpointMap(currentPPSetpointIndex);
   }
-
   /**
    * Manually sets our odometry position
    * 

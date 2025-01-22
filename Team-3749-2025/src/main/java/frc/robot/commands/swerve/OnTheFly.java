@@ -19,11 +19,14 @@ import frc.robot.Robot;
 import frc.robot.commands.auto.AutoConstants;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.ToPos;
+import frc.robot.subsystems.swerve.ToPosConstants;
 
 public class OnTheFly extends Command {
 
     private PathPlannerTrajectory trajectory;
     private final Timer timer = new Timer();
+    private static boolean isAReefSetpoint = false; // we get there and then close in on it by driving forward
+    private static boolean needsToCloseIn = false;
     private final PPHolonomicDriveController SwerveController = new PPHolonomicDriveController(
             new PIDConstants(AutoConstants.kPDrive, 0, AutoConstants.kDDrive),
             new PIDConstants(AutoConstants.kPTurn, 0, AutoConstants.kDTurn));
@@ -35,8 +38,27 @@ public class OnTheFly extends Command {
     public void initialize() {
         timer.reset();
         timer.start();
+        PathPlannerPath path;
+        if(Robot.swerve.currentPPSetpointIndex > 2 && !needsToCloseIn)
+        {
+            isAReefSetpoint = true;
+            System.out.println("it's a reef");
+        }
 
-        PathPlannerPath path = ToPos.generateDynamicPath(
+        if(needsToCloseIn)
+        {
+            path = ToPos.generateDynamicPath(
+                Robot.swerve.getPose(),
+                ToPosConstants.Setpoints.reefTrig(Robot.swerve.getPPSetpoint(), ToPosConstants.Setpoints.TrigDirection.FORWARD),
+                ToPosConstants.Setpoints.reefTrig(Robot.swerve.getPPSetpoint(), ToPosConstants.Setpoints.TrigDirection.FORWARD),
+                Robot.swerve.getMaxDriveSpeed(),
+                SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
+                Robot.swerve.getMaxAngularSpeed(),
+                SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared);
+        }
+        else
+        {
+            path = ToPos.generateDynamicPath(
                 Robot.swerve.getPose(),
                 Robot.swerve.getPPSetpoint(),
                 Robot.swerve.getPPSetpoint(),
@@ -44,6 +66,7 @@ public class OnTheFly extends Command {
                 SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
                 Robot.swerve.getMaxAngularSpeed(),
                 SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared);
+        }
 
         if (path == null) {
             System.out.println("Error: Failed to generate path. Ending OnTheFly command.");
@@ -78,8 +101,17 @@ public class OnTheFly extends Command {
         Robot.swerve.logSetpoints(goalState);
 
         if (isFinished()) {
+            if(isAReefSetpoint)
+            {
+                isAReefSetpoint = false;
+                needsToCloseIn = true;
+                this.end(true);
+                this.initialize();
+                return;
+            }
             this.end(true);
             Robot.swerve.isOTF = false;
+            //if we add LED's here now would be a good time to shine our bots lights to signify you can move again
         }
     }
 
@@ -107,6 +139,7 @@ public class OnTheFly extends Command {
             double yError = trajectory.getEndState().pose.relativeTo(Robot.swerve.getPose()).getY();
             double thetaError = trajectory.getEndState().pose.relativeTo(Robot.swerve.getPose()).getRotation()
                     .getDegrees();
+            // System.out.println("x "+xError+" y "+yError+" theta " + thetaError);
             return xError < positionTolerance && yError < positionTolerance && thetaError < rotationTolerance;
         }
 

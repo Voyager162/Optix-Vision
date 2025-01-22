@@ -16,19 +16,41 @@ public class ToPosConstants {
 
     public static final class Setpoints {
 
+        public static enum TrigDirection 
+        {
+            LEFT,
+            RIGHT,
+            FORWARD
+        }
         public static Pose2d buttonBoardSetpointMap(int index)
         {
             return ppSetpoints[index];
         }
 
-        static Pose2d reefTrig(Pose2d reefPose, boolean isRight) {
+        public static Pose2d reefTrig(Pose2d reefPose, TrigDirection direction) {
             double offsetMultiplier = 1;
-            if (isRight) {
+            double angleOffset = 90; //90 for perpindicular
+            switch(direction)
+            {
+                case LEFT:
+                offsetMultiplier = 1;
+                break;
+
+                case RIGHT:
                 offsetMultiplier = -1;
+                break;
+
+                case FORWARD:
+                    angleOffset = 0;
+                break;
+
+                default:
+                System.out.println("how did you even manage to do this");
+                break;
             }
     
-            double xOffset = Math.cos(Math.toRadians(reefPose.getRotation().getDegrees() + (90 * offsetMultiplier)))/4;
-            double yOffset = Math.sin(Math.toRadians(reefPose.getRotation().getDegrees() + (90 * offsetMultiplier)))/4;
+            double xOffset = Math.cos(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))/4;
+            double yOffset = Math.sin(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))/4;
             return new Pose2d(reefPose.getX()+xOffset,reefPose.getY()+yOffset,reefPose.getRotation());
             };
 
@@ -44,28 +66,28 @@ public class ToPosConstants {
         public static final Pose2d reef20 = new Pose2d(5.22, 5.37, new Rotation2d(Math.toRadians(-120)));
         public static final Pose2d reef19 = new Pose2d(3.73, 5.24, new Rotation2d(Math.toRadians(-60)));
 
-        public static final Pose2d reef17L = reefTrig(reef17, false);
-        public static final Pose2d reef17R = reefTrig(reef17, true);
+        public static final Pose2d reef17L = reefTrig(reef17, TrigDirection.LEFT);
+        public static final Pose2d reef17R = reefTrig(reef17, TrigDirection.RIGHT);
         
-        public static final Pose2d reef18L = reefTrig(reef18, false);
-        public static final Pose2d reef18R = reefTrig(reef18, true);
+        public static final Pose2d reef18L = reefTrig(reef18, TrigDirection.LEFT);
+        public static final Pose2d reef18R = reefTrig(reef18, TrigDirection.RIGHT);
 
-        public static final Pose2d reef19L = reefTrig(reef19, false);
-        public static final Pose2d reef19R = reefTrig(reef19, true);
+        public static final Pose2d reef19L = reefTrig(reef19, TrigDirection.LEFT);
+        public static final Pose2d reef19R = reefTrig(reef19, TrigDirection.RIGHT);
 
-        public static final Pose2d reef20L = reefTrig(reef20, false);
-        public static final Pose2d reef20R = reefTrig(reef20, true);
+        public static final Pose2d reef20L = reefTrig(reef20, TrigDirection.LEFT);
+        public static final Pose2d reef20R = reefTrig(reef20, TrigDirection.RIGHT);
 
-        public static final Pose2d reef21L = reefTrig(reef21, false);
-        public static final Pose2d reef21R = reefTrig(reef21, true);
+        public static final Pose2d reef21L = reefTrig(reef21, TrigDirection.LEFT);
+        public static final Pose2d reef21R = reefTrig(reef21, TrigDirection.RIGHT);
 
-        public static final Pose2d reef22L = reefTrig(reef22, false);
-        public static final Pose2d reef22R = reefTrig(reef22, true);
+        public static final Pose2d reef22L = reefTrig(reef22, TrigDirection.LEFT);
+        public static final Pose2d reef22R = reefTrig(reef22, TrigDirection.RIGHT);
 
         public static final Pose2d[] ppSetpoints = new Pose2d[] { 
             ToPosConstants.Setpoints.coralBottom,
             ToPosConstants.Setpoints.coralTop,
-            ToPosConstants.Setpoints.processor,
+            ToPosConstants.Setpoints.processor, //index 2
             ToPosConstants.Setpoints.reef17L,
             ToPosConstants.Setpoints.reef17R,
             ToPosConstants.Setpoints.reef18L,
