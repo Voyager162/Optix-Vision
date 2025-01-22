@@ -1,6 +1,7 @@
 package frc.robot.commands.swerve;
 
 import java.io.IOException;
+import java.time.Year;
 
 import org.json.simple.parser.ParseException;
 
@@ -12,7 +13,6 @@ import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -101,18 +101,14 @@ public class OnTheFly extends Command {
         boolean trajectoryComplete = timer.get() >= trajectory.getTotalTimeSeconds();
 
         if (trajectoryComplete) {
-            double positionTolerance = 0.05; // meters
+            double positionTolerance = 0.002; // meters
             double rotationTolerance = 2.0; // degrees
-
-            Translation2d currentPosition = Robot.swerve.getPose().getTranslation();
-            Translation2d finalPosition = trajectory.getEndState().pose.getTranslation();
-            double positionError = currentPosition.getDistance(finalPosition);
-
-            double currentRotation = Robot.swerve.getPose().getRotation().getDegrees();
-            double finalRotation = trajectory.getEndState().pose.getRotation().getDegrees();
-            double rotationError = Math.abs(currentRotation - finalRotation);
-
-            return positionError <= positionTolerance && rotationError <= rotationTolerance;
+            //harik be like oooh i love doing position math that bricked our codebase
+            //My Honest, Genuine, Unadulterated Built in Method Reaction
+            double xError = trajectory.getEndState().pose.relativeTo(Robot.swerve.getPose()).getX();
+            double yError = trajectory.getEndState().pose.relativeTo(Robot.swerve.getPose()).getY();
+            double thetaError = trajectory.getEndState().pose.relativeTo(Robot.swerve.getPose()).getRotation().getDegrees();
+            return xError < positionTolerance && yError < positionTolerance && thetaError < rotationTolerance;
         }
 
         return false;
