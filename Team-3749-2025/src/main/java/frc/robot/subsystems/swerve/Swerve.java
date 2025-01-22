@@ -151,6 +151,7 @@ public class Swerve extends SubsystemBase {
 
   public int currentPPSetpointIndex = 0;
   public boolean isOTF = false;
+  public boolean needsToCloseIn = false;
 
   public Swerve() {
 

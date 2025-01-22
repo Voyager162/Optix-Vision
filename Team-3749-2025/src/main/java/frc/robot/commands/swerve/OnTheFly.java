@@ -26,7 +26,6 @@ public class OnTheFly extends Command {
     private PathPlannerTrajectory trajectory;
     private final Timer timer = new Timer();
     private static boolean isAReefSetpoint = false; // we get there and then close in on it by driving forward
-    private static boolean needsToCloseIn = false;
     private final PPHolonomicDriveController SwerveController = new PPHolonomicDriveController(
             new PIDConstants(AutoConstants.kPDrive, 0, AutoConstants.kDDrive),
             new PIDConstants(AutoConstants.kPTurn, 0, AutoConstants.kDTurn));
@@ -39,13 +38,13 @@ public class OnTheFly extends Command {
         timer.reset();
         timer.start();
         PathPlannerPath path;
-        if(Robot.swerve.currentPPSetpointIndex > 2 && !needsToCloseIn)
+        if(Robot.swerve.currentPPSetpointIndex > 2 && !Robot.swerve.needsToCloseIn)
         {
             isAReefSetpoint = true;
             System.out.println("it's a reef");
         }
 
-        if(needsToCloseIn)
+        if(Robot.swerve.needsToCloseIn)
         {
             path = ToPos.generateDynamicPath(
                 Robot.swerve.getPose(),
@@ -104,7 +103,7 @@ public class OnTheFly extends Command {
             if(isAReefSetpoint)
             {
                 isAReefSetpoint = false;
-                needsToCloseIn = true;
+                Robot.swerve.needsToCloseIn = true;
                 this.end(true);
                 this.initialize();
                 return;
