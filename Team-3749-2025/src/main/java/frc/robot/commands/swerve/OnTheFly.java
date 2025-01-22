@@ -99,7 +99,7 @@ public class OnTheFly extends Command {
         Robot.swerve.logSetpoints(goalState);
 
         if (isFinished()) {
-            if(isAReefSetpoint)
+            if(isAReefSetpoint && trajectory!=null)
             {
                 isAReefSetpoint = false;
                 Robot.swerve.needsToCloseIn = true;
