@@ -14,7 +14,6 @@ public class KnockAlgae extends Command{
     private final CoralArm coralArm;
     private final Elevator elevator;
     private final Roller roller;
-    private final SetElevatorState setElevatorState;
     private final ElevatorStates state;
 
     public KnockAlgae(CoralArm coralArm, Elevator elevator, Roller roller, ElevatorStates state) {
@@ -22,7 +21,6 @@ public class KnockAlgae extends Command{
         this.elevator = elevator;
         this.roller = roller;
         this.state = state;
-        this.setElevatorState = new SetElevatorState(this.state);
     }
 
     @Override
@@ -34,25 +32,19 @@ public class KnockAlgae extends Command{
 
     @Override 
     public void execute() {
-        CommandScheduler.getInstance().schedule(setElevatorState);
-
-        //System.out.println(state);
+        roller.setState(RollerConstants.RollerStates.RUN);
         elevator.setState(state);
-        if(elevator.getIsStableState()){
-            roller.setState(RollerConstants.RollerStates.RUN);
-        }
-            
     }
 
     @Override 
     public void end(boolean interrupted) {
         coralArm.setState(CoralConstants.ArmStates.STOPPED);
-        elevator.setState(ElevatorStates.STOP);
+        elevator.setState(ElevatorStates.STOW);
         roller.setState(RollerConstants.RollerStates.STOP); 
     }
 
     @Override
     public boolean isFinished() {
-        return elevator.getState() == state;
+        return elevator.getIsStableState();
     }
 }

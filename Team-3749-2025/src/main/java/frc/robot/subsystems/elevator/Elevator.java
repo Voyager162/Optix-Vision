@@ -99,7 +99,7 @@ public class Elevator extends SubsystemBase {
                 return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.l1Height,
                         data.positionMeters);
             case L2:
-                return UtilityFunctions.withinMargin(0.5, data.positionMeters,
+                return UtilityFunctions.withinMargin(0.1, data.positionMeters,
                         ElevatorConstants.StateHeights.l2Height);
             case L3:
                 return UtilityFunctions.withinMargin(0.01, data.positionMeters,
