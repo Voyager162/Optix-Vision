@@ -24,195 +24,181 @@ import frc.robot.utils.UtilityFunctions;
  * @author Andrew Ge
  */
 public class Elevator extends SubsystemBase {
-  private ElevatorIO elevatorio;
-  private ElevatorData data = new ElevatorData();
-  private ElevatorStates state = ElevatorStates.STOP;
+	private ElevatorIO elevatorio;
+	private ElevatorData data = new ElevatorData();
+	private ElevatorStates state = ElevatorStates.STOP;
 
-  private ProfiledPIDController pidController =
-      new ProfiledPIDController(
-          ElevatorConstants.ElevatorControl.kPSim,
-          0,
-          ElevatorConstants.ElevatorControl.kDSim,
-          new TrapezoidProfile.Constraints(
-              ElevatorConstants.ElevatorControl.maxV, ElevatorConstants.ElevatorControl.maxA));
+	private ProfiledPIDController pidController = new ProfiledPIDController(
+			ElevatorConstants.ElevatorControl.kPSim,
+			0,
+			ElevatorConstants.ElevatorControl.kDSim,
+			new TrapezoidProfile.Constraints(
+					ElevatorConstants.ElevatorControl.maxV, ElevatorConstants.ElevatorControl.maxA));
 
-  private ElevatorFeedforward feedforward =
-      new ElevatorFeedforward(
-          ElevatorConstants.ElevatorControl.kSSim,
-          ElevatorConstants.ElevatorControl.kGSim,
-          ElevatorConstants.ElevatorControl.kVSim,
-          ElevatorConstants.ElevatorControl.kASim);
+	private ElevatorFeedforward feedforward = new ElevatorFeedforward(
+			ElevatorConstants.ElevatorControl.kSSim,
+			ElevatorConstants.ElevatorControl.kGSim,
+			ElevatorConstants.ElevatorControl.kVSim,
+			ElevatorConstants.ElevatorControl.kASim);
 
-  private ShuffleData<String> currentCommandLog =
-      new ShuffleData<String>(this.getName(), "current command", "None");
-  private ShuffleData<Double> positionMetersLog =
-      new ShuffleData<Double>("Elevator", "position meters", 0.0);
-  private ShuffleData<Double> velocityUnitsLog =
-      new ShuffleData<Double>("Elevator", "velocity units", 0.0);
-  private ShuffleData<Double> accelerationUnitsLog =
-      new ShuffleData<Double>("Elevator", "acceleration units", 0.0);
-  private ShuffleData<Double> inputVoltsLog =
-      new ShuffleData<Double>("Elevator", "input volts", 0.0);
-  private ShuffleData<Double> leftAppliedVoltsLog =
-      new ShuffleData<Double>("Elevator", "left applied volts", 0.0);
-  private ShuffleData<Double> rightAppliedVoltsLog =
-      new ShuffleData<Double>("Elevator", "right applied volts", 0.0);
-  private ShuffleData<Double> leftCurrentAmpsLog =
-      new ShuffleData<Double>("Elevator", "left current amps", 0.0);
-  private ShuffleData<Double> rightCurrentAmpsLog =
-      new ShuffleData<Double>("Elevator", "right current amps", 0.0);
-  private ShuffleData<Double> leftTempCelciusLog =
-      new ShuffleData<Double>("Elevator", "left temp celcius", 0.0);
-  private ShuffleData<Double> rightTempCelciusLog =
-      new ShuffleData<Double>("Elevator", "right temp celcius", 0.0);
+	private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
+	private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position meters", 0.0);
+	private ShuffleData<Double> velocityUnitsLog = new ShuffleData<Double>("Elevator", "velocity units", 0.0);
+	private ShuffleData<Double> accelerationUnitsLog = new ShuffleData<Double>("Elevator", "acceleration units", 0.0);
+	private ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Elevator", "input volts", 0.0);
+	private ShuffleData<Double> leftAppliedVoltsLog = new ShuffleData<Double>("Elevator", "left applied volts", 0.0);
+	private ShuffleData<Double> rightAppliedVoltsLog = new ShuffleData<Double>("Elevator", "right applied volts", 0.0);
+	private ShuffleData<Double> leftCurrentAmpsLog = new ShuffleData<Double>("Elevator", "left current amps", 0.0);
+	private ShuffleData<Double> rightCurrentAmpsLog = new ShuffleData<Double>("Elevator", "right current amps", 0.0);
+	private ShuffleData<Double> leftTempCelciusLog = new ShuffleData<Double>("Elevator", "left temp celcius", 0.0);
+	private ShuffleData<Double> rightTempCelciusLog = new ShuffleData<Double>("Elevator", "right temp celcius", 0.0);
 
-  // For tuning on real
-  // private ShuffleData<Double> kPData = new ShuffleData<Double>("Elevator",
-  // "kPData", ElevatorConstants.ElevatorControl.kPSim);
-  // private ShuffleData<Double> kDData = new ShuffleData<Double>("Elevator",
-  // "kDData", ElevatorConstants.ElevatorControl.kDSim);
-  // private ShuffleData<Double> kGData = new ShuffleData<Double>("Elevator",
-  // "kGData", ElevatorConstants.ElevatorControl.kGSim);
-  // private ShuffleData<Double> kVData = new ShuffleData<Double>("Elevator",
-  // "kVData", ElevatorConstants.ElevatorControl.kVSim);
-  // private ShuffleData<Double> kAData = new ShuffleData<Double>("Elevator",
-  // "kAData", ElevatorConstants.ElevatorControl.kASim);
+	// For tuning on real
+	// private ShuffleData<Double> kPData = new ShuffleData<Double>("Elevator",
+	// "kPData", ElevatorConstants.ElevatorControl.kPSim);
+	// private ShuffleData<Double> kDData = new ShuffleData<Double>("Elevator",
+	// "kDData", ElevatorConstants.ElevatorControl.kDSim);
+	// private ShuffleData<Double> kGData = new ShuffleData<Double>("Elevator",
+	// "kGData", ElevatorConstants.ElevatorControl.kGSim);
+	// private ShuffleData<Double> kVData = new ShuffleData<Double>("Elevator",
+	// "kVData", ElevatorConstants.ElevatorControl.kVSim);
+	// private ShuffleData<Double> kAData = new ShuffleData<Double>("Elevator",
+	// "kAData", ElevatorConstants.ElevatorControl.kASim);
 
-  private Mechanism2d mech = new Mechanism2d(3, 3);
-  private MechanismRoot2d root = mech.getRoot("elevator", 2, 0);
-  private MechanismLigament2d elevatorMech =
-      root.append(
-          new MechanismLigament2d("elevator", ElevatorConstants.ElevatorSpecs.baseHeight, 90));
+	private Mechanism2d mech = new Mechanism2d(3, 3);
+	private MechanismRoot2d root = mech.getRoot("elevator", 2, 0);
+	private MechanismLigament2d elevatorMech = root.append(
+			new MechanismLigament2d("elevator", ElevatorConstants.ElevatorSpecs.baseHeight, 90));
 
-  public Elevator() {
-    if (Robot.isSimulation()) {
-      elevatorio = new ElevatorSimulation();
-    } else {
-      elevatorio = new ElevatorSparkMax();
-    }
-  }
+	public Elevator() {
+		if (Robot.isSimulation()) {
+			elevatorio = new ElevatorSimulation();
+		} else {
+			elevatorio = new ElevatorSparkMax();
+		}
+	}
 
-  public ElevatorStates getState() {
-    return state;
-  }
+	public ElevatorStates getState() {
+		return state;
+	}
 
-  public double getPositionMeters() {
-    return data.positionMeters;
-  }
+	public double getPositionMeters() {
+		return data.positionMeters;
+	}
 
-  public double getVelocityRadPerSec() {
-    return data.velocityMetersPerSecond;
-  }
+	public double getVelocityRadPerSec() {
+		return data.velocityMetersPerSecond;
+	}
 
-  // returns true when the state is reached
-  public boolean getIsStableState() {
-    switch (state) {
-      case L1:
-        return UtilityFunctions.withinMargin(
-            0.01, ElevatorConstants.StateHeights.l1Height, data.positionMeters);
-      case L2:
-        return UtilityFunctions.withinMargin(
-            0.01, data.positionMeters, ElevatorConstants.StateHeights.l2Height);
-      case L3:
-        return UtilityFunctions.withinMargin(
-            0.01, data.positionMeters, ElevatorConstants.StateHeights.l3Height);
-      case L4:
-        return UtilityFunctions.withinMargin(
-            0.01, data.positionMeters, ElevatorConstants.StateHeights.l4Height);
-      default:
-        return false;
-    }
-  }
+	// returns true when the state is reached
+	public boolean getIsStableState() {
+		switch (state) {
+			case L1:
+				return UtilityFunctions.withinMargin(
+						0.01, ElevatorConstants.StateHeights.l1Height, data.positionMeters);
+			case L2:
+				return UtilityFunctions.withinMargin(
+						0.01, data.positionMeters, ElevatorConstants.StateHeights.l2Height);
+			case L3:
+				return UtilityFunctions.withinMargin(
+						0.01, data.positionMeters, ElevatorConstants.StateHeights.l3Height);
+			case L4:
+				return UtilityFunctions.withinMargin(
+						0.01, data.positionMeters, ElevatorConstants.StateHeights.l4Height);
+			default:
+				return false;
+		}
+	}
 
-  public void setVoltage(double volts) {
-    elevatorio.setVoltage(volts);
-  }
+	public void setVoltage(double volts) {
+		elevatorio.setVoltage(volts);
+	}
 
-  public void setState(ElevatorStates state) {
-    this.state = state;
-    switch (state) {
-      case STOP:
-        runStateStop();
-        break;
-      case L1:
-        setGoal(ElevatorConstants.StateHeights.l1Height);
-        break;
-      case L2:
-        setGoal(ElevatorConstants.StateHeights.l2Height);
-        break;
-      case L3:
-        setGoal(ElevatorConstants.StateHeights.l3Height);
-        break;
-      case L4:
-        setGoal(ElevatorConstants.StateHeights.l4Height);
-        break;
-      case MAX:
-        setGoal(6);
-        break;
-      case STOW:
-      default:
-        setGoal(0);
-        break;
-    }
-  }
+	public void setState(ElevatorStates state) {
+		this.state = state;
+		switch (state) {
+			case STOP:
+				runStateStop();
+				break;
+			case L1:
+				setGoal(ElevatorConstants.StateHeights.l1Height);
+				break;
+			case L2:
+				setGoal(ElevatorConstants.StateHeights.l2Height);
+				break;
+			case L3:
+				setGoal(ElevatorConstants.StateHeights.l3Height);
+				break;
+			case L4:
+				setGoal(ElevatorConstants.StateHeights.l4Height);
+				break;
+			case MAX:
+				setGoal(6);
+				break;
+			case STOW:
+			default:
+				setGoal(0);
+				break;
+		}
+	}
 
-  public void setGoal(double height) {
-    pidController.setGoal(height);
-  }
+	public void setGoal(double height) {
+		pidController.setGoal(height);
+	}
 
-  private void runState() {
-    switch (state) {
-      case STOP:
-        runStateStop();
-        break;
-      default:
-        moveToGoal();
-        break;
-    }
-  }
+	private void runState() {
+		switch (state) {
+			case STOP:
+				runStateStop();
+				break;
+			default:
+				moveToGoal();
+				break;
+		}
+	}
 
-  private void moveToGoal() {
-    State firstState = pidController.getSetpoint();
-    double pidVoltage = pidController.calculate(getPositionMeters());
+	private void moveToGoal() {
+		State firstState = pidController.getSetpoint();
+		double pidVoltage = pidController.calculate(getPositionMeters());
 
-    State nextState = pidController.getSetpoint();
-    double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
+		State nextState = pidController.getSetpoint();
+		double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
 
-    elevatorio.setVoltage(ffVoltage + pidVoltage);
-  }
+		elevatorio.setVoltage(ffVoltage + pidVoltage);
+	}
 
-  private void runStateStop() {
-    stop();
-  }
+	private void runStateStop() {
+		stop();
+	}
 
-  public void stop() {
-    elevatorio.setVoltage(0);
-  }
+	public void stop() {
+		elevatorio.setVoltage(0);
+	}
 
-  private void logData() {
-    currentCommandLog.set(
-        this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-    positionMetersLog.set(data.positionMeters);
-    velocityUnitsLog.set(data.velocityMetersPerSecond);
-    accelerationUnitsLog.set(data.accelerationUnits);
-    inputVoltsLog.set(data.inputVolts);
-    leftAppliedVoltsLog.set(data.leftAppliedVolts);
-    rightAppliedVoltsLog.set(data.rightAppliedVolts);
-    leftCurrentAmpsLog.set(data.leftCurrentAmps);
-    rightCurrentAmpsLog.set(data.rightCurrentAmps);
-    leftTempCelciusLog.set(data.leftTempCelcius);
-    rightTempCelciusLog.set(data.rightTempCelcius);
+	private void logData() {
+		currentCommandLog.set(
+				this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
+		positionMetersLog.set(data.positionMeters);
+		velocityUnitsLog.set(data.velocityMetersPerSecond);
+		accelerationUnitsLog.set(data.accelerationUnits);
+		inputVoltsLog.set(data.inputVolts);
+		leftAppliedVoltsLog.set(data.leftAppliedVolts);
+		rightAppliedVoltsLog.set(data.rightAppliedVolts);
+		leftCurrentAmpsLog.set(data.leftCurrentAmps);
+		rightCurrentAmpsLog.set(data.rightCurrentAmps);
+		leftTempCelciusLog.set(data.leftTempCelcius);
+		rightTempCelciusLog.set(data.rightTempCelcius);
 
-    elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
-    SmartDashboard.putData("elevator mechanism", mech);
-  }
+		elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
+		SmartDashboard.putData("elevator mechanism", mech);
+	}
 
-  @Override
-  public void periodic() {
-    elevatorio.updateData(data);
+	@Override
+	public void periodic() {
+		elevatorio.updateData(data);
 
-    runState();
-    logData();
-    // pidController.setPID(kPData.get(),0,kDData.get())
-  }
+		runState();
+		logData();
+		// pidController.setPID(kPData.get(),0,kDData.get())
+	}
 }

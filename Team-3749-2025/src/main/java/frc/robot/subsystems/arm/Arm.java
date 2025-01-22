@@ -15,49 +15,42 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
  */
 public abstract class Arm extends SubsystemBase {
 
-  protected ArmIO armIO;
-  protected ArmData data = new ArmData();
-  protected ShuffleData<String> currentCommandLog =
-      new ShuffleData<>(this.getName(), "current command", "None");
-  protected ShuffleData<Double> positionUnitsLog =
-      new ShuffleData<>(this.getName(), "position units", 0.0);
-  protected ShuffleData<Double> velocityUnitsLog =
-      new ShuffleData<>(this.getName(), "velocity units", 0.0);
-  protected ShuffleData<Double> appliedVoltsLog =
-      new ShuffleData<>(this.getName(), "applied volts", 0.0);
-  protected ShuffleData<Double> currentAmpsLog =
-      new ShuffleData<>(this.getName(), "current amps", 0.0);
-  protected ShuffleData<Double> tempCelciusLog =
-      new ShuffleData<>(this.getName(), "temp celcius", 0.0);
-  public ShuffleData<Double> inputVoltsLog =
-      new ShuffleData<Double>(this.getName(), "input volts", 0.0);
+	protected ArmIO armIO;
+	protected ArmData data = new ArmData();
+	protected ShuffleData<String> currentCommandLog = new ShuffleData<>(this.getName(), "current command", "None");
+	protected ShuffleData<Double> positionUnitsLog = new ShuffleData<>(this.getName(), "position units", 0.0);
+	protected ShuffleData<Double> velocityUnitsLog = new ShuffleData<>(this.getName(), "velocity units", 0.0);
+	protected ShuffleData<Double> appliedVoltsLog = new ShuffleData<>(this.getName(), "applied volts", 0.0);
+	protected ShuffleData<Double> currentAmpsLog = new ShuffleData<>(this.getName(), "current amps", 0.0);
+	protected ShuffleData<Double> tempCelciusLog = new ShuffleData<>(this.getName(), "temp celcius", 0.0);
+	public ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>(this.getName(), "input volts", 0.0);
 
-  protected LoggedMechanism2d mechanism2d = new LoggedMechanism2d(60, 60);
-  protected LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
-  protected LoggedMechanismLigament2d armLigament =
-      armRoot.append(new LoggedMechanismLigament2d("Arm", 24, 0));
+	protected LoggedMechanism2d mechanism2d = new LoggedMechanism2d(60, 60);
+	protected LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
+	protected LoggedMechanismLigament2d armLigament = armRoot.append(new LoggedMechanismLigament2d("Arm", 24, 0));
 
-  public Arm() {}
+	public Arm() {
+	}
 
-  // Method to set the voltage for the arm
-  public void setVoltage(double volts) {
-    armIO.setVoltage(volts);
-  }
+	// Method to set the voltage for the arm
+	public void setVoltage(double volts) {
+		armIO.setVoltage(volts);
+	}
 
-  // Method to update arm data
-  protected void updateData() {
-    armIO.updateData(data);
-  }
+	// Method to update arm data
+	protected void updateData() {
+		armIO.updateData(data);
+	}
 
-  public double getPositionRad() {
-    return data.positionUnits;
-  }
+	public double getPositionRad() {
+		return data.positionUnits;
+	}
 
-  public double getVelocityRadPerSec() {
-    return data.velocityUnits;
-  }
+	public double getVelocityRadPerSec() {
+		return data.velocityUnits;
+	}
 
-  public abstract void setState(Enum<?> state);
+	public abstract void setState(Enum<?> state);
 
-  public abstract void stop();
+	public abstract void stop();
 }

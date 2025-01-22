@@ -9,31 +9,31 @@ import frc.robot.subsystems.swerve.GyroIO;
  * @author Noah Simon
  */
 public class PigeonGyro implements GyroIO {
-  private final Pigeon2 pigeonGyro = new Pigeon2(30);
+	private final Pigeon2 pigeonGyro = new Pigeon2(30);
 
-  public PigeonGyro() {
+	public PigeonGyro() {
 
-    try {
-      pigeonGyro.reset();
-    } catch (Exception e) {
-    }
-    ;
-  }
+		try {
+			pigeonGyro.reset();
+		} catch (Exception e) {
+		}
+		;
+	}
 
-  @Override
-  public void updateData(GyroData data) {
-    try {
-      data.yawDeg = pigeonGyro.getYaw().getValueAsDouble();
-      data.pitchDeg = pigeonGyro.getPitch().getValueAsDouble();
-      data.rollDeg = pigeonGyro.getRoll().getValueAsDouble();
+	@Override
+	public void updateData(GyroData data) {
+		try {
+			data.yawDeg = pigeonGyro.getYaw().getValueAsDouble();
+			data.pitchDeg = pigeonGyro.getPitch().getValueAsDouble();
+			data.rollDeg = pigeonGyro.getRoll().getValueAsDouble();
 
-    } catch (Exception e) {
-    }
-    ;
-  }
+		} catch (Exception e) {
+		}
+		;
+	}
 
-  @Override
-  public void resetGyro() {
-    pigeonGyro.reset();
-  }
+	@Override
+	public void resetGyro() {
+		pigeonGyro.reset();
+	}
 }

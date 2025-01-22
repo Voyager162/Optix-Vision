@@ -6,10 +6,10 @@ package frc.robot.subsystems.example;
  * @author Noah Simon
  */
 public class ExampleSubsystemConstants {
-  public static final int motorId = 0;
+	public static final int motorId = 0;
 
-  public enum SubsystemStates {
-    STOP,
-    GO
-  }
+	public enum SubsystemStates {
+		STOP,
+		GO
+	}
 }

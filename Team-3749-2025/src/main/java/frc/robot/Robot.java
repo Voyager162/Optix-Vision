@@ -27,151 +27,154 @@ import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 public class Robot extends LoggedRobot {
-  private Command m_autonomousCommand;
+	private Command m_autonomousCommand;
 
-  public static Swerve swerve = new Swerve();
-  public static ExampleSubsystem subsystem = new ExampleSubsystem();
+	public static Swerve swerve = new Swerve();
+	public static ExampleSubsystem subsystem = new ExampleSubsystem();
 
-  public static AlgaeArm algaeArm = new AlgaeArm();
-  public static CoralArm coralArm = new CoralArm();
-  public static ClimbArm climbArm = new ClimbArm();
-  public static Elevator elevator = new Elevator();
+	public static AlgaeArm algaeArm = new AlgaeArm();
+	public static CoralArm coralArm = new CoralArm();
+	public static ClimbArm climbArm = new ClimbArm();
+	public static Elevator elevator = new Elevator();
 
-  private ShuffleData<Double> batteryVoltageLog =
-      new ShuffleData<Double>("DS", "battery voltage", 0.0);
-  private ShuffleData<Boolean> isBrownedOutLog = new ShuffleData<Boolean>("DS", "brownout", false);
-  private ShuffleData<Double> cpuTempLog = new ShuffleData<Double>("DS", "cpu temp", 0.0);
-  private ShuffleData<Double> CANUtilizationLog =
-      new ShuffleData<Double>("DS", "CAN utilizaition", 0.0);
-  private ShuffleData<String> radioStatusLog =
-      new ShuffleData<String>("DS", "radio status", "kOff");
-  private ShuffleData<String> allianceLog = new ShuffleData<String>("DS", "alliance", "Red");
-  private ShuffleData<Boolean> FMSLog = new ShuffleData<Boolean>("DS", "FMS connected", false);
-  private RobotContainer m_robotContainer;
-  PowerDistribution pdp =
-      new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
+	private ShuffleData<Double> batteryVoltageLog = new ShuffleData<Double>("DS", "battery voltage", 0.0);
+	private ShuffleData<Boolean> isBrownedOutLog = new ShuffleData<Boolean>("DS", "brownout", false);
+	private ShuffleData<Double> cpuTempLog = new ShuffleData<Double>("DS", "cpu temp", 0.0);
+	private ShuffleData<Double> CANUtilizationLog = new ShuffleData<Double>("DS", "CAN utilizaition", 0.0);
+	private ShuffleData<String> radioStatusLog = new ShuffleData<String>("DS", "radio status", "kOff");
+	private ShuffleData<String> allianceLog = new ShuffleData<String>("DS", "alliance", "Red");
+	private ShuffleData<Boolean> FMSLog = new ShuffleData<Boolean>("DS", "FMS connected", false);
+	private RobotContainer m_robotContainer;
+	PowerDistribution pdp = new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
 
-  public Robot() {
-    // Record metadata
-    Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
-    Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
-    Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
-    Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
-    Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
-    switch (BuildConstants.DIRTY) {
-      case 0:
-        Logger.recordMetadata("GitDirty", "All changes committed");
-        break;
-      case 1:
-        Logger.recordMetadata("GitDirty", "Uncomitted changes");
-        break;
-      default:
-        Logger.recordMetadata("GitDirty", "Unknown");
-        break;
-    }
+	public Robot() {
+		// Record metadata
+		Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+		Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
+		Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
+		Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
+		Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
+		switch (BuildConstants.DIRTY) {
+			case 0:
+				Logger.recordMetadata("GitDirty", "All changes committed");
+				break;
+			case 1:
+				Logger.recordMetadata("GitDirty", "Uncomitted changes");
+				break;
+			default:
+				Logger.recordMetadata("GitDirty", "Unknown");
+				break;
+		}
 
-    // Set up data receivers & replay source
-    switch (Constants.currentMode) {
-      case REAL:
-        // Running on a real robot, log to a USB stick ("/U/logs")
-        Logger.addDataReceiver(new WPILOGWriter());
-        Logger.addDataReceiver(new NT4Publisher());
-        break;
+		// Set up data receivers & replay source
+		switch (Constants.currentMode) {
+			case REAL:
+				// Running on a real robot, log to a USB stick ("/U/logs")
+				Logger.addDataReceiver(new WPILOGWriter());
+				Logger.addDataReceiver(new NT4Publisher());
+				break;
 
-      case SIM:
-        // Running a physics simulator, log to NT
-        Logger.addDataReceiver(new WPILOGWriter());
-        Logger.addDataReceiver(new NT4Publisher());
-        break;
+			case SIM:
+				// Running a physics simulator, log to NT
+				Logger.addDataReceiver(new WPILOGWriter());
+				Logger.addDataReceiver(new NT4Publisher());
+				break;
 
-      case REPLAY:
-        // Replaying a log, set up replay source
-        setUseTiming(false); // Run as fast as possible
-        String logPath = LogFileUtil.findReplayLog();
-        Logger.setReplaySource(new WPILOGReader(logPath));
-        Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
-        break;
-    }
+			case REPLAY:
+				// Replaying a log, set up replay source
+				setUseTiming(false); // Run as fast as possible
+				String logPath = LogFileUtil.findReplayLog();
+				Logger.setReplaySource(new WPILOGReader(logPath));
+				Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+				break;
+		}
 
-    // Start AdvantageKit logger
-    Logger.start();
-  }
+		// Start AdvantageKit logger
+		Logger.start();
+	}
 
-  @Override
-  public void robotInit() {
-    m_robotContainer = new RobotContainer();
-  }
+	@Override
+	public void robotInit() {
+		m_robotContainer = new RobotContainer();
+	}
 
-  @Override
-  public void robotPeriodic() {
-    CommandScheduler.getInstance().run();
-    batteryVoltageLog.set(RobotController.getBatteryVoltage());
-    cpuTempLog.set(RobotController.getCPUTemp());
-    CANUtilizationLog.set(RobotController.getCANStatus().percentBusUtilization);
-    radioStatusLog.set(RobotController.getRadioLEDState().name());
-    isBrownedOutLog.set(RobotController.isBrownedOut());
-    allianceLog.set(
-        DriverStation.getAlliance().isPresent()
-            ? DriverStation.getAlliance().get().name()
-            : "None");
-    FMSLog.set(DriverStation.isFMSAttached());
-  }
+	@Override
+	public void robotPeriodic() {
+		CommandScheduler.getInstance().run();
+		batteryVoltageLog.set(RobotController.getBatteryVoltage());
+		cpuTempLog.set(RobotController.getCPUTemp());
+		CANUtilizationLog.set(RobotController.getCANStatus().percentBusUtilization);
+		radioStatusLog.set(RobotController.getRadioLEDState().name());
+		isBrownedOutLog.set(RobotController.isBrownedOut());
+		allianceLog.set(
+				DriverStation.getAlliance().isPresent()
+						? DriverStation.getAlliance().get().name()
+						: "None");
+		FMSLog.set(DriverStation.isFMSAttached());
+	}
 
-  @Override
-  public void disabledInit() {
-    swerve.setBreakMode(false);
-  }
+	@Override
+	public void disabledInit() {
+		swerve.setBreakMode(false);
+	}
 
-  @Override
-  public void disabledPeriodic() {}
+	@Override
+	public void disabledPeriodic() {
+	}
 
-  @Override
-  public void disabledExit() {
-    swerve.setBreakMode(true);
-    pdp.close();
-  }
+	@Override
+	public void disabledExit() {
+		swerve.setBreakMode(true);
+		pdp.close();
+	}
 
-  @Override
-  public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+	@Override
+	public void autonomousInit() {
+		m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
-  }
+		if (m_autonomousCommand != null) {
+			m_autonomousCommand.schedule();
+		}
+	}
 
-  @Override
-  public void autonomousPeriodic() {}
+	@Override
+	public void autonomousPeriodic() {
+	}
 
-  @Override
-  public void autonomousExit() {}
+	@Override
+	public void autonomousExit() {
+	}
 
-  @Override
-  public void teleopInit() {
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
-  }
+	@Override
+	public void teleopInit() {
+		if (m_autonomousCommand != null) {
+			m_autonomousCommand.cancel();
+		}
+	}
 
-  @Override
-  public void teleopPeriodic() {}
+	@Override
+	public void teleopPeriodic() {
+	}
 
-  @Override
-  public void teleopExit() {}
+	@Override
+	public void teleopExit() {
+	}
 
-  @Override
-  public void testInit() {
-    CommandScheduler.getInstance().cancelAll();
-  }
+	@Override
+	public void testInit() {
+		CommandScheduler.getInstance().cancelAll();
+	}
 
-  @Override
-  public void testPeriodic() {}
+	@Override
+	public void testPeriodic() {
+	}
 
-  @Override
-  public void testExit() {}
+	@Override
+	public void testExit() {
+	}
 
-  @Override
-  public void simulationInit() {
-    DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
-  }
+	@Override
+	public void simulationInit() {
+		DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
+	}
 }

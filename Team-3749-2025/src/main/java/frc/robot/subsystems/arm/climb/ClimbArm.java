@@ -19,147 +19,143 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
  */
 public class ClimbArm extends Arm {
 
-  private ClimbConstants.ArmStates state = ClimbConstants.ArmStates.STOPPED;
+	private ClimbConstants.ArmStates state = ClimbConstants.ArmStates.STOPPED;
 
-  private PIDController controller =
-      new PIDController(ClimbConstants.kP, ClimbConstants.kI, ClimbConstants.kD);
+	private PIDController controller = new PIDController(ClimbConstants.kP, ClimbConstants.kI, ClimbConstants.kD);
 
-  private ShuffleData<String> stateLog =
-      new ShuffleData<String>(this.getName(), "state", state.name());
+	private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
-  private LoggedMechanism2d mechanism2d = new LoggedMechanism2d(60, 60);
-  private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
-  private LoggedMechanismLigament2d armLigament =
-      armRoot.append(new LoggedMechanismLigament2d("Climb Arm", 24, 0));
+	private LoggedMechanism2d mechanism2d = new LoggedMechanism2d(60, 60);
+	private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
+	private LoggedMechanismLigament2d armLigament = armRoot.append(new LoggedMechanismLigament2d("Climb Arm", 24, 0));
 
-  public ClimbArm() {
-    if (Robot.isSimulation()) {
+	public ClimbArm() {
+		if (Robot.isSimulation()) {
 
-      armIO =
-          new ArmSim(
-              ClimbConstants.numMotors,
-              ClimbConstants.armGearing,
-              ClimbConstants.momentOfInertia,
-              ClimbConstants.armLength_meters,
-              ClimbConstants.armMinAngle_degrees,
-              ClimbConstants.armMaxAngle_degrees,
-              ClimbConstants.simulateGravity,
-              ClimbConstants.armStartingAngle_degrees);
+			armIO = new ArmSim(
+					ClimbConstants.numMotors,
+					ClimbConstants.armGearing,
+					ClimbConstants.momentOfInertia,
+					ClimbConstants.armLength_meters,
+					ClimbConstants.armMinAngle_degrees,
+					ClimbConstants.armMaxAngle_degrees,
+					ClimbConstants.simulateGravity,
+					ClimbConstants.armStartingAngle_degrees);
 
-    } else {
-      armIO = new ClimbSparkMax(ClimbConstants.firstMotorId, ClimbConstants.secondMotorId);
-    }
-    SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
-  }
+		} else {
+			armIO = new ClimbSparkMax(ClimbConstants.firstMotorId, ClimbConstants.secondMotorId);
+		}
+		SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
+	}
 
-  /**
-   * @return the current arm state.
-   */
-  public ClimbConstants.ArmStates getState() {
-    return state;
-  }
+	/**
+	 * @return the current arm state.
+	 */
+	public ClimbConstants.ArmStates getState() {
+		return state;
+	}
 
-  @Override
-  public void stop() {
-    setState(ClimbConstants.ArmStates.STOPPED);
-  }
+	@Override
+	public void stop() {
+		setState(ClimbConstants.ArmStates.STOPPED);
+	}
 
-  /**
-   * @return whether the arm is in a stable state.
-   */
-  public boolean getIsStableState() {
+	/**
+	 * @return whether the arm is in a stable state.
+	 */
+	public boolean getIsStableState() {
 
-    switch (state) {
-      case STOWED:
-        return data.positionUnits == ClimbConstants.stowSetPoint_rad;
-      case PREPARE_FOR_CLIMB:
-        return data.positionUnits == ClimbConstants.PrepareForClimbSetPoint_rad;
-      case CLIMB:
-        return data.positionUnits == ClimbConstants.climbSetPoint_rad;
-      case MOVING_DOWN:
-        return data.velocityUnits < 0;
-      case MOVING_UP:
-        return data.velocityUnits > 0;
-      case STOPPED:
-        return UtilityFunctions.withinMargin(0.001, 0, data.velocityUnits);
-      default:
-        return false;
-    }
-  }
+		switch (state) {
+			case STOWED:
+				return data.positionUnits == ClimbConstants.stowSetPoint_rad;
+			case PREPARE_FOR_CLIMB:
+				return data.positionUnits == ClimbConstants.PrepareForClimbSetPoint_rad;
+			case CLIMB:
+				return data.positionUnits == ClimbConstants.climbSetPoint_rad;
+			case MOVING_DOWN:
+				return data.velocityUnits < 0;
+			case MOVING_UP:
+				return data.velocityUnits > 0;
+			case STOPPED:
+				return UtilityFunctions.withinMargin(0.001, 0, data.velocityUnits);
+			default:
+				return false;
+		}
+	}
 
-  /**
-   * Sets the current state of the arm.
-   *
-   * @param state The new state for the arm.
-   */
-  @Override
-  public void setState(Enum<?> state) {
-    this.state = (ClimbConstants.ArmStates) state;
-  }
+	/**
+	 * Sets the current state of the arm.
+	 *
+	 * @param state The new state for the arm.
+	 */
+	@Override
+	public void setState(Enum<?> state) {
+		this.state = (ClimbConstants.ArmStates) state;
+	}
 
-  /** Runs the logic for the current arm state. */
-  private void runState() {
-    switch (state) {
-      case STOWED:
-        setVoltage(
-            controller.calculate(data.positionUnits, ClimbConstants.stowSetPoint_rad)
-                + calculateFeedForward());
-        break;
-      case PREPARE_FOR_CLIMB:
-        setVoltage(
-            controller.calculate(data.positionUnits, ClimbConstants.PrepareForClimbSetPoint_rad)
-                + calculateFeedForward());
-        break;
-      case CLIMB:
-        setVoltage(
-            controller.calculate(data.positionUnits, ClimbConstants.climbSetPoint_rad)
-                + calculateFeedForward());
-        break;
-      case STOPPED:
-        setVoltage(0 + calculateFeedForward());
-        break;
-      case MOVING_DOWN:
-        setVoltage(-1 + calculateFeedForward());
-        break;
-      case MOVING_UP:
-        setVoltage(1 + calculateFeedForward());
-        break;
-      default:
-        break;
-    }
-  }
+	/** Runs the logic for the current arm state. */
+	private void runState() {
+		switch (state) {
+			case STOWED:
+				setVoltage(
+						controller.calculate(data.positionUnits, ClimbConstants.stowSetPoint_rad)
+								+ calculateFeedForward());
+				break;
+			case PREPARE_FOR_CLIMB:
+				setVoltage(
+						controller.calculate(data.positionUnits, ClimbConstants.PrepareForClimbSetPoint_rad)
+								+ calculateFeedForward());
+				break;
+			case CLIMB:
+				setVoltage(
+						controller.calculate(data.positionUnits, ClimbConstants.climbSetPoint_rad)
+								+ calculateFeedForward());
+				break;
+			case STOPPED:
+				setVoltage(0 + calculateFeedForward());
+				break;
+			case MOVING_DOWN:
+				setVoltage(-1 + calculateFeedForward());
+				break;
+			case MOVING_UP:
+				setVoltage(1 + calculateFeedForward());
+				break;
+			default:
+				break;
+		}
+	}
 
-  /** Logs data to Shuffleboard. */
-  private void logData() {
-    currentCommandLog.set(
-        this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-    positionUnitsLog.set(data.positionUnits);
-    velocityUnitsLog.set(data.velocityUnits);
-    inputVoltsLog.set(data.inputVolts);
-    appliedVoltsLog.set(data.appliedVolts);
-    currentAmpsLog.set(data.currentAmps);
-    tempCelciusLog.set(data.tempCelcius);
+	/** Logs data to Shuffleboard. */
+	private void logData() {
+		currentCommandLog.set(
+				this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
+		positionUnitsLog.set(data.positionUnits);
+		velocityUnitsLog.set(data.velocityUnits);
+		inputVoltsLog.set(data.inputVolts);
+		appliedVoltsLog.set(data.appliedVolts);
+		currentAmpsLog.set(data.currentAmps);
+		tempCelciusLog.set(data.tempCelcius);
 
-    armLigament.setAngle(Math.toDegrees(data.positionUnits));
+		armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
-    stateLog.set(state.name());
+		stateLog.set(state.name());
 
-    Logger.recordOutput(this.getName(), mechanism2d);
-  }
+		Logger.recordOutput(this.getName(), mechanism2d);
+	}
 
-  private double calculateFeedForward() {
-    double feedForward = ClimbConstants.kG * Math.cos(data.positionUnits);
-    return feedForward;
-  }
+	private double calculateFeedForward() {
+		double feedForward = ClimbConstants.kG * Math.cos(data.positionUnits);
+		return feedForward;
+	}
 
-  /** Periodic method for updating arm behavior. */
-  @Override
-  public void periodic() {
+	/** Periodic method for updating arm behavior. */
+	@Override
+	public void periodic() {
 
-    armIO.updateData(data);
+		armIO.updateData(data);
 
-    logData();
+		logData();
 
-    runState();
-  }
+		runState();
+	}
 }
