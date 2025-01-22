@@ -16,6 +16,7 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.arm.algae.AlgaeArm;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
+import frc.robot.subsystems.chute.Chute;
 import frc.robot.subsystems.elevator.Elevator;
 
 import frc.robot.subsystems.example.ExampleSubsystem;
@@ -33,6 +34,7 @@ public class Robot extends TimedRobot {
   public static Roller algaeRoller = new AlgaeRoller();
   public static Roller coralRoller = new CoralRoller();
   public static Roller scoringRoller = new ScoringRoller();
+  public static Roller[] rollers = {algaeRoller, coralRoller, scoringRoller};
   
   public static ExampleSubsystem subsystem = new ExampleSubsystem();
   public static Elevator elevator = new Elevator();
@@ -40,6 +42,8 @@ public class Robot extends TimedRobot {
   public static AlgaeArm algaeArm = new AlgaeArm();
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
+
+  public static Chute chute = new Chute();
 
   private ShuffleData<Double> batteryVoltageLog = new ShuffleData<Double>("DS", "battery voltage", 0.0);
   private ShuffleData<Boolean> isBrownedOutLog = new ShuffleData<Boolean>("DS", "brownout", false);

@@ -9,15 +9,11 @@ import frc.robot.subsystems.arm.coral.CoralConstants;
 import frc.robot.subsystems.roller.Roller;
 
 public class OuttakeCoral extends Command {
-    private final Chute chute;
     private final CoralArm coralArm;
     private final Roller[] rollers;
-    private final Elevator elevator;
 
-    public OuttakeCoral(Chute chute, CoralArm coralArm, Elevator elevator, Roller[] rollers) {
-        this.chute = chute;
+    public OuttakeCoral(CoralArm coralArm, Roller[] rollers) {
         this.coralArm = coralArm;
-        this.elevator = elevator;
         this.rollers = rollers;
     }
 
