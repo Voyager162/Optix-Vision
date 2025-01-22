@@ -1,7 +1,6 @@
 package frc.robot.commands.swerve;
 
 import java.io.IOException;
-import java.time.Year;
 
 import org.json.simple.parser.ParseException;
 
@@ -26,9 +25,8 @@ public class OnTheFly extends Command {
     private PathPlannerTrajectory trajectory;
     private final Timer timer = new Timer();
     private final PPHolonomicDriveController SwerveController = new PPHolonomicDriveController(
-        new PIDConstants(AutoConstants.kPDrive, 0, AutoConstants.kDDrive),
-        new PIDConstants(AutoConstants.kPTurn, 0, AutoConstants.kDTurn)
-    );
+            new PIDConstants(AutoConstants.kPDrive, 0, AutoConstants.kDDrive),
+            new PIDConstants(AutoConstants.kPTurn, 0, AutoConstants.kDTurn));
 
     public OnTheFly() {
     }
@@ -39,13 +37,13 @@ public class OnTheFly extends Command {
         timer.start();
 
         PathPlannerPath path = ToPos.generateDynamicPath(
-            Robot.swerve.getPose(),
-            Robot.swerve.getPPSetpoint(),
-            Robot.swerve.getMaxDriveSpeed(),
-            SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
-            Robot.swerve.getMaxAngularSpeed(),
-            SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared
-        );
+                Robot.swerve.getPose(),
+                Robot.swerve.getPPSetpoint(),
+                Robot.swerve.getPPSetpoint(),
+                Robot.swerve.getMaxDriveSpeed(),
+                SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
+                Robot.swerve.getMaxAngularSpeed(),
+                SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared);
 
         if (path == null) {
             System.out.println("Error: Failed to generate path. Ending OnTheFly command.");
@@ -56,10 +54,9 @@ public class OnTheFly extends Command {
 
         try {
             trajectory = path.generateTrajectory(
-                Robot.swerve.getChassisSpeeds(),
-                safeRotation(Robot.swerve.getRotation2d()),
-                RobotConfig.fromGUISettings()
-            );
+                    Robot.swerve.getChassisSpeeds(),
+                    safeRotation(Robot.swerve.getRotation2d()),
+                    RobotConfig.fromGUISettings());
         } catch (IOException | ParseException e) {
             e.printStackTrace();
             Robot.swerve.isOTF = false;
@@ -101,13 +98,15 @@ public class OnTheFly extends Command {
         boolean trajectoryComplete = timer.get() >= trajectory.getTotalTimeSeconds();
 
         if (trajectoryComplete) {
+
             double positionTolerance = 0.002; // meters
             double rotationTolerance = 2.0; // degrees
-            //harik be like oooh i love doing position math that bricked our codebase
-            //My Honest, Genuine, Unadulterated Built in Method Reaction
+            // harik be like oooh i love doing position math that bricked our codebase
+            // My Honest, Genuine, Unadulterated Built in Method Reaction
             double xError = trajectory.getEndState().pose.relativeTo(Robot.swerve.getPose()).getX();
             double yError = trajectory.getEndState().pose.relativeTo(Robot.swerve.getPose()).getY();
-            double thetaError = trajectory.getEndState().pose.relativeTo(Robot.swerve.getPose()).getRotation().getDegrees();
+            double thetaError = trajectory.getEndState().pose.relativeTo(Robot.swerve.getPose()).getRotation()
+                    .getDegrees();
             return xError < positionTolerance && yError < positionTolerance && thetaError < rotationTolerance;
         }
 
@@ -115,7 +114,8 @@ public class OnTheFly extends Command {
     }
 
     /**
-     * Ensures safe initialization of Rotation2d. Falls back to a default rotation if invalid.
+     * Ensures safe initialization of Rotation2d. Falls back to a default rotation
+     * if invalid.
      */
     private Rotation2d safeRotation(Rotation2d rotation) {
         if (Math.abs(rotation.getCos()) < 1e-6 && Math.abs(rotation.getSin()) < 1e-6) {
