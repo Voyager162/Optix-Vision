@@ -107,8 +107,9 @@ public class Elevator extends SubsystemBase {
             case L4:
                 return UtilityFunctions.withinMargin(0.01, data.positionMeters,
                         ElevatorConstants.StateHeights.l4Height);
-            case STOW:
-                return UtilityFunctions.withinMargin(0.01, data.positionMeters, ElevatorConstants.ElevatorSpecs.baseHeight);
+            case SOURCE:
+            return UtilityFunctions.withinMargin(0.01, data.positionMeters,
+                    ElevatorConstants.StateHeights.sourceHeight);
             default:
                 return false;
         }
@@ -135,6 +136,9 @@ public class Elevator extends SubsystemBase {
                 break;
             case L4:
                 setGoal(ElevatorConstants.StateHeights.l4Height);
+                break;
+            case SOURCE:
+                setGoal(ElevatorConstants.StateHeights.sourceHeight);
                 break;
             case MAX:
                 setGoal(6);
@@ -176,7 +180,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void stop() {
-        elevatorio.setVoltage(0);
+        elevatorio.setVoltage(ElevatorConstants.ElevatorControl.kGSim);
     }
 
     private void logData() {

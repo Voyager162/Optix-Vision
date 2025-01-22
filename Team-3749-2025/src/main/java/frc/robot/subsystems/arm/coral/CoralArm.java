@@ -130,6 +130,10 @@ public class CoralArm extends Arm {
         }
     }
 
+    public boolean hasPiece(){
+        return true;
+    }
+
     /**
      * Logs data to Shuffleboard.
      */
