@@ -146,6 +146,7 @@ public class CoralArm extends Arm {
 		stateLog.set(state.name());
 
 		Logger.recordOutput(this.getName(), mechanism2d);
+		Logger.recordOutput("coral arm position", data.positionUnits);
 	}
 
 	private double calculateFeedForward() {
