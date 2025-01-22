@@ -45,7 +45,7 @@ public class ToPosConstants {
                 break;
 
                 default:
-                System.out.println("how did you even manage to do this");
+                System.out.println("did not specify trig direction");
                 break;
             }
     
@@ -87,7 +87,8 @@ public class ToPosConstants {
         public static final Pose2d[] ppSetpoints = new Pose2d[] { 
             ToPosConstants.Setpoints.coralBottom,
             ToPosConstants.Setpoints.coralTop,
-            ToPosConstants.Setpoints.processor, //index 2
+            ToPosConstants.Setpoints.processor, //index 2, and if you add or remove any setpoints, this will break on the fly,
+            //read on the fly command for context
             ToPosConstants.Setpoints.reef17L,
             ToPosConstants.Setpoints.reef17R,
             ToPosConstants.Setpoints.reef18L,

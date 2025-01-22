@@ -41,7 +41,6 @@ public class OnTheFly extends Command {
         if(Robot.swerve.currentPPSetpointIndex > 2 && !Robot.swerve.needsToCloseIn)
         {
             isAReefSetpoint = true;
-            System.out.println("it's a reef");
         }
 
         if(Robot.swerve.needsToCloseIn)
