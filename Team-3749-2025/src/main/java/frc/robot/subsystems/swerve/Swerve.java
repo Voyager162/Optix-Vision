@@ -492,7 +492,6 @@ public class Swerve extends SubsystemBase {
     pitchLog.set(gyroData.pitchDeg);
     rollLog.set(gyroData.rollDeg);
     gyroConnectedLog.set(gyroData.isConnected);
-    gyroCalibratingLog.set(gyroData.isCalibrating);
     headingLog.set(getRotation2d().getDegrees());
 
     // velocity and acceleration logging
