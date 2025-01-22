@@ -29,6 +29,7 @@ public class ScoreL4 extends Command {
     public void initialize() {
         if (chute.hasPiece()) {
             coralArm.setState(CoralConstants.ArmStates.CORAL_PICKUP);
+            elevator.setState(ElevatorStates.STOP); // not sure what stow is, maybe should be maintain?
             for (Roller roller: rollers) {
                 roller.setState(RollerConstants.RollerStates.MAINTAIN); 
             }
