@@ -99,7 +99,7 @@ public class Elevator extends SubsystemBase {
                 return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.l1Height,
                         data.positionMeters);
             case L2:
-                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
+                return UtilityFunctions.withinMargin(0.5, data.positionMeters,
                         ElevatorConstants.StateHeights.l2Height);
             case L3:
                 return UtilityFunctions.withinMargin(0.01, data.positionMeters,
@@ -107,6 +107,8 @@ public class Elevator extends SubsystemBase {
             case L4:
                 return UtilityFunctions.withinMargin(0.01, data.positionMeters,
                         ElevatorConstants.StateHeights.l4Height);
+            case STOW:
+                return UtilityFunctions.withinMargin(0.01, data.positionMeters, ElevatorConstants.ElevatorSpecs.baseHeight);
             default:
                 return false;
         }
@@ -198,7 +200,6 @@ public class Elevator extends SubsystemBase {
     @Override
     public void periodic() {
         elevatorio.updateData(data);
-
         runState();
         logData();
         // pidController.setPID(kPData.get(),0,kDData.get())
