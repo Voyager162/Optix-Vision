@@ -62,10 +62,6 @@
     "edu.wpi.first.math.**.proto.*",
     "edu.wpi.first.math.**.struct.*"
   ],
-  "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle",
-  "[json]": {
-    "editor.defaultFormatter": "richardwillis.vscode-spotless-gradle"
-  },
   "[java]": {
     "editor.defaultFormatter": "redhat.java"
   }
