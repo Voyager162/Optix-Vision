@@ -48,6 +48,7 @@ public class CoralConstants {
         CORAL_PICKUP,
         HAND_OFF,
         STOWED,
-        STOPPED
+        STOPPED,
+        L1
     }
 }
