@@ -13,149 +13,177 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 /**
- * Subsystem class for the arm
- *
- * @author Weston Gardner
+ * Subsystem class for controlling the climbing arm.
+ * Handles the arm's states and manages control over the arm motors.
  */
 public class ClimbArm extends Arm {
 
-	private ClimbConstants.ArmStates state = ClimbConstants.ArmStates.STOPPED;
+  // Current state of the arm (e.g., moving up, moving down, stopped, etc.)
+  private ClimbConstants.ArmStates state = ClimbConstants.ArmStates.STOPPED;
 
-	private PIDController controller = new PIDController(ClimbConstants.kP, ClimbConstants.kI, ClimbConstants.kD);
+  // PID controller for arm movement
+  private PIDController controller =
+      new PIDController(ClimbConstants.kP, ClimbConstants.kI, ClimbConstants.kD);
 
-	private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
+  // Shuffleboard data for state logging
+  private ShuffleData<String> stateLog =
+      new ShuffleData<String>(this.getName(), "state", state.name());
 
-	private LoggedMechanism2d mechanism2d = new LoggedMechanism2d(60, 60);
-	private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
-	private LoggedMechanismLigament2d armLigament = armRoot.append(new LoggedMechanismLigament2d("Climb Arm", 24, 0));
+  // Mechanism visualization for logging the arm's position on Shuffleboard
+  private LoggedMechanism2d mechanism2d = new LoggedMechanism2d(60, 60);
+  private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
+  private LoggedMechanismLigament2d armLigament =
+      armRoot.append(new LoggedMechanismLigament2d("Climb Arm", 24, 0));
 
-	public ClimbArm() {
-		if (Robot.isSimulation()) {
+  // Constructor to initialize arm's hardware or simulation
+  public ClimbArm() {
+    if (Robot.isSimulation()) {
+      armIO =
+          new ArmSim(
+              ClimbConstants.numMotors,
+              ClimbConstants.armGearing,
+              ClimbConstants.momentOfInertia,
+              ClimbConstants.armLength_meters,
+              ClimbConstants.armMinAngle_degrees,
+              ClimbConstants.armMaxAngle_degrees,
+              ClimbConstants.simulateGravity,
+              ClimbConstants.armStartingAngle_degrees);
+    } else {
+      armIO = new ClimbSparkMax(ClimbConstants.firstMotorId, ClimbConstants.secondMotorId);
+    }
+    SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
+  }
 
-			armIO = new ArmSim(
-					ClimbConstants.numMotors,
-					ClimbConstants.armGearing,
-					ClimbConstants.momentOfInertia,
-					ClimbConstants.armLength_meters,
-					ClimbConstants.armMinAngle_degrees,
-					ClimbConstants.armMaxAngle_degrees,
-					ClimbConstants.simulateGravity,
-					ClimbConstants.armStartingAngle_degrees);
+  /**
+   * @return the current arm state.
+   */
+  public ClimbConstants.ArmStates getState() {
+    return state;
+  }
 
-		} else {
-			armIO = new ClimbSparkMax(ClimbConstants.firstMotorId, ClimbConstants.secondMotorId);
-		}
-		SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
-	}
+  @Override
+  public void stop() {
+    setState(ClimbConstants.ArmStates.STOPPED);
+  }
 
-	/**
-	 * @return the current arm state.
-	 */
-	public ClimbConstants.ArmStates getState() {
-		return state;
-	}
+  /**
+   * @return whether the arm is in a stable state.
+   */
+  public boolean getIsStableState() {
+    switch (state) {
+      case STOWED:
+        return data.positionUnits == ClimbConstants.stowSetPoint_rad;
+      case PREPARE_FOR_CLIMB:
+        return data.positionUnits == ClimbConstants.PrepareForClimbSetPoint_rad;
+      case CLIMB:
+        return data.positionUnits == ClimbConstants.climbSetPoint_rad;
+      case MOVING_DOWN:
+        return data.velocityUnits < 0;
+      case MOVING_UP:
+        return data.velocityUnits > 0;
+      case STOPPED:
+        return UtilityFunctions.withinMargin(0.001, 0, data.velocityUnits);
+      default:
+        return false;
+    }
+  }
 
-	@Override
-	public void stop() {
-		setState(ClimbConstants.ArmStates.STOPPED);
-	}
+  /**
+   * Sets the current state of the arm.
+   *
+   * @param state The new state for the arm.
+   */
+  @Override
+  public void setState(Enum<?> state) {
+    this.state = (ClimbConstants.ArmStates) state;
+  }
 
-	/**
-	 * @return whether the arm is in a stable state.
-	 */
-	public boolean getIsStableState() {
+  /** Runs the logic for the current arm state. */
+  private void runState() {
+    switch (state) {
+      case STOWED:
+        setVoltage(
+            controller.calculate(data.positionUnits, ClimbConstants.stowSetPoint_rad)
+                + calculateFeedForward());
+        break;
+      case PREPARE_FOR_CLIMB:
+        setVoltage(
+            controller.calculate(data.positionUnits, ClimbConstants.PrepareForClimbSetPoint_rad)
+                + calculateFeedForward());
+        break;
+      case CLIMB:
+        setVoltage(
+            controller.calculate(data.positionUnits, ClimbConstants.climbSetPoint_rad)
+                + calculateFeedForward());
+        break;
+      case STOPPED:
+        setVoltage(0 + calculateFeedForward());
+        break;
+      case MOVING_DOWN:
+        setVoltage(-1 + calculateFeedForward());
+        break;
+      case MOVING_UP:
+        setVoltage(1 + calculateFeedForward());
+        break;
+      default:
+        break;
+    }
+  }
 
-		switch (state) {
-			case STOWED:
-				return data.positionUnits == ClimbConstants.stowSetPoint_rad;
-			case PREPARE_FOR_CLIMB:
-				return data.positionUnits == ClimbConstants.PrepareForClimbSetPoint_rad;
-			case CLIMB:
-				return data.positionUnits == ClimbConstants.climbSetPoint_rad;
-			case MOVING_DOWN:
-				return data.velocityUnits < 0;
-			case MOVING_UP:
-				return data.velocityUnits > 0;
-			case STOPPED:
-				return UtilityFunctions.withinMargin(0.001, 0, data.velocityUnits);
-			default:
-				return false;
-		}
-	}
+  /** Logs data to Shuffleboard. */
+  private void logData() {
+    currentCommandLog.set(
+        this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
+    positionUnitsLog.set(data.positionUnits);
+    velocityUnitsLog.set(data.velocityUnits);
+    inputVoltsLog.set(data.inputVolts);
+    appliedVoltsLog.set(data.appliedVolts);
+    currentAmpsLog.set(data.currentAmps);
+    tempCelciusLog.set(data.tempCelcius);
 
-	/**
-	 * Sets the current state of the arm.
-	 *
-	 * @param state The new state for the arm.
-	 */
-	@Override
-	public void setState(Enum<?> state) {
-		this.state = (ClimbConstants.ArmStates) state;
-	}
+    armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
-	/** Runs the logic for the current arm state. */
-	private void runState() {
-		switch (state) {
-			case STOWED:
-				setVoltage(
-						controller.calculate(data.positionUnits, ClimbConstants.stowSetPoint_rad)
-								+ calculateFeedForward());
-				break;
-			case PREPARE_FOR_CLIMB:
-				setVoltage(
-						controller.calculate(data.positionUnits, ClimbConstants.PrepareForClimbSetPoint_rad)
-								+ calculateFeedForward());
-				break;
-			case CLIMB:
-				setVoltage(
-						controller.calculate(data.positionUnits, ClimbConstants.climbSetPoint_rad)
-								+ calculateFeedForward());
-				break;
-			case STOPPED:
-				setVoltage(0 + calculateFeedForward());
-				break;
-			case MOVING_DOWN:
-				setVoltage(-1 + calculateFeedForward());
-				break;
-			case MOVING_UP:
-				setVoltage(1 + calculateFeedForward());
-				break;
-			default:
-				break;
-		}
-	}
+    stateLog.set(state.name());
 
-	/** Logs data to Shuffleboard. */
-	private void logData() {
-		currentCommandLog.set(
-				this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-		positionUnitsLog.set(data.positionUnits);
-		velocityUnitsLog.set(data.velocityUnits);
-		inputVoltsLog.set(data.inputVolts);
-		appliedVoltsLog.set(data.appliedVolts);
-		currentAmpsLog.set(data.currentAmps);
-		tempCelciusLog.set(data.tempCelcius);
+    Logger.recordOutput(this.getName(), mechanism2d);
+  }
 
-		armLigament.setAngle(Math.toDegrees(data.positionUnits));
+  private double calculateFeedForward() {
+    // Calculate feedforward based on the arm's position
+    double feedForward = ClimbConstants.kG * Math.cos(data.positionUnits);
+    return feedForward;
+  }
 
-		stateLog.set(state.name());
+  /** Periodic method for updating arm behavior. */
+  @Override
+  public void periodic() {
+    // Update data from the arm I/O (motor controllers or simulator)
+    armIO.updateData(data);
 
-		Logger.recordOutput(this.getName(), mechanism2d);
-	}
+    // Log current data to Shuffleboard
+    logData();
 
-	private double calculateFeedForward() {
-		double feedForward = ClimbConstants.kG * Math.cos(data.positionUnits);
-		return feedForward;
-	}
+    // Run the current state logic
+    runState();
+  }
 
-	/** Periodic method for updating arm behavior. */
-	@Override
-	public void periodic() {
+  /**
+   * Move the arm to the setpoint using the PID controller and feedforward.
+   * combines PID control and feedforward to move the arm to desired position.
+   */
+  private void moveToGoal() {
+    // Get setpoint from the PID controller 
+    double setpoint = controller.getSetpoint();
 
-		armIO.updateData(data);
+    // Calculate PID voltage based on the current position
+    double pidVoltage = controller.calculate(getPositionMeters());
 
-		logData();
+    // Calculate feedforward voltage
+    double ffVoltage = calculateFeedForward();
 
-		runState();
-	}
+    // Set the voltage for the arm motor (combine PID and feedforward)
+    armIO.setVoltage(pidVoltage + ffVoltage);
+  }
 }
+
+
