@@ -195,6 +195,63 @@ public class Autos {
                 AutoUtils.startRoutine(routine, "Start-L5", trajectory1));
     }
 
+    public static Command get3PieceandAlgae() {
+        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("3-Piece-and-Algae");
+
+        // loop.trajectory, or the new name
+        AutoTrajectory trajectory1 = routine.trajectory("Start-L5");
+        AutoTrajectory trajectory2 = routine.trajectory("L5-Station");
+        AutoTrajectory trajectory3 = routine.trajectory("Station-L4");
+        AutoTrajectory trajectory4 = routine.trajectory("L4-Station");
+        AutoTrajectory trajectory5 = routine.trajectory("Station-L3");
+        AutoTrajectory trajectory6 = routine.trajectory("L3-Algae");
+      
+        AutoUtils.addScoreL4(trajectory1);
+        AutoUtils.addIntake(trajectory2);
+        AutoUtils.addScoreL4(trajectory3);
+        AutoUtils.addIntake(trajectory4);
+        AutoUtils.addScoreL4(trajectory5);
+        AutoUtils.addAlgaeIntake(trajectory6);
+
+        // reverse order here (connect 3 to 2, THEN 2 to 1)
+        AutoUtils.goNextAfterIntake(trajectory5, trajectory6);
+        AutoUtils.goNextAfterIntake(trajectory4, trajectory5);
+        AutoUtils.goNextAfterIntake(trajectory3, trajectory4);
+        AutoUtils.goNextAfterIntake(trajectory2, trajectory3);
+        AutoUtils.goNextAfterScored(trajectory1, trajectory2);
+
+        return Commands.print("3 Piece and Algae!").andThen(
+                AutoUtils.startRoutine(routine, "Start-L5", trajectory1));
+    }
+    
+    public static Command get2AlgaeAndKnock() {
+        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("2-Algae-and-Knock");
+
+        // loop.trajectory, or the new name
+        AutoTrajectory trajectory1 = routine.trajectory("Start-L4");
+        AutoTrajectory trajectory2 = routine.trajectory("L4-Algae");
+        // AutoTrajectory trajectory3 = routine.trajectory("Algae1-Processor");
+        // AutoTrajectory trajectory4 = routine.trajectory("Processor-Algae3");
+        // AutoTrajectory trajectory5 = routine.trajectory("Algae3-L1");
+      
+        AutoUtils.addScoreL4(trajectory1);
+        AutoUtils.addAlgaeIntake(trajectory2);
+        // AutoUtils.addScoreAlgae(trajectory3);
+        // AutoUtils.addAlgaeIntake(trajectory4);
+        // AutoUtils.addScoreL4(trajectory5);
+
+        // reverse order here (connect 3 to 2, THEN 2 to 1)      
+        // AutoUtils.goNextAfterIntake(trajectory4, trajectory5);
+        // AutoUtils.goNextAfterIntake(trajectory3, trajectory4);
+        // AutoUtils.goNextAfterIntake(trajectory2, trajectory3);
+        AutoUtils.goNextAfterScored(trajectory1, trajectory2);
+
+        return Commands.print("2-Algae-and-Knock").andThen(
+                AutoUtils.startRoutine(routine, "Start-L4", trajectory1));
+    }
+    
+
+
     
 
 }

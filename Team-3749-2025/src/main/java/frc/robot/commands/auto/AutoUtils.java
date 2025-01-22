@@ -114,6 +114,9 @@ public class AutoUtils {
         chooser.addCmd("One Piece Center", () -> Autos.getOnePieceCenter());
         chooser.addCmd("Taxi", () -> Autos.getTaxi());
         chooser.addCmd("Team Taxi", () -> Autos.getTeamtaxi());
+        chooser.addCmd("3 Piece and Algae", () -> Autos.get3PieceandAlgae());
+        chooser.addCmd("2 Algae and Knock", () -> Autos.get2AlgaeAndKnock());
+
         // Default
         chooser.select("Straight");
 
@@ -193,15 +196,39 @@ public class AutoUtils {
 
     }
 
+    public static void addAlgaeIntake(AutoTrajectory trajectory) {
+        Pose2d endingPose2d = getFinalPose2d(trajectory);
+        // unflip the alliance so that atPose can flip it; it's a quirk of referencing the trajectory
+        if (DriverStation.getAlliance().get() == Alliance.Red){
+            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
+        }
+
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(Commands.print("Intaking"));
+
+
+    }
+
+    public static void addScoreAlgae(AutoTrajectory trajectory) {
+        Pose2d endingPose2d = getFinalPose2d(trajectory);
+        // unflip the alliance so that atPose can flip it; it's a quirk of referencing the trajectory
+        if (DriverStation.getAlliance().get() == Alliance.Red){
+            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
+        }
+
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(Commands.print("Intaking"));
+
+
+    }
+
     public static void goNextAfterScored(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory) {
         curTrajectory.done().and(() -> true)
-                .onTrue(Commands.waitSeconds(0.6).andThen(nextTrajectory.cmd()));
+                .onTrue(Commands.waitSeconds(0.8).andThen(nextTrajectory.cmd()));
         System.out.println("Next Trajectory started");
     }
 
     public static void goNextAfterIntake(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory) {
         curTrajectory.done().and(() -> true)
-                .onTrue(Commands.waitSeconds(0.6).andThen(nextTrajectory.cmd()));
+                .onTrue(Commands.waitSeconds(0.8).andThen(nextTrajectory.cmd()));
         System.out.println("Start Trajectory started");
     }
 
