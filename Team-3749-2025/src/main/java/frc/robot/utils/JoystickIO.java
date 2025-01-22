@@ -8,7 +8,7 @@ import frc.robot.Robot;
 import frc.robot.commands.elevator.SetElevatorState;
 
 import frc.robot.commands.example.ExampleSubsystemCommand;
-import frc.robot.commands.integration.Handoff;
+import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.roller.MaintainCommand;
 import frc.robot.commands.roller.RunCommand;
 import frc.robot.commands.roller.StopCommand;
@@ -38,8 +38,8 @@ public class JoystickIO {
     private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
     private static final SetElevatorState l3 = new SetElevatorState(ElevatorStates.L3);
     private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
-
-    private static final Handoff handoff = new Handoff(Robot.chute, Robot.coralArm, Robot.elevator, Robot.rollers);
+    private static final SetElevatorState stow = new SetElevatorState(ElevatorStates.STOW);
+    private static final KnockAlgae knockAlgae = new KnockAlgae(Robot.coralArm, Robot.elevator, Robot.algaeRoller, ElevatorStates.L2);
 
     public JoystickIO() {
     }
