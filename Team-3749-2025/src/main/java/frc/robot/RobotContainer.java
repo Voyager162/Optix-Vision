@@ -24,7 +24,6 @@ public class RobotContainer {
     // robot setup
     JoystickIO.getButtonBindings();
     AutoUtils.initAuto();
-    
   }
 
   public Command getAutonomousCommand() {
