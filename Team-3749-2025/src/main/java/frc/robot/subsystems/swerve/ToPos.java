@@ -72,6 +72,7 @@ public class ToPos {
 
     public static PathPlannerPath generateDynamicPath(
             Pose2d initialPose,
+            Pose2d beforefinal,
             Pose2d finalPose,
             double maxVelocity,
             double maxAcceleration,
@@ -82,6 +83,7 @@ public class ToPos {
 
         // Adjust start and end points if they're too close to obstacles
         Translation2d start = adjustIfTooCloseToObstacle(initialPose.getTranslation());
+        Translation2d beforeEnd = adjustIfTooCloseToObstacle(beforefinal.getTranslation());
         Translation2d end = adjustIfTooCloseToObstacle(finalPose.getTranslation());
 
         waypoints.add(new Waypoint(start, start, start));
@@ -90,7 +92,7 @@ public class ToPos {
         for (Translation2d detour : detours) {
             waypoints.add(new Waypoint(detour, detour, detour));
         }
-
+        waypoints.add(new Waypoint(beforeEnd, beforeEnd, beforeEnd));
         waypoints.add(new Waypoint(end, end, end));
 
         if (waypoints.size() < 2) {
