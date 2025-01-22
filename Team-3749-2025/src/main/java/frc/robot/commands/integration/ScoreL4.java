@@ -4,7 +4,6 @@ import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.subsystems.chute.Chute;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.roller.RollerConstants;
-import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.arm.coral.CoralConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.roller.Roller;
@@ -30,7 +29,7 @@ public class ScoreL4 extends Command {
     public void initialize() {
         if (chute.hasPiece()) {
             coralArm.setState(CoralConstants.ArmStates.CORAL_PICKUP);
-            elevator.setState(ElevatorStates.STOW); // not sure what stow is, maybe should be maintain?
+            elevator.setState(ElevatorStates.STOP); // not sure what stow is, maybe should be maintain?
             for (Roller roller: rollers) {
                 roller.setState(RollerConstants.RollerStates.MAINTAIN); 
             }
