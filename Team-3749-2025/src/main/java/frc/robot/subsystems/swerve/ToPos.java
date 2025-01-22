@@ -43,6 +43,7 @@ public class ToPos {
      */
     public static void generateDynamicPathAsync(
             Pose2d initialPose,
+            Pose2d beforefinal,
             Pose2d finalPose,
             double maxVelocity,
             double maxAcceleration,
@@ -52,7 +53,7 @@ public class ToPos {
         executorService.submit(() -> {
             System.out.println("Starting path generation...");
             PathPlannerPath path = generateDynamicPath(
-                initialPose, finalPose, maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration
+                initialPose, beforefinal ,finalPose, maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration
             );
             if (path != null) {
                 System.out.println("Path generation completed successfully.");
