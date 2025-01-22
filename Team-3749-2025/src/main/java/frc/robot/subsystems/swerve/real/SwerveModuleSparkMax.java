@@ -1,7 +1,10 @@
 package frc.robot.subsystems.swerve.real;
 
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -11,6 +14,7 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.swerve.SwerveModuleIO;
 import frc.robot.subsystems.swerve.SwerveConstants.DriveConstants;
 import frc.robot.subsystems.swerve.SwerveConstants.ModuleConstants;
+import frc.robot.utils.MiscConstants.MotorControllerConstants;
 
 /**
  * Sparkmax implementation for swerve mdoules
@@ -20,6 +24,8 @@ import frc.robot.subsystems.swerve.SwerveConstants.ModuleConstants;
 public class SwerveModuleSparkMax implements SwerveModuleIO {
     private SparkMax driveMotor;
     private SparkMax turnMotor;
+    private SparkClosedLoopController turnController;
+    private SparkClosedLoopController driveController;
 
     private CANcoder absoluteEncoder;
     private double absoluteEncoderOffsetRad;
@@ -27,7 +33,12 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
     private double driveAppliedVolts;
     private double turnAppliedVolts;
 
-    public SwerveModuleSparkMax(int index) {
+    /**
+     * 
+     * @param index
+     * @param pidfConstants
+     */
+    public SwerveModuleSparkMax(int index, double[][] drivePID, double[][] turnPID) {
         driveMotor = new SparkMax(DriveConstants.driveMotorPorts[index], SparkMax.MotorType.kBrushless);
         SparkMaxConfig driveConfig = new SparkMaxConfig();
         driveConfig.inverted(DriveConstants.driveMotorReversed[index]);
@@ -44,6 +55,7 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
 
         turnMotor = new SparkMax(DriveConstants.turningMotorPorts[index],
                 SparkMax.MotorType.kBrushless);
+
         SparkMaxConfig turnConfig = new SparkMaxConfig();
         turnConfig.inverted(DriveConstants.turningMotorReversed[index]);
         turnConfig.encoder.positionConversionFactor(1 / ModuleConstants.turnMotorGearRatio * (2 * Math.PI));
@@ -58,6 +70,43 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
 
         absoluteEncoder = new CANcoder(DriveConstants.absoluteEncoderPorts[index]);
         absoluteEncoderOffsetRad = Units.degreesToRadians(DriveConstants.absoluteEncoderOffsetDeg[index]);
+
+        driveMotor.setControlFramePeriodMs(20);
+
+        // decrese when put in a seperate period. CHECK CAN BUS UTILIZATION
+        turnMotor.setControlFramePeriodMs(20);
+
+        // get the controller object
+        turnController = turnMotor.getClosedLoopController();
+
+        /**
+         * PID constants, and the motor velocity control
+         * FF is same for all of the same type of motor, and only for velocity
+         * different slots can hold different values for different purposes (velocity
+         * vs position, slow vs fast and large vs small)
+         */
+        for (int i = 0; i < 4; i++) {
+            turnConfig.closedLoop.pidf(turnPID[i][0], turnPID[i][1], turnPID[i][2], 1 / 473,
+                    MotorControllerConstants.slots[i]);
+        }
+
+        // setpoint, control type, slot, FF from our code
+        turnController.setReference(0, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
+
+        driveMotor.setControlFramePeriodMs(20);
+        driveController = driveMotor.getClosedLoopController();
+
+        for (int i = 0; i < 4; i++) {
+            driveConfig.closedLoop.pidf(drivePID[i][0], drivePID[i][1], drivePID[i][2], 1 / 473,
+                    MotorControllerConstants.slots[i]);
+        }
+
+        driveController.setReference(0, ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot0);
+        driveConfig.closedLoop.maxMotion
+                .maxVelocity(DriveConstants.maxSpeedMetersPerSecond)
+                .maxAcceleration(DriveConstants.maxAccelerationMetersPerSecondSquared)
+                .allowedClosedLoopError(DriveConstants.maxDriveVelocityError);
+
     };
 
     @Override

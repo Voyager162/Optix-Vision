@@ -105,8 +105,8 @@ public class SwerveConstants {
                 // current limits
                 public static final int driveMotorStallLimit = 25;
                 public static final int driveMotorFreeLimit = 50;
-                public static final int turnMotorStallLimit = 25;
-                public static final int turnMotorFreeLimit = 50;
+                public static final int turnMotorStallLimit = 20;
+                public static final int turnMotorFreeLimit = 30;
 
                 // speed
                 private static final double realMaxSpeedMetersPerSecond = 4.3; // This is our actual top speed
@@ -161,6 +161,9 @@ public class SwerveConstants {
                 public static final double maxMotorVolts = Robot.isReal()
                                 ? DriveConstants.realMaxMotorVoltage
                                 : DriveConstants.simMaxMotorVoltage;
+
+                // allowed velocity error
+                public static final double maxDriveVelocityError = 0.2;
 
         }
 }
