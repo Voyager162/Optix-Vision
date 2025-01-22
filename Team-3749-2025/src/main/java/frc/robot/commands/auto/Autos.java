@@ -229,21 +229,21 @@ public class Autos {
 
         // loop.trajectory, or the new name
         AutoTrajectory trajectory1 = routine.trajectory("Start-L4");
-        AutoTrajectory trajectory2 = routine.trajectory("L4-Algae");
-        // AutoTrajectory trajectory3 = routine.trajectory("Algae1-Processor");
-        // AutoTrajectory trajectory4 = routine.trajectory("Processor-Algae3");
-        // AutoTrajectory trajectory5 = routine.trajectory("Algae3-L1");
+        AutoTrajectory trajectory2 = routine.trajectory("L4-Algae1");
+        AutoTrajectory trajectory3 = routine.trajectory("Algae1 - Processor");
+        AutoTrajectory trajectory4 = routine.trajectory("Processor-Algae3");
+        AutoTrajectory trajectory5 = routine.trajectory("Algae3- L1");
       
         AutoUtils.addScoreL4(trajectory1);
         AutoUtils.addAlgaeIntake(trajectory2);
-        // AutoUtils.addScoreAlgae(trajectory3);
-        // AutoUtils.addAlgaeIntake(trajectory4);
-        // AutoUtils.addScoreL4(trajectory5);
+        AutoUtils.addScoreAlgae(trajectory3);
+        AutoUtils.addAlgaeIntake(trajectory4);
+        AutoUtils.addScoreL4(trajectory5);
 
         // reverse order here (connect 3 to 2, THEN 2 to 1)      
-        // AutoUtils.goNextAfterIntake(trajectory4, trajectory5);
-        // AutoUtils.goNextAfterIntake(trajectory3, trajectory4);
-        // AutoUtils.goNextAfterIntake(trajectory2, trajectory3);
+        AutoUtils.goNextAfterIntake(trajectory4, trajectory5);
+        AutoUtils.goNextAfterIntake(trajectory3, trajectory4);
+        AutoUtils.goNextAfterIntake(trajectory2, trajectory3);
         AutoUtils.goNextAfterScored(trajectory1, trajectory2);
 
         return Commands.print("2-Algae-and-Knock").andThen(
