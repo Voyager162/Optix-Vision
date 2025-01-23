@@ -1,5 +1,6 @@
 package frc.robot.subsystems.elevator;
 
+import java.util.Map;
 import java.util.function.Consumer;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
@@ -21,6 +22,8 @@ import frc.robot.subsystems.elevator.ElevatorIO.ElevatorData;
 import frc.robot.subsystems.elevator.real.ElevatorSparkMax;
 import frc.robot.subsystems.elevator.sim.ElevatorSimulation;
 import frc.robot.utils.ShuffleData;
+import frc.robot.utils.SysIdTuner;
+import frc.robot.utils.SysIdTuner.MotorData;
 import frc.robot.utils.UtilityFunctions;
 
 import static edu.wpi.first.units.Units.*;
@@ -36,7 +39,7 @@ public class Elevator extends SubsystemBase {
     private ElevatorIO elevatorio;
     private ElevatorData data = new ElevatorData();
     private ElevatorStates state = ElevatorStates.STOP;
-   
+
     static Consumer<Voltage> setVolts;
     static Consumer<SysIdRoutineLog> log;
 
@@ -55,8 +58,10 @@ public class Elevator extends SubsystemBase {
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position meters", 0.0);
-    private ShuffleData<Double> velocityMetersPerSecLog = new ShuffleData<Double>("Elevator", "velocity meters per second", 0.0);
-    private ShuffleData<Double> accelerationMetersPerSecLog = new ShuffleData<Double>("Elevator", "acceleration meters per second", 0.0);
+    private ShuffleData<Double> velocityMetersPerSecLog = new ShuffleData<Double>("Elevator",
+            "velocity meters per second", 0.0);
+    private ShuffleData<Double> accelerationMetersPerSecLog = new ShuffleData<Double>("Elevator",
+            "acceleration meters per second", 0.0);
     private ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Elevator", "input volts", 0.0);
     private ShuffleData<Double> leftAppliedVoltsLog = new ShuffleData<Double>("Elevator", "left applied volts", 0.0);
     private ShuffleData<Double> rightAppliedVoltsLog = new ShuffleData<Double>("Elevator", "right applied volts", 0.0);
@@ -67,7 +72,6 @@ public class Elevator extends SubsystemBase {
 
     private ShuffleData<Double> setpointVelocityLog = new ShuffleData<Double>("Elevator", "setpoint velocity", 0.0);
     private ShuffleData<Double> setpointPositionLog = new ShuffleData<Double>("Elevator", "setpoint position", 0.0);
-
 
     // For tuning on real
     // private ShuffleData<Double> kPData = new ShuffleData<Double>("Elevator",
@@ -81,15 +85,24 @@ public class Elevator extends SubsystemBase {
     // private ShuffleData<Double> kAData = new ShuffleData<Double>("Elevator",
     // "kAData", ElevatorConstants.ElevatorControl.kASim);
 
-    // SysID voltage setter
-    private static Consumer<SysIdRoutineLog> setLog;
-
-    private final SysIdRoutine sysIdRoutine;
-
     private Mechanism2d mech = new Mechanism2d(3, 3);
     private MechanismRoot2d root = mech.getRoot("elevator", 2, 0);
     private MechanismLigament2d elevatorMech = root
             .append(new MechanismLigament2d("elevator", ElevatorConstants.ElevatorSpecs.baseHeight, 90));
+
+    // SysID
+    Map<String, MotorData> motorData = Map.of(
+            "elevator_motor", new MotorData(
+                    (data.leftAppliedVolts + data.rightAppliedVolts) / 2.0,
+                    data.positionMeters,
+                    data.velocityMetersPerSecond,
+                    data.accelerationUnits));
+
+    SysIdRoutine.Config config = new SysIdRoutine.Config(
+            Volts.per(Seconds).of(1.2), // Voltage ramp rate
+            Volts.of(12), // Max voltage
+            Seconds.of(10) // Test duration
+    );
 
     public Elevator() {
         if (Robot.isSimulation()) {
@@ -98,19 +111,7 @@ public class Elevator extends SubsystemBase {
             elevatorio = new ElevatorSparkMax();
         }
 
-        setVolts = (Voltage volts) -> setVoltage(volts);
-        setLog = (SysIdRoutineLog) -> setLog(SysIdRoutineLog);
-
-        sysIdRoutine = new SysIdRoutine(
-                new SysIdRoutine.Config(Volts.per(Seconds).of(1.2), Volts.of(12), Seconds.of(10)),
-                new SysIdRoutine.Mechanism(setVolts, setLog, this, "elevatorSysId"));
-    }
-
-    private void setLog(SysIdRoutineLog log) {
-        log.motor("motor").voltage(Voltage.ofBaseUnits((data.leftAppliedVolts + data.rightAppliedVolts) / 2.0, Volts));
-        log.motor("motor").linearPosition(Meters.ofBaseUnits(data.positionMeters));
-        log.motor("motor").linearVelocity(MetersPerSecond.ofBaseUnits(data.velocityMetersPerSecond));
-        log.motor("motor").linearAcceleration(MetersPerSecondPerSecond.ofBaseUnits(data.accelerationUnits));
+        SysIdTuner sysIdTuner = new SysIdTuner("elevator", config, this, elevatorio, motorData);
     }
 
     public ElevatorStates getState() {
@@ -147,7 +148,6 @@ public class Elevator extends SubsystemBase {
 
     public void setVoltage(Voltage volts) {
         elevatorio.setVoltage(volts.magnitude());
-
     }
 
     public void setVoltage(double volts) {
@@ -242,13 +242,5 @@ public class Elevator extends SubsystemBase {
         runState();
         logData();
         // pidController.setPID(kPData.get(),0,kDData.get())
-    }
-
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return sysIdRoutine.quasistatic(direction);
-    }
-
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return sysIdRoutine.dynamic(direction);
     }
 }
