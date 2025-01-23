@@ -6,6 +6,6 @@ public class Chute {
     }
 
     public boolean hasPiece() {
-        return true;
+        return false;
     }
 }
