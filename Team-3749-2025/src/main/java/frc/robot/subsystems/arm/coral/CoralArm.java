@@ -1,6 +1,9 @@
 package frc.robot.subsystems.arm.coral;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.Arm;
@@ -22,7 +25,19 @@ public class CoralArm extends Arm {
 
   private CoralConstants.ArmStates state = CoralConstants.ArmStates.STOPPED;
 
-  private PIDController controller = new PIDController(CoralConstants.kP, CoralConstants.kI, CoralConstants.kD);
+  private ProfiledPIDController controller = new ProfiledPIDController(
+      CoralConstants.kP, 
+      CoralConstants.kI, 
+      CoralConstants.kD, 
+      new TrapezoidProfile.Constraints(
+        CoralConstants.maxVelocity, 
+        CoralConstants.maxAcceleration));
+
+  private ArmFeedforward feedforward = new ArmFeedforward(
+    CoralConstants.kG,
+    CoralConstants.kS,
+    CoralConstants.kA,
+    CoralConstants.kV);
 
   private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
@@ -58,6 +73,10 @@ public class CoralArm extends Arm {
    */
   public CoralConstants.ArmStates getState() {
     return state;
+  }
+
+  public double getPositionMeters(){
+    return data.positionUnits;
   }
 
   @Override
@@ -171,7 +190,7 @@ public class CoralArm extends Arm {
    */
   private void moveToGoal() {
     // Get setpoint from the PID controller
-    double setpoint = controller.getSetpoint();
+    State setpoint = controller.getSetpoint();
 
     // Calculate PID voltage based on the current position
     double pidVoltage = controller.calculate(getPositionMeters());

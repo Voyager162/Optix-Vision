@@ -1,6 +1,9 @@
 package frc.robot.subsystems.arm.climb;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.Arm;
@@ -22,8 +25,19 @@ public class ClimbArm extends Arm {
   private ClimbConstants.ArmStates state = ClimbConstants.ArmStates.STOPPED;
 
   // PID controller for arm movement
-  private PIDController controller =
-      new PIDController(ClimbConstants.kP, ClimbConstants.kI, ClimbConstants.kD);
+  private ProfiledPIDController controller = new ProfiledPIDController(
+      ClimbConstants.kP, 
+      ClimbConstants.kI, 
+      ClimbConstants.kD, 
+      new TrapezoidProfile.Constraints(
+        ClimbConstants.maxVelocity, 
+        ClimbConstants.maxAcceleration));
+
+  private ArmFeedforward feedforward = new ArmFeedforward(
+    ClimbConstants.kG,
+    ClimbConstants.kS,
+    ClimbConstants.kA,
+    ClimbConstants.kV);
 
   // Shuffleboard data for state logging
   private ShuffleData<String> stateLog =
@@ -59,6 +73,10 @@ public class ClimbArm extends Arm {
    */
   public ClimbConstants.ArmStates getState() {
     return state;
+  }
+
+  public double getPositionMeters(){
+    return data.positionUnits;
   }
 
   @Override
@@ -173,7 +191,7 @@ public class ClimbArm extends Arm {
    */
   private void moveToGoal() {
     // Get setpoint from the PID controller 
-    double setpoint = controller.getSetpoint();
+    State setpoint = controller.getSetpoint();
 
     // Calculate PID voltage based on the current position
     double pidVoltage = controller.calculate(getPositionMeters());
