@@ -11,6 +11,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
@@ -29,39 +30,43 @@ public class OnTheFly extends Command {
     private final PPHolonomicDriveController SwerveController = new PPHolonomicDriveController(
             new PIDConstants(AutoConstants.kPDrive, 0, AutoConstants.kDDrive),
             new PIDConstants(AutoConstants.kPTurn, 0, AutoConstants.kDTurn));
+    private static double positionTolerance = 0.003; // meters
+    private static double rotationTolerance = 2.0; // degrees
 
     public OnTheFly() {
     }
 
     @Override
     public void initialize() {
+        if (withinSetpointTolerance(ToPosConstants.Setpoints.reefTrig(Robot.swerve.getPPSetpoint(),
+        ToPosConstants.Setpoints.TrigDirection.FORWARD),true)) {
+            this.cancel();
+            Robot.swerve.isOTF = false;
+        }
         timer.reset();
         timer.start();
         PathPlannerPath path;
-        if(Robot.swerve.currentPPSetpointIndex > 2 && !Robot.swerve.needsToCloseIn)
-        {
+        if (Robot.swerve.currentPPSetpointIndex > 2 && !Robot.swerve.needsToCloseIn) {
             isAReefSetpoint = true;
         }
 
-        if(Robot.swerve.needsToCloseIn)
-        {
+        if (Robot.swerve.needsToCloseIn) {
             path = ToPos.generateDynamicPath(
-                Robot.swerve.getPose(),
-                ToPosConstants.Setpoints.reefTrig(Robot.swerve.getPPSetpoint(), ToPosConstants.Setpoints.TrigDirection.FORWARD),
-                Robot.swerve.getMaxDriveSpeed(),
-                SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
-                Robot.swerve.getMaxAngularSpeed(),
-                SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared);
-        }
-        else
-        {
+                    Robot.swerve.getPose(),
+                    ToPosConstants.Setpoints.reefTrig(Robot.swerve.getPPSetpoint(),
+                            ToPosConstants.Setpoints.TrigDirection.FORWARD),
+                    Robot.swerve.getMaxDriveSpeed(),
+                    SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
+                    Robot.swerve.getMaxAngularSpeed(),
+                    SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared);
+        } else {
             path = ToPos.generateDynamicPath(
-                Robot.swerve.getPose(),
-                Robot.swerve.getPPSetpoint(),
-                Robot.swerve.getMaxDriveSpeed(),
-                SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
-                Robot.swerve.getMaxAngularSpeed(),
-                SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared);
+                    Robot.swerve.getPose(),
+                    Robot.swerve.getPPSetpoint(),
+                    Robot.swerve.getMaxDriveSpeed(),
+                    SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
+                    Robot.swerve.getMaxAngularSpeed(),
+                    SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared);
         }
 
         if (path == null) {
@@ -85,7 +90,8 @@ public class OnTheFly extends Command {
 
     @Override
     public void execute() {
-        if (trajectory == null) {
+        if (trajectory == null || !Robot.swerve.isOTF) {
+            this.cancel();
             return;
         }
 
@@ -97,8 +103,7 @@ public class OnTheFly extends Command {
         Robot.swerve.logSetpoints(goalState);
 
         if (isFinished()) {
-            if(isAReefSetpoint && trajectory!=null)
-            {
+            if (isAReefSetpoint && trajectory != null) {
                 isAReefSetpoint = false;
                 Robot.swerve.needsToCloseIn = true;
                 this.end(true);
@@ -107,7 +112,9 @@ public class OnTheFly extends Command {
             }
             this.end(true);
             Robot.swerve.isOTF = false;
-            //if we add LED's here now would be a good time to shine our bots lights to signify you can move again
+
+            // if we add LED's here now would be a good time to shine our bots lights to
+            // signify you can move again
         }
     }
 
@@ -126,17 +133,7 @@ public class OnTheFly extends Command {
         boolean trajectoryComplete = timer.get() >= trajectory.getTotalTimeSeconds();
 
         if (trajectoryComplete) {
-
-            double positionTolerance = 0.002; // meters
-            double rotationTolerance = 2.0; // degrees
-            // harik be like oooh i love doing position math that bricked our codebase
-            // My Honest, Genuine, Unadulterated Built in Method Reaction
-            double xError = trajectory.getEndState().pose.relativeTo(Robot.swerve.getPose()).getX();
-            double yError = trajectory.getEndState().pose.relativeTo(Robot.swerve.getPose()).getY();
-            double thetaError = trajectory.getEndState().pose.relativeTo(Robot.swerve.getPose()).getRotation()
-                    .getDegrees();
-            // System.out.println("x "+xError+" y "+yError+" theta " + thetaError);
-            return xError < positionTolerance && yError < positionTolerance && thetaError < rotationTolerance;
+            return withinSetpointTolerance(trajectory.getEndState().pose,false);
         }
 
         return false;
@@ -152,5 +149,21 @@ public class OnTheFly extends Command {
             return new Rotation2d(0); // Neutral rotation
         }
         return rotation;
+    }
+
+    private boolean withinSetpointTolerance(Pose2d setpoint, boolean useAlternateTolerance) {
+        // harik be like oooh i love doing position math that bricked our codebase
+        // My Honest, Genuine, Unadulterated Built in Method Reaction
+        double alternatePositionTolerance = positionTolerance;
+        if(useAlternateTolerance)
+        {
+            alternatePositionTolerance = 0.3;
+        }
+        double xError = setpoint.relativeTo(Robot.swerve.getPose()).getX();
+        double yError = setpoint.relativeTo(Robot.swerve.getPose()).getY();
+        double thetaError = setpoint.relativeTo(Robot.swerve.getPose()).getRotation()
+                .getDegrees();
+        // System.out.println("x "+xError+" y "+yError+" theta " + thetaError);
+        return xError < alternatePositionTolerance && yError < alternatePositionTolerance && thetaError < rotationTolerance;
     }
 }
