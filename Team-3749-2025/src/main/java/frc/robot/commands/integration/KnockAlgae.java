@@ -11,40 +11,36 @@ import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
 
 public class KnockAlgae extends Command{   
-    private final CoralArm coralArm;
     private final Elevator elevator;
-    private final Roller roller;
+    private final Roller algaeRoller;
     private final ElevatorStates state;
 
-    public KnockAlgae(CoralArm coralArm, Elevator elevator, Roller roller, ElevatorStates state) {
-        this.coralArm = coralArm;
+    public KnockAlgae(Elevator elevator, Roller algaeRoller, ElevatorStates state) {
         this.elevator = elevator;
-        this.roller = roller;
+        this.algaeRoller = algaeRoller;
         this.state = state;
     }
 
     @Override
     public void initialize() {
-        coralArm.setState(CoralConstants.ArmStates.CORAL_PICKUP);
-        elevator.setState(ElevatorStates.STOW);
-        roller.setState(RollerConstants.RollerStates.MAINTAIN); 
+        algaeRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
     }
 
     @Override 
     public void execute() {
-        roller.setState(RollerConstants.RollerStates.RUN);
+        algaeRoller.setState(RollerConstants.RollerStates.RUN);
         elevator.setState(state);
+        System.out.println(elevator.getState());
     }
 
     @Override 
     public void end(boolean interrupted) {
-        coralArm.setState(CoralConstants.ArmStates.STOPPED);
         elevator.setState(ElevatorStates.STOW);
-        roller.setState(RollerConstants.RollerStates.STOP); 
+        algaeRoller.setState(RollerConstants.RollerStates.STOP); 
     }
 
     @Override
     public boolean isFinished() {
-        return elevator.getIsStableState();
+        return elevator.getIsStableState(); // change later to isAlgaeRemoved()
     }
 }

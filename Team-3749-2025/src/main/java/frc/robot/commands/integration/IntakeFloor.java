@@ -8,34 +8,27 @@ import frc.robot.subsystems.roller.Roller;
 
 public class IntakeFloor extends Command {
     private final CoralArm coralArm;
-    private final Roller[] rollers;
+    private final Roller coralRoller;
 
-    public IntakeFloor(CoralArm coralArm, Roller[] rollers) {
+    public IntakeFloor(CoralArm coralArm, Roller coralRoller) {
         this.coralArm = coralArm;
-        this.rollers = rollers;
+        this.coralRoller = coralRoller;
     }
 
     @Override
     public void initialize() {
         coralArm.setState(CoralConstants.ArmStates.CORAL_PICKUP);
-        for (Roller roller : rollers) {
-            roller.setState(RollerConstants.RollerStates.MAINTAIN);
-        }
     }
 
     @Override
     public void execute() {
-        if (coralArm.getIsStableState()){
-            rollers[1].setState(RollerConstants.RollerStates.RUN);
-        }
+        coralRoller.setState(RollerConstants.RollerStates.RUN);
     }
 
     @Override
     public void end(boolean interrupted) {
         coralArm.setState(CoralConstants.ArmStates.STOPPED);
-        for (Roller roller : rollers) {
-            roller.setState(RollerConstants.RollerStates.STOP);
-        }
+        coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
     }
 
     @Override

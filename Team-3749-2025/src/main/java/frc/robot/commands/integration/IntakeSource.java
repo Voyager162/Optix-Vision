@@ -9,44 +9,36 @@ import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
 
 public class IntakeSource extends Command {
-    private final CoralArm coralArm;
-    private final Roller[] rollers;
+    private final Roller scoringRoller;
     private final Elevator elevator;
     private final Chute chute;
 
-    public IntakeSource(CoralArm coralArm, Roller[] rollers, Elevator elevator, Chute chute) {
-        this.coralArm = coralArm;
-        this.rollers = rollers;
+    public IntakeSource(Roller scoringRoller, Elevator elevator, Chute chute) {
+        this.scoringRoller = scoringRoller;
         this.elevator = elevator;
         this.chute = chute;
     }
 
     @Override
     public void initialize() {
-        coralArm.setState(CoralConstants.ArmStates.CORAL_PICKUP);
-        elevator.setState(ElevatorStates.STOP); // stop or stow?
-        for (Roller roller: rollers) {
-            roller.setState(RollerConstants.RollerStates.MAINTAIN); 
-        }
+        elevator.setState(ElevatorStates.SOURCE); 
+        scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
     }
 
     @Override
     public void execute() {
-        if (coralArm.getState() == CoralConstants.ArmStates.CORAL_PICKUP && coralArm.getIsStableState() && elevator.getState() == ElevatorStates.STOP && elevator.getIsStableState()) {
-            rollers[2].setState(RollerConstants.RollerStates.RUN);
-            elevator.setState(ElevatorStates.SOURCE); 
+        if (elevator.getState() == ElevatorStates.SOURCE && elevator.getIsStableState()) { 
+            scoringRoller.setState(RollerConstants.RollerStates.RUN);
         }
     }
  
     @Override
     public void end(boolean interrupted) {
-        for (Roller roller: rollers) {
-            roller.setState(RollerConstants.RollerStates.MAINTAIN); 
-        }
+        scoringRoller.setState(RollerConstants.RollerStates.STOP); 
     }
 
     @Override
     public boolean isFinished() {
-            return chute.hasPiece() && elevator.getState() == ElevatorStates.SOURCE;
+        return chute.hasPiece();
     }
 }
