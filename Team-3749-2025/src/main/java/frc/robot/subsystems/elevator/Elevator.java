@@ -46,7 +46,8 @@ public class Elevator extends SubsystemBase {
     private ShuffleData<String> currentStateLog = new ShuffleData<String>("Elevator", "elevator states", "None");
     private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position", 0.0);
     private ShuffleData<Double> velocityMetersPerSecLog = new ShuffleData<Double>("Elevator", "velocity", 0.0);
-    private ShuffleData<Double> accelerationMetersPerSecSquaredLog = new ShuffleData<Double>("Elevator", "acceleration", 0.0);
+    private ShuffleData<Double> accelerationMetersPerSecSquaredLog = new ShuffleData<Double>("Elevator", "acceleration",
+            0.0);
 
     private ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Elevator", "input volts", 0.0);
     private ShuffleData<Double> leftAppliedVoltsLog = new ShuffleData<Double>("Elevator", "left applied volts", 0.0);
@@ -100,17 +101,20 @@ public class Elevator extends SubsystemBase {
                 return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.l1Height,
                         data.positionMeters);
             case L2:
-                return UtilityFunctions.withinMargin(0.1, data.positionMeters,
-                        ElevatorConstants.StateHeights.l2Height);
+                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.l2Height,
+                        data.positionMeters);
             case L3:
-                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
-                        ElevatorConstants.StateHeights.l3Height);
+                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.l3Height,
+                        data.positionMeters);
             case L4:
-                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
-                        ElevatorConstants.StateHeights.l4Height);
+                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.l4Height,
+                        data.positionMeters);
             case SOURCE:
-            return UtilityFunctions.withinMargin(0.01, data.positionMeters,
-                    ElevatorConstants.StateHeights.sourceHeight);
+                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.sourceHeight,
+                        data.positionMeters);
+            case STOW:
+                return UtilityFunctions.withinMargin(0.01, 0,
+                        data.positionMeters);
             default:
                 return false;
         }
