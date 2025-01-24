@@ -10,33 +10,25 @@ import frc.robot.subsystems.roller.Roller;
 
 public class OuttakeCoral extends Command {
     private final CoralArm coralArm;
-    private final Roller[] rollers;
+    private final Roller coralRoller;
 
-    public OuttakeCoral(CoralArm coralArm, Roller[] rollers) {
+    public OuttakeCoral(CoralArm coralArm, Roller coralRoller) {
         this.coralArm = coralArm;
-        this.rollers = rollers;
+        this.coralRoller = coralRoller;
     }
 
     @Override
     public void initialize() {
-        for (Roller roller : rollers) {
-            roller.setState(RollerConstants.RollerStates.MAINTAIN);
-        }
+        coralRoller.setState(RollerConstants.RollerStates.SCORE);
     }
 
     @Override
     public void execute() {
-        if (coralArm.hasPiece() && coralArm.getState() == CoralConstants.ArmStates.CORAL_PICKUP){
-            rollers[1].setState(RollerConstants.RollerStates.SCORE);
-        }
     }
 
     @Override
     public void end(boolean interrupted) {
-        coralArm.setState(CoralConstants.ArmStates.STOPPED);
-        for (Roller roller : rollers) {
-            roller.setState(RollerConstants.RollerStates.STOP);
-        }
+        coralRoller.setState(RollerConstants.RollerStates.STOP);
     }
 
     @Override
