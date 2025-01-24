@@ -43,6 +43,7 @@ public class Elevator extends SubsystemBase {
             ElevatorConstants.ElevatorControl.kASim);
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
+    private ShuffleData<String> currentStateLog = new ShuffleData<String>("Elevator", "elevator states", "None");
     private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position", 0.0);
     private ShuffleData<Double> velocityMetersPerSecLog = new ShuffleData<Double>("Elevator", "velocity", 0.0);
     private ShuffleData<Double> accelerationMetersPerSecSquaredLog = new ShuffleData<Double>("Elevator", "acceleration", 0.0);
@@ -185,6 +186,7 @@ public class Elevator extends SubsystemBase {
 
     private void logData() {
         currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
+        currentStateLog.set(getState().name());
         positionMetersLog.set(data.positionMeters);
         velocityMetersPerSecLog.set(data.velocityMetersPerSecond);
         accelerationMetersPerSecSquaredLog.set(data.accelerationMetersPerSecondSquared);
