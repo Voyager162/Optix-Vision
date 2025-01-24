@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Robot;
 
 
@@ -108,14 +109,20 @@ public class AutoUtils {
 
         // Made sendable, use SmartDashbaord now
         chooser = new AutoChooser();
-        chooser.addCmd("3 Piece", () -> Autos.get3Piece());
-        chooser.addCmd("4 Piece", () -> Autos.get4piece());
-        chooser.addCmd("Full Auto RP", () -> Autos.getFullAutoRP());
-        chooser.addCmd("One Piece Center", () -> Autos.getOnePieceCenter());
-        chooser.addCmd("Taxi", () -> Autos.getTaxi());
-        chooser.addCmd("Team Taxi", () -> Autos.getTeamtaxi());
-        chooser.addCmd("3 Piece and Algae", () -> Autos.get3PieceandAlgae());
-        chooser.addCmd("2 Algae and Knock", () -> Autos.get2AlgaeAndKnock());
+        chooser.addCmd("Start-L5", () -> Autos.getStartToL5());
+        chooser.addCmd("Start-L4", () -> Autos.getStartToL4());
+        chooser.addCmd("L5-Station", () -> Autos.getL5ToStation());
+        chooser.addCmd("L4-Station", () -> Autos.getL4ToStation());
+        chooser.addCmd("L3-Station", () -> Autos.getL3ToStation()); 
+        chooser.addCmd("L2-Station", () -> Autos.getL2ToStation()); 
+        chooser.addCmd("L1-Station", () -> Autos.getL1ToStation());
+        chooser.addCmd("Midstart-L6", () -> Autos.getMidstartToL6());
+        chooser.addCmd("Start-TeamTaxi", () -> Autos.getStartToTeamTaxi());
+        chooser.addCmd("Station-L1", () -> Autos.getStationToL1()); 
+        chooser.addCmd("Station-L2", () -> Autos.getStationToL2());
+        chooser.addCmd("Station-L3", () -> Autos.getStationToL3());
+        chooser.addCmd("Station-L4", () -> Autos.getStationToL4());
+        chooser.addCmd("TeamTaxi-L5", () -> Autos.getTeamtaxiToL5());
 
         // Default
         chooser.select("Straight");
@@ -221,15 +228,25 @@ public class AutoUtils {
     }
 
     public static void goNextAfterScored(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory) {
-        curTrajectory.done().and(() -> true)
-                .onTrue(Commands.waitSeconds(0.8).andThen(nextTrajectory.cmd()));
-        System.out.println("Next Trajectory started");
+        Pose2d endingPose2d = getFinalPose2d(curTrajectory);
+        // unflip the alliance so that atPose can flip it; it's a quirk of referencing the trajectory
+        if (DriverStation.getAlliance().get() == Alliance.Red){
+            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
+        }
+
+        curTrajectory.atPose(endingPose2d, 1, 1.57).onTrue(nextTrajectory.cmd());
+
     }
 
     public static void goNextAfterIntake(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory) {
-        curTrajectory.done().and(() -> true)
-                .onTrue(Commands.waitSeconds(0.8).andThen(nextTrajectory.cmd()));
-        System.out.println("Start Trajectory started");
+        Pose2d endingPose2d = getFinalPose2d(curTrajectory);
+        // unflip the alliance so that atPose can flip it; it's a quirk of referencing the trajectory
+        if (DriverStation.getAlliance().get() == Alliance.Red){
+            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
+        }
+
+        curTrajectory.atPose(endingPose2d, 1, 1.57).onTrue(nextTrajectory.cmd());
+
     }
 
     /**
