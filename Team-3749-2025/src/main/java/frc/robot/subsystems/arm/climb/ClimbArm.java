@@ -197,6 +197,7 @@ public class ClimbArm extends Arm {
 		stateLog.set(state.name());
 
 		Logger.recordOutput(this.getName(), mechanism2d);
+		Logger.recordOutput("climb arm position", data.positionUnits);
 	}
 
 	/** Periodic method for updating arm behavior. */
