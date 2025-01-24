@@ -12,6 +12,7 @@ import frc.robot.commands.integration.Handoff;
 import frc.robot.commands.integration.IntakeFloor;
 import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.OuttakeCoral;
+import frc.robot.commands.integration.ScoreL234;
 import frc.robot.commands.roller.MaintainCommand;
 import frc.robot.commands.roller.RunCommand;
 import frc.robot.commands.roller.StopCommand;
@@ -43,11 +44,10 @@ public class JoystickIO {
     private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
     private static final SetElevatorState stow = new SetElevatorState(ElevatorStates.STOW);
 
-    private static final KnockAlgae knockAlgae = new KnockAlgae(Robot.coralArm, Robot.elevator, Robot.algaeRoller, ElevatorStates.L2);
+    private static final ScoreL234 score = new ScoreL234(Robot.chute, Robot.coralArm, Robot.elevator, Robot.rollers, ElevatorStates.L2);
     private static final Handoff handoff = new Handoff(Robot.chute, Robot.coralArm, Robot.elevator, Robot.rollers);
     private static final IntakeFloor intakeFloor = new IntakeFloor(Robot.coralArm, Robot.rollers);
     private static final OuttakeCoral outtakeCoral = new OuttakeCoral(Robot.coralArm, Robot.rollers);
-
 
     public JoystickIO() {
     }
@@ -88,7 +88,7 @@ public class JoystickIO {
         // operator.a().whileTrue(new ExampleSubsystemCommand());
 
         operator.a().onTrue(handoff);
-        operator.b().onTrue(knockAlgae);
+        operator.b().onTrue(score);
         operator.x().onTrue(intakeFloor);
         operator.y().onTrue(outtakeCoral);
     }

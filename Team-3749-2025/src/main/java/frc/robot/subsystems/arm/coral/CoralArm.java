@@ -4,6 +4,7 @@ import frc.robot.Robot;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.real.ArmSparkMax;
 import frc.robot.subsystems.arm.sim.ArmSim;
+import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 import edu.wpi.first.math.controller.PIDController;
@@ -76,17 +77,20 @@ public class CoralArm extends Arm {
 
         switch (state) {
             case STOWED:
-                return data.positionUnits == CoralConstants.stowSetPoint_rad;
+                return UtilityFunctions.withinMargin(0.01, CoralConstants.stowSetPoint_rad,
+                        data.positionUnits);
             case HAND_OFF:
-                return data.positionUnits == CoralConstants.handOffSetPoint_rad;
+                return UtilityFunctions.withinMargin(0.01, CoralConstants.handOffSetPoint_rad,
+                        data.positionUnits);
             case CORAL_PICKUP:
-                return data.positionUnits == CoralConstants.coralPickUpSetPoint_rad;
+                return UtilityFunctions.withinMargin(0.01, CoralConstants.coralPickUpSetPoint_rad,
+                        data.positionUnits);
             case MOVING_DOWN:
                 return data.velocityUnits < 0;
             case MOVING_UP:
                 return data.velocityUnits > 0;
             case STOPPED:
-                return UtilityFunctions.withinMargin(0.001, 0, data.velocityUnits);
+                return UtilityFunctions.withinMargin(0.01, 0, data.velocityUnits);
             default:
                 return false;
         }
