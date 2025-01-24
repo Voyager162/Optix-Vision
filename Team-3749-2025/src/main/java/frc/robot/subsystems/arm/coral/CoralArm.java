@@ -76,7 +76,6 @@ public class CoralArm extends Arm {
 
 	@Override
 	public void stop() {
-		setState(CoralConstants.ArmStates.STOPPED);
 		armIO.setVoltage(0);
 	}
 
@@ -113,7 +112,7 @@ public class CoralArm extends Arm {
 		this.state = (CoralConstants.ArmStates) state;
 		switch (this.state) {
 			case STOPPED:
-				runStateStop();
+				stop();
 				break;
 			case STOWED:
 				setGoal(CoralConstants.stowSetPoint_rad);
@@ -134,10 +133,6 @@ public class CoralArm extends Arm {
 		}
 	}
 
-	private void runStateStop() {
-		stop();
-	}
-
 	public void setGoal(double setPoint) {
 		controller.setGoal(setPoint);
 	}
@@ -146,7 +141,7 @@ public class CoralArm extends Arm {
 	private void runState() {
 		switch (state) {
 			case STOPPED:
-				runStateStop();
+				stop();
 				break;
 			case MOVING_DOWN:
 				setVoltage(-1 + calculateKGFeedForward());
