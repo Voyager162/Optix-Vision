@@ -9,39 +9,34 @@ import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 
 public class ScoreL1 extends Command {
     private final CoralArm coralArm;
-    private final Roller[] rollers;
+    private final Roller coralRoller;
 
-    public ScoreL1 (CoralArm coralArm, Roller[] rollers) {
+    public ScoreL1 (CoralArm coralArm, Roller coralRoller) {
         this.coralArm = coralArm;
-        this.rollers = rollers;
+        this.coralRoller = coralRoller;
     }
 
     @Override
     public void initialize() {
-        coralArm.setState(CoralConstants.ArmStates.STOWED);
-        rollers[1].setState(RollerConstants.RollerStates.MAINTAIN); 
+        coralArm.setState(CoralConstants.ArmStates.L1);
+        coralRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
     }
 
     @Override
     public void execute() {
-        if (coralArm.getState() == CoralConstants.ArmStates.STOWED && coralArm.getIsStableState()) {
-            coralArm.setState(CoralConstants.ArmStates.CORAL_PICKUP);
-            rollers[1].setState(RollerConstants.RollerStates.RUN);
-        }
-        if (coralArm.getState() == CoralConstants.ArmStates.CORAL_PICKUP && coralArm.getIsStableState() && coralArm.hasPiece()) {
-            rollers[1].setState(RollerConstants.RollerStates.MAINTAIN);
-            coralArm.setState(CoralConstants.ArmStates.L1);
+        if (coralArm.getState() == CoralConstants.ArmStates.L1 && coralArm.getIsStableState()) {
+            coralRoller.setState(RollerConstants.RollerStates.SCORE);
         }
     }
 
     @Override 
     public void end(boolean interrupted) {
         coralArm.setState(CoralConstants.ArmStates.STOWED);
-        rollers[1].setState(RollerStates.STOP);
+        coralRoller.setState(RollerStates.STOP);
     }
 
     @Override 
     public boolean isFinished() {
-        return coralArm.getState() == CoralConstants.ArmStates.L1;
+        return !coralArm.hasPiece();
     }
 }
