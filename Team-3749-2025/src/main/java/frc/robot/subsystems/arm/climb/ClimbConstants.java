@@ -41,6 +41,8 @@ public class ClimbConstants {
 	public static final double momentOfInertia = 0.775;
 	public static final boolean simulateGravity = true;
 
+	public static final double staticMovementVoltage = 2;
+
 	public enum ArmStates {
 		MOVING_DOWN,
 		MOVING_UP,

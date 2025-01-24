@@ -53,7 +53,6 @@ public class CoralArm extends Arm {
 		if (Robot.isSimulation()) {
 
 			armIO = new ArmSim(
-					CoralConstants.numMotors,
 					CoralConstants.armGearing,
 					CoralConstants.momentOfInertia,
 					CoralConstants.armLength_meters,
@@ -63,7 +62,7 @@ public class CoralArm extends Arm {
 					CoralConstants.armStartingAngle_degrees);
 
 		} else {
-			armIO = new ArmSparkMax(CoralConstants.motorId);
+			armIO = new ArmSparkMax(CoralConstants.firstMotorID, CoralConstants.secondMotorID);
 		}
 		SmartDashboard.putData("Coral Arm Mechanism", mechanism2d);
 	}
@@ -75,13 +74,10 @@ public class CoralArm extends Arm {
 		return state;
 	}
 
-	public double getPositionMeters() {
-		return data.positionUnits;
-	}
-
 	@Override
 	public void stop() {
 		setState(CoralConstants.ArmStates.STOPPED);
+		armIO.setVoltage(0);
 	}
 
 	/**
@@ -115,38 +111,78 @@ public class CoralArm extends Arm {
 	@Override
 	public void setState(Enum<?> state) {
 		this.state = (CoralConstants.ArmStates) state;
+		switch (this.state) {
+			case STOPPED:
+				runStateStop();
+				break;
+			case STOWED:
+				setGoal(CoralConstants.stowSetPoint_rad);
+				break;
+			case CORAL_PICKUP:
+				setGoal(CoralConstants.coralPickUpSetPoint_rad);
+			case HAND_OFF:
+				setGoal(CoralConstants.handOffSetPoint_rad);
+			case MOVING_DOWN:
+				setVoltage(CoralConstants.staticMovementVoltage + calculateKGFeedForward());
+				break;
+			case MOVING_UP:
+				setVoltage(-CoralConstants.staticMovementVoltage + calculateKGFeedForward());
+				break;
+			default:
+				stop();
+				break;
+		}
+	}
+
+	private void runStateStop() {
+		stop();
+	}
+
+	public void setGoal(double setPoint) {
+		controller.setGoal(setPoint);
 	}
 
 	/** Runs the logic for the current arm state. */
 	private void runState() {
 		switch (state) {
-			case STOWED:
-				setVoltage(
-						controller.calculate(data.positionUnits, CoralConstants.stowSetPoint_rad)
-								+ calculateFeedForward());
-				break;
-			case HAND_OFF:
-				setVoltage(
-						controller.calculate(data.positionUnits, CoralConstants.handOffSetPoint_rad)
-								+ calculateFeedForward());
-				break;
-			case CORAL_PICKUP:
-				setVoltage(
-						controller.calculate(data.positionUnits, CoralConstants.coralPickUpSetPoint_rad)
-								+ calculateFeedForward());
-				break;
 			case STOPPED:
-				setVoltage(0 + calculateFeedForward());
+				runStateStop();
 				break;
 			case MOVING_DOWN:
-				setVoltage(-1 + calculateFeedForward());
+				setVoltage(-1 + calculateKGFeedForward());
 				break;
 			case MOVING_UP:
-				setVoltage(1 + calculateFeedForward());
+				setVoltage(1 + calculateKGFeedForward());
 				break;
 			default:
+				moveToGoal();
 				break;
 		}
+	}
+
+	private double calculateKGFeedForward() {
+		double feedForward = CoralConstants.kG * Math.cos(data.positionUnits);
+		return feedForward;
+	}
+
+		/**
+	 * Move the arm to the setpoint using the PID controller and feedforward.
+	 * combines PID control and feedforward to move the arm to desired position.
+	 */
+	private void moveToGoal() {
+		// Get setpoint from the PID controller
+		State firstState = controller.getSetpoint();
+
+		// Calculate PID voltage based on the current position
+		double pidVoltage = controller.calculate(getPositionRad());
+
+		State nextState = controller.getSetpoint();
+
+		// Calculate feedforward voltage
+		double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
+
+		// Set the voltage for the arm motor (combine PID and feedforward)
+		armIO.setVoltage(pidVoltage + ffVoltage);
 	}
 
 	/** Logs data to Shuffleboard. */
@@ -156,9 +192,12 @@ public class CoralArm extends Arm {
 		positionUnitsLog.set(data.positionUnits);
 		velocityUnitsLog.set(data.velocityUnits);
 		inputVoltsLog.set(data.inputVolts);
-		appliedVoltsLog.set(data.appliedVolts);
-		currentAmpsLog.set(data.currentAmps);
-		tempCelciusLog.set(data.tempCelcius);
+		firstMotorAppliedVoltsLog.set(data.firstMotorAppliedVolts);
+		secondMotorAppliedVoltsLog.set(data.secondMotorAppliedVolts);
+		firstMotorCurrentAmpsLog.set(data.firstMotorCurrentAmps);
+		secondMotorCurrentAmpsLog.set(data.secondMotorCurrentAmps);
+		firstMotorTempCelciusLog.set(data.firstMotorTempCelcius);
+		secondMotorTempCelciusLog.set(data.secondMotorTempCelcius);
 
 		armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
@@ -166,11 +205,6 @@ public class CoralArm extends Arm {
 
 		Logger.recordOutput(this.getName(), mechanism2d);
 		Logger.recordOutput("coral arm position", data.positionUnits);
-	}
-
-	private double calculateFeedForward() {
-		double feedForward = CoralConstants.kG * Math.cos(data.positionUnits);
-		return feedForward;
 	}
 
 	/** Periodic method for updating arm behavior. */
@@ -182,23 +216,5 @@ public class CoralArm extends Arm {
 		logData();
 
 		runState();
-	}
-
-	/**
-	 * Move the arm to the setpoint using the PID controller and feedforward.
-	 * combines PID control and feedforward to move the arm to desired position.
-	 */
-	private void moveToGoal() {
-		// Get setpoint from the PID controller
-		State setpoint = controller.getSetpoint();
-
-		// Calculate PID voltage based on the current position
-		double pidVoltage = controller.calculate(getPositionMeters());
-
-		// Calculate feedforward voltage
-		double ffVoltage = calculateFeedForward();
-
-		// Set the voltage for the arm motor (combine PID and feedforward)
-		armIO.setVoltage(pidVoltage + ffVoltage);
 	}
 }

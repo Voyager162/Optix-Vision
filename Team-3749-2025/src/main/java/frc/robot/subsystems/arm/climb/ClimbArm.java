@@ -7,6 +7,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.real.ArmSparkMax;
 import frc.robot.subsystems.arm.sim.ArmSim;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
@@ -51,7 +52,6 @@ public class ClimbArm extends Arm {
 	public ClimbArm() {
 		if (Robot.isSimulation()) {
 			armIO = new ArmSim(
-					ClimbConstants.numMotors,
 					ClimbConstants.armGearing,
 					ClimbConstants.momentOfInertia,
 					ClimbConstants.armLength_meters,
@@ -60,7 +60,7 @@ public class ClimbArm extends Arm {
 					ClimbConstants.simulateGravity,
 					ClimbConstants.armStartingAngle_degrees);
 		} else {
-			armIO = new ClimbSparkMax(ClimbConstants.firstMotorId, ClimbConstants.secondMotorId);
+			armIO = new ArmSparkMax(ClimbConstants.firstMotorId, ClimbConstants.secondMotorId);
 		}
 		SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
 	}
@@ -72,13 +72,10 @@ public class ClimbArm extends Arm {
 		return state;
 	}
 
-	public double getPositionMeters() {
-		return data.positionUnits;
-	}
-
 	@Override
 	public void stop() {
 		setState(ClimbConstants.ArmStates.STOPPED);
+		armIO.setVoltage(0);
 	}
 
 	/**
@@ -111,38 +108,79 @@ public class ClimbArm extends Arm {
 	@Override
 	public void setState(Enum<?> state) {
 		this.state = (ClimbConstants.ArmStates) state;
+		switch (this.state) {
+			case STOPPED:
+				runStateStop();
+				break;
+			case STOWED:
+				setGoal(ClimbConstants.stowSetPoint_rad);
+				break;
+			case CLIMB:
+				setGoal(ClimbConstants.climbSetPoint_rad);
+			case PREPARE_FOR_CLIMB:
+				setGoal(ClimbConstants.PrepareForClimbSetPoint_rad);
+			case MOVING_DOWN:
+				setVoltage(ClimbConstants.staticMovementVoltage + calculateKGFeedForward());
+				break;
+			case MOVING_UP:
+				setVoltage(-ClimbConstants.staticMovementVoltage + calculateKGFeedForward());
+				break;
+			default:
+				stop();
+				break;
+		}
+	}
+
+	private void runStateStop() {
+		stop();
+	}
+
+	public void setGoal(double setPoint) {
+		controller.setGoal(setPoint);
 	}
 
 	/** Runs the logic for the current arm state. */
 	private void runState() {
 		switch (state) {
-			case STOWED:
-				setVoltage(
-						controller.calculate(data.positionUnits, ClimbConstants.stowSetPoint_rad)
-								+ calculateFeedForward());
-				break;
-			case PREPARE_FOR_CLIMB:
-				setVoltage(
-						controller.calculate(data.positionUnits, ClimbConstants.PrepareForClimbSetPoint_rad)
-								+ calculateFeedForward());
-				break;
-			case CLIMB:
-				setVoltage(
-						controller.calculate(data.positionUnits, ClimbConstants.climbSetPoint_rad)
-								+ calculateFeedForward());
-				break;
 			case STOPPED:
-				setVoltage(0 + calculateFeedForward());
+				runStateStop();
 				break;
 			case MOVING_DOWN:
-				setVoltage(-1 + calculateFeedForward());
+				setVoltage(-1 + calculateKGFeedForward());
 				break;
 			case MOVING_UP:
-				setVoltage(1 + calculateFeedForward());
+				setVoltage(1 + calculateKGFeedForward());
 				break;
 			default:
+				moveToGoal();
 				break;
 		}
+	}
+
+	private double calculateKGFeedForward() {
+		// Calculate feedforward based on the arm's position
+		double feedForward = ClimbConstants.kG * Math.cos(data.positionUnits);
+		return feedForward;
+	}
+
+	/**
+	 * Move the arm to the setpoint using the PID controller and feedforward.
+	 * combines PID control and feedforward to move the arm to desired position.
+	 */
+	private void moveToGoal() {
+		// Get setpoint from the PID controller
+		State firstState = controller.getSetpoint();
+
+		// Calculate PID voltage based on the current position
+		double pidVoltage = controller.calculate(getPositionRad());
+
+		State nextState = controller.getSetpoint();
+
+		// Calculate feedforward voltage
+		double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
+
+		// Set the voltage for the arm motor (combine PID and feedforward)
+		armIO.setVoltage(pidVoltage + ffVoltage);
 	}
 
 	/** Logs data to Shuffleboard. */
@@ -152,21 +190,18 @@ public class ClimbArm extends Arm {
 		positionUnitsLog.set(data.positionUnits);
 		velocityUnitsLog.set(data.velocityUnits);
 		inputVoltsLog.set(data.inputVolts);
-		appliedVoltsLog.set(data.appliedVolts);
-		currentAmpsLog.set(data.currentAmps);
-		tempCelciusLog.set(data.tempCelcius);
+		firstMotorAppliedVoltsLog.set(data.firstMotorAppliedVolts);
+		secondMotorAppliedVoltsLog.set(data.secondMotorAppliedVolts);
+		firstMotorCurrentAmpsLog.set(data.firstMotorCurrentAmps);
+		secondMotorCurrentAmpsLog.set(data.secondMotorCurrentAmps);
+		firstMotorTempCelciusLog.set(data.firstMotorTempCelcius);
+		secondMotorTempCelciusLog.set(data.secondMotorTempCelcius);
 
 		armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
 		stateLog.set(state.name());
 
 		Logger.recordOutput(this.getName(), mechanism2d);
-	}
-
-	private double calculateFeedForward() {
-		// Calculate feedforward based on the arm's position
-		double feedForward = ClimbConstants.kG * Math.cos(data.positionUnits);
-		return feedForward;
 	}
 
 	/** Periodic method for updating arm behavior. */
@@ -180,23 +215,5 @@ public class ClimbArm extends Arm {
 
 		// Run the current state logic
 		runState();
-	}
-
-	/**
-	 * Move the arm to the setpoint using the PID controller and feedforward.
-	 * combines PID control and feedforward to move the arm to desired position.
-	 */
-	private void moveToGoal() {
-		// Get setpoint from the PID controller
-		State setpoint = controller.getSetpoint();
-
-		// Calculate PID voltage based on the current position
-		double pidVoltage = controller.calculate(getPositionMeters());
-
-		// Calculate feedforward voltage
-		double ffVoltage = calculateFeedForward();
-
-		// Set the voltage for the arm motor (combine PID and feedforward)
-		armIO.setVoltage(pidVoltage + ffVoltage);
 	}
 }

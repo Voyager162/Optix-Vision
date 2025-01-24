@@ -1,5 +1,6 @@
 package frc.robot.subsystems.arm.real;
 
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -8,6 +9,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.arm.ArmIO;
+import frc.robot.subsystems.arm.generalArmConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
@@ -17,23 +19,53 @@ import frc.robot.utils.MiscConstants.SimConstants;
  */
 public class ArmSparkMax implements ArmIO {
 
-	private SparkMax motor;
-	private SparkMaxConfig config = new SparkMaxConfig();
+	private SparkMax firstMotor;
+	private SparkMax secondMotor;
+	private SparkMaxConfig firstMotorConfig = new SparkMaxConfig();
+	private SparkMaxConfig secondMotorConfig = new SparkMaxConfig();
+
+	private SparkAbsoluteEncoder absoluteEncoder;
+	private double absolutePos;
 
 	private double inputVolts = 0;
 	private double previousVelocity = 0;
 	private double velocity = 0;
 
-	public ArmSparkMax(int motorId) {
+	public ArmSparkMax(int firstMotorId, int secondMotorId) {
 
-		motor = new SparkMax(motorId, MotorType.kBrushless);
-		config.smartCurrentLimit(30, 50);
-		config.encoder.inverted(false);
-		config.idleMode(IdleMode.kBrake);
-		config.encoder.positionConversionFactor(2 * Math.PI);
-		config.encoder.velocityConversionFactor(2 * Math.PI / 60.0);
-		motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+		firstMotor = new SparkMax(firstMotorId, MotorType.kBrushless);
+		secondMotor = new SparkMax(secondMotorId, MotorType.kBrushless);
+
+
+		firstMotorConfig.smartCurrentLimit(generalArmConstants.NEOStallLimit, generalArmConstants.NEOFreeLimit);
+		firstMotorConfig.encoder.inverted(false);
+		firstMotorConfig.inverted(false);
+		firstMotorConfig.idleMode(IdleMode.kBrake);
+		firstMotorConfig.encoder.positionConversionFactor(2 * Math.PI);
+		firstMotorConfig.encoder.velocityConversionFactor(2 * Math.PI / 60.0);
+
+		firstMotor.configure(firstMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+		secondMotorConfig.apply(firstMotorConfig);
+		secondMotorConfig.encoder.inverted(true);
+		secondMotorConfig.inverted(true);
+
+		secondMotor.configure(secondMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+		absoluteEncoder = firstMotor.getAbsoluteEncoder();
+		absolutePos = absoluteEncoder.getPosition();
+
+		firstMotor.getEncoder().setPosition(absolutePos);
+		secondMotor.getEncoder().setPosition(absolutePos);
 	}
+
+
+	public void setIdleMode(IdleMode idleMode) {
+        firstMotorConfig.idleMode(idleMode);
+        secondMotorConfig.idleMode(idleMode);
+        firstMotor.configure(firstMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        secondMotor.configure(secondMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    }
 
 	/**
 	 * Takes in the data from ArmData and uses it to update the data on the position
@@ -43,17 +75,22 @@ public class ArmSparkMax implements ArmIO {
 	 * @param data
 	 */
 	@Override
-	public void updateData(ArmData data) {
-		previousVelocity = velocity;
-		velocity = motor.getEncoder().getVelocity();
-		data.positionUnits = motor.getEncoder().getPosition();
-		data.velocityUnits = velocity;
-		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
-		data.currentAmps = motor.getOutputCurrent();
-		data.inputVolts = inputVolts;
-		data.appliedVolts = motor.getBusVoltage() * motor.getAppliedOutput();
-		data.tempCelcius = motor.getMotorTemperature();
-	}
+    public void updateData(ArmData data) {
+        previousVelocity = velocity;
+        velocity = (firstMotor.getEncoder().getVelocity() + secondMotor.getEncoder().getVelocity()) / 2;
+        // data.positionMeters = (leftMotor.getEncoder().getPosition() + rightMotor.getEncoder().getVelocity()) / 2
+        //         + absolutePos;
+        data.positionUnits = (firstMotor.getEncoder().getPosition() + secondMotor.getEncoder().getVelocity()) / 2;
+        data.velocityUnits = velocity;
+        data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
+        data.firstMotorCurrentAmps = firstMotor.getOutputCurrent();
+        data.secondMotorCurrentAmps = secondMotor.getOutputCurrent();
+        data.inputVolts = inputVolts;
+        data.firstMotorAppliedVolts = firstMotor.getBusVoltage() * firstMotor.getAppliedOutput();
+        data.secondMotorAppliedVolts = secondMotor.getBusVoltage() * secondMotor.getAppliedOutput();
+        data.firstMotorTempCelcius = firstMotor.getMotorTemperature();
+        data.secondMotorTempCelcius = secondMotor.getMotorTemperature();
+    }
 
 	/**
 	 * Takes the volts parameter, then uses inputVolts to set the motor voltage
@@ -65,10 +102,11 @@ public class ArmSparkMax implements ArmIO {
 	 *
 	 * @param volts
 	 */
-	@Override
-	public void setVoltage(double volts) {
-		inputVolts = MathUtil.clamp(volts, -12.0, 12.0);
-		inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
-		motor.setVoltage(inputVolts);
-	}
+    @Override
+    public void setVoltage(double volts) {
+        inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
+        inputVolts = MathUtil.clamp(volts, -12, 12);
+        firstMotor.setVoltage(inputVolts);
+        secondMotor.setVoltage(inputVolts);
+    }
 }

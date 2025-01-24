@@ -16,7 +16,6 @@ public class ArmSim implements ArmIO {
 	private SingleJointedArmSim armSim;
 
 	public ArmSim(
-			int numMotors,
 			double gearing,
 			double momentOfInertia,
 			double length_meters,
@@ -28,7 +27,7 @@ public class ArmSim implements ArmIO {
 		System.out.println("[Init] Creating ArmSim");
 
 		armSim = new SingleJointedArmSim(
-				DCMotor.getNEO(numMotors),
+				DCMotor.getNEO(2),
 				gearing,
 				momentOfInertia,
 				length_meters,
@@ -38,10 +37,9 @@ public class ArmSim implements ArmIO {
 				startingAngle_Degrees * Math.PI / 180);
 	}
 
-	private double appliedVolts = 0;
+	private double inputVolts = 0;
 	private double previousVelocity = 0;
 	private double velocity = 0;
-	private double conversionFactor = 1;
 
 	/**
 	 * Updates the set of loggable inputs for the sim.
@@ -49,20 +47,24 @@ public class ArmSim implements ArmIO {
 	 * @param data
 	 */
 	@Override
-	public void updateData(ArmData data) {
-		armSim.update(SimConstants.loopPeriodSec);
+    public void updateData(ArmData data) {
+        armSim.update(0.02);
+        previousVelocity = velocity;
+        velocity = armSim.getVelocityRadPerSec();
+        data.positionUnits = armSim.getAngleRads();
+        data.velocityUnits = velocity;
+        data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
+        
+        data.inputVolts = inputVolts;
+        data.firstMotorAppliedVolts = inputVolts;
+        data.secondMotorAppliedVolts = inputVolts;
+        data.firstMotorCurrentAmps = armSim.getCurrentDrawAmps();
+        data.secondMotorCurrentAmps = data.firstMotorCurrentAmps;
 
-		previousVelocity = velocity;
-		velocity = armSim.getVelocityRadPerSec() * conversionFactor;
-		data.positionUnits = armSim.getAngleRads() * conversionFactor; // Directly use the angle from the simulation
-		data.velocityUnits = velocity;
-		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
-		data.currentAmps = armSim.getCurrentDrawAmps();
-		data.inputVolts = appliedVolts;
-		data.appliedVolts = appliedVolts;
-
-		data.tempCelcius = 0.0; // sim has no temperature
-	}
+        // Sim has no temp
+        data.firstMotorTempCelcius = 0;
+        data.secondMotorTempCelcius = 0;
+    }
 
 	/**
 	 * Run the motor at the specified voltage.
@@ -71,7 +73,8 @@ public class ArmSim implements ArmIO {
 	 */
 	@Override
 	public void setVoltage(double volts) {
-		appliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
-		armSim.setInputVoltage(appliedVolts);
+        inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
+        inputVolts = MathUtil.clamp(volts, -12, 12);
+        armSim.setInputVoltage(inputVolts);
 	}
 }

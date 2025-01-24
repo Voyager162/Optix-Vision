@@ -8,7 +8,8 @@ import edu.wpi.first.math.util.Units;
  * @author Weston Gardner
  */
 public class CoralConstants {
-	public static final int motorId = 0;
+	public static final int firstMotorID = 0;
+	public static final int secondMotorID = 0;
 	public static final int numMotors = 1;
 
 	public static final double armLength_inches = 17.796; // from cad max length of arm
@@ -40,6 +41,8 @@ public class CoralConstants {
 
 	public static final double momentOfInertia = 0.775; // from last years MOI
 	public static final boolean simulateGravity = true;
+
+	public static final double staticMovementVoltage = 2;
 
 	public enum ArmStates {
 		MOVING_DOWN,
