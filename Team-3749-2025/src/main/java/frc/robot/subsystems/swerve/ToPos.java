@@ -19,6 +19,7 @@ public class ToPos {
     private static final double SAFETY_MARGIN_INCREMENT = 0.2; // Increment if detour fails
     private static final double HEXAGON_RADIUS = 1.0; // Radius of the hexagon
     private static final double MIN_CLEARANCE = 0.1; // Minimum clearance from edges
+    private static final double FINAL_APPROACH_DISTANCE = 1.0; // Distance to stop before final heading
     private static final List<Translation2d> HEXAGON_VERTICES = List.of(
         new Translation2d(4.5 + HEXAGON_RADIUS, 4),
         new Translation2d(4.5 + 0.5 * HEXAGON_RADIUS, 4 + Math.sqrt(3) / 2 * HEXAGON_RADIUS),
@@ -43,7 +44,6 @@ public class ToPos {
      */
     public static void generateDynamicPathAsync(
             Pose2d initialPose,
-            Pose2d beforefinal,
             Pose2d finalPose,
             double maxVelocity,
             double maxAcceleration,
@@ -53,7 +53,7 @@ public class ToPos {
         executorService.submit(() -> {
             System.out.println("Starting path generation...");
             PathPlannerPath path = generateDynamicPath(
-                initialPose, beforefinal ,finalPose, maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration
+                initialPose, finalPose, maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration
             );
             if (path != null) {
                 System.out.println("Path generation completed successfully.");
@@ -73,7 +73,6 @@ public class ToPos {
 
     public static PathPlannerPath generateDynamicPath(
             Pose2d initialPose,
-            Pose2d beforefinal,
             Pose2d finalPose,
             double maxVelocity,
             double maxAcceleration,
@@ -84,16 +83,19 @@ public class ToPos {
 
         // Adjust start and end points if they're too close to obstacles
         Translation2d start = adjustIfTooCloseToObstacle(initialPose.getTranslation());
-        Translation2d beforeEnd = adjustIfTooCloseToObstacle(beforefinal.getTranslation());
         Translation2d end = adjustIfTooCloseToObstacle(finalPose.getTranslation());
+
+        // Calculate the final approach point
+        Translation2d finalApproach = calculateFinalApproachPoint(end, finalPose.getRotation());
 
         waypoints.add(new Waypoint(start, start, start));
 
-        List<Translation2d> detours = calculateDetour(start, end);
+        List<Translation2d> detours = calculateDetour(start, finalApproach);
         for (Translation2d detour : detours) {
             waypoints.add(new Waypoint(detour, detour, detour));
         }
-        waypoints.add(new Waypoint(beforeEnd, beforeEnd, beforeEnd));
+
+        waypoints.add(new Waypoint(finalApproach, finalApproach, finalApproach));
         waypoints.add(new Waypoint(end, end, end));
 
         if (waypoints.size() < 2) {
@@ -122,24 +124,23 @@ public class ToPos {
         }
         return new Rotation2d(Math.atan2(y, x));
     }
-    
+
     private static Rotation2d calculateFullRotation(Rotation2d start, Rotation2d end) {
         double startRadians = start.getRadians();
         double endRadians = end.getRadians();
-    
+
         // Calculate the shortest rotation direction
         double delta = endRadians - startRadians;
-    
+
         if (delta > Math.PI) {
             delta -= 2 * Math.PI;
         } else if (delta < -Math.PI) {
             delta += 2 * Math.PI;
         }
-    
+
         // Ensure the rotation is valid
         return safeRotation2d(Math.cos(startRadians + delta), Math.sin(startRadians + delta));
     }
-    
 
     private static Translation2d adjustIfTooCloseToObstacle(Translation2d point) {
         for (int i = 0; i < HEXAGON_VERTICES.size() - 1; i++) {
@@ -152,6 +153,12 @@ public class ToPos {
             }
         }
         return point;
+    }
+
+    private static Translation2d calculateFinalApproachPoint(Translation2d end, Rotation2d finalHeading) {
+        double dx = FINAL_APPROACH_DISTANCE * Math.cos(finalHeading.getRadians());
+        double dy = FINAL_APPROACH_DISTANCE * Math.sin(finalHeading.getRadians());
+        return new Translation2d(end.getX() - dx, end.getY() - dy);
     }
 
     private static boolean isPointNearEdge(Translation2d point, Translation2d vertex1, Translation2d vertex2) {

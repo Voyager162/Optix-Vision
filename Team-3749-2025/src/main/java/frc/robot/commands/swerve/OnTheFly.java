@@ -48,7 +48,6 @@ public class OnTheFly extends Command {
             path = ToPos.generateDynamicPath(
                 Robot.swerve.getPose(),
                 ToPosConstants.Setpoints.reefTrig(Robot.swerve.getPPSetpoint(), ToPosConstants.Setpoints.TrigDirection.FORWARD),
-                ToPosConstants.Setpoints.reefTrig(Robot.swerve.getPPSetpoint(), ToPosConstants.Setpoints.TrigDirection.FORWARD),
                 Robot.swerve.getMaxDriveSpeed(),
                 SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
                 Robot.swerve.getMaxAngularSpeed(),
@@ -58,7 +57,6 @@ public class OnTheFly extends Command {
         {
             path = ToPos.generateDynamicPath(
                 Robot.swerve.getPose(),
-                Robot.swerve.getPPSetpoint(),
                 Robot.swerve.getPPSetpoint(),
                 Robot.swerve.getMaxDriveSpeed(),
                 SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
