@@ -27,7 +27,7 @@ public class CoralConstants {
 	public static final double kI = 0.0;
 	public static final double kD = 0.0;
 
-	public static double kG = 2.90811;
+	public static double kG = 1.454056;
 	public static final double kS = 0.0;
 	public static final double kA = 0.0;
 	public static final double kV = 0.0;

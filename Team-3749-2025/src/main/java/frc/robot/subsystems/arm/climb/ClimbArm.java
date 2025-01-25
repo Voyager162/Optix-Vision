@@ -74,7 +74,7 @@ public class ClimbArm extends Arm {
 
 	@Override
 	public void stop() {
-		armIO.setVoltage(0);
+		setState(ClimbConstants.ArmStates.STOPPED);
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class ClimbArm extends Arm {
 		this.state = (ClimbConstants.ArmStates) state;
 		switch (this.state) {
 			case STOPPED:
-				stop();
+				setVoltage(calculateKGFeedForward());
 				break;
 			case STOWED:
 				setGoal(ClimbConstants.stowSetPoint_rad);
@@ -125,7 +125,7 @@ public class ClimbArm extends Arm {
 				setVoltage(-ClimbConstants.staticMovementVoltage + calculateKGFeedForward());
 				break;
 			default:
-				stop();
+				setVoltage(calculateKGFeedForward());
 				break;
 		}
 	}
