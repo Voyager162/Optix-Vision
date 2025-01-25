@@ -59,16 +59,16 @@ public class ToPosConstants {
             public static final double ROBOT_WIDTH = 0.6;  // Width of the robot in meters
             
             // Adjusted setpoints
-            public static final Pose2d coralTop = adjustPose(.85, 7.3, Math.toRadians(125));
-            public static final Pose2d coralBottom = adjustPose(1.2, 1.0, Math.toRadians(-125));
-            public static final Pose2d processor = adjustPose(6.3, 0.66, Math.toRadians(-90));
+            public static final Pose2d coralTop = adjustPose(0.851154, 7.39648, Math.toRadians(125));
+            public static final Pose2d coralBottom = adjustPose(0.851154, 0.65532, Math.toRadians(-125));
+            public static final Pose2d processor = adjustPose(5.987542, -0.00381, Math.toRadians(-90));
             
-            public static final Pose2d reef18 = adjustPose(3.09, 4.03, Math.toRadians(0));
-            public static final Pose2d reef17 = adjustPose(3.7, 2.85, Math.toRadians(60));
-            public static final Pose2d reef22 = adjustPose(5.24, 2.75, Math.toRadians(120));
-            public static final Pose2d reef21 = adjustPose(6.0, 4.0, Math.toRadians(180));
-            public static final Pose2d reef20 = adjustPose(5.22, 5.37, Math.toRadians(-120));
-            public static final Pose2d reef19 = adjustPose(3.73, 5.24, Math.toRadians(-60));
+            public static final Pose2d reef18 = adjustPose(3.6576, 4.0259, Math.toRadians(0));
+            public static final Pose2d reef17 = adjustPose(4.073906, 3.306318, Math.toRadians(60));
+            public static final Pose2d reef22 = adjustPose(4.90474, 3.306318, Math.toRadians(120));
+            public static final Pose2d reef21 = adjustPose(5.321046, 4.0259, Math.toRadians(180));
+            public static final Pose2d reef20 = adjustPose(4.90474, 4.745482, Math.toRadians(-120));
+            public static final Pose2d reef19 = adjustPose(4.073906, 4.745482, Math.toRadians(-60));
             
             // Helper method to adjust Pose2d
             public static Pose2d adjustPose(double x, double y, double heading) {
