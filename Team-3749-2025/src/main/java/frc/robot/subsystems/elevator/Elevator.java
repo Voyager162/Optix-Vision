@@ -104,6 +104,8 @@ public class Elevator extends SubsystemBase {
             Seconds.of(10) // Test duration
     );
 
+    private SysIdTuner sysIdTuner;
+
     public Elevator() {
         if (Robot.isSimulation()) {
             elevatorio = new ElevatorSimulation();
@@ -111,7 +113,11 @@ public class Elevator extends SubsystemBase {
             elevatorio = new ElevatorSparkMax();
         }
 
-        SysIdTuner sysIdTuner = new SysIdTuner("elevator", config, this, elevatorio, motorData);
+        sysIdTuner = new SysIdTuner("elevator", config, this, elevatorio::setVoltage, motorData);
+    }
+
+    public SysIdTuner getSysIdTuner(){
+        return sysIdTuner;
     }
 
     public ElevatorStates getState() {
