@@ -35,10 +35,10 @@ public class ClimbArm extends Arm {
 					ClimbConstants.maxAcceleration));
 
 	private ArmFeedforward feedforward = new ArmFeedforward(
-			ClimbConstants.kG,
 			ClimbConstants.kS,
-			ClimbConstants.kA,
-			ClimbConstants.kV);
+			ClimbConstants.kG,
+			ClimbConstants.kV,
+			ClimbConstants.kA);
 
 	// Shuffleboard data for state logging
 	private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());

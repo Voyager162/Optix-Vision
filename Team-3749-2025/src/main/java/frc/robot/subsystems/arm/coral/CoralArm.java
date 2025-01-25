@@ -34,10 +34,10 @@ public class CoralArm extends Arm {
 					CoralConstants.maxAcceleration));
 
 	private ArmFeedforward feedforward = new ArmFeedforward(
-			CoralConstants.kG,
 			CoralConstants.kS,
-			CoralConstants.kA,
-			CoralConstants.kV);
+			CoralConstants.kG,
+			CoralConstants.kV,
+			CoralConstants.kA);
 
 	private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
