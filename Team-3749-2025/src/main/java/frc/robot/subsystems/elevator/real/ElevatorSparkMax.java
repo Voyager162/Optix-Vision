@@ -63,24 +63,23 @@ public class ElevatorSparkMax implements ElevatorIO {
 				rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 	}
 
-	@Override
-	public void updateData(ElevatorData data) {
-		previousVelocity = velocity;
-		velocity = (leftMotor.getEncoder().getVelocity() + rightMotor.getEncoder().getVelocity()) / 2;
-		// data.positionMeters = (leftMotor.getEncoder().getPosition() +
-		// rightMotor.getEncoder().getVelocity()) / 2
-		// + absolutePos;
-		data.positionMeters = (leftMotor.getEncoder().getPosition() + rightMotor.getEncoder().getVelocity()) / 2;
-		data.velocityMetersPerSecond = velocity;
-		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
-		data.leftCurrentAmps = leftMotor.getOutputCurrent();
-		data.rightCurrentAmps = rightMotor.getOutputCurrent();
-		data.inputVolts = inputVolts;
-		data.leftAppliedVolts = leftMotor.getBusVoltage() * leftMotor.getAppliedOutput();
-		data.rightAppliedVolts = rightMotor.getBusVoltage() * rightMotor.getAppliedOutput();
-		data.leftTempCelcius = leftMotor.getMotorTemperature();
-		data.rightTempCelcius = rightMotor.getMotorTemperature();
-	}
+  @Override
+  public void updateData(ElevatorData data) {
+    previousVelocity = velocity;
+    velocity = (leftMotor.getEncoder().getVelocity() + rightMotor.getEncoder().getVelocity()) / 2;
+    // data.positionMeters = (leftMotor.getEncoder().getPosition() + rightMotor.getEncoder().getVelocity()) / 2
+    //         + absolutePos;
+    data.positionMeters = (leftMotor.getEncoder().getPosition() + rightMotor.getEncoder().getVelocity()) / 2;
+    data.velocityMetersPerSecond = velocity;
+    data.accelerationMetersPerSecondSquared = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
+    data.leftCurrentAmps = leftMotor.getOutputCurrent();
+    data.rightCurrentAmps = rightMotor.getOutputCurrent();
+    data.inputVolts = inputVolts;
+    data.leftAppliedVolts = leftMotor.getBusVoltage() * leftMotor.getAppliedOutput();
+    data.rightAppliedVolts = rightMotor.getBusVoltage() * rightMotor.getAppliedOutput();
+    data.leftTempCelcius = leftMotor.getMotorTemperature();
+    data.rightTempCelcius = rightMotor.getMotorTemperature();
+  }
 
 	@Override
 	public void setVoltage(double volts) {
