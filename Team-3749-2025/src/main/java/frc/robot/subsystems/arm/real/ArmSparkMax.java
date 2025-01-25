@@ -9,7 +9,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.arm.ArmIO;
-import frc.robot.subsystems.arm.GeneralArmConstants;
+import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
@@ -36,7 +36,7 @@ public class ArmSparkMax implements ArmIO {
 		firstMotor = new SparkMax(firstMotorId, MotorType.kBrushless);
 		secondMotor = new SparkMax(secondMotorId, MotorType.kBrushless);
 
-		firstMotorConfig.smartCurrentLimit(GeneralArmConstants.NEOStallLimit, GeneralArmConstants.NEOFreeLimit);
+		firstMotorConfig.smartCurrentLimit(ArmConstants.NEOStallLimit, ArmConstants.NEOFreeLimit);
 		firstMotorConfig.encoder.inverted(false);
 		firstMotorConfig.inverted(false);
 		firstMotorConfig.idleMode(IdleMode.kBrake);
