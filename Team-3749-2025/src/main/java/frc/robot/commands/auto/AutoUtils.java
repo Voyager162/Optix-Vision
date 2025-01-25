@@ -190,15 +190,17 @@ public class AutoUtils {
 
     }
 
-    public static void addIntake(AutoTrajectory trajectory) {
+    public static Command addIntake(AutoTrajectory trajectory) {
         Pose2d endingPose2d = getFinalPose2d(trajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
         if (DriverStation.getAlliance().get() == Alliance.Red) {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
+        Command intake = Commands.print("Intaking");
 
-        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(Commands.print("Intaking"));
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(intake);
+        return intake;
 
     }
 
@@ -226,7 +228,8 @@ public class AutoUtils {
 
     }
 
-    public static void goNextAfterScored(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory, Command scoreCommand) {
+    public static void goNextAfterScored(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory,
+            Command scoreCommand) {
         Pose2d endingPose2d = getFinalPose2d(curTrajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
@@ -237,7 +240,7 @@ public class AutoUtils {
 
     }
 
-    public static void goNextAfterIntake(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory) {
+    public static void goNextAfterIntake(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory, Command intakeCommand) {
         Pose2d endingPose2d = getFinalPose2d(curTrajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
@@ -245,7 +248,7 @@ public class AutoUtils {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
 
-        curTrajectory.atPose(endingPose2d, 1, 1.57).onTrue(nextTrajectory.cmd());
+        curTrajectory.done().and(() -> intakeCommand.isFinished()).onTrue(nextTrajectory.cmd());
 
     }
 
