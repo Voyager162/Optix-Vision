@@ -9,7 +9,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.arm.ArmIO;
-import frc.robot.subsystems.arm.generalArmConstants;
+import frc.robot.subsystems.arm.GeneralArmConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
@@ -36,8 +36,7 @@ public class ArmSparkMax implements ArmIO {
 		firstMotor = new SparkMax(firstMotorId, MotorType.kBrushless);
 		secondMotor = new SparkMax(secondMotorId, MotorType.kBrushless);
 
-
-		firstMotorConfig.smartCurrentLimit(generalArmConstants.NEOStallLimit, generalArmConstants.NEOFreeLimit);
+		firstMotorConfig.smartCurrentLimit(GeneralArmConstants.NEOStallLimit, GeneralArmConstants.NEOFreeLimit);
 		firstMotorConfig.encoder.inverted(false);
 		firstMotorConfig.inverted(false);
 		firstMotorConfig.idleMode(IdleMode.kBrake);
@@ -59,13 +58,12 @@ public class ArmSparkMax implements ArmIO {
 		secondMotor.getEncoder().setPosition(absolutePos);
 	}
 
-
 	public void setIdleMode(IdleMode idleMode) {
-        firstMotorConfig.idleMode(idleMode);
-        secondMotorConfig.idleMode(idleMode);
-        firstMotor.configure(firstMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        secondMotor.configure(secondMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    }
+		firstMotorConfig.idleMode(idleMode);
+		secondMotorConfig.idleMode(idleMode);
+		firstMotor.configure(firstMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+		secondMotor.configure(secondMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+	}
 
 	/**
 	 * Takes in the data from ArmData and uses it to update the data on the position
@@ -75,22 +73,23 @@ public class ArmSparkMax implements ArmIO {
 	 * @param data
 	 */
 	@Override
-    public void updateData(ArmData data) {
-        previousVelocity = velocity;
-        velocity = (firstMotor.getEncoder().getVelocity() + secondMotor.getEncoder().getVelocity()) / 2;
-        // data.positionMeters = (leftMotor.getEncoder().getPosition() + rightMotor.getEncoder().getVelocity()) / 2
-        //         + absolutePos;
-        data.positionUnits = (firstMotor.getEncoder().getPosition() + secondMotor.getEncoder().getVelocity()) / 2;
-        data.velocityUnits = velocity;
-        data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
-        data.firstMotorCurrentAmps = firstMotor.getOutputCurrent();
-        data.secondMotorCurrentAmps = secondMotor.getOutputCurrent();
-        data.inputVolts = inputVolts;
-        data.firstMotorAppliedVolts = firstMotor.getBusVoltage() * firstMotor.getAppliedOutput();
-        data.secondMotorAppliedVolts = secondMotor.getBusVoltage() * secondMotor.getAppliedOutput();
-        data.firstMotorTempCelcius = firstMotor.getMotorTemperature();
-        data.secondMotorTempCelcius = secondMotor.getMotorTemperature();
-    }
+	public void updateData(ArmData data) {
+		previousVelocity = velocity;
+		velocity = (firstMotor.getEncoder().getVelocity() + secondMotor.getEncoder().getVelocity()) / 2;
+		// data.positionMeters = (leftMotor.getEncoder().getPosition() +
+		// rightMotor.getEncoder().getVelocity()) / 2
+		// + absolutePos;
+		data.positionUnits = (firstMotor.getEncoder().getPosition() + secondMotor.getEncoder().getVelocity()) / 2;
+		data.velocityUnits = velocity;
+		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
+		data.firstMotorCurrentAmps = firstMotor.getOutputCurrent();
+		data.secondMotorCurrentAmps = secondMotor.getOutputCurrent();
+		data.inputVolts = inputVolts;
+		data.firstMotorAppliedVolts = firstMotor.getBusVoltage() * firstMotor.getAppliedOutput();
+		data.secondMotorAppliedVolts = secondMotor.getBusVoltage() * secondMotor.getAppliedOutput();
+		data.firstMotorTempCelcius = firstMotor.getMotorTemperature();
+		data.secondMotorTempCelcius = secondMotor.getMotorTemperature();
+	}
 
 	/**
 	 * Takes the volts parameter, then uses inputVolts to set the motor voltage
@@ -102,11 +101,11 @@ public class ArmSparkMax implements ArmIO {
 	 *
 	 * @param volts
 	 */
-    @Override
-    public void setVoltage(double volts) {
-        inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
-        inputVolts = MathUtil.clamp(volts, -12, 12);
-        firstMotor.setVoltage(inputVolts);
-        secondMotor.setVoltage(inputVolts);
-    }
+	@Override
+	public void setVoltage(double volts) {
+		inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
+		inputVolts = MathUtil.clamp(volts, -12, 12);
+		firstMotor.setVoltage(inputVolts);
+		secondMotor.setVoltage(inputVolts);
+	}
 }

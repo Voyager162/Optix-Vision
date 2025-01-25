@@ -47,24 +47,24 @@ public class ArmSim implements ArmIO {
 	 * @param data
 	 */
 	@Override
-    public void updateData(ArmData data) {
-        armSim.update(0.02);
-        previousVelocity = velocity;
-        velocity = armSim.getVelocityRadPerSec();
-        data.positionUnits = armSim.getAngleRads();
-        data.velocityUnits = velocity;
-        data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
-        
-        data.inputVolts = inputVolts;
-        data.firstMotorAppliedVolts = inputVolts;
-        data.secondMotorAppliedVolts = inputVolts;
-        data.firstMotorCurrentAmps = armSim.getCurrentDrawAmps();
-        data.secondMotorCurrentAmps = data.firstMotorCurrentAmps;
+	public void updateData(ArmData data) {
+		armSim.update(0.02);
+		previousVelocity = velocity;
+		velocity = armSim.getVelocityRadPerSec();
+		data.positionUnits = armSim.getAngleRads();
+		data.velocityUnits = velocity;
+		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
 
-        // Sim has no temp
-        data.firstMotorTempCelcius = 0;
-        data.secondMotorTempCelcius = 0;
-    }
+		data.inputVolts = inputVolts;
+		data.firstMotorAppliedVolts = inputVolts;
+		data.secondMotorAppliedVolts = inputVolts;
+		data.firstMotorCurrentAmps = armSim.getCurrentDrawAmps();
+		data.secondMotorCurrentAmps = data.firstMotorCurrentAmps;
+
+		// Sim has no temp
+		data.firstMotorTempCelcius = 0;
+		data.secondMotorTempCelcius = 0;
+	}
 
 	/**
 	 * Run the motor at the specified voltage.
@@ -73,8 +73,8 @@ public class ArmSim implements ArmIO {
 	 */
 	@Override
 	public void setVoltage(double volts) {
-        inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
-        inputVolts = MathUtil.clamp(volts, -12, 12);
-        armSim.setInputVoltage(inputVolts);
+		inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
+		inputVolts = MathUtil.clamp(volts, -12, 12);
+		armSim.setInputVoltage(inputVolts);
 	}
 }

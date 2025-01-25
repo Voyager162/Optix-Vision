@@ -160,7 +160,7 @@ public class CoralArm extends Arm {
 		return feedForward;
 	}
 
-		/**
+	/**
 	 * Move the arm to the setpoint using the PID controller and feedforward.
 	 * combines PID control and feedforward to move the arm to desired position.
 	 */

@@ -21,13 +21,19 @@ public abstract class Arm extends SubsystemBase {
 	protected ShuffleData<Double> positionUnitsLog = new ShuffleData<>(this.getName(), "position units", 0.0);
 	protected ShuffleData<Double> velocityUnitsLog = new ShuffleData<>(this.getName(), "velocity units", 0.0);
 	public ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>(this.getName(), "input volts", 0.0);
-	
-	protected ShuffleData<Double> firstMotorAppliedVoltsLog = new ShuffleData<>(this.getName(), "first motor applied volts", 0.0);
-	protected ShuffleData<Double> secondMotorAppliedVoltsLog = new ShuffleData<>(this.getName(), "second motor applied volts", 0.0);
-	protected ShuffleData<Double> firstMotorCurrentAmpsLog = new ShuffleData<>(this.getName(), "first motor current amps", 0.0);
-	protected ShuffleData<Double> secondMotorCurrentAmpsLog = new ShuffleData<>(this.getName(), "second motor current amps", 0.0);
-	protected ShuffleData<Double> firstMotorTempCelciusLog = new ShuffleData<>(this.getName(), "first motor temp celcius", 0.0);
-	protected ShuffleData<Double> secondMotorTempCelciusLog = new ShuffleData<>(this.getName(), "second motor temp celcius", 0.0);
+
+	protected ShuffleData<Double> firstMotorAppliedVoltsLog = new ShuffleData<>(this.getName(),
+			"first motor applied volts", 0.0);
+	protected ShuffleData<Double> secondMotorAppliedVoltsLog = new ShuffleData<>(this.getName(),
+			"second motor applied volts", 0.0);
+	protected ShuffleData<Double> firstMotorCurrentAmpsLog = new ShuffleData<>(this.getName(),
+			"first motor current amps", 0.0);
+	protected ShuffleData<Double> secondMotorCurrentAmpsLog = new ShuffleData<>(this.getName(),
+			"second motor current amps", 0.0);
+	protected ShuffleData<Double> firstMotorTempCelciusLog = new ShuffleData<>(this.getName(),
+			"first motor temp celcius", 0.0);
+	protected ShuffleData<Double> secondMotorTempCelciusLog = new ShuffleData<>(this.getName(),
+			"second motor temp celcius", 0.0);
 
 	protected LoggedMechanism2d mechanism2d = new LoggedMechanism2d(60, 60);
 	protected LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
