@@ -51,7 +51,7 @@ public class Autos {
         Command intake2 = AutoUtils.addIntake(trajectory4);
         AutoUtils.addScoreL4(trajectory5); // third score is the end of the routine, so no need for reference
 
-        // reverse order here (connect 3 to 2, THEN 2 to 1)
+        // reverse order here (ex. connect 3 to 2, THEN 2 to 1)
         AutoUtils.goNextAfterIntake(trajectory4, trajectory5, intake2);
         AutoUtils.goNextAfterScored(trajectory3, trajectory4, score2);
         AutoUtils.goNextAfterIntake(trajectory2, trajectory3, intake1);
