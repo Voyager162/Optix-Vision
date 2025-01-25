@@ -14,62 +14,60 @@ public class ScoreL234 extends Command {
     private final Chute chute;
     private final CoralArm coralArm;
     private final Elevator elevator;
-    private final Roller[] rollers;
+    private final Roller coralRoller;
+    private final Roller scoringRoller;
     private final ElevatorStates state;
+    private boolean handoffComplete = false;
 
-    public ScoreL234(Chute chute, CoralArm coralArm, Elevator elevator, Roller[] rollers, ElevatorStates state) {
+    public ScoreL234(Chute chute, CoralArm coralArm, Elevator elevator, Roller coralRoller, Roller scoringRoller, ElevatorStates state) {
         this.chute = chute;
         this.coralArm = coralArm;
         this.elevator = elevator;
-        this.rollers = rollers;
+        this.coralRoller = coralRoller;
+        this.scoringRoller = scoringRoller;
         this.state = state;
     }
 
     @Override
     public void initialize() {
-        coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
-        for (Roller roller : rollers) {
-            roller.setState(RollerConstants.RollerStates.MAINTAIN);
+        if (chute.hasPiece()) {
+            elevator.setState(state); 
+            scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
+        } else {
+            coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
+            elevator.setState(ElevatorStates.STOW);
+            coralRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
         }
         if (chute.hasPiece() && coralArm.getState() == CoralConstants.ArmStates.HAND_OFF) {
             elevator.setState(ElevatorStates.STOW);
-            System.out.println("elevator state stow");
         }
-        System.out.println("init");
     }
 
     @Override
     public void execute() {
-        System.out.println(chute.hasPiece());
-        System.out.println(coralArm.getState());
-        System.out.println(coralArm.getIsStableState());
-        System.out.println(elevator.getState());
-        System.out.println(elevator.getIsStableState());
-        if (chute.hasPiece() && coralArm.getState() == CoralConstants.ArmStates.HAND_OFF && coralArm.getIsStableState()
-                && elevator.getState() == ElevatorStates.STOW && elevator.getIsStableState()) {
+        if (coralArm.getState() == CoralConstants.ArmStates.HAND_OFF && coralArm.getIsStableState() && elevator.getState() == ElevatorStates.STOW) { // add working elevator isStableState later
+            coralRoller.setState(RollerConstants.RollerStates.SCORE); 
+            handoffComplete = true;
+        }
+        if (handoffComplete && !coralArm.hasPiece() && chute.hasPiece()) { // should work once hasPiece logic is made
             elevator.setState(state);
-            System.out.println("elevator state set");
         }
-        if (chute.hasPiece() && coralArm.getState() == CoralConstants.ArmStates.HAND_OFF
-                && coralArm.getIsStableState() && elevator.getState() == state && elevator.getIsStableState()) {
-            rollers[2].setState(RollerConstants.RollerStates.SCORE);
-            System.out.println("score state set");
+
+        if (elevator.getState() == state && elevator.getIsStableState()) {
+            scoringRoller.setState(RollerConstants.RollerStates.SCORE); 
         }
-        System.out.println("execute ran");
     }
 
     @Override
     public void end(boolean interrupted) {
         coralArm.setState(CoralConstants.ArmStates.STOPPED);
         elevator.setState(ElevatorStates.STOP);
-        for (Roller roller : rollers) {
-            roller.setState(RollerConstants.RollerStates.STOP);
-        }
-        System.out.println("end");
+        scoringRoller.setState(RollerConstants.RollerStates.STOP); 
+        coralRoller.setState(RollerConstants.RollerStates.STOP); 
     }
 
     @Override
     public boolean isFinished() {
-        return false;
+        return elevator.getState() == state && !chute.hasPiece(); // add working elevator isStableState later
     }
 }
