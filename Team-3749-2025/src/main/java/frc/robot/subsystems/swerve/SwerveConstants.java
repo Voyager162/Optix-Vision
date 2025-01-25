@@ -16,40 +16,37 @@ import frc.robot.Robot;
  */
 public class SwerveConstants {
         public static final class ModuleConstants {
-
                 public static final double wheelDiameterMeters = Units.inchesToMeters(4);
 
                 public static final double driveMotorGearRatio = 6.75;
                 public static final double turnMotorGearRatio = 12.8;
 
-                private static final double kPTurningReal = 3.75;
-                private static final double kDTurningReal = 0;
-                private static final double kPDrivingReal = 0.27;
+                public static final double[][] turnPID = new double[][] {
+                                { 3.75, 0, 0 }, // small error position
+                                { 3.75, 0, 0 }, // large error position
+                                { 0, 0, 0 }, // no slow velocity control
+                                { 0, 0, 0 } }; // no fast velocity control
+                public static final double[][] drivePID = new double[][] {
+                                { 0, 0, 0 }, // small error position
+                                { 0, 0, 0 }, // large error position
+                                { 0.27, 0, 0 }, // no slow velocity control
+                                { 0.27, 0, 0 } }; // no fast velocity control
+
+                // our FF values
+
                 private static final double kSDrivingReal = 0.26;
                 private static final double kVDrivingReal = 2.765;
                 private static final double kADrivingReal = 0.0;
 
-                private static final double kPTurningSim = 4;
-                private static final double kDTurningSim = 0;
-                private static final double kPDrivingSim = 0.0;
                 private static final double kSDrivingSim = 0.0;
                 private static final double kVDrivingSim = 12 / DriveConstants.simMaxSpeedMetersPerSecond;
                 private static final double kADrivingSim = 1.2;
-                // Or have have it be non-constant, (12 - Velocity*kVDrivingSim)/maxAcceleration
-                // private static final double kADrivingSim = (12 - 2.94 * kVDrivingSim)
-                //                 / DriveConstants.simMaxAccelerationMetersPerSecondSquared;
+                /**
+                 * Or have have it be non-constant, (12 - Velocity*kVDrivingSim)/maxAcceleration
+                 * private static final double kADrivingSim = (12 - 2.94 * kVDrivingSim)
+                 * / DriveConstants.simMaxAccelerationMetersPerSecondSquared;
+                 */
 
-
-                // our PID values
-                public static double kPturning = Robot.isReal()
-                                ? kPTurningReal
-                                : kPTurningSim;
-                public static double kDTurning = Robot.isReal()
-                                ? kDTurningReal
-                                : kDTurningSim;
-                public static double kPDriving = Robot.isReal()
-                                ? kPDrivingReal
-                                : kPDrivingSim;
                 public static double kSDriving = Robot.isReal()
                                 ? kSDrivingReal
                                 : kSDrivingSim;

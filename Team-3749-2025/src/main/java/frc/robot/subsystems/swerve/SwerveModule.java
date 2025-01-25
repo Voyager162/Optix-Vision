@@ -20,8 +20,7 @@ public class SwerveModule {
 
     private String name;
     private SwerveModuleState desiredState = new SwerveModuleState();
-    private final PIDController turningPidController;
-    private final PIDController drivingPidController;
+
     private final SimpleMotorFeedforward drivingFeedFordward;
 
     private ModuleData moduleData = new ModuleData();
@@ -46,13 +45,6 @@ public class SwerveModule {
     public SwerveModule(int index, SwerveModuleIO SwerveModule) {
 
         moduleIO = SwerveModule;
-
-        drivingPidController = new PIDController(ModuleConstants.kPDriving, 0, 0);
-        drivingFeedFordward = new SimpleMotorFeedforward(ModuleConstants.kSDriving,
-                ModuleConstants.kVDriving, ModuleConstants.kADriving);
-        turningPidController = new PIDController(ModuleConstants.kPturning, 0, ModuleConstants.kDTurning);
-        turningPidController.enableContinuousInput(0, 2 * Math.PI);
-
 
         if (index == 0) {
             name = "FL module";
@@ -85,6 +77,9 @@ public class SwerveModule {
                 moduleData.driveVelocityMPerSec);
         turningCurrent = new ShuffleData<>("Swerve/" + name, "turning current",
                 moduleData.turnCurrentAmps);
+
+        drivingFeedFordward = new SimpleMotorFeedforward(ModuleConstants.kSDriving,
+                ModuleConstants.kVDriving, ModuleConstants.kADriving);
     }
 
     public String getName() {
@@ -146,14 +141,13 @@ public class SwerveModule {
      * @param speedMetersPerSecond - the drive speed setpoint for the module
      */
     public void setDriveSpeed(double speedMetersPerSecond) {
-        
-        double drive_volts = 0;
-        double setpointAcceleration = (speedMetersPerSecond-previousSetpointVelocity)/0.02;
 
-        drive_volts = drivingFeedFordward.calculate(speedMetersPerSecond, setpointAcceleration)
-                + drivingPidController.calculate(moduleData.driveVelocityMPerSec, speedMetersPerSecond);
-        setDriveVoltage(drive_volts);
+        double setpointAcceleration = (speedMetersPerSecond - previousSetpointVelocity) / 0.02;
         previousSetpointVelocity = speedMetersPerSecond;
+
+        double feedforward = drivingFeedFordward.calculate(speedMetersPerSecond, setpointAcceleration);
+
+        moduleIO.setDriveVelocityControl(speedMetersPerSecond, feedforward);
 
     }
 
@@ -162,10 +156,7 @@ public class SwerveModule {
      * @param positionRad - the angle setpoint (0-2pi) for the module
      */
     public void setTurnPosition(double positionRad) {
-        double turning_volts = turningPidController.calculate(moduleData.turnAbsolutePositionRad,
-                positionRad);
-        // Make a drive PID Controller
-        setTurnVoltage(turning_volts);
+        moduleIO.setTurningPositionControl(positionRad, 0);
     }
 
     public void setDriveVoltage(double volts) {

@@ -22,6 +22,14 @@ public interface SwerveModuleIO {
     public double turnTempCelcius = 0.0;
   }
 
+  public default void setTurningPositionControl(double setpointPosition, double feedforward) {
+
+  }
+
+  public default void setDriveVelocityControl(double setpointVelocity,double feedforward) {
+
+  }
+
   /** Updates the set of loggable inputs. */
   public default void updateData(ModuleData data) {
   }
