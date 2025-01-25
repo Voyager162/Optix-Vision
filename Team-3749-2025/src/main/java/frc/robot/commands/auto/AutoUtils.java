@@ -121,6 +121,8 @@ public class AutoUtils {
         chooser.addCmd("Station-L4", () -> Autos.getStationToL4());
         chooser.addCmd("TeamTaxi-L5", () -> Autos.getTeamtaxiToL5());
 
+        chooser.addCmd("3-Piece", () -> Autos.get3Piece());
+
         // Default
         chooser.select("Straight");
 
@@ -240,7 +242,8 @@ public class AutoUtils {
 
     }
 
-    public static void goNextAfterIntake(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory, Command intakeCommand) {
+    public static void goNextAfterIntake(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory,
+            Command intakeCommand) {
         Pose2d endingPose2d = getFinalPose2d(curTrajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
