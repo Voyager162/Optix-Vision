@@ -52,13 +52,11 @@ public class ToPos {
             double maxAngularVelocity,
             double maxAngularAcceleration,
             double initialSpeed,
-            double initialHeading
-    ) {
+            double initialHeading) {
         executorService.submit(() -> {
             System.out.println("Starting path generation...");
             PathPlannerPath path = generateDynamicPath(
-                initialPose, finalPose, maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration,initialSpeed,initialHeading
-            );
+                    initialPose, finalPose, maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration, initialSpeed, initialHeading);
             if (path != null) {
                 System.out.println("Path generation completed successfully.");
             } else {
@@ -81,8 +79,9 @@ public class ToPos {
             double maxVelocity,
             double maxAcceleration,
             double maxAngularVelocity,
-            double maxAngularAcceleration
-    ) {
+            double maxAngularAcceleration,
+            double initialSpeed,
+            double initialHeading) {
         List<Waypoint> waypoints = new ArrayList<>();
 
         // Adjust start and end points if they're too close to obstacles
