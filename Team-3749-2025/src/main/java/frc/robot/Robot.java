@@ -34,7 +34,6 @@ public class Robot extends TimedRobot {
   public static Roller algaeRoller = new AlgaeRoller();
   public static Roller coralRoller = new CoralRoller();
   public static Roller scoringRoller = new ScoringRoller();
-  public static Roller[] rollers = {algaeRoller, coralRoller, scoringRoller};
   
   public static ExampleSubsystem subsystem = new ExampleSubsystem();
   public static Elevator elevator = new Elevator();
