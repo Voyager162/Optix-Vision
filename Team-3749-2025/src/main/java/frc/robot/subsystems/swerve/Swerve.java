@@ -217,7 +217,7 @@ public class Swerve extends SubsystemBase {
     ChassisSpeeds speeds = ChassisSpeeds.fromRobotRelativeSpeeds(
         DriveConstants.driveKinematics.toChassisSpeeds(states),
         getRotation2d());
-
+    System.out.println(speeds);
     return speeds;
   }
 
@@ -345,6 +345,7 @@ public class Swerve extends SubsystemBase {
   public Pose2d getPPSetpoint() {
     return ToPosConstants.Setpoints.buttonBoardSetpointMap(currentPPSetpointIndex);
   }
+
   /**
    * Manually sets our odometry position
    * 
@@ -452,9 +453,9 @@ public class Swerve extends SubsystemBase {
 
   }
 
-  public void showSetpointEndGoal()
-  {
-    setpointGoalStateLog.set(new Double[] { getPPSetpoint().getX(),getPPSetpoint().getY(),getPPSetpoint().getRotation().getRadians()});
+  public void showSetpointEndGoal() {
+    setpointGoalStateLog.set(
+        new Double[] { getPPSetpoint().getX(), getPPSetpoint().getY(), getPPSetpoint().getRotation().getRadians() });
   }
 
   public void logSetpoints(PathPlannerTrajectoryState state) {

@@ -48,12 +48,14 @@ public class ToPos {
             double maxVelocity,
             double maxAcceleration,
             double maxAngularVelocity,
-            double maxAngularAcceleration
+            double maxAngularAcceleration,
+            double initialSpeed,
+            double initialHeading
     ) {
         executorService.submit(() -> {
             System.out.println("Starting path generation...");
             PathPlannerPath path = generateDynamicPath(
-                initialPose, finalPose, maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration
+                initialPose, finalPose, maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration,initialSpeed,initialHeading
             );
             if (path != null) {
                 System.out.println("Path generation completed successfully.");
@@ -77,7 +79,9 @@ public class ToPos {
             double maxVelocity,
             double maxAcceleration,
             double maxAngularVelocity,
-            double maxAngularAcceleration
+            double maxAngularAcceleration,
+            double initialSpeed,
+            double intiailHeading
     ) {
         List<Waypoint> waypoints = new ArrayList<>();
 

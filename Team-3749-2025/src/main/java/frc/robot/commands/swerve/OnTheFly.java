@@ -39,7 +39,7 @@ public class OnTheFly extends Command {
     @Override
     public void initialize() {
         if (withinSetpointTolerance(ToPosConstants.Setpoints.reefTrig(Robot.swerve.getPPSetpoint(),
-        ToPosConstants.Setpoints.TrigDirection.FORWARD),true)) {
+                ToPosConstants.Setpoints.TrigDirection.FORWARD), true)) {
             this.cancel();
             Robot.swerve.isOTF = false;
         }
@@ -58,7 +58,10 @@ public class OnTheFly extends Command {
                     Robot.swerve.getMaxDriveSpeed(),
                     SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
                     Robot.swerve.getMaxAngularSpeed(),
-                    SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared);
+                    SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared,
+                    Math.hypot(Robot.swerve.getRobotRelativeSpeeds().vxMetersPerSecond,
+                            Robot.swerve.getRobotRelativeSpeeds().vyMetersPerSecond),
+                    Robot.swerve.getPose().getRotation().getRadians());
         } else {
             path = ToPos.generateDynamicPath(
                     Robot.swerve.getPose(),
@@ -66,7 +69,10 @@ public class OnTheFly extends Command {
                     Robot.swerve.getMaxDriveSpeed(),
                     SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
                     Robot.swerve.getMaxAngularSpeed(),
-                    SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared);
+                    SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared,
+                    Math.hypot(Robot.swerve.getRobotRelativeSpeeds().vxMetersPerSecond,
+                            Robot.swerve.getRobotRelativeSpeeds().vyMetersPerSecond),
+                    Robot.swerve.getPose().getRotation().getRadians());
         }
 
         if (path == null) {
@@ -133,7 +139,7 @@ public class OnTheFly extends Command {
         boolean trajectoryComplete = timer.get() >= trajectory.getTotalTimeSeconds();
 
         if (trajectoryComplete) {
-            return withinSetpointTolerance(trajectory.getEndState().pose,false);
+            return withinSetpointTolerance(trajectory.getEndState().pose, false);
         }
 
         return false;
@@ -155,8 +161,7 @@ public class OnTheFly extends Command {
         // harik be like oooh i love doing position math that bricked our codebase
         // My Honest, Genuine, Unadulterated Built in Method Reaction
         double alternatePositionTolerance = positionTolerance;
-        if(useAlternateTolerance)
-        {
+        if (useAlternateTolerance) {
             alternatePositionTolerance = 0.17;
         }
         double xError = Math.abs(setpoint.relativeTo(Robot.swerve.getPose()).getX());
@@ -165,6 +170,7 @@ public class OnTheFly extends Command {
                 .getDegrees();
         // System.out.println("x "+xError+" y "+yError+" theta " + thetaError);
         System.out.println(setpoint.relativeTo(Robot.swerve.getPose()));
-        return xError < alternatePositionTolerance && yError < alternatePositionTolerance && thetaError < rotationTolerance;
+        return xError < alternatePositionTolerance && yError < alternatePositionTolerance
+                && thetaError < rotationTolerance;
     }
 }
