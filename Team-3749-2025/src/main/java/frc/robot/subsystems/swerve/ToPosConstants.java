@@ -55,18 +55,30 @@ public class ToPosConstants {
             double yOffset = Math.sin(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))/(4*forwardMagnitudeMultiplier);
             return new Pose2d(reefPose.getX()+xOffset,reefPose.getY()+yOffset,reefPose.getRotation());
             };
-
-        public static final Pose2d coralTop = new Pose2d(1.21, 7.0, new Rotation2d(Math.toRadians(120)));
-        public static final Pose2d coralBottom = new Pose2d(1.21, 1.15, new Rotation2d(Math.toRadians(231)));
-        public static final Pose2d processor = new Pose2d(6.3, 0.66, new Rotation2d(Math.toRadians(-90)));
-
-        public static final Pose2d reef18 = new Pose2d(3.09, 4.03, new Rotation2d(Math.toRadians(0)));
-        public static final Pose2d reef17 = new Pose2d(3.7, 2.85, new Rotation2d(Math.toRadians(60)));
-
-        public static final Pose2d reef22 = new Pose2d(5.24, 2.75, new Rotation2d(Math.toRadians(120)));
-        public static final Pose2d reef21 = new Pose2d(6, 4, new Rotation2d(Math.toRadians(180)));
-        public static final Pose2d reef20 = new Pose2d(5.22, 5.37, new Rotation2d(Math.toRadians(-120)));
-        public static final Pose2d reef19 = new Pose2d(3.73, 5.24, new Rotation2d(Math.toRadians(-60)));
+            public static final double ROBOT_LENGTH = 0.6; // Length of the robot in meters
+            public static final double ROBOT_WIDTH = 0.6;  // Width of the robot in meters
+            
+            // Adjusted setpoints
+            public static final Pose2d coralTop = adjustPose(.85, 7.3, Math.toRadians(125));
+            public static final Pose2d coralBottom = adjustPose(1.2, 1.0, Math.toRadians(-125));
+            public static final Pose2d processor = adjustPose(6.3, 0.66, Math.toRadians(-90));
+            
+            public static final Pose2d reef18 = adjustPose(3.09, 4.03, Math.toRadians(0));
+            public static final Pose2d reef17 = adjustPose(3.7, 2.85, Math.toRadians(60));
+            public static final Pose2d reef22 = adjustPose(5.24, 2.75, Math.toRadians(120));
+            public static final Pose2d reef21 = adjustPose(6.0, 4.0, Math.toRadians(180));
+            public static final Pose2d reef20 = adjustPose(5.22, 5.37, Math.toRadians(-120));
+            public static final Pose2d reef19 = adjustPose(3.73, 5.24, Math.toRadians(-60));
+            
+            // Helper method to adjust Pose2d
+            public static Pose2d adjustPose(double x, double y, double heading) {
+                // Calculate offsets based only on robot length
+                double offsetX = (ROBOT_LENGTH / 2) * Math.cos(heading);
+                double offsetY = (ROBOT_LENGTH / 2) * Math.sin(heading);
+            
+                // Adjust coordinates to align the robot’s front edge with the target
+                return new Pose2d(x - offsetX, y - offsetY, new Rotation2d(heading));
+            };
 
         public static final Pose2d reef17L = reefTrig(reef17, TrigDirection.LEFT);
         public static final Pose2d reef17R = reefTrig(reef17, TrigDirection.RIGHT);
