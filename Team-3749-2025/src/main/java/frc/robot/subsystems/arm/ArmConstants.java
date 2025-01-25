@@ -5,7 +5,7 @@ package frc.robot.subsystems.arm;
  *
  * @author Weston Gardner
  */
-public class GeneralArmConstants {
+public class ArmConstants {
     public static int NEOStallLimit = 30;
     public static int NEOFreeLimit = 50;
 }
