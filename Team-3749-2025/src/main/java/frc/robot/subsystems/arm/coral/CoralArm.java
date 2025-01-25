@@ -86,6 +86,9 @@ public class CoralArm extends Arm {
             case CORAL_PICKUP:
                 return UtilityFunctions.withinMargin(0.01, CoralConstants.coralPickUpSetPoint_rad,
                 data.positionUnits);
+            case L1:
+                return UtilityFunctions.withinMargin(0.01, CoralConstants.L1SetPoint_rad,
+                data.positionUnits);
             case MOVING_DOWN:
                 return data.velocityUnits < 0;
             case MOVING_UP:
@@ -120,6 +123,9 @@ public class CoralArm extends Arm {
                 break;
             case CORAL_PICKUP:
                 setVoltage(controller.calculate(data.positionUnits, CoralConstants.coralPickUpSetPoint_rad) + calculateFeedForward());
+                break;
+            case L1:
+                setVoltage(controller.calculate(data.positionUnits, CoralConstants.L1SetPoint_rad) + calculateFeedForward());
                 break;
             case STOPPED:
                 setVoltage(0 + calculateFeedForward());
