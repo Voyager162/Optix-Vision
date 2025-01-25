@@ -24,66 +24,17 @@ public class Autos {
     /***
      * A do nothing auto
      * 
-     * @param factory the AutoFactory from AutoUtils
      * @return Print Command
      */
     public static Command getPrint() {
         return Commands.print("Print Auto!");
     }
 
-    /***
-     * An example, single route auto path
+   
+    /**
      * 
-     * @param factory the AutoFactory from AutoUtils
-     * @return "My Routine" Command
+     * @return a command that scores at positions 4, 3, and 2 at L4 
      */
-    public static Command getMyRoutine() {
-        // instaniate our auto loop and trajectories
-        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("my routine");
-        AutoTrajectory trajectory = routine.trajectory("trajectoryName");
-
-        // create our trajectory commands, setting odometry and resetting logging when
-        // finished
-        Command trajectoryCommand = trajectory.cmd();
-
-        // set the command to begin when the loop enables
-        routine.active().onTrue(trajectoryCommand);
-
-        // our final, total command
-        Command cmd;
-
-        // adding things together
-        cmd = Commands.waitSeconds(1).andThen(Commands.print("Print then Trajectory!"));
-        cmd = cmd.andThen(routine.cmd());
-        return cmd;
-    }
-
-    /***
-     * An example muli-route auto path.
-     * Based on the results of a boolean supplier, a different 2nd half will occur
-     * 
-     * @param factory the AutoFactory from AutoUtils
-     * @return "Split Routine" Command
-     */
-    public static Command getSplitRoutine() {
-
-        // becomes AutoRoutine
-        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("split routine");
-        // loop.trajectory, or the new name
-        AutoTrajectory trajectory1 = routine.trajectory("split1");
-        AutoTrajectory trajectory2a = routine.trajectory("split2a");
-        AutoTrajectory trajectory2b = routine.trajectory("split2b");
-
-        Command trajectoy1Command = trajectory1.cmd();
-        // active
-        routine.active().onTrue(trajectoy1Command);
-
-        trajectory1.done().and(() -> true).onTrue(trajectory2a.cmd());
-        trajectory1.done().and(() -> false).onTrue(trajectory2b.cmd());
-        return Commands.print("split trajectory auto!").andThen(routine.cmd());
-
-    }
-
     public static Command get3Piece() {
         AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("3-Piece");
 
@@ -110,61 +61,5 @@ public class Autos {
                 AutoUtils.startRoutine(routine, "Start-L5", trajectory1));
     }
 
-    public static Command getStartToL5() {
-        return AutoUtils.getSingleTrajectory("Start-L5");
-    }
-
-    public static Command getStartToL4() {
-        return AutoUtils.getSingleTrajectory("Start-L4");
-
-    }
-
-    public static Command getL5ToStation() {
-        return AutoUtils.getSingleTrajectory("L5-Station");
-    }
-
-    public static Command getL4ToStation() {
-        return AutoUtils.getSingleTrajectory("L4-Station");
-    }
-
-    public static Command getL3ToStation() {
-        return AutoUtils.getSingleTrajectory("L3-Station");
-    }
-
-    public static Command getL2ToStation() {
-        return AutoUtils.getSingleTrajectory("L2-Station");
-    }
-
-    public static Command getL1ToStation() {
-        return AutoUtils.getSingleTrajectory("L1-Station");
-    }
-
-    public static Command getMidstartToL6() {
-        return AutoUtils.getSingleTrajectory("Midstart-L6");
-    }
-
-    public static Command getStartToTeamTaxi() {
-        return AutoUtils.getSingleTrajectory("Start-TeamTaxi");
-    }
-
-    public static Command getStationToL1() {
-        return AutoUtils.getSingleTrajectory("Station-L1");
-    }
-
-    public static Command getStationToL2() {
-        return AutoUtils.getSingleTrajectory("Station-L2");
-    }
-
-    public static Command getStationToL3() {
-        return AutoUtils.getSingleTrajectory("Station-L3");
-    }
-
-    public static Command getStationToL4() {
-        return AutoUtils.getSingleTrajectory("Station-L4");
-    }
-
-    public static Command getTeamtaxiToL5() {
-        return AutoUtils.getSingleTrajectory("TeamTaxi-L5");
-    }
 
 }

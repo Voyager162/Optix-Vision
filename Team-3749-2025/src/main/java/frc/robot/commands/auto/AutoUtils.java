@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Robot;
 
 /**
@@ -105,27 +104,10 @@ public class AutoUtils {
         // interface for choreo
 
         // Made sendable, use SmartDashbaord now
-        chooser = new AutoChooser();
-        chooser.addCmd("Start-L5", () -> Autos.getStartToL5());
-        chooser.addCmd("Start-L4", () -> Autos.getStartToL4());
-        chooser.addCmd("L5-Station", () -> Autos.getL5ToStation());
-        chooser.addCmd("L4-Station", () -> Autos.getL4ToStation());
-        chooser.addCmd("L3-Station", () -> Autos.getL3ToStation());
-        chooser.addCmd("L2-Station", () -> Autos.getL2ToStation());
-        chooser.addCmd("L1-Station", () -> Autos.getL1ToStation());
-        chooser.addCmd("Midstart-L6", () -> Autos.getMidstartToL6());
-        chooser.addCmd("Start-TeamTaxi", () -> Autos.getStartToTeamTaxi());
-        chooser.addCmd("Station-L1", () -> Autos.getStationToL1());
-        chooser.addCmd("Station-L2", () -> Autos.getStationToL2());
-        chooser.addCmd("Station-L3", () -> Autos.getStationToL3());
-        chooser.addCmd("Station-L4", () -> Autos.getStationToL4());
-        chooser.addCmd("TeamTaxi-L5", () -> Autos.getTeamtaxiToL5());
 
         chooser.addCmd("3-Piece", () -> Autos.get3Piece());
 
-        // Default
-        chooser.select("Straight");
-
+        chooser.select("3-Piece");
         SmartDashboard.putData("Auto: Auto Chooser", chooser);
 
     }
@@ -140,6 +122,12 @@ public class AutoUtils {
         SmartDashboard.putData("Flip Auto Path?", flippedChooser);
     }
 
+    /**
+     * A command to run a single choreo trajectory with no events
+     * 
+     * @param trajectoryName
+     * @return
+     */
     public static Command getSingleTrajectory(String trajectoryName) {
         AutoRoutine routine = getAutoFactory().newRoutine(trajectoryName);
         AutoTrajectory trajectory = routine.trajectory(trajectoryName);
@@ -155,6 +143,15 @@ public class AutoUtils {
 
     }
 
+    /**
+     * Returns the command for a routine that will start reset odometry, and then
+     * run the first trajectory and all thing that follow from triggers
+     * 
+     * @param routine
+     * @param firstTrajectoryName
+     * @param firstTrajectory
+     * @return
+     */
     public static Command startRoutine(AutoRoutine routine, String firstTrajectoryName,
             AutoTrajectory firstTrajectory) {
 
@@ -164,7 +161,13 @@ public class AutoUtils {
         return routine.cmd();
     }
 
-    // This is scoring on Level 4
+    /**
+     * Returns a command to score at L4 when the robot is approaching the end of the
+     * given trajectory
+     * 
+     * @param trajectory
+     * @return
+     */
     public static Command addScoreL4(AutoTrajectory trajectory) {
         Pose2d endingPose2d = getFinalPose2d(trajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
@@ -179,19 +182,34 @@ public class AutoUtils {
 
     }
 
-    // This is scoring on Level 3
-    public static void addScoreL3(AutoTrajectory trajectory) {
+    /**
+     * Returns a command to score at L3 when the robot is approaching the end of the
+     * given trajectory
+     * 
+     * @param trajectory
+     * @return
+     */
+    public static Command addScoreL3(AutoTrajectory trajectory) {
         Pose2d endingPose2d = getFinalPose2d(trajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
         if (DriverStation.getAlliance().get() == Alliance.Red) {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
+        Command scoreL4 = Commands.print("SCORE L3");
 
-        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(Commands.print("SCORE L3"));
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(scoreL4);
+        return scoreL4;
 
     }
 
+    /**
+     * A command to intake from station when the robot is approaching the end of the
+     * given trajectory
+     * 
+     * @param trajectory
+     * @return
+     */
     public static Command addIntake(AutoTrajectory trajectory) {
         Pose2d endingPose2d = getFinalPose2d(trajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
@@ -206,30 +224,16 @@ public class AutoUtils {
 
     }
 
-    public static void addAlgaeIntake(AutoTrajectory trajectory) {
-        Pose2d endingPose2d = getFinalPose2d(trajectory);
-        // unflip the alliance so that atPose can flip it; it's a quirk of referencing
-        // the trajectory
-        if (DriverStation.getAlliance().get() == Alliance.Red) {
-            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
-        }
-
-        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(Commands.print("Intaking"));
-
-    }
-
-    public static void addScoreAlgae(AutoTrajectory trajectory) {
-        Pose2d endingPose2d = getFinalPose2d(trajectory);
-        // unflip the alliance so that atPose can flip it; it's a quirk of referencing
-        // the trajectory
-        if (DriverStation.getAlliance().get() == Alliance.Red) {
-            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
-        }
-
-        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(Commands.print("Intaking"));
-
-    }
-
+    /**
+     * This will begin "nextTrajectory" following the completion of "curTrajectory"
+     * and scoring. This should be used to link trajectories together, but only
+     * moving on to the next step in the path if the scoring aciton has been
+     * properly completed
+     * 
+     * @param curTrajectory
+     * @param nextTrajectory
+     * @param scoreCommand
+     */
     public static void goNextAfterScored(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory,
             Command scoreCommand) {
         Pose2d endingPose2d = getFinalPose2d(curTrajectory);
@@ -242,6 +246,16 @@ public class AutoUtils {
 
     }
 
+    /**
+     * This will begin "nextTrajectory" following the completion of "curTrajectory"
+     * and intaking. This should be used to link trajectories together, but only
+     * moving on to the next step in the path if the scoring aciton has been
+     * properly completed
+     * 
+     * @param curTrajectory
+     * @param nextTrajectory
+     * @param scoreCommand
+     */
     public static void goNextAfterIntake(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory,
             Command intakeCommand) {
         Pose2d endingPose2d = getFinalPose2d(curTrajectory);
@@ -256,9 +270,9 @@ public class AutoUtils {
     }
 
     /**
-     * Each pos will be flipped across the X-axis using Choreo's Flip Util
-     * Returns new pos
-     * Used in auto factory for flipped paths
+     * This will flip a given pose across the x-axis of the field
+     * @param pos the position to be flipped
+     * @return the flipped position
      */
     private static Pose2d getFlippedPose(Pose2d pos) {
         Translation2d translation = new Translation2d(pos.getX(), flipper.flipY(pos.getY()));
@@ -268,7 +282,11 @@ public class AutoUtils {
 
         return new Pose2d(translation, rotation);
     }
-
+/**
+ * returns the final position of the trajectory given, vertically flipped according to the flipped chooser
+ * @param trajectory 
+ * @return
+ */
     public static Pose2d getFinalPose2d(AutoTrajectory trajectory) {
         if (flippedChooser.getSelected()) {
             System.out.println("Flipped Pose:" + getFlippedPose(trajectory.getFinalPose().get()));
