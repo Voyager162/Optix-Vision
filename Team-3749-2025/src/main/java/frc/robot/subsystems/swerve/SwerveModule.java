@@ -67,22 +67,22 @@ public class SwerveModule {
         driveSpeed = new ShuffleData<>("Swerve/" + name, "drive speed",
                 moduleData.driveVelocityMPerSec);
         drivePosition = new ShuffleData<>("Swerve/" + name, " drive position",
-                moduleData.driveVelocityMPerSec);
+                moduleData.drivePositionM);
         driveTemp = new ShuffleData<>("Swerve/" + name, "drive temp",
-                moduleData.driveVelocityMPerSec);
+                moduleData.driveTempCelcius);
         driveVolts = new ShuffleData<>("Swerve/" + name, "drive volts",
-                moduleData.driveVelocityMPerSec);
+                moduleData.driveAppliedVolts);
         driveCurrent = new ShuffleData<>("Swerve/" + name, "drive current",
-                moduleData.driveVelocityMPerSec);
+                moduleData.driveCurrentAmps);
 
         turningSpeed = new ShuffleData<>("Swerve/" + name, "turning speed",
-                moduleData.driveVelocityMPerSec);
+                moduleData.turnVelocityRadPerSec);
         turningPosition = new ShuffleData<>("Swerve/" + name, "turning position",
-                moduleData.driveVelocityMPerSec);
+                moduleData.turnAbsolutePositionRad);
         turningTemp = new ShuffleData<>("Swerve/" + name, "turning temp",
-                moduleData.driveVelocityMPerSec);
+                moduleData.turnTempCelcius);
         turningVolts = new ShuffleData<>("Swerve/" + name, "turning volts",
-                moduleData.driveVelocityMPerSec);
+                moduleData.turnAppliedVolts);
         turningCurrent = new ShuffleData<>("Swerve/" + name, "turning current",
                 moduleData.turnCurrentAmps);
     }
