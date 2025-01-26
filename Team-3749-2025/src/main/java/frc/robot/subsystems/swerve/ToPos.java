@@ -83,9 +83,9 @@ public class ToPos {
         Translation2d approachPoint = end.minus(new Translation2d(
                 1.0 * Math.cos(finalPose.getRotation().getRadians()),
                 1.0 * Math.sin(finalPose.getRotation().getRadians())));
-        waypoints.add(new Waypoint(approachPoint, approachPoint, approachPoint.plus(new Translation2d(0.5, 0.0))));
+        waypoints.add(new Waypoint(approachPoint, approachPoint, approachPoint));
 
-        // Optimize for maximum speed time by directly heading to the final pose
+        // Add final waypoint
         waypoints.add(new Waypoint(end, end, end.minus(new Translation2d(0.5, 0.0))));
 
         if (waypoints.size() < 2) {
@@ -108,6 +108,22 @@ public class ToPos {
     }
 
     /**
+     * Ensures gradual speed reduction near the goal to prevent overshooting.
+     *
+     * @param waypoints List of waypoints to adjust
+     */
+    private static void adjustWaypointsForGoal(List<Waypoint> waypoints) {
+        if (waypoints.size() < 2) return;
+
+        Waypoint approach = waypoints.get(waypoints.size() - 2);
+        Waypoint goal = waypoints.get(waypoints.size() - 1);
+
+        // Ensure smooth approach to the goal
+        Translation2d adjustedApproach = approach.anchor().interpolate(goal.anchor(), 0.8);
+        waypoints.set(waypoints.size() - 2, new Waypoint(adjustedApproach, adjustedApproach, goal.anchor()));
+    }
+
+    /**
      * Checks if a direct path is clear of obstacles.
      *
      * @param start Starting point
@@ -118,24 +134,6 @@ public class ToPos {
         // Placeholder logic for obstacle detection
         // Replace with real sensor or map-based obstacle detection
         return true; // Assume no obstacles for now
-    }
-
-    /**
-     * Calculates detour points to avoid obstacles between start and end.
-     *
-     * @param start Starting point
-     * @param end   Ending point
-     * @return List of detour points
-     */
-    private static List<Translation2d> calculateDetours(Translation2d start, Translation2d end) {
-        List<Translation2d> detours = new ArrayList<>();
-
-        // Example logic to calculate a midpoint detour
-        double midX = (start.getX() + end.getX()) / 2;
-        double midY = (start.getY() + end.getY()) / 2 + 1.0; // Offset to avoid obstacles
-        detours.add(new Translation2d(midX, midY));
-
-        return detours;
     }
 
     /**
