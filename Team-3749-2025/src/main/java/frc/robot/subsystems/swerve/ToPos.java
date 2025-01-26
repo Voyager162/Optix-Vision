@@ -15,11 +15,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class ToPos {
-    private static final double ROBOT_RADIUS = 0.8382; // 33-inch square robot's radius in meters
+    private static final double ROBOT_RADIUS = 0.8382; // Robot's radius in meters
     private static final double INITIAL_SAFETY_MARGIN = 1.0;
     private static final double SAFETY_MARGIN_INCREMENT = 0.2;
-    private static final double MIN_CLEARANCE = 0.5; // Increased clearance for better obstacle avoidance
+    private static final double MIN_CLEARANCE = 0.5; // Clearance for obstacles
     private static final double FINAL_APPROACH_DISTANCE = 1.0;
+    private static final double MIN_SPEED = 0.5; // Minimum speed to avoid excessive slowing
     private static final List<Translation2d> HEXAGON_VERTICES = List.of(
         new Translation2d(3.76, 3.49),
         new Translation2d(3.66, 4.39),
@@ -68,15 +69,14 @@ public class ToPos {
     ) {
         List<Waypoint> waypoints = new ArrayList<>();
 
+        // Use the exact robot position as the starting point
         Translation2d start = adjustIfTooCloseToObstacle(initialPose.getTranslation());
-
-        // Do not adjust the final waypoint; it is set as intended
         Translation2d end = finalPose.getTranslation();
-
         Translation2d finalApproach = calculateFinalApproachPoint(end, finalPose.getRotation());
 
         waypoints.add(new Waypoint(start, start, start));
 
+        // Add detours dynamically if obstacles are detected
         List<Translation2d> detours = calculateDetour(start, finalApproach);
         for (Translation2d detour : detours) {
             waypoints.add(new Waypoint(detour, detour, detour));
@@ -90,6 +90,7 @@ public class ToPos {
             return null;
         }
 
+        // Path constraints with a minimum speed to avoid excessive slowing
         PathConstraints constraints = new PathConstraints(maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration);
 
         try {
@@ -176,6 +177,16 @@ public class ToPos {
         return detours;
     }
 
+    private static boolean linesIntersect(Translation2d p1, Translation2d p2, Translation2d q1, Translation2d q2) {
+        double det = (p2.getX() - p1.getX()) * (q2.getY() - q1.getY()) - (p2.getY() - p1.getY()) * (q2.getX() - q1.getX());
+        if (det == 0) return false;
+
+        double lambda = ((q2.getY() - q1.getY()) * (q2.getX() - p1.getX()) - (q2.getX() - q1.getX()) * (q2.getY() - p1.getY())) / det;
+        double gamma = ((p1.getY() - p2.getY()) * (q2.getX() - p1.getX()) + (p2.getX() - p1.getX()) * (q2.getY() - p1.getY())) / det;
+
+        return (0 <= lambda && lambda <= 1) && (0 <= gamma && gamma <= 1);
+    }
+
     private static boolean isValidDetour(Translation2d detour, Translation2d start, Translation2d end) {
         for (int i = 0; i < HEXAGON_VERTICES.size() - 1; i++) {
             Translation2d vertex1 = HEXAGON_VERTICES.get(i);
@@ -187,16 +198,6 @@ public class ToPos {
             }
         }
         return true;
-    }
-
-    private static boolean linesIntersect(Translation2d p1, Translation2d p2, Translation2d q1, Translation2d q2) {
-        double det = (p2.getX() - p1.getX()) * (q2.getY() - q1.getY()) - (p2.getY() - p1.getY()) * (q2.getX() - q1.getX());
-        if (det == 0) return false;
-
-        double lambda = ((q2.getY() - q1.getY()) * (q2.getX() - p1.getX()) - (q2.getX() - q1.getX()) * (q2.getY() - p1.getY())) / det;
-        double gamma = ((p1.getY() - p2.getY()) * (q2.getX() - p1.getX()) + (p2.getX() - p1.getX()) * (q2.getY() - p1.getY())) / det;
-
-        return (0 <= lambda && lambda <= 1) && (0 <= gamma && gamma <= 1);
     }
 
     private static Rotation2d calculateFullRotation(Rotation2d start, Rotation2d end) {
