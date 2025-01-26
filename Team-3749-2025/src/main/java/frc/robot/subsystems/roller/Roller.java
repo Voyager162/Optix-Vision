@@ -120,6 +120,10 @@ public abstract class Roller extends SubsystemBase {
     }
 
     public abstract void score();
+
+    public boolean hasPiece(){
+        return false;
+    }
     
     @Override
     public void periodic() {

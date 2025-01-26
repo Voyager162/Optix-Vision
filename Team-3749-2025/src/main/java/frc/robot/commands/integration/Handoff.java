@@ -7,7 +7,7 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.roller.RollerConstants;
-import frc.robot.subsystems.arm.coral.CoralConstants;
+import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.roller.Roller;
 
 /*
@@ -31,13 +31,13 @@ public class Handoff extends Command {
 
     @Override
     public void initialize() {
-        coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
+        coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
         coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
     }
 
     @Override
     public void execute() {
-        if (coralArm.getState() == CoralConstants.ArmStates.HAND_OFF && coralArm.getIsStableState()){
+        if (coralArm.getState() == CoralArmConstants.ArmStates.HAND_OFF && coralArm.getIsStableState()){
             elevator.setState(ElevatorConstants.ElevatorStates.STOW);
         }
         if (elevator.getState() == ElevatorStates.STOW){ // might need to edit elevator.getIsStableState()
@@ -47,7 +47,7 @@ public class Handoff extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        coralArm.setState(CoralConstants.ArmStates.STOPPED);
+        coralArm.setState(CoralArmConstants.ArmStates.STOPPED);
         coralRoller.setState(RollerConstants.RollerStates.STOP);
     }
 

@@ -2,11 +2,13 @@ package frc.robot.commands.integration;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Robot;
 import frc.robot.commands.elevator.SetElevatorState;
 import frc.robot.subsystems.arm.coral.CoralArm;
-import frc.robot.subsystems.arm.coral.CoralConstants;
+import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
+import frc.robot.subsystems.led.LEDConstants.LEDPattern;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
 
@@ -31,6 +33,9 @@ public class KnockAlgae extends Command{
         algaeRoller.setState(RollerConstants.RollerStates.RUN);
         elevator.setState(state);
         System.out.println(elevator.getState());
+        if (elevator.getState() == state && elevator.getIsStableState()) {
+            Robot.led.setLEDPattern(LEDPattern.BLUE);
+        }
     }
 
     @Override 

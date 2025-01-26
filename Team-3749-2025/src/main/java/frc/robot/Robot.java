@@ -18,6 +18,7 @@ import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.subsystems.chute.Chute;
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.led.LED;
 
 import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.subsystems.roller.Roller;
@@ -43,6 +44,8 @@ public class Robot extends TimedRobot {
   public static ClimbArm climbArm = new ClimbArm();
 
   public static Chute chute = new Chute();
+
+  public static LED led = new LED(0.05);
 
   private ShuffleData<Double> batteryVoltageLog = new ShuffleData<Double>("DS", "battery voltage", 0.0);
   private ShuffleData<Boolean> isBrownedOutLog = new ShuffleData<Boolean>("DS", "brownout", false);

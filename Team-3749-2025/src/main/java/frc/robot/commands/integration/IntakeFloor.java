@@ -1,9 +1,11 @@
 package frc.robot.commands.integration;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.subsystems.roller.RollerConstants;
-import frc.robot.subsystems.arm.coral.CoralConstants;
+import frc.robot.subsystems.arm.coral.CoralArmConstants;
+import frc.robot.subsystems.led.LEDConstants.LEDPattern;
 import frc.robot.subsystems.roller.Roller;
 
 public class IntakeFloor extends Command {
@@ -17,17 +19,24 @@ public class IntakeFloor extends Command {
 
     @Override
     public void initialize() {
-        coralArm.setState(CoralConstants.ArmStates.CORAL_PICKUP);
+        coralArm.setState(CoralArmConstants.ArmStates.CORAL_PICKUP);
     }
 
     @Override
     public void execute() {
         coralRoller.setState(RollerConstants.RollerStates.RUN);
+        
+        if (coralArm.getState() == CoralArmConstants.ArmStates.CORAL_PICKUP && coralArm.getIsStableState()) {
+            Robot.led.setLEDPattern(LEDPattern.BLUE);
+        }
+        if (coralArm.hasPiece()){
+            Robot.led.setLEDPattern(LEDPattern.GREEN);
+        }
     }
 
     @Override
     public void end(boolean interrupted) {
-        coralArm.setState(CoralConstants.ArmStates.STOPPED);
+        coralArm.setState(CoralArmConstants.ArmStates.STOPPED);
         coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
     }
 
