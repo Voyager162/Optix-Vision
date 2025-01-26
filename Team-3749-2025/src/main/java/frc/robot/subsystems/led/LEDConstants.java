@@ -14,12 +14,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 
 public class LEDConstants {
-    
-        public static final int length = 49;
-        public static enum LEDPattern {
-            RAINBOW, RED, BLUE, GREEN, YELLOW, WHITE, NOTHING
-        };
-    
 
+    public static final int length = 49;
+
+    public static enum LEDPattern {
+        RAINBOW, RED, BLUE, GREEN, YELLOW, WHITE, NOTHING
+    };
 
 }

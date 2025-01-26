@@ -13,127 +13,115 @@ import frc.robot.subsystems.led.LEDConstants.LEDPattern;
 
 public class LED extends SubsystemBase {
 
-    private AddressableLED LEDs = new AddressableLED(9); //port
+    private AddressableLED LEDs = new AddressableLED(9); // port
     private AddressableLEDBuffer LEDBuffer = new AddressableLEDBuffer(frc.robot.subsystems.led.LEDConstants.length);
     private LEDPattern currentPattern = LEDPattern.WHITE;
     private int hue = 0;
     private double brightness = 1;
 
-    public LED()
-    {
-       LEDs.setLength(LEDBuffer.getLength());
-       LEDs.setData(LEDBuffer);
-       LEDs.start();
-       setLEDPattern(LEDPattern.WHITE);
+    public LED() {
+        LEDs.setLength(LEDBuffer.getLength());
+        LEDs.setData(LEDBuffer);
+        LEDs.start();
+        setLEDPattern(LEDPattern.WHITE);
     }
 
-    public LED(double brightness)
-    {
-       LEDs.setLength(LEDBuffer.getLength());
-       LEDs.setData(LEDBuffer);
-       LEDs.start();
-       setLEDPattern(LEDPattern.WHITE);
-       setBrightness(brightness);
+    public LED(double brightness) {
+        LEDs.setLength(LEDBuffer.getLength());
+        LEDs.setData(LEDBuffer);
+        LEDs.start();
+        setLEDPattern(LEDPattern.WHITE);
+        setBrightness(brightness);
     }
 
-    private LEDPattern teamColorLED()
-    {
-       Optional<Alliance> team = DriverStation.getAlliance(); //i hate doing it this way but it throws an error without it
-       return team.get() == Alliance.Blue ? LEDPattern.BLUE : LEDPattern.RED;
+    private LEDPattern teamColorLED() {
+        Optional<Alliance> team = DriverStation.getAlliance(); // i hate doing it this way but it throws an error
+                                                               // without it
+        return team.get() == Alliance.Blue ? LEDPattern.BLUE : LEDPattern.RED;
     }
 
-    private void setLEDOneColorRGB(int R, int G, int B)
-    {   
+    private void setLEDOneColorRGB(int R, int G, int B) {
         double curBrightness = brightness;
-        if (DriverStation.isEnabled()){
+        if (DriverStation.isEnabled()) {
             curBrightness = 1;
         }
-        int setR = (int)(R * curBrightness);
-        int setG = (int)(G * curBrightness);
-        int setB = (int)(B * curBrightness);
+        int setR = (int) (R * curBrightness);
+        int setG = (int) (G * curBrightness);
+        int setB = (int) (B * curBrightness);
 
-
-        for(int i=0;i<LEDBuffer.getLength();i++)
-        {
+        for (int i = 0; i < LEDBuffer.getLength(); i++) {
             LEDBuffer.setRGB(i, setR, setG, setB);
         }
     }
 
-    private void setLEDOneColorHSV(int H, int S, int V)
-    {
-        for(int i=0;i<LEDBuffer.getLength();i++)
-        {
+    private void setLEDOneColorHSV(int H, int S, int V) {
+        for (int i = 0; i < LEDBuffer.getLength(); i++) {
             LEDBuffer.setRGB(i, H, S, V);
         }
     }
 
-    private void setLEDRainbow() //requires a loop
+    private void setLEDRainbow() // requires a loop
     {
         hue++;
         setLEDOneColorHSV(hue, 255, 255);
-        if(hue >= 350)
-        {
+        if (hue >= 350) {
             hue = 0;
         }
     }
 
-    public void setLEDPattern(LEDPattern pattern)
-    {
-        if (pattern == LEDPattern.WHITE && RobotController.getBatteryVoltage() <8){
+    public void setLEDPattern(LEDPattern pattern) {
+        if (pattern == LEDPattern.WHITE && RobotController.getBatteryVoltage() < 8) {
             pattern = LEDPattern.RED;
         }
         this.currentPattern = pattern;
     }
 
-    public LEDPattern getCurrentPattern(){
+    public LEDPattern getCurrentPattern() {
         return currentPattern;
     }
 
     // runs every 0.02 sec
     @Override
-    public void periodic()
-    {
-        switch(this.currentPattern)
-        {
+    public void periodic() {
+        switch (this.currentPattern) {
             case RED:
-                setLEDOneColorRGB(255,0,0);
-            break;
+                setLEDOneColorRGB(255, 0, 0);
+                break;
 
             case BLUE:
-                setLEDOneColorRGB(0,0,255);
-            break;
+                setLEDOneColorRGB(0, 0, 255);
+                break;
 
             case GREEN:
                 setLEDOneColorRGB(0, 255, 0);
-            break;
+                break;
 
             case YELLOW:
                 setLEDOneColorRGB(255, 255, 0);
-            break;
+                break;
 
             case RAINBOW:
                 setLEDRainbow();
-            break;
+                break;
 
             case WHITE:
                 setLEDOneColorRGB(255, 255, 255);
-            break;
+                break;
 
             case NOTHING:
 
-
                 setLEDOneColorRGB(0, 0, 0);
-            break;
+                break;
 
             default:
-                setLEDOneColorRGB(210,105,30);
+                setLEDOneColorRGB(210, 105, 30);
                 System.out.println("LEDpattern missing case");
-            break;
+                break;
         }
         LEDs.setData(LEDBuffer);
-        
+
     }
-    
+
     /***
      * 
      * @param setBrightness value from 1 - 0 for brightness

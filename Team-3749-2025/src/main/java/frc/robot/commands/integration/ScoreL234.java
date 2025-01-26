@@ -23,7 +23,8 @@ public class ScoreL234 extends Command {
     private final ElevatorStates state;
     private boolean handoffComplete = false;
 
-    public ScoreL234(Chute chute, CoralArm coralArm, Elevator elevator, Roller coralRoller, Roller scoringRoller, ElevatorStates state) {
+    public ScoreL234(Chute chute, CoralArm coralArm, Elevator elevator, Roller coralRoller, Roller scoringRoller,
+            ElevatorStates state) {
         this.chute = chute;
         this.coralArm = coralArm;
         this.elevator = elevator;
@@ -35,12 +36,12 @@ public class ScoreL234 extends Command {
     @Override
     public void initialize() {
         if (chute.hasPiece()) {
-            elevator.setState(state); 
-            scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
+            elevator.setState(state);
+            scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
         } else {
             coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
             elevator.setState(ElevatorStates.STOW);
-            coralRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
+            coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
         }
         if (chute.hasPiece() && coralArm.getState() == CoralArmConstants.ArmStates.HAND_OFF) {
             elevator.setState(ElevatorStates.STOW);
@@ -49,8 +50,9 @@ public class ScoreL234 extends Command {
 
     @Override
     public void execute() {
-        if (coralArm.getState() == CoralArmConstants.ArmStates.HAND_OFF && coralArm.getIsStableState() && elevator.getState() == ElevatorStates.STOW) { // add working elevator isStableState later
-            coralRoller.setState(RollerConstants.RollerStates.SCORE); 
+        if (coralArm.getState() == CoralArmConstants.ArmStates.HAND_OFF && coralArm.getIsStableState()
+                && elevator.getState() == ElevatorStates.STOW) { // add working elevator isStableState later
+            coralRoller.setState(RollerConstants.RollerStates.SCORE);
             handoffComplete = true;
         }
         if (handoffComplete && !coralArm.hasPiece() && chute.hasPiece()) { // should work once hasPiece logic is made
@@ -58,16 +60,15 @@ public class ScoreL234 extends Command {
         }
 
         if (elevator.getState() == state && elevator.getIsStableState()) {
-            scoringRoller.setState(RollerConstants.RollerStates.SCORE); 
+            scoringRoller.setState(RollerConstants.RollerStates.SCORE);
             Robot.led.setLEDPattern(LEDPattern.BLUE);
         }
-        if (!Robot.elevator.getIsStableState()){
-            Robot.led.setLEDPattern(LEDPattern.YELLOW);
-        } 
-        if (!Robot.coralArm.getIsStableState()){
+        if (!Robot.elevator.getIsStableState()) {
             Robot.led.setLEDPattern(LEDPattern.YELLOW);
         }
-
+        if (!Robot.coralArm.getIsStableState()) {
+            Robot.led.setLEDPattern(LEDPattern.YELLOW);
+        }
 
     }
 
@@ -75,8 +76,8 @@ public class ScoreL234 extends Command {
     public void end(boolean interrupted) {
         coralArm.setState(CoralArmConstants.ArmStates.STOPPED);
         elevator.setState(ElevatorStates.STOP);
-        scoringRoller.setState(RollerConstants.RollerStates.STOP); 
-        coralRoller.setState(RollerConstants.RollerStates.STOP); 
+        scoringRoller.setState(RollerConstants.RollerStates.STOP);
+        coralRoller.setState(RollerConstants.RollerStates.STOP);
     }
 
     @Override
