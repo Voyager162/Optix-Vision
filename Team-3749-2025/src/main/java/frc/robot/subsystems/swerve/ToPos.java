@@ -17,6 +17,21 @@ import edu.wpi.first.math.geometry.Translation2d;
 public class ToPos {
     private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
+    // Hexagon vertices defined as obstacles (updated with loop closure)
+    private static final List<Translation2d> HEXAGON_VERTICES = List.of(
+            new Translation2d(3.76, 3.49),
+            new Translation2d(3.66, 4.39),
+            new Translation2d(4.39, 4.93),
+            new Translation2d(5.22, 4.57),
+            new Translation2d(5.32, 3.67),
+            new Translation2d(4.59, 3.13),
+            new Translation2d(3.76, 3.49) // Closing the loop
+    );
+
+    // Robot dimensions (width and height in meters)
+    private static final double ROBOT_WIDTH = 0.6;
+    private static final double ROBOT_HEIGHT = 0.6;
+
     /**
      * Asynchronously generates a dynamic path using PathPlanner.
      *
@@ -79,6 +94,18 @@ public class ToPos {
         Translation2d end = finalPose.getTranslation();
         waypoints.add(new Waypoint(start, start, start.plus(new Translation2d(0.5, 0.0))));
 
+        // Check for obstacles and calculate detours
+        if (!isPathClear(start, end)) {
+            System.out.println("Obstacle detected. Calculating detour...");
+            List<Translation2d> detourPoints = calculateDetours(start, end);
+            for (Translation2d detour : detourPoints) {
+                System.out.println("Adding detour waypoint at: " + detour);
+                waypoints.add(new Waypoint(detour, detour, detour));
+            }
+        } else {
+            System.out.println("No obstacles detected. Direct path is clear.");
+        }
+
         // Add a waypoint 1 meter before the final pose for heading alignment
         Translation2d approachPoint = end.minus(new Translation2d(
                 1.0 * Math.cos(finalPose.getRotation().getRadians()),
@@ -108,32 +135,77 @@ public class ToPos {
     }
 
     /**
-     * Ensures gradual speed reduction near the goal to prevent overshooting.
-     *
-     * @param waypoints List of waypoints to adjust
-     */
-    private static void adjustWaypointsForGoal(List<Waypoint> waypoints) {
-        if (waypoints.size() < 2) return;
-
-        Waypoint approach = waypoints.get(waypoints.size() - 2);
-        Waypoint goal = waypoints.get(waypoints.size() - 1);
-
-        // Ensure smooth approach to the goal
-        Translation2d adjustedApproach = approach.anchor().interpolate(goal.anchor(), 0.8);
-        waypoints.set(waypoints.size() - 2, new Waypoint(adjustedApproach, adjustedApproach, goal.anchor()));
-    }
-
-    /**
-     * Checks if a direct path is clear of obstacles.
+     * Checks if a direct path is clear of obstacles, accounting for robot dimensions.
      *
      * @param start Starting point
      * @param end   Ending point
      * @return True if the path is clear, false otherwise
      */
     private static boolean isPathClear(Translation2d start, Translation2d end) {
-        // Placeholder logic for obstacle detection
-        // Replace with real sensor or map-based obstacle detection
-        return true; // Assume no obstacles for now
+        for (int i = 0; i < HEXAGON_VERTICES.size() - 1; i++) {
+            Translation2d vertex1 = HEXAGON_VERTICES.get(i);
+            Translation2d vertex2 = HEXAGON_VERTICES.get(i + 1);
+            if (linesIntersectWithRobotBounds(start, end, vertex1, vertex2)) {
+                System.out.println("Path intersects obstacle edge: " + vertex1 + " to " + vertex2);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Determines if two line segments intersect, considering robot dimensions.
+     *
+     * @param p1 Start of the first segment
+     * @param p2 End of the first segment
+     * @param q1 Start of the second segment
+     * @param q2 End of the second segment
+     * @return True if the segments intersect, false otherwise
+     */
+    private static boolean linesIntersectWithRobotBounds(Translation2d p1, Translation2d p2, Translation2d q1, Translation2d q2) {
+        double halfDiagonal = Math.sqrt(Math.pow(ROBOT_WIDTH / 2, 2) + Math.pow(ROBOT_HEIGHT / 2, 2));
+
+        Translation2d offset1 = new Translation2d(-halfDiagonal, -halfDiagonal);
+        Translation2d offset2 = new Translation2d(halfDiagonal, halfDiagonal);
+
+        Translation2d adjustedP1 = p1.plus(offset1);
+        Translation2d adjustedP2 = p2.plus(offset2);
+
+        double det = (adjustedP2.getX() - adjustedP1.getX()) * (q2.getY() - q1.getY()) - (adjustedP2.getY() - adjustedP1.getY()) * (q2.getX() - q1.getX());
+        if (det == 0) {
+            return false;
+        }
+
+        double lambda = ((q2.getY() - q1.getY()) * (q2.getX() - adjustedP1.getX()) - (q2.getX() - q1.getX()) * (q2.getY() - adjustedP1.getY())) / det;
+        double gamma = ((adjustedP1.getY() - adjustedP2.getY()) * (q2.getX() - adjustedP1.getX()) + (adjustedP2.getX() - adjustedP1.getX()) * (q2.getY() - adjustedP1.getY())) / det;
+
+        return (0 <= lambda && lambda <= 1) && (0 <= gamma && gamma <= 1);
+    }
+
+    /**
+     * Calculates detour points to avoid obstacles between start and end.
+     *
+     * @param start Starting point
+     * @param end   Ending point
+     * @return List of detour points
+     */
+    private static List<Translation2d> calculateDetours(Translation2d start, Translation2d end) {
+        List<Translation2d> detours = new ArrayList<>();
+
+        // Example detour logic: Offset path to the left or right
+        Translation2d midpoint = start.interpolate(end, 0.5);
+        Translation2d offset = new Translation2d(-(end.getY() - start.getY()), end.getX() - start.getX()).div(midpoint.getNorm()).times(0.5);
+
+        Translation2d detour1 = midpoint.plus(offset);
+        Translation2d detour2 = midpoint.minus(offset);
+
+        if (isPathClear(start, detour1) && isPathClear(detour1, end)) {
+            detours.add(detour1);
+        } else if (isPathClear(start, detour2) && isPathClear(detour2, end)) {
+            detours.add(detour2);
+        }
+
+        return detours;
     }
 
     /**
