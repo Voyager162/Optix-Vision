@@ -8,74 +8,73 @@ import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
  * IO implementation for an arm subsystem's simulation
- * 
+ *
  * @author Weston Gardner
  */
-
 public class ArmSim implements ArmIO {
 
-    private SingleJointedArmSim armSim;
+	private SingleJointedArmSim armSim;
 
-    public ArmSim(
-            int numMotors,
-            double gearing,
-            double momentOfInertia,
-            double length_meters,
-            double minAngle_degrees,
-            double maxAngle_degrees,
-            boolean simulateGravity,
-            double startingAngle_Degrees) {
+	public ArmSim(
+			double gearing,
+			double momentOfInertia,
+			double length_meters,
+			double minAngle_degrees,
+			double maxAngle_degrees,
+			boolean simulateGravity,
+			double startingAngle_Degrees) {
 
-        System.out.println("[Init] Creating ArmSim");
+		System.out.println("[Init] Creating ArmSim");
 
-        armSim = new SingleJointedArmSim(
-                DCMotor.getNEO(numMotors),
-                gearing,
-                momentOfInertia,
-                length_meters,
-                minAngle_degrees * Math.PI / 180,
-                maxAngle_degrees * Math.PI / 180,
-                simulateGravity,
-                startingAngle_Degrees * Math.PI / 180);
+		armSim = new SingleJointedArmSim(
+				DCMotor.getNEO(2),
+				gearing,
+				momentOfInertia,
+				length_meters,
+				minAngle_degrees * Math.PI / 180,
+				maxAngle_degrees * Math.PI / 180,
+				simulateGravity,
+				startingAngle_Degrees * Math.PI / 180);
+	}
 
-    }
+	private double inputVolts = 0;
+	private double previousVelocity = 0;
+	private double velocity = 0;
 
-    private double appliedVolts = 0;
-    private double previousVelocity = 0;
-    private double velocity = 0;
-    private double conversionFactor = 1;
+	/**
+	 * Updates the set of loggable inputs for the sim.
+	 *
+	 * @param data
+	 */
+	@Override
+	public void updateData(ArmData data) {
+		armSim.update(0.02);
+		previousVelocity = velocity;
+		velocity = armSim.getVelocityRadPerSec();
+		data.positionUnits = armSim.getAngleRads();
+		data.velocityUnits = velocity;
+		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
 
-    /**
-     * Updates the set of loggable inputs for the sim.
-     * 
-     * @param data
-     */
+		data.inputVolts = inputVolts;
+		data.firstMotorAppliedVolts = inputVolts;
+		data.secondMotorAppliedVolts = inputVolts;
+		data.firstMotorCurrentAmps = armSim.getCurrentDrawAmps();
+		data.secondMotorCurrentAmps = data.firstMotorCurrentAmps;
 
-    @Override
-    public void updateData(ArmData data) {
-        armSim.update(SimConstants.loopPeriodSec);
+		// Sim has no temp
+		data.firstMotorTempCelcius = 0;
+		data.secondMotorTempCelcius = 0;
+	}
 
-        previousVelocity = velocity;
-        velocity = armSim.getVelocityRadPerSec() * conversionFactor;
-        data.positionUnits = armSim.getAngleRads() * conversionFactor; // Directly use the angle from the simulation
-        data.velocityUnits = velocity;
-        data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
-        data.currentAmps = armSim.getCurrentDrawAmps();
-        data.inputVolts = appliedVolts;
-        data.appliedVolts = appliedVolts;
-
-        data.tempCelcius = 0.0; // sim has no temperature
-    }
-
-    /**
-     * Run the motor at the specified voltage.
-     * 
-     * @param volts
-     */
-
-    @Override
-    public void setVoltage(double volts) {
-        appliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
-        armSim.setInputVoltage(appliedVolts);
-    }
+	/**
+	 * Run the motor at the specified voltage.
+	 *
+	 * @param volts
+	 */
+	@Override
+	public void setVoltage(double volts) {
+		inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
+		inputVolts = MathUtil.clamp(volts, -12, 12);
+		armSim.setInputVoltage(inputVolts);
+	}
 }

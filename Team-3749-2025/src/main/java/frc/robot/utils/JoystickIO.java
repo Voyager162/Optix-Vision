@@ -87,15 +87,15 @@ public class JoystickIO {
         // Example binding 
         // operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        operator.a().onTrue(l1);
-        operator.b().onTrue(l2);
-        operator.x().onTrue(l3);
-        operator.y().onTrue(l4);
+        // operator.a().onTrue(l1);
+        // operator.b().onTrue(l2);
+        // operator.x().onTrue(l3);
+        // operator.y().onTrue(l4);
         
         // keybindings for the coral arm for testing
-        // operator.a().whileTrue(coralMoveDown);
-		// operator.b().whileTrue(coralMoveUp);
-		// operator.x().whileTrue(coralPickup);
+        operator.a().whileTrue(coralMoveDown);
+		operator.b().whileTrue(coralMoveUp);
+		operator.x().whileTrue(coralPickup);
     }
 
     public static void pilotBindings() {
