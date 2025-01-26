@@ -76,30 +76,30 @@ public class ToPosConstants {
             // Helper method to adjust Pose2d
             public static Pose2d adjustPose(double x, double y, double heading) {
                 // Calculate offsets based only on robot length
-                double offsetX = (ROBOT_LENGTH / 2) * Math.cos(heading);
-                double offsetY = (ROBOT_LENGTH / 2) * Math.sin(heading);
+                double offsetX = 0;//(ROBOT_LENGTH / 2) * Math.cos(heading);
+                double offsetY = 0;//(ROBOT_LENGTH / 2) * Math.sin(heading);
             
                 // Adjust coordinates to align the robot’s front edge with the target
                 return new Pose2d(x - offsetX, y - offsetY, new Rotation2d(heading));
             };
 
         public static final Pose2d reef17L = reefTrig(reef17, TrigDirection.LEFT);
-        public static final Pose2d reef17R = reefTrig(reef17, TrigDirection.RIGHT);
+        // public static final Pose2d reef17R = reefTrig(reef17, TrigDirection.RIGHT);
         
         public static final Pose2d reef18L = reefTrig(reef18, TrigDirection.LEFT);
-        public static final Pose2d reef18R = reefTrig(reef18, TrigDirection.RIGHT);
+        // public static final Pose2d reef18R = reefTrig(reef18, TrigDirection.RIGHT);
 
         public static final Pose2d reef19L = reefTrig(reef19, TrigDirection.LEFT);
-        public static final Pose2d reef19R = reefTrig(reef19, TrigDirection.RIGHT);
+        // public static final Pose2d reef19R = reefTrig(reef19, TrigDirection.RIGHT);
 
         public static final Pose2d reef20L = reefTrig(reef20, TrigDirection.LEFT);
-        public static final Pose2d reef20R = reefTrig(reef20, TrigDirection.RIGHT);
+        // public static final Pose2d reef20R = reefTrig(reef20, TrigDirection.RIGHT);
 
         public static final Pose2d reef21L = reefTrig(reef21, TrigDirection.LEFT);
-        public static final Pose2d reef21R = reefTrig(reef21, TrigDirection.RIGHT);
+        // public static final Pose2d reef21R = reefTrig(reef21, TrigDirection.RIGHT);
 
         public static final Pose2d reef22L = reefTrig(reef22, TrigDirection.LEFT);
-        public static final Pose2d reef22R = reefTrig(reef22, TrigDirection.RIGHT);
+        // public static final Pose2d reef22R = reefTrig(reef22, TrigDirection.RIGHT);
 
 
         public static final Pose2d[] ppSetpoints = new Pose2d[] { 
@@ -108,17 +108,17 @@ public class ToPosConstants {
             ToPosConstants.Setpoints.processor, //index 2, and if you add or remove any setpoints, this will break on the fly,
             //read on the fly command for context
             ToPosConstants.Setpoints.reef17L,
-            ToPosConstants.Setpoints.reef17R,
+            // ToPosConstants.Setpoints.reef17R,
             ToPosConstants.Setpoints.reef18L,
-            ToPosConstants.Setpoints.reef18R,
+            // ToPosConstants.Setpoints.reef18R,
             ToPosConstants.Setpoints.reef19L,
-            ToPosConstants.Setpoints.reef19R,
+            // ToPosConstants.Setpoints.reef19R,
             ToPosConstants.Setpoints.reef20L,
-            ToPosConstants.Setpoints.reef20R,
+            // ToPosConstants.Setpoints.reef20R,
             ToPosConstants.Setpoints.reef21L,
-            ToPosConstants.Setpoints.reef21R,
+            // ToPosConstants.Setpoints.reef21R,
             ToPosConstants.Setpoints.reef22L,
-            ToPosConstants.Setpoints.reef22R,
+            // ToPosConstants.Setpoints.reef22R,
         };
     }
 
@@ -128,11 +128,11 @@ public class ToPosConstants {
 
 
     //temporary data for hark
-    /*Pose2d(Translation2d(X: 5.37, Y: 4.83), Rotation2d(Rads: -2.09, Deg: -120.00))
-Pose2d(Translation2d(X: 4.74, Y: 5.19), Rotation2d(Rads: -2.09, Deg: -120.00))
-Pose2d(Translation2d(X: 5.62, Y: 3.67), Rotation2d(Rads: 3.14, Deg: 180.00))
-Pose2d(Translation2d(X: 5.62, Y: 4.39), Rotation2d(Rads: 3.14, Deg: 180.00))
-Pose2d(Translation2d(X: 4.74, Y: 2.87), Rotation2d(Rads: 2.09, Deg: 120.00))
-Pose2d(Translation2d(X: 5.37, Y: 3.23), Rotation2d(Rads: 2.09, Deg: 120.00)) */
+    /*Pose2d(Translation2d(X: 3.76, Y: 3.49), Rotation2d(Rads: 1.05, Deg: 60.00))
+Pose2d(Translation2d(X: 3.66, Y: 4.39), Rotation2d(Rads: 0.00, Deg: 0.00))
+Pose2d(Translation2d(X: 4.39, Y: 4.93), Rotation2d(Rads: -1.05, Deg: -60.00))
+Pose2d(Translation2d(X: 5.22, Y: 4.57), Rotation2d(Rads: -2.09, Deg: -120.00))
+Pose2d(Translation2d(X: 5.32, Y: 3.67), Rotation2d(Rads: 3.14, Deg: 180.00))
+Pose2d(Translation2d(X: 4.59, Y: 3.13), Rotation2d(Rads: 2.09, Deg: 120.00)) */
 //also cause this will be wiped in the next commit, im still upset at you
 }
