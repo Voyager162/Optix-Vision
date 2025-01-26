@@ -51,24 +51,27 @@ public class ToPosConstants {
                 break;
             }
     
-            double xOffset = Math.cos(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))/(4*forwardMagnitudeMultiplier);
-            double yOffset = Math.sin(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))/(4*forwardMagnitudeMultiplier);
+            // double xOffset = Math.cos(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))/(4*forwardMagnitudeMultiplier);
+            // double yOffset = Math.sin(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))/(4*forwardMagnitudeMultiplier);
+            double xOffset = (0.36)*Math.cos(Math.toRadians(reefPose.getRotation().getDegrees())+ Math.toRadians((angleOffset * offsetMultiplier)));
+            double yOffset = (0.36)*Math.sin(Math.toRadians(reefPose.getRotation().getDegrees())+ Math.toRadians((angleOffset * offsetMultiplier)));
+            System.out.println(new Pose2d(reefPose.getX()+xOffset,reefPose.getY()+yOffset,reefPose.getRotation()));
             return new Pose2d(reefPose.getX()+xOffset,reefPose.getY()+yOffset,reefPose.getRotation());
             };
             public static final double ROBOT_LENGTH = 0.6; // Length of the robot in meters
             public static final double ROBOT_WIDTH = 0.6;  // Width of the robot in meters
             
             // Adjusted setpoints
-            public static final Pose2d coralTop = adjustPose(.85, 7.3, Math.toRadians(125));
-            public static final Pose2d coralBottom = adjustPose(1.2, 1.0, Math.toRadians(-125));
-            public static final Pose2d processor = adjustPose(6.3, 0.66, Math.toRadians(-90));
+            public static final Pose2d coralTop = adjustPose(0.851154, 7.39648, Math.toRadians(125));
+            public static final Pose2d coralBottom = adjustPose(0.851154, 0.65532, Math.toRadians(-125));
+            public static final Pose2d processor = adjustPose(5.987542, -0.00381, Math.toRadians(-90));
             
-            public static final Pose2d reef18 = adjustPose(3.09, 4.03, Math.toRadians(0));
-            public static final Pose2d reef17 = adjustPose(3.7, 2.85, Math.toRadians(60));
-            public static final Pose2d reef22 = adjustPose(5.24, 2.75, Math.toRadians(120));
-            public static final Pose2d reef21 = adjustPose(6.0, 4.0, Math.toRadians(180));
-            public static final Pose2d reef20 = adjustPose(5.22, 5.37, Math.toRadians(-120));
-            public static final Pose2d reef19 = adjustPose(3.73, 5.24, Math.toRadians(-60));
+            public static final Pose2d reef18 = adjustPose(3.6576, 4.0259, Math.toRadians(0));
+            public static final Pose2d reef17 = adjustPose(4.073906, 3.306318, Math.toRadians(60));
+            public static final Pose2d reef22 = adjustPose(4.90474, 3.306318, Math.toRadians(120));
+            public static final Pose2d reef21 = adjustPose(5.321046, 4.0259, Math.toRadians(180));
+            public static final Pose2d reef20 = adjustPose(4.90474, 4.745482, Math.toRadians(-120));
+            public static final Pose2d reef19 = adjustPose(4.073906, 4.745482, Math.toRadians(-60));
             
             // Helper method to adjust Pose2d
             public static Pose2d adjustPose(double x, double y, double heading) {
@@ -98,6 +101,7 @@ public class ToPosConstants {
         public static final Pose2d reef22L = reefTrig(reef22, TrigDirection.LEFT);
         public static final Pose2d reef22R = reefTrig(reef22, TrigDirection.RIGHT);
 
+
         public static final Pose2d[] ppSetpoints = new Pose2d[] { 
             ToPosConstants.Setpoints.coralBottom,
             ToPosConstants.Setpoints.coralTop,
@@ -122,4 +126,13 @@ public class ToPosConstants {
 
     }
 
+
+    //temporary data for hark
+    /*Pose2d(Translation2d(X: 5.37, Y: 4.83), Rotation2d(Rads: -2.09, Deg: -120.00))
+Pose2d(Translation2d(X: 4.74, Y: 5.19), Rotation2d(Rads: -2.09, Deg: -120.00))
+Pose2d(Translation2d(X: 5.62, Y: 3.67), Rotation2d(Rads: 3.14, Deg: 180.00))
+Pose2d(Translation2d(X: 5.62, Y: 4.39), Rotation2d(Rads: 3.14, Deg: 180.00))
+Pose2d(Translation2d(X: 4.74, Y: 2.87), Rotation2d(Rads: 2.09, Deg: 120.00))
+Pose2d(Translation2d(X: 5.37, Y: 3.23), Rotation2d(Rads: 2.09, Deg: 120.00)) */
+//also cause this will be wiped in the next commit, im still upset at you
 }
