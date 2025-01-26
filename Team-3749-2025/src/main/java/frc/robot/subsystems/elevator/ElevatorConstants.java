@@ -22,8 +22,9 @@ public class ElevatorConstants {
         public static final double baseHeight = Units.feetToMeters(3.25);
 
         public static int[] motorIds = { 15, 16 };
-        public static int stallLimit = 30;
-        public static int freeLimit = 50;
+        public static boolean[] motorInverted = { false, true };
+
+
 
         public static int zeroOffset = 0;
     }

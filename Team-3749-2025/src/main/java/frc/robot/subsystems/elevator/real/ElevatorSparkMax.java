@@ -11,8 +11,11 @@ import com.revrobotics.spark.config.EncoderConfigAccessor;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.utils.MiscConstants;
+import frc.robot.utils.MiscConstants.MotorControllerConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
@@ -45,15 +48,14 @@ public class ElevatorSparkMax implements ElevatorIO {
         encoderConfig.velocityConversionFactor(Math.PI * 2 * ElevatorConstants.ElevatorSpecs.drumRadiusMeters
                 / (60 * ElevatorConstants.ElevatorSpecs.gearing));
 
-        leftMotorConfig.smartCurrentLimit(ElevatorConstants.ElevatorSpecs.stallLimit,
-                ElevatorConstants.ElevatorSpecs.freeLimit);
-        leftMotorConfig.inverted(false);
+        leftMotorConfig.smartCurrentLimit(MotorControllerConstants.standardStallLimit, MotorControllerConstants.standardFreeLimit);
+        leftMotorConfig.inverted(ElevatorConstants.ElevatorSpecs.motorInverted[0]);
         leftMotorConfig.idleMode(IdleMode.kBrake);
         leftMotorConfig.encoder.apply(encoderConfig);
         leftMotor.configure(leftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         rightMotorConfig.apply(leftMotorConfig);
-        rightMotorConfig.inverted(true);
+        rightMotorConfig.inverted(ElevatorConstants.ElevatorSpecs.motorInverted[1]);
         rightMotor.configure(rightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         absoluteEncoder = leftMotor.getAbsoluteEncoder();

@@ -10,6 +10,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.arm.ArmIO;
+import frc.robot.utils.MiscConstants.MotorControllerConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
@@ -42,7 +43,7 @@ public class ClimbSparkMax implements ArmIO {
         encoderConfig.velocityConversionFactor(Math.PI * 2
                 / (60 * ClimbConstants.armGearing));
 
-        leftMotorConfig.smartCurrentLimit(30, 50);
+        leftMotorConfig.smartCurrentLimit(MotorControllerConstants.standardStallLimit, MotorControllerConstants.standardFreeLimit);
         leftMotorConfig.inverted(ClimbConstants.motorInverted[0]);
         leftMotorConfig.idleMode(IdleMode.kBrake);
         leftMotorConfig.encoder.apply(encoderConfig);

@@ -29,11 +29,11 @@ public class RobotContainer {
 
     // robot setup
     JoystickIO.getButtonBindings();
-    AutoUtils.initAuto();
+    // AutoUtils.initAuto();
     
   }
 
   public Command getAutonomousCommand() {
-    return Autos.getSelectedCommand();
+    return Autos.getPrint();
   }
 }

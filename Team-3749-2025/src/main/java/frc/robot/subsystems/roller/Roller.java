@@ -27,19 +27,26 @@ public abstract class Roller extends SubsystemBase {
     private ShuffleData<Double> rollerPositionLog;
     private ShuffleData<Double> rollerLastKnownPositionLog;
 
-    public Roller(Implementations implementation, PIDController velocityController, SimpleMotorFeedforward rollerFF, PIDController positionController) {
-        switch(implementation) {
+    public Roller(Implementations implementation, PIDController velocityController, SimpleMotorFeedforward rollerFF,
+            PIDController positionController) {
+        switch (implementation) {
             case ALGAE:
-                rollerIO = Robot.isSimulation() ? new RollerSim(implementation) : new RollerSparkMax(RollerConstants.Algae.motorId);
+                rollerIO = Robot.isSimulation() ? new RollerSim(implementation)
+                        : new RollerSparkMax(RollerConstants.Algae.motorId,
+                                2 * Math.PI / RollerConstants.Algae.gearRatio, RollerConstants.Algae.inverted);
                 break;
             case CORAL:
-                rollerIO = Robot.isSimulation() ? new RollerSim(implementation) : new RollerSparkMax(RollerConstants.Coral.motorId);
+                rollerIO = Robot.isSimulation() ? new RollerSim(implementation)
+                        : new RollerSparkMax(RollerConstants.Coral.motorId,
+                                2 * Math.PI / RollerConstants.Coral.gearRatio, RollerConstants.Coral.inverted);
                 break;
             case SCORING:
-                rollerIO = Robot.isSimulation() ? new RollerSim(implementation) : new RollerSparkMax(RollerConstants.Scoring.motorId);
+                rollerIO = Robot.isSimulation() ? new RollerSim(implementation)
+                        : new RollerSparkMax(RollerConstants.Scoring.motorId,
+                                2 * Math.PI / RollerConstants.Scoring.gearRatio, RollerConstants.Scoring.inverted);
                 break;
         }
-        
+
         String name = implementation.name();
         this.velocityController = velocityController;
         this.rollerFF = rollerFF;
@@ -54,7 +61,7 @@ public abstract class Roller extends SubsystemBase {
         rollerPositionLog = new ShuffleData<>(getName(), "Position", 0.0);
         rollerLastKnownPositionLog = new ShuffleData<>(getName(), "Last Known Position", 0.0);
     }
-    
+
     public RollerIO getRollerIO() {
         return rollerIO;
     }
@@ -65,9 +72,9 @@ public abstract class Roller extends SubsystemBase {
 
     public void setVelocity(double velocityRadPerSec) {
         double voltage = velocityController.calculate(
-            rollerData.rollerVelocityRadPerSec, 
-            velocityRadPerSec) +
-            rollerFF.calculate(velocityRadPerSec);
+                rollerData.rollerVelocityRadPerSec,
+                velocityRadPerSec) +
+                rollerFF.calculate(velocityRadPerSec);
 
         setVoltage(voltage);
     }
@@ -79,12 +86,12 @@ public abstract class Roller extends SubsystemBase {
     public void setState(RollerStates rollerState) {
         this.rollerState = rollerState;
         if (rollerState == RollerConstants.RollerStates.MAINTAIN) {
-            lastKnownPosition = rollerData.rollerPositionRotations; 
+            lastKnownPosition = rollerData.rollerPositionRotations;
         }
     }
 
-    public void runRollerStates() {        
-        switch(rollerState) {
+    public void runRollerStates() {
+        switch (rollerState) {
             case RUN:
                 run();
                 break;
@@ -101,9 +108,8 @@ public abstract class Roller extends SubsystemBase {
 
     public void maintain() {
         double holdVoltage = positionController.calculate(
-            rollerData.rollerPositionRotations, 
-            lastKnownPosition
-        );
+                rollerData.rollerPositionRotations,
+                lastKnownPosition);
         setVoltage(holdVoltage);
     }
 

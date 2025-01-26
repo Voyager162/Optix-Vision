@@ -7,10 +7,12 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.SwerveModuleIO;
 import frc.robot.subsystems.swerve.SwerveConstants.DriveConstants;
@@ -29,6 +31,12 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
         private SparkClosedLoopController turningController;
         private SparkClosedLoopController driveController;
 
+        private SparkMaxConfig driveMotorConfig = new SparkMaxConfig();
+        private SparkMaxConfig turnMotorConfig = new SparkMaxConfig();
+
+        private EncoderConfig driveEncoderConfig = new EncoderConfig();
+        private EncoderConfig turnEncoderConfig = new EncoderConfig();
+
         private CANcoder absoluteEncoder;
         private double absoluteEncoderOffsetRad;
 
@@ -41,35 +49,38 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
          * @param pidfConstants
          */
         public SwerveModuleSparkMax(int index) {
-                driveMotor = new SparkMax(DriveConstants.driveMotorPorts[index], SparkMax.MotorType.kBrushless);
-                SparkMaxConfig driveConfig = new SparkMaxConfig();
-                driveConfig.inverted(DriveConstants.driveMotorReversed[index]);
-                driveConfig.encoder.positionConversionFactor((1 / ModuleConstants.driveMotorGearRatio) * Math.PI
+                
+                driveEncoderConfig.positionConversionFactor((1 / ModuleConstants.driveMotorGearRatio) * Math.PI
                                 * ModuleConstants.wheelDiameterMeters);
-                driveConfig.encoder.velocityConversionFactor(
+                driveEncoderConfig.velocityConversionFactor(
                                 (1 / ModuleConstants.driveMotorGearRatio)
                                                 * Units.rotationsPerMinuteToRadiansPerSecond(1)
                                                 * (ModuleConstants.wheelDiameterMeters / 2.0));
-                driveConfig.smartCurrentLimit(DriveConstants.driveMotorStallLimit,
-                                DriveConstants.driveMotorFreeLimit);
-                driveConfig.idleMode(IdleMode.kBrake);
-                driveMotor.configure(driveConfig, com.revrobotics.spark.SparkBase.ResetMode.kResetSafeParameters,
+                driveMotorConfig.encoder.apply(driveEncoderConfig);
+                driveMotor = new SparkMax(DriveConstants.driveMotorPorts[index], SparkMax.MotorType.kBrushless);
+                driveMotorConfig.inverted(DriveConstants.driveMotorReversed[index]);
+
+                driveMotorConfig.smartCurrentLimit(MotorControllerConstants.standardStallLimit,
+                                MotorControllerConstants.standardFreeLimit);
+                driveMotorConfig.idleMode(IdleMode.kBrake);
+                driveMotor.configure(driveMotorConfig, com.revrobotics.spark.SparkBase.ResetMode.kResetSafeParameters,
                                 PersistMode.kPersistParameters);
 
                 turnMotor = new SparkMax(DriveConstants.turningMotorPorts[index],
                                 SparkMax.MotorType.kBrushless);
 
-                SparkMaxConfig turnConfig = new SparkMaxConfig();
-                turnConfig.inverted(DriveConstants.turningMotorReversed[index]);
-                turnConfig.encoder.positionConversionFactor(1 / ModuleConstants.turnMotorGearRatio * (2 * Math.PI));
-                turnConfig.encoder.velocityConversionFactor(
+                turnMotorConfig.inverted(DriveConstants.turningMotorReversed[index]);
+                turnEncoderConfig
+                                .positionConversionFactor(1 / ModuleConstants.turnMotorGearRatio * (2 * Math.PI));
+                turnEncoderConfig.velocityConversionFactor(
                                 (1 / ModuleConstants.driveMotorGearRatio)
                                                 * Units.rotationsPerMinuteToRadiansPerSecond(1));
-                turnConfig.smartCurrentLimit(DriveConstants.turnMotorStallLimit,
-                                DriveConstants.turnMotorFreeLimit);
-                turnConfig.idleMode(IdleMode.kBrake);
+                turnMotorConfig.encoder.apply(turnEncoderConfig);
+                turnMotorConfig.smartCurrentLimit(MotorControllerConstants.relaxedStallLimit,
+                                MotorControllerConstants.relaxedFreeLimit);
+                turnMotorConfig.idleMode(IdleMode.kBrake);
 
-                turnMotor.configure(turnConfig, com.revrobotics.spark.SparkBase.ResetMode.kResetSafeParameters,
+                turnMotor.configure(turnMotorConfig, com.revrobotics.spark.SparkBase.ResetMode.kResetSafeParameters,
                                 PersistMode.kPersistParameters);
 
                 absoluteEncoder = new CANcoder(DriveConstants.absoluteEncoderPorts[index]);
@@ -90,7 +101,8 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
                  * vs position, slow vs fast and large vs small)
                  */
                 for (int i = 0; i < 4; i++) {
-                        turnConfig.closedLoop.pidf(ModuleConstants.turnPID[i][0], ModuleConstants.turnPID[i][1], ModuleConstants.turnPID[i][2], 1 / 473,
+                        turnMotorConfig.closedLoop.pidf(ModuleConstants.turnPID[i][0], ModuleConstants.turnPID[i][1],
+                                        ModuleConstants.turnPID[i][2], 1 / 473,
                                         MotorControllerConstants.slots[i]);
                 }
 
@@ -101,12 +113,13 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
                 driveController = driveMotor.getClosedLoopController();
 
                 for (int i = 0; i < 4; i++) {
-                        driveConfig.closedLoop.pidf(ModuleConstants.drivePID[i][0], ModuleConstants.drivePID[i][1], ModuleConstants.drivePID[i][2], 1 / 473,
+                        driveMotorConfig.closedLoop.pidf(ModuleConstants.drivePID[i][0], ModuleConstants.drivePID[i][1],
+                                        ModuleConstants.drivePID[i][2], 1 / 473,
                                         MotorControllerConstants.slots[i]);
                 }
 
                 driveController.setReference(0, ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot0);
-                driveConfig.closedLoop.maxMotion
+                driveMotorConfig.closedLoop.maxMotion
                                 .maxVelocity(DriveConstants.maxSpeedMetersPerSecond)
                                 .maxAcceleration(DriveConstants.maxAccelerationMetersPerSecondSquared)
                                 .allowedClosedLoopError(DriveConstants.maxDriveVelocityError);
@@ -140,6 +153,7 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
                         driveController.setReference(setpointVelocity, ControlType.kMAXMotionVelocityControl,
                                         ClosedLoopSlot.kSlot3, feedforward);
                 }
+                
         }
 
         @Override

@@ -16,10 +16,6 @@ public class MiscConstants {
     SIM
   }
 
-  public static final RobotType ROBOT_TYPE = Robot.isReal()
-      ? RobotType.REAL
-      : RobotType.SIM;
-
   public static final class SimConstants {
     public static final double loopPeriodSec = 0.02;
   }
@@ -38,6 +34,11 @@ public class MiscConstants {
      */
     public static final ClosedLoopSlot[] slots = new ClosedLoopSlot[] { ClosedLoopSlot.kSlot0, ClosedLoopSlot.kSlot1,
         ClosedLoopSlot.kSlot2, ClosedLoopSlot.kSlot3 };
+    public static int standardStallLimit = 30;
+    public static int standardFreeLimit = 50;
+
+    public static int relaxedStallLimit = 10;
+    public static int relaxedFreeLimit = 20;
 
   }
 

@@ -1,39 +1,52 @@
-package frc.robot.subsystems.arm.real;
+package frc.robot.subsystems.arm.coral;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.arm.ArmIO;
+import frc.robot.utils.MiscConstants.MotorControllerConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
- * IO implementation for an arm subsystem's sparkmax
+ * IO implementation for the climb subsystem's sparkmax
+ * I had to make two different motors because we are using two motors on the
+ * climb
+ * I have decided to have one of the motors be the primary motor taking care of
+ * all the data
+ * the secondary will just be there to provide more power to the climb
  * 
  * @author Elise Lin
+ * @author Weston Gardner
  */
-public class ArmSparkMax implements ArmIO {
+public class CoralArmSparkMax implements ArmIO {
 
-    private SparkMax motor;
-    private SparkMaxConfig config = new SparkMaxConfig();
+    private SparkMax motor = new SparkMax(CoralConstants.motorId, MotorType.kBrushless);
+    private SparkMaxConfig motorConfig = new SparkMaxConfig();
+
+    private EncoderConfig encoderConfig = new EncoderConfig();
 
     private double inputVolts = 0;
     private double previousVelocity = 0;
     private double velocity = 0;
 
-    public ArmSparkMax(int motorId) {
+    public CoralArmSparkMax() {
+        encoderConfig.positionConversionFactor(Math.PI * 2
+                / CoralConstants.armGearing);
+        encoderConfig.velocityConversionFactor(Math.PI * 2
+                / (60 * CoralConstants.armGearing));
 
-        motor = new SparkMax(motorId, MotorType.kBrushless);
-        config.smartCurrentLimit(30, 50);
-        config.encoder.inverted(false);
-        config.idleMode(IdleMode.kBrake);
-        config.encoder.positionConversionFactor(2 * Math.PI);
-        config.encoder.velocityConversionFactor(2 * Math.PI / 60.0);
-        motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        motorConfig.smartCurrentLimit(MotorControllerConstants.standardStallLimit, MotorControllerConstants.standardFreeLimit);
+        motorConfig.inverted(CoralConstants.motorInverted);
+        motorConfig.idleMode(IdleMode.kBrake);
+        motorConfig.encoder.apply(encoderConfig);
+
+        motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     }
 
