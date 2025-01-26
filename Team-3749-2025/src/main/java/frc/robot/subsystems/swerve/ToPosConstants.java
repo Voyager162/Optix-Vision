@@ -98,8 +98,21 @@ public class ToPosConstants {
         public static final Pose2d reef22L = reefTrig(reef22, TrigDirection.LEFT);
         public static final Pose2d reef22R = reefTrig(reef22, TrigDirection.RIGHT);
 
+        // public static final Pose2d a = new Pose2d(3.76, 3.49, new Rotation2d(0));
+        // public static final Pose2d b = new Pose2d(4.39, 4.93, new Rotation2d(0));
+        // public static final Pose2d c = new Pose2d( 5.22,  4.57, new Rotation2d(0));
+        // public static final Pose2d d = new Pose2d(3.76, 3.49, new Rotation2d(0));
+        // public static final Pose2d e = new Pose2d(5.32, 3.67, new Rotation2d(0));
+        // public static final Pose2d f = new Pose2d(4.59, 3.13, new Rotation2d(0));
+
 
         public static final Pose2d[] ppSetpoints = new Pose2d[] { 
+            // ToPosConstants.Setpoints.a,
+            // ToPosConstants.Setpoints.b,
+            // ToPosConstants.Setpoints.c,
+            // ToPosConstants.Setpoints.d,
+            // ToPosConstants.Setpoints.e,
+            // ToPosConstants.Setpoints.f,
             ToPosConstants.Setpoints.coralBottom,
             ToPosConstants.Setpoints.coralTop,
             ToPosConstants.Setpoints.processor, //index 2, and if you add or remove any setpoints, this will break on the fly,
