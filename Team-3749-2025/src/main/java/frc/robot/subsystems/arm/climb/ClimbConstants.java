@@ -10,8 +10,8 @@ import edu.wpi.first.math.util.Units;
  */
 
 public class ClimbConstants {
-    public static final int firstMotorId = 0;
-    public static final int secondMotorId = 1;
+    public static final int firstMotorId = 19;
+    public static final int secondMotorId = 20;
     public static final int numMotors = 1;
 
     public static final int armLength_inches = 16;
