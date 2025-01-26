@@ -141,7 +141,7 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
                                                         MotorControllerConstants.slots[i]);
                 }
 
-                driveController.setReference(0, ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot0);
+                driveController.setReference(0, ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot2);
 
                 driveMotorConfig.closedLoop.maxMotion
                                 .maxVelocity(DriveConstants.maxSpeedMetersPerSecond)
