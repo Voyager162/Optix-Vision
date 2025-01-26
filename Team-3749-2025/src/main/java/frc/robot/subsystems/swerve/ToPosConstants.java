@@ -51,12 +51,9 @@ public class ToPosConstants {
                 break;
             }
     
-            // double xOffset = Math.cos(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))/(4*forwardMagnitudeMultiplier);
-            // double yOffset = Math.sin(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))/(4*forwardMagnitudeMultiplier);
-            double xOffset = (0.36)*Math.cos(Math.toRadians(reefPose.getRotation().getDegrees())+ Math.toRadians((angleOffset * offsetMultiplier)));
-            double yOffset = (0.36)*Math.sin(Math.toRadians(reefPose.getRotation().getDegrees())+ Math.toRadians((angleOffset * offsetMultiplier)));
-            System.out.println(new Pose2d(reefPose.getX()+xOffset,reefPose.getY()+yOffset,reefPose.getRotation()));
-            return new Pose2d(reefPose.getX()+xOffset,reefPose.getY()+yOffset,reefPose.getRotation());
+            double xOffset = Math.cos(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))/(4*forwardMagnitudeMultiplier);
+            double yOffset = Math.sin(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))/(4*forwardMagnitudeMultiplier);
+            return new Pose2d(reefPose.getX()+xOffset,reefPose.getY()+yOffset,reefPose.getRotation()); 
             };
             public static final double ROBOT_LENGTH = 0.6; // Length of the robot in meters
             public static final double ROBOT_WIDTH = 0.6;  // Width of the robot in meters
@@ -126,13 +123,4 @@ public class ToPosConstants {
 
     }
 
-
-    //temporary data for hark
-    /*Pose2d(Translation2d(X: 5.37, Y: 4.83), Rotation2d(Rads: -2.09, Deg: -120.00))
-Pose2d(Translation2d(X: 4.74, Y: 5.19), Rotation2d(Rads: -2.09, Deg: -120.00))
-Pose2d(Translation2d(X: 5.62, Y: 3.67), Rotation2d(Rads: 3.14, Deg: 180.00))
-Pose2d(Translation2d(X: 5.62, Y: 4.39), Rotation2d(Rads: 3.14, Deg: 180.00))
-Pose2d(Translation2d(X: 4.74, Y: 2.87), Rotation2d(Rads: 2.09, Deg: 120.00))
-Pose2d(Translation2d(X: 5.37, Y: 3.23), Rotation2d(Rads: 2.09, Deg: 120.00)) */
-//also cause this will be wiped in the next commit, im still upset at you
 }
