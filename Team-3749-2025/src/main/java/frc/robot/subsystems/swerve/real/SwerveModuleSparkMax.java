@@ -7,7 +7,11 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
+import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.EncoderConfig;
+import com.revrobotics.spark.config.MAXMotionConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
@@ -37,7 +41,7 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
         private EncoderConfig driveEncoderConfig = new EncoderConfig();
         private EncoderConfig turnEncoderConfig = new EncoderConfig();
 
-        private CANcoder absoluteEncoder;
+        // private CANcoder absoluteEncoder;
         private double absoluteEncoderOffsetRad;
 
         private double driveAppliedVolts;
@@ -49,7 +53,7 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
          * @param pidfConstants
          */
         public SwerveModuleSparkMax(int index) {
-                
+
                 driveEncoderConfig.positionConversionFactor((1 / ModuleConstants.driveMotorGearRatio) * Math.PI
                                 * ModuleConstants.wheelDiameterMeters);
                 driveEncoderConfig.velocityConversionFactor(
@@ -83,7 +87,7 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
                 turnMotor.configure(turnMotorConfig, com.revrobotics.spark.SparkBase.ResetMode.kResetSafeParameters,
                                 PersistMode.kPersistParameters);
 
-                absoluteEncoder = new CANcoder(DriveConstants.absoluteEncoderPorts[index]);
+                // absoluteEncoder = new CANcoder(DriveConstants.absoluteEncoderPorts[index]);
                 absoluteEncoderOffsetRad = Units.degreesToRadians(DriveConstants.absoluteEncoderOffsetDeg[index]);
 
                 driveMotor.setControlFramePeriodMs(20);
@@ -103,8 +107,18 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
                 for (int i = 0; i < 4; i++) {
                         turnMotorConfig.closedLoop.pidf(ModuleConstants.turnPID[i][0], ModuleConstants.turnPID[i][1],
                                         ModuleConstants.turnPID[i][2], 1 / 473,
-                                        MotorControllerConstants.slots[i]);
+                                        MotorControllerConstants.slots[i])
+                                        .positionWrappingEnabled(true)
+                                        .positionWrappingInputRange(0, 2 * Math.PI);
+
+                        turnMotorConfig.closedLoop.maxMotion.positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal,
+                                        MotorControllerConstants.slots[i])
+                                        .maxAcceleration(1, MotorControllerConstants.slots[i])
+                                        .maxVelocity(1, MotorControllerConstants.slots[i])
+                                        .allowedClosedLoopError(0.015, MotorControllerConstants.slots[i]);
+
                 }
+                // turnMotorConfig
 
                 // setpoint, control type, slot, FF from our code
                 turningController.setReference(0, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
@@ -116,9 +130,19 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
                         driveMotorConfig.closedLoop.pidf(ModuleConstants.drivePID[i][0], ModuleConstants.drivePID[i][1],
                                         ModuleConstants.drivePID[i][2], 1 / 473,
                                         MotorControllerConstants.slots[i]);
+
+                        driveMotorConfig.closedLoop.maxMotion.positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal,
+                                        MotorControllerConstants.slots[i])
+                                        .maxAcceleration(DriveConstants.maxAccelerationMetersPerSecondSquared,
+                                                        MotorControllerConstants.slots[i])
+                                        .maxVelocity(DriveConstants.maxSpeedMetersPerSecond,
+                                                        MotorControllerConstants.slots[i])
+                                        .allowedClosedLoopError(DriveConstants.maxDriveVelocityError,
+                                                        MotorControllerConstants.slots[i]);
                 }
 
                 driveController.setReference(0, ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot0);
+
                 driveMotorConfig.closedLoop.maxMotion
                                 .maxVelocity(DriveConstants.maxSpeedMetersPerSecond)
                                 .maxAcceleration(DriveConstants.maxAccelerationMetersPerSecondSquared)
@@ -137,8 +161,10 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
                 data.driveTempCelcius = driveMotor.getMotorTemperature();
 
                 turnAppliedVolts = turnMotor.getBusVoltage() * turnMotor.getAppliedOutput();
-                data.turnAbsolutePositionRad = getAbsoluteTurningPositionRad();
-                data.turnVelocityRadPerSec = getAbsoluteTurningVelocityRadPerSec();
+                data.turnAbsolutePositionRad = turnMotor.getEncoder().getPosition();
+                data.turnVelocityRadPerSec = turnMotor.getEncoder().getVelocity();
+                // data.turnAbsolutePositionRad = getAbsoluteTurningPositionRad();
+                // data.turnVelocityRadPerSec = getAbsoluteTurningVelocityRadPerSec();
                 data.turnAppliedVolts = turnAppliedVolts;
                 data.turnCurrentAmps = Math.abs(turnMotor.getOutputCurrent());
                 data.turnTempCelcius = turnMotor.getMotorTemperature();
@@ -153,7 +179,7 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
                         driveController.setReference(setpointVelocity, ControlType.kMAXMotionVelocityControl,
                                         ClosedLoopSlot.kSlot3, feedforward);
                 }
-                
+
         }
 
         @Override
@@ -190,21 +216,23 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
                 return driveMotor.getEncoder().getPosition();
         };
 
-        private double getAbsoluteTurningPositionRad() {
-                double pos = Units.rotationsToRadians(absoluteEncoder.getPosition().getValueAsDouble())
-                                - absoluteEncoderOffsetRad;
-                while (pos < 0) {
-                        pos += 2 * Math.PI;
-                }
-                while (pos > 2 * Math.PI) {
-                        pos -= 2 * Math.PI;
-                }
-                return pos;
-        };
+        // private double getAbsoluteTurningPositionRad() {
+        // double pos =
+        // Units.rotationsToRadians(absoluteEncoder.getPosition().getValueAsDouble())
+        // - absoluteEncoderOffsetRad;
+        // while (pos < 0) {
+        // pos += 2 * Math.PI;
+        // }
+        // while (pos > 2 * Math.PI) {
+        // pos -= 2 * Math.PI;
+        // }
+        // return pos;
+        // };
 
-        private double getAbsoluteTurningVelocityRadPerSec() {
-                return Units.rotationsToRadians(absoluteEncoder.getVelocity().getValueAsDouble());
-        };
+        // private double getAbsoluteTurningVelocityRadPerSec() {
+        // return
+        // Units.rotationsToRadians(absoluteEncoder.getVelocity().getValueAsDouble());
+        // };
 
         private double getDriveVelocityMetersPerSec() {
 

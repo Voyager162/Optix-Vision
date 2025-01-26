@@ -160,7 +160,7 @@ public class SwerveConstants {
                                 : DriveConstants.simMaxMotorVoltage;
 
                 // allowed velocity error
-                public static final double maxDriveVelocityError = 0.2;
+                public static final double maxDriveVelocityError = 0.15;
 
         }
 }
