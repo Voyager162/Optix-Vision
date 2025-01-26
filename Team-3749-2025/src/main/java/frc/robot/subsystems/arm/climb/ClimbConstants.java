@@ -10,9 +10,11 @@ import edu.wpi.first.math.util.Units;
  */
 
 public class ClimbConstants {
-    public static final int firstMotorId = 19;
-    public static final int secondMotorId = 20;
-    public static final int numMotors = 1;
+    public static final int[] motorIds = new int[] { 19, 20 };
+    public static final boolean[] motorInverted = new boolean[] { false, true };
+
+    public static final int numMotors = 2;
+
 
     public static final int armLength_inches = 16;
     public static final double armLength_meters = Units.inchesToMeters(armLength_inches);
@@ -24,11 +26,11 @@ public class ClimbConstants {
     public static final double armMass_kg = 8.44;
     public static final double armGearing = 255;
 
-    public static double kP = 15;
+    public static final double kP = 15;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
-    public static double kG = 0.50738;
+    public static final double kG = 0.50738;
     public static final double kS = 0.0;
     public static final double kA = 0.0;
     public static final double kV = 0.0;

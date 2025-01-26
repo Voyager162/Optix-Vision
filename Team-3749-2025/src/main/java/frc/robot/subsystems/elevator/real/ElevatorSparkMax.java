@@ -6,6 +6,8 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.EncoderConfig;
+import com.revrobotics.spark.config.EncoderConfigAccessor;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
@@ -21,9 +23,12 @@ import frc.robot.utils.MiscConstants.SimConstants;
 
 public class ElevatorSparkMax implements ElevatorIO {
     private SparkMax leftMotor = new SparkMax(ElevatorConstants.ElevatorSpecs.motorIds[0], MotorType.kBrushless);
+    private SparkMaxConfig leftMotorConfig = new SparkMaxConfig();
+
     private SparkMax rightMotor = new SparkMax(ElevatorConstants.ElevatorSpecs.motorIds[1], MotorType.kBrushless);
-    private SparkMaxConfig leftConfig = new SparkMaxConfig();
-    private SparkMaxConfig rightConfig = new SparkMaxConfig();
+    private SparkMaxConfig rightMotorConfig = new SparkMaxConfig();
+
+    private EncoderConfig encoderConfig = new EncoderConfig();
 
     private SparkAbsoluteEncoder absoluteEncoder;
     private double absolutePos;
@@ -35,19 +40,21 @@ public class ElevatorSparkMax implements ElevatorIO {
     public ElevatorSparkMax() {
         System.out.println("[Init] Creating Elevator");
 
-        leftConfig.smartCurrentLimit(ElevatorConstants.ElevatorSpecs.stallLimit,
-                ElevatorConstants.ElevatorSpecs.freeLimit);
-        leftConfig.encoder.inverted(false);
-        leftConfig.inverted(false);
-        leftConfig.idleMode(IdleMode.kBrake);
-        leftConfig.encoder.positionConversionFactor(2 * Math.PI);
-        leftConfig.encoder.velocityConversionFactor(2 * Math.PI / 60.0);
-        leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        encoderConfig.positionConversionFactor(Math.PI * 2 * ElevatorConstants.ElevatorSpecs.drumRadiusMeters
+                / ElevatorConstants.ElevatorSpecs.gearing);
+        encoderConfig.velocityConversionFactor(Math.PI * 2 * ElevatorConstants.ElevatorSpecs.drumRadiusMeters
+                / (60 * ElevatorConstants.ElevatorSpecs.gearing));
 
-        rightConfig.apply(leftConfig);
-        rightConfig.encoder.inverted(true);
-        rightConfig.inverted(true);
-        rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        leftMotorConfig.smartCurrentLimit(ElevatorConstants.ElevatorSpecs.stallLimit,
+                ElevatorConstants.ElevatorSpecs.freeLimit);
+        leftMotorConfig.inverted(false);
+        leftMotorConfig.idleMode(IdleMode.kBrake);
+        leftMotorConfig.encoder.apply(encoderConfig);
+        leftMotor.configure(leftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        rightMotorConfig.apply(leftMotorConfig);
+        rightMotorConfig.inverted(true);
+        rightMotor.configure(rightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         absoluteEncoder = leftMotor.getAbsoluteEncoder();
         absolutePos = absoluteEncoder.getPosition() + ElevatorConstants.ElevatorSpecs.zeroOffset;
@@ -57,19 +64,20 @@ public class ElevatorSparkMax implements ElevatorIO {
     }
 
     public void setIdleMode(IdleMode idleMode) {
-        leftConfig.idleMode(idleMode);
-        rightConfig.idleMode(idleMode);
-        leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        leftMotorConfig.idleMode(idleMode);
+        rightMotorConfig.idleMode(idleMode);
+        leftMotor.configure(leftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        rightMotor.configure(rightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     @Override
     public void updateData(ElevatorData data) {
         previousVelocity = velocity;
         velocity = (leftMotor.getEncoder().getVelocity() + rightMotor.getEncoder().getVelocity()) / 2;
-        // data.positionMeters = (leftMotor.getEncoder().getPosition() + rightMotor.getEncoder().getVelocity()) / 2
-        //         + absolutePos;
-        data.positionMeters = (leftMotor.getEncoder().getPosition() + rightMotor.getEncoder().getVelocity()) / 2;
+        // data.positionMeters = (leftMotor.getEncoder().getPosition() +
+        // rightMotor.getEncoder().getVelocity()) / 2
+        // + absolutePos;
+        data.positionMeters = (leftMotor.getEncoder().getPosition() + rightMotor.getEncoder().getPosition()) / 2;
         data.velocityMetersPerSecond = velocity;
         data.accelerationMetersPerSecondSquared = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
         data.leftCurrentAmps = leftMotor.getOutputCurrent();
@@ -88,5 +96,5 @@ public class ElevatorSparkMax implements ElevatorIO {
         leftMotor.setVoltage(inputVolts);
         rightMotor.setVoltage(inputVolts);
     }
+
 }
- 

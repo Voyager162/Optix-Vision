@@ -49,7 +49,7 @@ public class ClimbArm extends Arm {
             );
 
         } else {
-            armIO = new ClimbSparkMax(ClimbConstants.firstMotorId, ClimbConstants.secondMotorId);
+            armIO = new ClimbSparkMax();
         }
         SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
     }

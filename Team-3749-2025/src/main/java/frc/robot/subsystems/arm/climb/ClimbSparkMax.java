@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
@@ -24,27 +25,33 @@ import frc.robot.utils.MiscConstants.SimConstants;
  */
 public class ClimbSparkMax implements ArmIO {
 
-    private SparkMax primaryMotor;
-    private SparkMax secondaryMotor;
-    private SparkMaxConfig config = new SparkMaxConfig();
+    private SparkMax leftMotor = new SparkMax(ClimbConstants.motorIds[0], MotorType.kBrushless);
+    private SparkMax rightMotor = new SparkMax(ClimbConstants.motorIds[1], MotorType.kBrushless);
+    private SparkMaxConfig leftMotorConfig = new SparkMaxConfig();
+    private SparkMaxConfig rightMotorConfig = new SparkMaxConfig();
+
+    private EncoderConfig encoderConfig = new EncoderConfig();
 
     private double inputVolts = 0;
     private double previousVelocity = 0;
     private double velocity = 0;
 
-    public ClimbSparkMax(int firstMotorId, int secondMotorId) {
+    public ClimbSparkMax() {
+        encoderConfig.positionConversionFactor(Math.PI * 2
+                / ClimbConstants.armGearing);
+        encoderConfig.velocityConversionFactor(Math.PI * 2
+                / (60 * ClimbConstants.armGearing));
 
-        primaryMotor = new SparkMax(firstMotorId, MotorType.kBrushless);
-        secondaryMotor = new SparkMax(secondMotorId, MotorType.kBrushless);
+        leftMotorConfig.smartCurrentLimit(30, 50);
+        leftMotorConfig.inverted(ClimbConstants.motorInverted[0]);
+        leftMotorConfig.idleMode(IdleMode.kBrake);
+        leftMotorConfig.encoder.apply(encoderConfig);
 
-        config.smartCurrentLimit(30, 50);
-        config.encoder.inverted(false);
-        config.idleMode(IdleMode.kBrake);
-        config.encoder.positionConversionFactor(2 * Math.PI);
-        config.encoder.velocityConversionFactor(2 * Math.PI / 60.0);
+        rightMotorConfig.apply(leftMotorConfig);
+        rightMotorConfig.inverted(ClimbConstants.motorInverted[1]);
 
-        primaryMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        secondaryMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        leftMotor.configure(leftMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        rightMotor.configure(rightMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     }
 
@@ -58,14 +65,14 @@ public class ClimbSparkMax implements ArmIO {
     @Override
     public void updateData(ArmData data) {
         previousVelocity = velocity;
-        velocity = primaryMotor.getEncoder().getVelocity();
-        data.positionUnits = primaryMotor.getEncoder().getPosition();
+        velocity = leftMotor.getEncoder().getVelocity();
+        data.positionUnits = leftMotor.getEncoder().getPosition();
         data.velocityUnits = velocity;
         data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
-        data.currentAmps = primaryMotor.getOutputCurrent();
+        data.currentAmps = leftMotor.getOutputCurrent();
         data.inputVolts = inputVolts;
-        data.appliedVolts = primaryMotor.getBusVoltage() * primaryMotor.getAppliedOutput();
-        data.tempCelcius = primaryMotor.getMotorTemperature();
+        data.appliedVolts = leftMotor.getBusVoltage() * leftMotor.getAppliedOutput();
+        data.tempCelcius = leftMotor.getMotorTemperature();
 
     }
 
@@ -82,8 +89,8 @@ public class ClimbSparkMax implements ArmIO {
     public void setVoltage(double volts) {
         inputVolts = MathUtil.clamp(volts, -12.0, 12.0);
         inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
-        primaryMotor.setVoltage(inputVolts);
-        secondaryMotor.setVoltage(inputVolts);
+        leftMotor.setVoltage(inputVolts);
+        rightMotor.setVoltage(inputVolts);
 
     }
 }
