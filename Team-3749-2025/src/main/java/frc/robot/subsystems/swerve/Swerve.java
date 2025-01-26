@@ -149,7 +149,7 @@ public class Swerve extends SubsystemBase {
     if (Robot.isSimulation()) {
       gyro = new GyroSim();
       for (int i = 0; i < 4; i++) {
-        modules[i] = new SwerveModule(i, new SwerveModuleSim());
+        modules[i] = new SwerveModule(i, new SwerveModuleSim(i));
       }
     }
     // if real

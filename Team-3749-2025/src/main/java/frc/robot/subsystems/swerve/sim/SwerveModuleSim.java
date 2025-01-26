@@ -53,13 +53,17 @@ public class SwerveModuleSim implements SwerveModuleIO {
     private double turnPositionRad = 0;
     private double driveAppliedVolts = 0.0;
     private double turnAppliedVolts = 0.0;
+    private int index;
 
-    public SwerveModuleSim() {
+    public SwerveModuleSim(int index) {
+        this.index = index;
         System.out.println("[Init] Creating ModuleIOSim");
 
-        drivingPidController = new PIDController(ModuleConstants.drivePID[2][0], ModuleConstants.drivePID[2][1], ModuleConstants.drivePID[2][2]);
+        drivingPidController = new PIDController(ModuleConstants.drivePID[2][0], ModuleConstants.drivePID[2][1],
+                ModuleConstants.drivePID[2][2]);
 
-        turningPidController = new PIDController(ModuleConstants.turnPID[2][0], ModuleConstants.turnPID[2][1], ModuleConstants.turnPID[2][2]);
+        turningPidController = new PIDController(ModuleConstants.turnPID[0][0], ModuleConstants.turnPID[0][1],
+                ModuleConstants.turnPID[0][2]);
         turningPidController.enableContinuousInput(0, 2 * Math.PI);
 
     }
@@ -86,6 +90,8 @@ public class SwerveModuleSim implements SwerveModuleIO {
                 + getDriveVelocityMetersPerSec() * 0.02;
         data.driveVelocityMPerSec = getDriveVelocityMetersPerSec();
         data.driveAppliedVolts = driveAppliedVolts;
+        // System.out.println(Integer.toString(index) + ": " + driveAppliedVolts);
+
         data.driveCurrentAmps = Math.abs(driveSim.getCurrentDrawAmps());
         data.driveTempCelcius = 0;
 
@@ -107,15 +113,16 @@ public class SwerveModuleSim implements SwerveModuleIO {
     @Override
     public void setTurningPositionControl(double setpointPosition, double feedforward) {
         double feedback = turningPidController.calculate(turnPositionRad, setpointPosition);
-        setDriveVoltage(feedback + feedforward);
+        setTurnVoltage(feedback + feedforward);
 
     }
 
     @Override
     public void setDriveVoltage(double volts) {
+
         driveAppliedVolts = MathUtil.clamp(volts, -DriveConstants.maxMotorVolts,
                 DriveConstants.maxMotorVolts);
-
+        System.out.println(Integer.toString(index) + ": " + driveAppliedVolts);
         // driveAppliedVolts = Math.copySign(12,driveAppliedVolts);
         driveSim.setInputVoltage(driveAppliedVolts);
     }
