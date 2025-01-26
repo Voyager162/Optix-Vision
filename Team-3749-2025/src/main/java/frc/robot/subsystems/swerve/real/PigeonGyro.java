@@ -9,12 +9,12 @@ import frc.robot.subsystems.swerve.GyroIO;
  * @author Noah Simon
  */
 public class PigeonGyro implements GyroIO {
-    private final Pigeon2 pigeonGyro = new Pigeon2(30);
+    // private final Pigeon2 pigeonGyro = new Pigeon2(30);
 
     public PigeonGyro() {
 
         try {
-            pigeonGyro.reset();
+            // pigeonGyro.reset();
         } catch (Exception e) {
         }
         ;
@@ -23,10 +23,10 @@ public class PigeonGyro implements GyroIO {
     @Override
     public void updateData(GyroData data) {
         try {
-            data.yawDeg = pigeonGyro.getYaw().getValueAsDouble();
-            data.pitchDeg = pigeonGyro.getPitch().getValueAsDouble();
-            data.rollDeg = pigeonGyro.getRoll().getValueAsDouble();
-            data.isConnected = pigeonGyro.isConnected();
+            // data.yawDeg = pigeonGyro.getYaw().getValueAsDouble();
+            // data.pitchDeg = pigeonGyro.getPitch().getValueAsDouble();
+            // data.rollDeg = pigeonGyro.getRoll().getValueAsDouble();
+            // data.isConnected = pigeonGyro.isConnected();
 
         } catch (Exception e) {
         }
@@ -35,7 +35,7 @@ public class PigeonGyro implements GyroIO {
 
     @Override
     public void resetGyro() {
-        pigeonGyro.reset();
+        // pigeonGyro.reset();
     }
 
 }

@@ -28,22 +28,22 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   public static Swerve swerve = new Swerve();
-  public static Roller algaeRoller = new AlgaeRoller();
-  public static Roller coralRoller = new CoralRoller();
-  public static Roller scoringRoller = new ScoringRoller();
+  // public static Roller algaeRoller = new AlgaeRoller();
+  // public static Roller coralRoller = new CoralRoller();
+  // public static Roller scoringRoller = new ScoringRoller();
   
-  public static Elevator elevator = new Elevator();
+  // public static Elevator elevator = new Elevator();
 
-  public static CoralArm coralArm = new CoralArm();
-  public static ClimbArm climbArm = new ClimbArm();
+  // public static CoralArm coralArm = new CoralArm();
+  // public static ClimbArm climbArm = new ClimbArm();
 
-  private ShuffleData<Double> batteryVoltageLog = new ShuffleData<Double>("DS", "battery voltage", 0.0);
-  private ShuffleData<Boolean> isBrownedOutLog = new ShuffleData<Boolean>("DS", "brownout", false);
-  private ShuffleData<Double> cpuTempLog = new ShuffleData<Double>("DS", "cpu temp", 0.0);
-  private ShuffleData<Double> CANUtilizationLog = new ShuffleData<Double>("DS", "CAN utilizaition", 0.0);
-  private ShuffleData<String> radioStatusLog = new ShuffleData<String>("DS", "radio status", "kOff");
-  private ShuffleData<String> allianceLog = new ShuffleData<String>("DS", "alliance", "Red");
-  private ShuffleData<Boolean> FMSLog = new ShuffleData<Boolean>("DS", "FMS connected", false);
+  // private ShuffleData<Double> batteryVoltageLog = new ShuffleData<Double>("DS", "battery voltage", 0.0);
+  // private ShuffleData<Boolean> isBrownedOutLog = new ShuffleData<Boolean>("DS", "brownout", false);
+  // private ShuffleData<Double> cpuTempLog = new ShuffleData<Double>("DS", "cpu temp", 0.0);
+  // private ShuffleData<Double> CANUtilizationLog = new ShuffleData<Double>("DS", "CAN utilizaition", 0.0);
+  // private ShuffleData<String> radioStatusLog = new ShuffleData<String>("DS", "radio status", "kOff");
+  // private ShuffleData<String> allianceLog = new ShuffleData<String>("DS", "alliance", "Red");
+  // private ShuffleData<Boolean> FMSLog = new ShuffleData<Boolean>("DS", "FMS connected", false);
   private RobotContainer m_robotContainer;
 
   @Override
@@ -55,13 +55,13 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    batteryVoltageLog.set(RobotController.getBatteryVoltage());
-    cpuTempLog.set(RobotController.getCPUTemp());
-    CANUtilizationLog.set(RobotController.getCANStatus().percentBusUtilization);
-    radioStatusLog.set(RobotController.getRadioLEDState().name());
-    isBrownedOutLog.set(RobotController.isBrownedOut());
-    allianceLog.set(DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get().name() : "None");
-    FMSLog.set(DriverStation.isFMSAttached());
+    // batteryVoltageLog.set(RobotController.getBatteryVoltage());
+    // cpuTempLog.set(RobotController.getCPUTemp());
+    // CANUtilizationLog.set(RobotController.getCANStatus().percentBusUtilization);
+    // radioStatusLog.set(RobotController.getRadioLEDState().name());
+    // isBrownedOutLog.set(RobotController.isBrownedOut());
+    // allianceLog.set(DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get().name() : "None");
+    // FMSLog.set(DriverStation.isFMSAttached());
 
   }
 
