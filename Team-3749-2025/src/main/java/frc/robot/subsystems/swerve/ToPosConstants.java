@@ -59,8 +59,8 @@ public class ToPosConstants {
             public static final double ROBOT_WIDTH = 0.6;  // Width of the robot in meters
             
             // Adjusted setpoints
-            public static final Pose2d coralTop = adjustPose(0.851154, 7.39648, Math.toRadians(125));
-            public static final Pose2d coralBottom = adjustPose(0.851154, 0.65532, Math.toRadians(-125));
+            public static final Pose2d coralTop = adjustPose(0.851154, 7.39648, Math.toRadians(-45));
+            public static final Pose2d coralBottom = adjustPose(0.851154, 0.65532, Math.toRadians(45));
             public static final Pose2d processor = adjustPose(5.987542, -0.00381, Math.toRadians(-90));
             
             public static final Pose2d reef18 = adjustPose(3.6576, 4.0259, Math.toRadians(0));
