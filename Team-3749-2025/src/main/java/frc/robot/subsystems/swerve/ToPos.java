@@ -140,6 +140,8 @@ public class ToPos {
         int startVertexIndex = findClosestHexagonVertex(start, start, end);
         int endVertexIndex = findClosestHexagonVertex(end, start, end);
 
+        System.out.println("Start: " + startVertexIndex + "\nEnd: " + endVertexIndex);
+
         // Calculate clockwise and counterclockwise distances based on # verticies
         // traveled
         int clockwiseDistance = (endVertexIndex - startVertexIndex + HEXAGON_VERTICES.size()) % HEXAGON_VERTICES.size();
@@ -255,10 +257,11 @@ public class ToPos {
         Translation2d vertex1 = HEXAGON_VERTICES.get(closestVertex1);
         Translation2d vertex2 = HEXAGON_VERTICES.get(closestVertex2);
 
+        // the vector representing a translation from the start to the end
         Translation2d pathDirection = new Translation2d(pathEnd.getX() - pathStart.getX(),
                 pathEnd.getY() - pathStart.getY());
 
-        // Normalize path direction
+        // Normalize path direction to 0-1
         double pathLength = Math
                 .sqrt(pathDirection.getX() * pathDirection.getX() + pathDirection.getY() * pathDirection.getY());
         if (pathLength > 0) {
@@ -276,15 +279,23 @@ public class ToPos {
         // Step 4: Calculate distances to the path.
         double distanceToPath1 = calculatePointToLineDistance(vertex1, pathStart, pathEnd);
         double distanceToPath2 = calculatePointToLineDistance(vertex2, pathStart, pathEnd);
+        System.out.println("Options:");
+        System.out.println(closestVertex1);
+        System.out.println(closestVertex2);
 
         // Step 5: Choose the best vertex.
         if (alignment1 < 0 && alignment2 >= 0) {
+            System.out.println("alignment to " + closestVertex2);
             return closestVertex2; // Vertex 1 misaligned, choose Vertex 2
         } else if (alignment2 < 0 && alignment1 >= 0) {
+            System.out.println("alignment to " + closestVertex1);
+
             return closestVertex1; // Vertex 2 misaligned, choose Vertex 1
         } else {
+            int chosenVertex = distanceToPath1 < distanceToPath2 ? closestVertex1 : closestVertex2;
+            System.out.println("distance based to " +chosenVertex);
             // Both vertices are aligned; choose the one closer to the path
-            return distanceToPath1 < distanceToPath2 ? closestVertex1 : closestVertex2;
+            return chosenVertex;
         }
     }
 
