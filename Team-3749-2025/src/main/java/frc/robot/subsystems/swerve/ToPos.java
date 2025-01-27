@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.*;
  * while avoiding obstacles, specifically a hexagonal area defined by safety margins.
  */
 public class ToPos {
+
+    // MAKE CONSTANTS 
     private static final double SAFE_MARGIN = 1; // Safety margin around the robot.
 
     // Vertices of the hexagon, adjusted for safety margins.
