@@ -4,11 +4,14 @@ import java.util.*;
 import com.pathplanner.lib.path.*;
 import edu.wpi.first.math.geometry.*;
 
+/**
+ * This class generates dynamic paths for a robot to move from one pose to another
+ * while avoiding obstacles, specifically a hexagonal area defined by safety margins.
+ */
 public class ToPos {
-    private static final double ROBOT_RADIUS = 0.6;
-    private static final double SAFE_MARGIN = ROBOT_RADIUS * 1.5;
+    private static final double SAFE_MARGIN = 1; // Safety margin around the robot.
 
-    // Hexagon vertices with safety margin applied
+    // Vertices of the hexagon, adjusted for safety margins.
     private static final List<Translation2d> HEXAGON_VERTICES = List.of(
         new Translation2d(3.668 - SAFE_MARGIN, 3.520 - SAFE_MARGIN),
         new Translation2d(4.5, 3.039 - SAFE_MARGIN),
@@ -18,50 +21,49 @@ public class ToPos {
         new Translation2d(3.668 - SAFE_MARGIN, 4.480 + SAFE_MARGIN)
     );
 
+    /**
+     * Generates a dynamic path for the robot from an initial pose to a final pose.
+     *
+     * @param initialPose          The starting position and orientation of the robot.
+     * @param finalPose            The target position and orientation of the robot.
+     * @param maxVelocity          Maximum velocity of the robot (m/s).
+     * @param maxAcceleration      Maximum acceleration of the robot (m/s^2).
+     * @param maxAngularVelocity   Maximum angular velocity of the robot (rad/s).
+     * @param maxAngularAcceleration Maximum angular acceleration of the robot (rad/s^2).
+     * @return                     A PathPlannerPath containing waypoints for the robot to follow.
+     */
     public PathPlannerPath generateDynamicPath(Pose2d initialPose, Pose2d finalPose, double maxVelocity, double maxAcceleration, double maxAngularVelocity, double maxAngularAcceleration) {
         if (initialPose == null) {
             throw new IllegalArgumentException("Initial pose cannot be null!");
         }
 
         List<Waypoint> waypoints = new ArrayList<>();
-        System.out.println("Initial Pose: " + initialPose);
-        System.out.println("Final Pose: " + finalPose);
 
+        // Check if the start or end points are inside the hexagonal obstacle.
         boolean startInsideHexagon = isPointInsideHexagon(initialPose.getTranslation());
         boolean endInsideHexagon = isPointInsideHexagon(finalPose.getTranslation());
 
-        // Handle starting point inside hexagon
+        // Handle starting point inside the hexagon.
         if (startInsideHexagon) {
-            Translation2d exitPoint = findClosestSafePoint(initialPose.getTranslation());
+            Translation2d exitPoint = findClosestSafePointWithHeading(initialPose.getTranslation(), initialPose.getRotation(), false);
             waypoints.add(new Waypoint(initialPose.getTranslation(), exitPoint, exitPoint));
-            System.out.println("Start inside hexagon. Exit point: " + exitPoint);
         } else {
             waypoints.add(new Waypoint(initialPose.getTranslation(), initialPose.getTranslation(), initialPose.getTranslation()));
         }
 
-        // Handle ending point inside hexagon
+        // Handle ending point inside the hexagon.
         if (endInsideHexagon) {
-            Translation2d entryPoint = findClosestSafePoint(finalPose.getTranslation());
+            Translation2d entryPoint = findClosestSafePointWithHeading(finalPose.getTranslation(), finalPose.getRotation(), true);
             waypoints.addAll(generateDetourWaypoints(initialPose.getTranslation(), entryPoint));
             waypoints.add(new Waypoint(entryPoint, finalPose.getTranslation(), finalPose.getTranslation()));
-            System.out.println("End inside hexagon. Entry point: " + entryPoint);
         } else {
             waypoints.addAll(generateDetourWaypoints(initialPose.getTranslation(), finalPose.getTranslation()));
         }
 
         waypoints.add(new Waypoint(finalPose.getTranslation(), finalPose.getTranslation(), finalPose.getTranslation()));
 
-        // Debugging the generated waypoints
-        System.out.println("Generated Path:");
-        for (int i = 0; i < waypoints.size(); i++) {
-            System.out.println("Waypoint " + i + ": " + waypoints.get(i).anchor());
-        }
-
-        // Ensure the first point matches the robot's starting position
-        Translation2d firstWaypoint = waypoints.get(0).anchor();
-        if (!firstWaypoint.equals(initialPose.getTranslation())) {
-            System.err.println("ERROR: First waypoint does not match robot's starting position! First waypoint: " + firstWaypoint);
-        }
+        // Remove redundant waypoints to prevent small loops.
+        removeRedundantWaypoints(waypoints);
 
         return new PathPlannerPath(
             waypoints,
@@ -71,6 +73,29 @@ public class ToPos {
         );
     }
 
+    /**
+     * Removes redundant waypoints that are too close to each other.
+     *
+     * @param waypoints The list of waypoints to be cleaned.
+     */
+    private void removeRedundantWaypoints(List<Waypoint> waypoints) {
+        double threshold = 0.05; // Minimum distance between waypoints to consider them unique (5 cm).
+        for (int i = 1; i < waypoints.size(); i++) {
+            Translation2d current = waypoints.get(i).anchor();
+            Translation2d previous = waypoints.get(i - 1).anchor();
+            if (current.getDistance(previous) < threshold) {
+                waypoints.remove(i);
+                i--; // Adjust index after removal.
+            }
+        }
+    }
+
+    /**
+     * Checks if a given point lies inside the hexagon.
+     *
+     * @param point The point to check.
+     * @return      True if the point is inside the hexagon, false otherwise.
+     */
     private boolean isPointInsideHexagon(Translation2d point) {
         int intersectCount = 0;
         Translation2d farPoint = new Translation2d(10000, point.getY());
@@ -82,11 +107,19 @@ public class ToPos {
                 intersectCount++;
             }
         }
-        boolean inside = intersectCount % 2 == 1;
-        System.out.println("Point " + point + " inside hexagon: " + inside);
-        return inside;
+
+        return intersectCount % 2 == 1;
     }
 
+    /**
+     * Determines if two line segments intersect.
+     *
+     * @param p1 First point of the first line segment.
+     * @param p2 Second point of the first line segment.
+     * @param q1 First point of the second line segment.
+     * @param q2 Second point of the second line segment.
+     * @return   True if the lines intersect, false otherwise.
+     */
     private boolean doLinesIntersect(Translation2d p1, Translation2d p2, Translation2d q1, Translation2d q2) {
         double det = (q2.getX() - q1.getX()) * (p2.getY() - p1.getY()) - (q2.getY() - q1.getY()) * (p2.getX() - p1.getX());
         if (det == 0) return false;
@@ -97,61 +130,57 @@ public class ToPos {
         return t >= 0 && t <= 1 && u >= 0 && u <= 1;
     }
 
-    private Translation2d findClosestSafePoint(Translation2d point) {
+    /**
+     * Finds the closest safe point to a given point, based on the robot's heading.
+     *
+     * @param point       The current point.
+     * @param heading     The robot's orientation.
+     * @param isFinalPoint Whether the point is the final destination.
+     * @return            The closest safe point.
+     */
+    private Translation2d findClosestSafePointWithHeading(Translation2d point, Rotation2d heading, boolean isFinalPoint) {
         Translation2d closest = null;
         double minDistance = Double.MAX_VALUE;
 
-        System.out.println("Finding closest safe point for: " + point);
-
         for (Translation2d vertex : HEXAGON_VERTICES) {
             double distance = point.getDistance(vertex);
-            System.out.println("Checking vertex: " + vertex + ", Distance: " + distance);
-
             if (distance < minDistance) {
                 minDistance = distance;
                 closest = vertex;
-                System.out.println("New closest vertex: " + closest + ", Distance: " + minDistance);
             }
         }
 
         if (closest == null) {
-            System.err.println("ERROR: No closest vertex found! This shouldn't happen.");
-            return point; // Fallback to original point if something goes wrong.
+            return point; // Fallback to original point if no safe point is found.
         }
 
-        double distanceToVertex = point.getDistance(closest);
-        double clampedMargin = Math.min(SAFE_MARGIN, distanceToVertex * 0.5); // Limit the offset
         double angle = Math.atan2(closest.getY() - point.getY(), closest.getX() - point.getX());
-        double safeX = closest.getX() + clampedMargin * Math.cos(angle);
-        double safeY = closest.getY() + clampedMargin * Math.sin(angle);
+        double safeX, safeY;
 
-        Translation2d safePoint = new Translation2d(safeX, safeY);
-
-        // Log detailed information
-        System.out.println("Closest vertex: " + closest);
-        System.out.println("Angle to closest vertex: " + Math.toDegrees(angle) + " degrees");
-        System.out.println("Calculated safe point: " + safePoint);
-
-        return safePoint;
-    }
-
-    private boolean isPathIntersectingObstacle(Translation2d start, Translation2d end) {
-        for (int i = 0; i < HEXAGON_VERTICES.size(); i++) {
-            Translation2d vertex1 = HEXAGON_VERTICES.get(i);
-            Translation2d vertex2 = HEXAGON_VERTICES.get((i + 1) % HEXAGON_VERTICES.size());
-            if (doLinesIntersect(start, end, vertex1, vertex2)) {
-                System.out.println("Path from " + start + " to " + end + " intersects obstacle.");
-                return true;
-            }
+        if (isFinalPoint) {
+            safeX = point.getX() - Math.cos(heading.getRadians());
+            safeY = point.getY() - Math.sin(heading.getRadians());
+        } else {
+            double clampedMargin = Math.min(SAFE_MARGIN, point.getDistance(closest) * 0.5);
+            safeX = closest.getX() + clampedMargin * Math.cos(angle);
+            safeY = closest.getY() + clampedMargin * Math.sin(angle);
         }
-        return false;
+
+        return new Translation2d(safeX, safeY);
     }
 
+    /**
+     * Generates detour waypoints to avoid obstacles between two points.
+     *
+     * @param start The starting point.
+     * @param end   The target point.
+     * @return      A list of detour waypoints.
+     */
     private List<Waypoint> generateDetourWaypoints(Translation2d start, Translation2d end) {
         List<Waypoint> detourWaypoints = new ArrayList<>();
+
         if (!isPathIntersectingObstacle(start, end)) {
             detourWaypoints.add(new Waypoint(start, start, end));
-            System.out.println("Direct path from " + start + " to " + end + " is safe.");
             return detourWaypoints;
         }
 
@@ -163,24 +192,43 @@ public class ToPos {
 
         boolean goClockwise = clockwiseDistance < counterclockwiseDistance;
 
-        System.out.println("Generating detour waypoints from " + start + " to " + end);
-        System.out.println("Clockwise: " + clockwiseDistance + ", Counterclockwise: " + counterclockwiseDistance);
-
         int currentIndex = startVertexIndex;
         while (currentIndex != endVertexIndex) {
             Translation2d vertex = HEXAGON_VERTICES.get(currentIndex);
             detourWaypoints.add(new Waypoint(vertex, vertex, vertex));
-            System.out.println("Adding detour waypoint: " + vertex);
             currentIndex = goClockwise
                 ? (currentIndex + 1) % HEXAGON_VERTICES.size()
                 : (currentIndex - 1 + HEXAGON_VERTICES.size()) % HEXAGON_VERTICES.size();
         }
 
         detourWaypoints.add(new Waypoint(HEXAGON_VERTICES.get(endVertexIndex), end, end));
-        System.out.println("Final detour waypoint: " + HEXAGON_VERTICES.get(endVertexIndex));
         return detourWaypoints;
     }
 
+    /**
+     * Checks if a path between two points intersects any obstacle.
+     *
+     * @param start The starting point.
+     * @param end   The target point.
+     * @return      True if the path intersects an obstacle, false otherwise.
+     */
+    private boolean isPathIntersectingObstacle(Translation2d start, Translation2d end) {
+        for (int i = 0; i < HEXAGON_VERTICES.size(); i++) {
+            Translation2d vertex1 = HEXAGON_VERTICES.get(i);
+            Translation2d vertex2 = HEXAGON_VERTICES.get((i + 1) % HEXAGON_VERTICES.size());
+            if (doLinesIntersect(start, end, vertex1, vertex2)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Finds the index of the closest hexagon vertex to a given point.
+     *
+     * @param point The point to check.
+     * @return      The index of the closest vertex.
+     */
     private int findClosestVertexIndex(Translation2d point) {
         int closestIndex = -1;
         double minDistance = Double.MAX_VALUE;
@@ -193,7 +241,6 @@ public class ToPos {
             }
         }
 
-        System.out.println("Closest vertex to " + point + ": " + HEXAGON_VERTICES.get(closestIndex));
         return closestIndex;
     }
 }
