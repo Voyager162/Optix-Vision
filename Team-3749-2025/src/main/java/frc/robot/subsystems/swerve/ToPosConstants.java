@@ -94,12 +94,12 @@ public class ToPosConstants {
         public static final Pose2d coralRight = adjustPose(0.851154, 0.65532, Math.toRadians(55));
         public static final Pose2d processor = adjustPose(5.987542, -0.00381, Math.toRadians(-90));
 
-        public static final Pose2d reefClose = adjustPose(3.6576, 4.0259, Math.toRadians(0));
-        public static final Pose2d reefCloseRight = adjustPose(4.073906, 3.306318, Math.toRadians(60));
-        public static final Pose2d reefFarRight = adjustPose(4.90474, 3.306318, Math.toRadians(120));
-        public static final Pose2d reefFar = adjustPose(5.321046, 4.0259, Math.toRadians(180));
-        public static final Pose2d reefFarLeft = adjustPose(4.90474, 4.745482, Math.toRadians(-120));
-        public static final Pose2d reefCloseLeft = adjustPose(4.073906, 4.745482, Math.toRadians(-60));
+        public static final Pose2d reefClose = adjustPose(3.65, 4, Math.toRadians(0));
+        public static final Pose2d reefCloseRight = adjustPose(4.07, 3.25, Math.toRadians(60));
+        public static final Pose2d reefFarRight = adjustPose(4.94, 3.25, Math.toRadians(120));
+        public static final Pose2d reefFar = adjustPose(5.35, 4, Math.toRadians(180));
+        public static final Pose2d reefFarLeft = adjustPose(4.94, 4.74, Math.toRadians(-120));
+        public static final Pose2d reefCloseLeft = adjustPose(4.07, 4.74, Math.toRadians(-60));
 
         // Please refer to:
         // https://firstfrc.blob.core.windows.net/frc2025/Manual/Sections/2025GameManual-05ARENA.pdf
