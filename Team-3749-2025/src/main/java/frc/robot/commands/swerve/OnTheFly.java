@@ -25,30 +25,31 @@ import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 
 public class OnTheFly extends Command {
 
-    private PathPlannerTrajectory trajectory;
+    private PathPlannerTrajectory[] trajectories;
+    private int currentTrajectoryIndex = 0;
     private final Timer timer = new Timer();
     private final PPHolonomicDriveController SwerveController = new PPHolonomicDriveController(
             new PIDConstants(AutoConstants.kPDrive, 0, AutoConstants.kDDrive),
             new PIDConstants(AutoConstants.kPTurn, 0, AutoConstants.kDTurn));
-    private static double positionTolerance = 0.003; // meters
+    private static double positionTolerance = 0.01; // meters
     private static double rotationTolerance = 2.0; // degrees
 
     private PPSetpoints finalSetpoint;
 
-    public OnTheFly(PPSetpoints setpoint) {
-        finalSetpoint=setpoint;
+    public OnTheFly() {
     }
 
     @Override
     public void initialize() {
-        if (withinSetpointTolerance(ToPosConstants.Setpoints.reefTrig(Robot.swerve.getPPSetpoint(),
+        finalSetpoint = Robot.swerve.getPPSetpoint();
+
+        if (withinSetpointTolerance(ToPosConstants.Setpoints.reefTrig(finalSetpoint.setpoint,
                 ToPosConstants.Setpoints.TrigDirection.FORWARD), true)) {
             this.cancel();
             Robot.swerve.isOTF = false;
         }
         timer.reset();
         timer.start();
-        ToPos ToPos = new ToPos();
         PathPlannerPath[] paths;
 
         paths = ToPos.generateDynamicPath(
@@ -60,8 +61,8 @@ public class OnTheFly extends Command {
                 Robot.swerve.getMaxAngularSpeed(),
                 SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared);
 
-        for (PathPlannerPath path : paths) {
-            if (path == null) {
+        for (int index = 0; index < paths.length; index++) {
+            if (paths[index] == null) {
                 System.out.println("Error: Failed to generate path. Ending OnTheFly command.");
                 Robot.swerve.isOTF = false;
                 this.cancel();
@@ -69,10 +70,11 @@ public class OnTheFly extends Command {
             }
 
             try {
-                trajectory = path.generateTrajectory(
+                trajectories[index] = paths[index].generateTrajectory(
                         Robot.swerve.getChassisSpeeds(),
                         safeRotation(Robot.swerve.getRotation2d()),
                         RobotConfig.fromGUISettings());
+
             } catch (IOException | ParseException e) {
                 e.printStackTrace();
                 Robot.swerve.isOTF = false;
@@ -83,13 +85,17 @@ public class OnTheFly extends Command {
 
     @Override
     public void execute() {
-        if (trajectory == null || !Robot.swerve.isOTF) {
+        double currentTime = timer.get();
+        if (trajectories[currentTrajectoryIndex].getTotalTimeSeconds() < currentTime) {
+            currentTrajectoryIndex++;
+        }
+
+        if (trajectories[currentTrajectoryIndex] == null || !Robot.swerve.isOTF) {
             this.cancel();
             return;
         }
 
-        double currentTime = timer.get();
-        PathPlannerTrajectoryState goalState = trajectory.sample(currentTime);
+        PathPlannerTrajectoryState goalState = trajectories[currentTrajectoryIndex].sample(currentTime);
         ChassisSpeeds speeds = SwerveController.calculateRobotRelativeSpeeds(Robot.swerve.getPose(), goalState);
 
         Robot.swerve.setModuleStates(SwerveConstants.DriveConstants.driveKinematics.toSwerveModuleStates(speeds));
@@ -104,15 +110,16 @@ public class OnTheFly extends Command {
 
     @Override
     public boolean isFinished() {
-        if (trajectory == null) {
+        if (trajectories[currentTrajectoryIndex] == null) {
             return true;
         }
 
         // Check if the timer has exceeded the trajectory duration
-        boolean trajectoryComplete = timer.get() >= trajectory.getTotalTimeSeconds();
+        boolean trajectoryComplete = timer.get() >= trajectories[0].getTotalTimeSeconds()
+                + trajectories[1].getTotalTimeSeconds();
 
         if (trajectoryComplete) {
-            return withinSetpointTolerance(trajectory.getEndState().pose, false);
+            return withinSetpointTolerance(finalSetpoint.setpoint, false);
         }
 
         return false;
@@ -135,7 +142,7 @@ public class OnTheFly extends Command {
         // My Honest, Genuine, Unadulterated Built in Method Reaction
         double alternatePositionTolerance = positionTolerance;
         if (useAlternateTolerance) {
-            alternatePositionTolerance = 0.17;
+            alternatePositionTolerance = 0.05;
         }
         double xError = Math.abs(setpoint.relativeTo(Robot.swerve.getPose()).getX());
         double yError = Math.abs(setpoint.relativeTo(Robot.swerve.getPose()).getY());
