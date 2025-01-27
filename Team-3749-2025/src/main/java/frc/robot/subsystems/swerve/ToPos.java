@@ -18,13 +18,13 @@ public class ToPos {
     private static final double yComponenet = Math.sin(Math.toRadians(30));
     // Vertices of the hexagon, adjusted for safety margins.
     private static final List<Translation2d> HEXAGON_VERTICES = List.of(
-            new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN),
-            new Translation2d(4.5, 3.039 - SAFE_MARGIN),
-            new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN),
-            new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 4.480 + yComponenet * SAFE_MARGIN),
-            new Translation2d(4.5, 4.961 + SAFE_MARGIN),
-            new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 4.480 + yComponenet * SAFE_MARGIN),
-            new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN));
+            new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN), //close right
+            new Translation2d(4.5, 3.039 - SAFE_MARGIN),// middle right
+            new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN), //far right
+            new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 4.480 + yComponenet * SAFE_MARGIN), // far left
+            new Translation2d(4.5, 4.961 + SAFE_MARGIN), // middle left
+            new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 4.480 + yComponenet * SAFE_MARGIN), // close left
+            new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN)); // close right
 
     /**
      * Generates a dynamic path for the robot from an initial pose to a final pose.
@@ -67,13 +67,14 @@ public class ToPos {
         // }
         // Handle ending point inside the hexagon.
         if (endInsideHexagon && !isClose) {
-            
-            waypoints.addAll(generateDetourWaypoints(initialPose.getTranslation(),approachPoint.getTranslation()));
+
+            waypoints.addAll(generateDetourWaypoints(initialPose.getTranslation(), approachPoint.getTranslation()));
 
             waypoints.add(new Waypoint(approachPoint.getTranslation(), approachPoint.getTranslation(),
                     approachPoint.getTranslation()));
 
-            waypoints.add(new Waypoint(approachPoint.getTranslation(), finalPose.getTranslation(), finalPose.getTranslation()));
+            waypoints.add(new Waypoint(approachPoint.getTranslation(), finalPose.getTranslation(),
+                    finalPose.getTranslation()));
         } else {
             waypoints.addAll(generateDetourWaypoints(initialPose.getTranslation(), finalPose.getTranslation()));
 
@@ -155,7 +156,6 @@ public class ToPos {
         return t >= 0 && t <= 1 && u >= 0 && u <= 1;
     }
 
-
     /**
      * Generates detour waypoints to avoid obstacles between two points.
      *
@@ -176,8 +176,7 @@ public class ToPos {
         int startVertexIndex = findClosestHexagonVertex(start, start, end);
         int endVertexIndex = findClosestHexagonVertex(end, start, end);
 
-
-        // Calculate clockwise and counterclockwise distances
+        // Calculate clockwise and counterclockwise distances based on # verticies traveled
         int clockwiseDistance = (endVertexIndex - startVertexIndex + HEXAGON_VERTICES.size()) % HEXAGON_VERTICES.size();
         int counterclockwiseDistance = (startVertexIndex - endVertexIndex + HEXAGON_VERTICES.size())
                 % HEXAGON_VERTICES.size();
@@ -259,7 +258,7 @@ public class ToPos {
         double minDistance1 = Double.MAX_VALUE, minDistance2 = Double.MAX_VALUE;
 
         // Step 1: Find the two closest vertices to the given point.
-        for (int i = 0; i < HEXAGON_VERTICES.size(); i++) {
+        for (int i = 0; i < HEXAGON_VERTICES.size() - 1; i++) {
             double distance = point.getDistance(HEXAGON_VERTICES.get(i));
 
             if (distance < minDistance1) {
@@ -280,8 +279,10 @@ public class ToPos {
         // Step 2: Ensure consecutive vertices.
         // Adjust for wrap-around (consecutive vertices should form a hexagon edge).
         if (Math.abs(closestVertex1 - closestVertex2) != 1 &&
-                !(closestVertex1 == 0 && closestVertex2 == HEXAGON_VERTICES.size() - 1) &&
-                !(closestVertex2 == 0 && closestVertex1 == HEXAGON_VERTICES.size() - 1)) {
+                !(closestVertex1 == 0 && closestVertex2 == HEXAGON_VERTICES.size() - 2) &&
+                !(closestVertex2 == 0 && closestVertex1 == HEXAGON_VERTICES.size() - 2)) {
+
+            System.out.println("MATH MISTAKE: " + closestVertex1 + ", " + closestVertex2);
             closestVertex2 = (closestVertex1 + 1) % HEXAGON_VERTICES.size();
         }
 
