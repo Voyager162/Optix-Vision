@@ -80,8 +80,12 @@ public class OnTheFly extends Command {
         PathPlannerTrajectoryState goalState = trajectory.sample(currentTime);
         ChassisSpeeds speeds = SwerveController.calculateRobotRelativeSpeeds(Robot.swerve.getPose(), goalState);
 
-        Robot.swerve.setModuleStates(SwerveConstants.DriveConstants.driveKinematics.toSwerveModuleStates(speeds));
-        Robot.swerve.logSetpoints(goalState);
+        Robot.swerve.followSample(goalState.pose,
+                new Pose2d(
+                        goalState.fieldSpeeds.vxMetersPerSecond,
+                        goalState.fieldSpeeds.vyMetersPerSecond,
+                        new Rotation2d(goalState.fieldSpeeds.omegaRadiansPerSecond)));
+
 
         if (isFinished()) {
             this.end(true);

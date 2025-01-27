@@ -132,23 +132,15 @@ public class Swerve extends SubsystemBase {
       "setpoint end goal",
       new Double[] { 0.0, 0.0, 0.0 });
 
-  private ShuffleData<Double> setpointVelocityLog = new ShuffleData<Double>(
+  private ShuffleData<Double[]> setpointVelocityLog = new ShuffleData<Double[]>(
       this.getName(),
       "setpoint velocity",
-      0.0);
-  private ShuffleData<Double> setpointRotationalVelocityLog = new ShuffleData<Double>(
-      this.getName(),
-      "setpoint rotational velocity",
-      0.0);
-  private ShuffleData<Double> setpointAccelerationLog = new ShuffleData<Double>(
+      new Double[] { 0.0, 0.0, 0.0 });
+
+  private ShuffleData<Double[]> setpointAccelerationLog = new ShuffleData<Double[]>(
       this.getName(),
       "setpoint acceleration",
-      0.0);
-
-  private ShuffleData<Double> setpointRotationalAccelerationLog = new ShuffleData<Double>(
-      this.getName(),
-      "setpoint rotational acceleration",
-      0.0);
+      new Double[] { 0.0, 0.0, 0.0 });
 
   public int currentPPSetpointIndex = 0;
   public int currentPPApproachSetpointIndex = 0;
@@ -193,6 +185,7 @@ public class Swerve extends SubsystemBase {
     setOdometry(new Pose2d(1.33, 5.53, new Rotation2d(0)));
     logSetpoints(
         new SwerveSample(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, new double[] { 0, 0, 0, 0 }, new double[] { 0, 0, 0, 0 }));
+    turnController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   /**
@@ -309,6 +302,18 @@ public class Swerve extends SubsystemBase {
    * 
    * @see https://choreo.autos/choreolib/getting-started/#setting-up-the-drive-subsystem
    */
+  public void followSample(Pose2d positions, Pose2d velocities) {
+    logSetpoints(positions, velocities);
+    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+        new ChassisSpeeds(
+            xController.calculate(getPose().getX(), positions.getX()) + velocities.getX(),
+            yController.calculate(getPose().getY(), positions.getY()) + velocities.getY(),
+            turnController.calculate(getPose().getRotation().getRadians(), positions.getRotation().getRadians())
+                + velocities.getRotation().getRadians()),
+        getPose().getRotation());
+
+    Robot.swerve.setChassisSpeeds(speeds);
+  }
 
   public void followSample(SwerveSample sample) {
     Robot.swerve.logSetpoints(sample);
@@ -345,8 +350,6 @@ public class Swerve extends SubsystemBase {
       currentPPSetpointIndex = 0;
     }
   }
-
-  
 
   public PPSetpoints getPPSetpoint() {
     return PPSetpoints.values()[currentPPSetpointIndex];
@@ -440,22 +443,23 @@ public class Swerve extends SubsystemBase {
     setpointPositionLog.set(positions);
 
     Double[] velocities = new Double[] { sample.vx, sample.vy, sample.omega };
-    double velocity = 0;
-    for (int i = 0; i < 2; i++) {
-      velocity += Math.pow(velocities[i], 2);
-    }
-    velocity = Math.sqrt(velocity);
-    setpointVelocityLog.set(velocity);
-    setpointRotationalVelocityLog.set(velocities[2]);
+
+    setpointVelocityLog.set(velocities);
 
     Double[] accelerations = new Double[] { sample.ax, sample.ay, sample.alpha };
-    double acceleration = 0;
-    for (int i = 0; i < 2; i++) {
-      acceleration += Math.pow(accelerations[i], 2);
-    }
-    acceleration = Math.sqrt(acceleration);
-    setpointAccelerationLog.set(acceleration);
-    setpointRotationalAccelerationLog.set(accelerations[2]);
+
+    setpointAccelerationLog.set(accelerations);
+
+  }
+
+  public void logSetpoints(Pose2d position, Pose2d velocity) {
+    // setpoint logging for automated driving
+    Double[] positions = new Double[] { position.getX(), position.getY(), position.getRotation().getRadians() };
+    setpointPositionLog.set(positions);
+
+    Double[] velocities = new Double[] { velocity.getX(), velocity.getY(), velocity.getRotation().getRadians() };
+    setpointVelocityLog.set(velocities);
+    setpointAccelerationLog.set(new Double[] { 0.0, 0.0, 0.0 });
 
   }
 
@@ -471,31 +475,7 @@ public class Swerve extends SubsystemBase {
             getPPSetpoint().approachPoint.getRotation().getRadians() });
   }
 
-  public void logSetpoints(PathPlannerTrajectoryState state) {
-    // setpoint logging for automated driving
-    Double[] positions = new Double[] { state.pose.getX(), state.pose.getY(), state.pose.getRotation().getRadians() };
-    setpointPositionLog.set(positions);
 
-    Double[] velocities = new Double[] { state.fieldSpeeds.vxMetersPerSecond, state.fieldSpeeds.vyMetersPerSecond,
-        state.fieldSpeeds.omegaRadiansPerSecond };
-    double velocity = 0;
-    for (int i = 0; i < 2; i++) {
-      velocity += Math.pow(velocities[i], 2);
-    }
-    velocity = Math.sqrt(velocity);
-    setpointVelocityLog.set(velocity);
-    setpointRotationalVelocityLog.set(velocities[2]);
-
-    Double[] accelerations = new Double[] { state.feedforwards.accelerationsMPSSq()[0],
-        state.feedforwards.accelerationsMPSSq()[1], state.feedforwards.accelerationsMPSSq()[2] }; // this might be wrong
-    double acceleration = 0;
-    for (int i = 0; i < 2; i++) {
-      acceleration += Math.pow(accelerations[i], 2);
-    }
-    acceleration = Math.sqrt(acceleration);
-    setpointAccelerationLog.set(acceleration);
-    setpointRotationalAccelerationLog.set(accelerations[2]);
-  }
 
   /**
    * log all serve data
