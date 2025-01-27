@@ -24,8 +24,8 @@ import frc.robot.subsystems.swerve.ToPosConstants;
 import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 
 public class OnTheFly extends Command {
-
-    private PathPlannerTrajectory[] trajectories;
+    private PathPlannerPath[] paths;
+    private PathPlannerTrajectory[] trajectories = new PathPlannerTrajectory[2];
     private int currentTrajectoryIndex = 0;
     private final Timer timer = new Timer();
     private final PPHolonomicDriveController SwerveController = new PPHolonomicDriveController(
@@ -50,7 +50,6 @@ public class OnTheFly extends Command {
         }
         timer.reset();
         timer.start();
-        PathPlannerPath[] paths;
 
         paths = ToPos.generateDynamicPath(
                 Robot.swerve.getPose(),
@@ -113,10 +112,15 @@ public class OnTheFly extends Command {
         if (trajectories[currentTrajectoryIndex] == null) {
             return true;
         }
+        boolean trajectoryComplete;
+        if (paths.length > 1) {
 
-        // Check if the timer has exceeded the trajectory duration
-        boolean trajectoryComplete = timer.get() >= trajectories[0].getTotalTimeSeconds()
-                + trajectories[1].getTotalTimeSeconds();
+            // Check if the timer has exceeded the trajectory duration
+            trajectoryComplete = timer.get() >= trajectories[0].getTotalTimeSeconds()
+                    + trajectories[1].getTotalTimeSeconds();
+        } else {
+            trajectoryComplete = timer.get() >= trajectories[0].getTotalTimeSeconds();
+        }
 
         if (trajectoryComplete) {
             return withinSetpointTolerance(finalSetpoint.setpoint, false);
