@@ -45,6 +45,7 @@ public class OnTheFly extends Command {
         }
         timer.reset();
         timer.start();
+        ToPos ToPos = new ToPos();
         PathPlannerPath path;
         if (Robot.swerve.currentPPSetpointIndex > 2 && !Robot.swerve.needsToCloseIn) {
             isAReefSetpoint = true;
