@@ -18,6 +18,7 @@ import frc.robot.Robot;
 import frc.robot.commands.auto.AutoConstants;
 import frc.robot.subsystems.swerve.GyroIO.GyroData;
 import frc.robot.subsystems.swerve.SwerveConstants.DriveConstants;
+import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 import frc.robot.subsystems.swerve.real.*;
 import frc.robot.subsystems.swerve.sim.*;
 import frc.robot.utils.*;
@@ -151,6 +152,7 @@ public class Swerve extends SubsystemBase {
 
   public int currentPPSetpointIndex = 0;
   public int currentPPApproachSetpointIndex = 0;
+
   public boolean isOTF = false;
   public boolean needsToCloseIn = false;
 
@@ -338,22 +340,24 @@ public class Swerve extends SubsystemBase {
 
   public void cyclePPSetpoint() {
     currentPPSetpointIndex++;
-    if (currentPPSetpointIndex >= ToPosConstants.Setpoints.ppSetpoints.length) {
+    if (currentPPSetpointIndex >= ToPosConstants.Setpoints.PPSetpoints.values().length) {
       currentPPSetpointIndex = 0;
     }
   }
+
   public void cyclePPApproachSetpoint() {
     currentPPApproachSetpointIndex++;
-    if (currentPPApproachSetpointIndex >= ToPosConstants.Setpoints.ppApproachSetpoints.length) {
-      currentPPApproachSetpointIndex= 0;
+    if (currentPPApproachSetpointIndex >= ToPosConstants.Setpoints.PPSetpoints.values().length) {
+      currentPPApproachSetpointIndex = 0;
     }
   }
 
   public Pose2d getPPSetpoint() {
-    return ToPosConstants.Setpoints.buttonBoardSetpointMap(currentPPSetpointIndex);
+    return PPSetpoints.values()[currentPPSetpointIndex].setpoint;
   }
+
   public Pose2d getPPApproachSetpoint() {
-    return ToPosConstants.Setpoints.buttonBoardApproachSetpointMap(currentPPSetpointIndex);
+    return PPSetpoints.values()[currentPPApproachSetpointIndex].setpoint;
   }
 
   /**
@@ -467,9 +471,11 @@ public class Swerve extends SubsystemBase {
     setpointGoalStateLog.set(
         new Double[] { getPPSetpoint().getX(), getPPSetpoint().getY(), getPPSetpoint().getRotation().getRadians() });
   }
+
   public void showApproachSetpointEndGoal() {
     setpointGoalStateLog.set(
-        new Double[] { getPPApproachSetpoint().getX(), getPPApproachSetpoint().getY(), getPPApproachSetpoint().getRotation().getRadians() });
+        new Double[] { getPPApproachSetpoint().getX(), getPPApproachSetpoint().getY(),
+            getPPApproachSetpoint().getRotation().getRadians() });
   }
 
   public void logSetpoints(PathPlannerTrajectoryState state) {

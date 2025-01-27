@@ -21,19 +21,22 @@ import frc.robot.commands.auto.AutoConstants;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.ToPos;
 import frc.robot.subsystems.swerve.ToPosConstants;
+import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 
 public class OnTheFly extends Command {
 
     private PathPlannerTrajectory trajectory;
     private final Timer timer = new Timer();
-    private static boolean isAReefSetpoint = false; // we get there and then close in on it by driving forward
     private final PPHolonomicDriveController SwerveController = new PPHolonomicDriveController(
             new PIDConstants(AutoConstants.kPDrive, 0, AutoConstants.kDDrive),
             new PIDConstants(AutoConstants.kPTurn, 0, AutoConstants.kDTurn));
     private static double positionTolerance = 0.003; // meters
     private static double rotationTolerance = 2.0; // degrees
 
-    public OnTheFly() {
+    private PPSetpoints finalSetpoint;
+
+    public OnTheFly(PPSetpoints setpoint) {
+        finalSetpoint=setpoint
     }
 
     @Override
@@ -46,46 +49,35 @@ public class OnTheFly extends Command {
         timer.reset();
         timer.start();
         ToPos ToPos = new ToPos();
-        PathPlannerPath path;
-        if (Robot.swerve.currentPPSetpointIndex > 2 && !Robot.swerve.needsToCloseIn) {
-            isAReefSetpoint = true;
-        }
+        PathPlannerPath[] paths;
 
-        if (Robot.swerve.needsToCloseIn) {
-            path = ToPos.generateDynamicPath(
-                    Robot.swerve.getPose(),
-                    ToPosConstants.Setpoints.reefTrig(Robot.swerve.getPPSetpoint(),
-                            ToPosConstants.Setpoints.TrigDirection.FORWARD),
-                    Robot.swerve.getMaxDriveSpeed(),
-                    SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
-                    Robot.swerve.getMaxAngularSpeed(),
-                    SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared);
-        } else {
-            path = ToPos.generateDynamicPath(
-                    Robot.swerve.getPose(),
-                    Robot.swerve.getPPSetpoint(),
-                    Robot.swerve.getMaxDriveSpeed(),
-                    SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
-                    Robot.swerve.getMaxAngularSpeed(),
-                    SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared);
-        }
+        paths = ToPos.generateDynamicPath(
+                Robot.swerve.getPose(),
+                finalSetpoint.approachPoint,
+                finalSetpoint.setpoint,
+                Robot.swerve.getMaxDriveSpeed(),
+                SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
+                Robot.swerve.getMaxAngularSpeed(),
+                SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared);
 
-        if (path == null) {
-            System.out.println("Error: Failed to generate path. Ending OnTheFly command.");
-            Robot.swerve.isOTF = false;
-            this.cancel();
-            return;
-        }
+        for (PathPlannerPath path : paths) {
+            if (path == null) {
+                System.out.println("Error: Failed to generate path. Ending OnTheFly command.");
+                Robot.swerve.isOTF = false;
+                this.cancel();
+                return;
+            }
 
-        try {
-            trajectory = path.generateTrajectory(
-                    Robot.swerve.getChassisSpeeds(),
-                    safeRotation(Robot.swerve.getRotation2d()),
-                    RobotConfig.fromGUISettings());
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-            Robot.swerve.isOTF = false;
-            this.cancel();
+            try {
+                trajectory = path.generateTrajectory(
+                        Robot.swerve.getChassisSpeeds(),
+                        safeRotation(Robot.swerve.getRotation2d()),
+                        RobotConfig.fromGUISettings());
+            } catch (IOException | ParseException e) {
+                e.printStackTrace();
+                Robot.swerve.isOTF = false;
+                this.cancel();
+            }
         }
     }
 

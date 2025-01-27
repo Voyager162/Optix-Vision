@@ -1,5 +1,7 @@
 package frc.robot.subsystems.swerve;
 
+import java.security.DrbgParameters.Capability;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -26,13 +28,14 @@ public class ToPosConstants {
             FORWARD
         }
 
-        public static Pose2d buttonBoardSetpointMap(int index) {
-            return ppSetpoints[index];
-        }
+        // public static Pose2d buttonBoardSetpointMap(int index) {
+        // return ppSetpoints[index];
+        // }
 
-        public static Pose2d buttonBoardApproachSetpointMap(int index) {
-            return ppApproachSetpoints[index];
-        }
+        // public static Pose2d buttonBoardApproachSetpointMap(int index) {
+        // return ppApproachSetpoints[index];
+        // }
+
         public static Pose2d reefTrig(Pose2d reefPose, TrigDirection direction) {
             double offsetMultiplier = 1;
             double forwardMagnitudeMultiplier = 1;
@@ -65,21 +68,6 @@ public class ToPosConstants {
             return new Pose2d(reefPose.getX() + xOffset, reefPose.getY() + yOffset, reefPose.getRotation());
         };
 
-        public static final double ROBOT_LENGTH = .838; // Length of the robot in meters
-        public static final double ROBOT_WIDTH = .888; // Width of the robot in meters
-
-        // Adjusted setpoints
-        public static final Pose2d coralTop = adjustPose(0.851154, 7.39648, Math.toRadians(-55));
-        public static final Pose2d coralBottom = adjustPose(0.851154, 0.65532, Math.toRadians(55));
-        public static final Pose2d processor = adjustPose(5.987542, -0.00381, Math.toRadians(-90));
-
-        public static final Pose2d reefClose = adjustPose(3.6576, 4.0259, Math.toRadians(0));
-        public static final Pose2d reefCloseRight = adjustPose(4.073906, 3.306318, Math.toRadians(60));
-        public static final Pose2d reefFarRight = adjustPose(4.90474, 3.306318, Math.toRadians(120));
-        public static final Pose2d reefFar = adjustPose(5.321046, 4.0259, Math.toRadians(180));
-        public static final Pose2d reefFarLeft = adjustPose(4.90474, 4.745482, Math.toRadians(-120));
-        public static final Pose2d reefCloseLeft = adjustPose(4.073906, 4.745482, Math.toRadians(-60));
-
         // Helper method to adjust Pose2d
         public static Pose2d adjustPose(double x, double y, double heading) {
             // Calculate offsets based only on robot length
@@ -90,41 +78,6 @@ public class ToPosConstants {
             return new Pose2d(x - offsetX, y - offsetY, new Rotation2d(heading));
         };
 
-        //Please refer to: https://firstfrc.blob.core.windows.net/frc2025/Manual/Sections/2025GameManual-05ARENA.pdf
-        //to see what each letter setpoint refers to
-
-        public static final Pose2d A = reefTrig(reefClose, TrigDirection.LEFT);
-        public static final Pose2d B = reefTrig(reefClose, TrigDirection.RIGHT);
-
-        public static final Pose2d C = reefTrig(reefCloseRight, TrigDirection.LEFT);
-        public static final Pose2d D = reefTrig(reefCloseRight, TrigDirection.RIGHT);
-
-        public static final Pose2d E = reefTrig(reefFarLeft, TrigDirection.LEFT);
-        public static final Pose2d F = reefTrig(reefFarLeft, TrigDirection.RIGHT);
-
-        public static final Pose2d G = reefTrig(reefFar, TrigDirection.LEFT);
-        public static final Pose2d H = reefTrig(reefFar, TrigDirection.RIGHT);
-
-        public static final Pose2d I = reefTrig(reefFarLeft, TrigDirection.LEFT);
-        public static final Pose2d J = reefTrig(reefFarLeft, TrigDirection.RIGHT);
-
-        public static final Pose2d K = reefTrig(reefCloseLeft, TrigDirection.LEFT);
-        public static final Pose2d L = reefTrig(reefCloseLeft, TrigDirection.RIGHT);
-
-
-        public static final Pose2d aApproach = createApproachPoint(A);
-        public static final Pose2d bApproach = createApproachPoint(B);
-        public static final Pose2d cApproach = createApproachPoint(C);
-        public static final Pose2d dApproach = createApproachPoint(D);
-        public static final Pose2d eApproach = createApproachPoint(E);
-        public static final Pose2d fApproach = createApproachPoint(F);
-        public static final Pose2d gApproach = createApproachPoint(G);
-        public static final Pose2d hApproach = createApproachPoint(H);
-        public static final Pose2d iApproach = createApproachPoint(I);
-        public static final Pose2d jApproach = createApproachPoint(J);
-        public static final Pose2d kApproach = createApproachPoint(K);
-        public static final Pose2d lApproach = createApproachPoint(L);
-
         private static Pose2d createApproachPoint(Pose2d pose) {
             Translation2d position = pose.getTranslation();
             Rotation2d heading = pose.getRotation();
@@ -133,6 +86,123 @@ public class ToPosConstants {
             return new Pose2d(position.plus(offset), heading);
         }
 
+        public static final double ROBOT_LENGTH = .838; // Length of the robot in meters
+        public static final double ROBOT_WIDTH = .888; // Width of the robot in meters
+
+        // Adjusted setpoints
+        public static final Pose2d coralLeft = adjustPose(0.851154, 7.39648, Math.toRadians(-55));
+        public static final Pose2d coralRight = adjustPose(0.851154, 0.65532, Math.toRadians(55));
+        public static final Pose2d processor = adjustPose(5.987542, -0.00381, Math.toRadians(-90));
+
+        public static final Pose2d reefClose = adjustPose(3.6576, 4.0259, Math.toRadians(0));
+        public static final Pose2d reefCloseRight = adjustPose(4.073906, 3.306318, Math.toRadians(60));
+        public static final Pose2d reefFarRight = adjustPose(4.90474, 3.306318, Math.toRadians(120));
+        public static final Pose2d reefFar = adjustPose(5.321046, 4.0259, Math.toRadians(180));
+        public static final Pose2d reefFarLeft = adjustPose(4.90474, 4.745482, Math.toRadians(-120));
+        public static final Pose2d reefCloseLeft = adjustPose(4.073906, 4.745482, Math.toRadians(-60));
+
+        // Please refer to:
+        // https://firstfrc.blob.core.windows.net/frc2025/Manual/Sections/2025GameManual-05ARENA.pdf
+        // to see what each letter setpoint refers to
+
+        public static final Pose2d aSetpoint = reefTrig(reefClose, TrigDirection.LEFT);
+        public static final Pose2d bSetpoint = reefTrig(reefClose, TrigDirection.RIGHT);
+
+        public static final Pose2d cSetpoint = reefTrig(reefCloseRight, TrigDirection.LEFT);
+        public static final Pose2d dSetpoint = reefTrig(reefCloseRight, TrigDirection.RIGHT);
+
+        public static final Pose2d eSetpoint = reefTrig(reefFarLeft, TrigDirection.LEFT);
+        public static final Pose2d fSetpoint = reefTrig(reefFarLeft, TrigDirection.RIGHT);
+
+        public static final Pose2d gSetpoint = reefTrig(reefFar, TrigDirection.LEFT);
+        public static final Pose2d hSetpoint = reefTrig(reefFar, TrigDirection.RIGHT);
+
+        public static final Pose2d iSetpoint = reefTrig(reefFarLeft, TrigDirection.LEFT);
+        public static final Pose2d jSetpoint = reefTrig(reefFarLeft, TrigDirection.RIGHT);
+
+        public static final Pose2d kSetpoint = reefTrig(reefCloseLeft, TrigDirection.LEFT);
+        public static final Pose2d lSetpoint = reefTrig(reefCloseLeft, TrigDirection.RIGHT);
+
+        public static final Pose2d aApproach = createApproachPoint(aSetpoint);
+        public static final Pose2d bApproach = createApproachPoint(bSetpoint);
+        public static final Pose2d cApproach = createApproachPoint(cSetpoint);
+        public static final Pose2d dApproach = createApproachPoint(dSetpoint);
+        public static final Pose2d eApproach = createApproachPoint(eSetpoint);
+        public static final Pose2d fApproach = createApproachPoint(fSetpoint);
+        public static final Pose2d gApproach = createApproachPoint(gSetpoint);
+        public static final Pose2d hApproach = createApproachPoint(hSetpoint);
+        public static final Pose2d iApproach = createApproachPoint(iSetpoint);
+        public static final Pose2d jApproach = createApproachPoint(jSetpoint);
+        public static final Pose2d kApproach = createApproachPoint(kSetpoint);
+        public static final Pose2d lApproach = createApproachPoint(lSetpoint);
+
+        public enum PPSetpoints {
+
+            CORALLEFT(coralLeft, coralLeft),
+            CORALRIGHT(coralRight, coralRight),
+            A(aSetpoint, aApproach),
+            B(bSetpoint, bApproach),
+            C(cSetpoint, cApproach),
+            D(dSetpoint, dApproach),
+            E(eSetpoint, eApproach),
+            F(fSetpoint, fApproach),
+            G(gSetpoint, gApproach),
+            H(hSetpoint, hApproach),
+            I(iSetpoint, iApproach),
+            J(jSetpoint, jApproach),
+            K(kSetpoint, kApproach),
+            L(lSetpoint, lApproach);
+
+            public final Pose2d setpoint;
+            public final Pose2d approachPoint;
+
+            private PPSetpoints(Pose2d setpoint, Pose2d approachPoint) {
+                this.setpoint = setpoint;
+                this.approachPoint = approachPoint;
+            }
+
+        }
+
+        // public static final Pose2d[] ppSetpoints = new Pose2d[] {
+        // coralBottom,
+        // coralTop,
+        // processor, // index 2, and if you add or remove any setpoints, this will
+        // break
+        // // on the fly,
+        // // read on the fly command for context
+        // A,
+        // B,
+        // C,
+        // D,
+        // E,
+        // F,
+        // G,
+        // H,
+        // I,
+        // J,
+        // K,
+        // L
+        // };
+        // public static final Pose2d[] ppApproachSetpoints = new Pose2d[] {
+        // coralBottom,
+        // coralTop,
+        // processor, // index 2, and if you add or remove any setpoints, this will
+        // break
+        // // on the fly,
+        // // read on the fly command for context
+        // aApproach,
+        // bApproach,
+        // cApproach,
+        // dApproach,
+        // eApproach,
+        // fApproach,
+        // gApproach,
+        // hApproach,
+        // iApproach,
+        // jApproach,
+        // kApproach,
+        // lApproach,
+        // };
 
         // public static final Pose2d a = new Pose2d(3.76, 3.49, new Rotation2d(0));
         // public static final Pose2d b = new Pose2d(4.39, 4.93, new Rotation2d(0));
@@ -141,46 +211,8 @@ public class ToPosConstants {
         // public static final Pose2d d = new Pose2d(3.76, 3.49, new Rotation2d(0));
         // public static final Pose2d e = new Pose2d(5.32, 3.67, new Rotation2d(0));
         // public static final Pose2d f = new Pose2d(4.59, 3.13, new Rotation2d(0));
-        //these aren't reef letter id's just verticies of the hexagon
+        // these aren't reef letter id's just verticies of the hexagon
 
-        public static final Pose2d[] ppSetpoints = new Pose2d[] {
-                coralBottom,
-                coralTop,
-                processor, // index 2, and if you add or remove any setpoints, this will break
-                                                    // on the fly,
-                // read on the fly command for context
-                A,
-                B,
-                C,
-                D,
-                E,
-                F,
-                G,
-                H,
-                I,
-                J,
-                K,
-                L
-        };
-        public static final Pose2d[] ppApproachSetpoints = new Pose2d[] {
-            coralBottom,
-            coralTop,
-            processor, // index 2, and if you add or remove any setpoints, this will break
-                                                // on the fly,
-            // read on the fly command for context
-            aApproach,
-            bApproach,
-            cApproach,
-            dApproach,
-            eApproach,
-            fApproach,
-            gApproach,
-            hApproach,
-            iApproach,
-            jApproach,
-            kApproach,
-            lApproach,
-    };
     }
 
     public static final class Obstacles {
