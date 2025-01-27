@@ -3,6 +3,7 @@ package frc.robot.subsystems.swerve;
 import java.util.*;
 import com.pathplanner.lib.path.*;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.*;
 
 /**
  * This class generates dynamic paths for a robot to move from one pose to another
@@ -11,16 +12,17 @@ import edu.wpi.first.math.geometry.*;
 public class ToPos {
 
     // MAKE CONSTANTS 
-    private static final double SAFE_MARGIN = 1; // Safety margin around the robot.
-
+    private static final double SAFE_MARGIN = .88 ; // Safety margin around the robot.
+    private static final double xComponenet = Math.cos(Math.toRadians(30));
+    private static final double yComponenet = Math.sin(Math.toRadians(30));
     // Vertices of the hexagon, adjusted for safety margins.
     private static final List<Translation2d> HEXAGON_VERTICES = List.of(
-        new Translation2d(3.668 - SAFE_MARGIN, 3.520 - SAFE_MARGIN),
+        new Translation2d(3.668 - xComponenet*SAFE_MARGIN, 3.520 - yComponenet*SAFE_MARGIN),
         new Translation2d(4.5, 3.039 - SAFE_MARGIN),
-        new Translation2d(5.332 + SAFE_MARGIN, 3.520 - SAFE_MARGIN),
-        new Translation2d(5.332 + SAFE_MARGIN, 4.480 + SAFE_MARGIN),
+        new Translation2d(5.332 + xComponenet*SAFE_MARGIN, 3.520 - yComponenet*SAFE_MARGIN),
+        new Translation2d(5.332 + xComponenet*SAFE_MARGIN, 4.480 + yComponenet*SAFE_MARGIN),
         new Translation2d(4.5, 4.961 + SAFE_MARGIN),
-        new Translation2d(3.668 - SAFE_MARGIN, 4.480 + SAFE_MARGIN)
+        new Translation2d(3.668 - xComponenet*SAFE_MARGIN, 4.480 + yComponenet*SAFE_MARGIN)
     );
 
     /**
