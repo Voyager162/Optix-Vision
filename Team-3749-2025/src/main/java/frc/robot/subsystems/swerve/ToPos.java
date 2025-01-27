@@ -66,22 +66,17 @@ public class ToPos {
                 initialPose.getTranslation()));
         // }
         // Handle ending point inside the hexagon.
-        if (endInsideHexagon && !isClose) {
-            Translation2d entryPoint = findClosestSafePointWithHeading(finalPose.getTranslation(),
-                    finalPose.getRotation(), true);
-            waypoints.addAll(generateDetourWaypoints(initialPose.getTranslation(), entryPoint));
-
-            waypoints.add(new Waypoint(approachPoint.getTranslation(), approachPoint.getTranslation(),
-                    approachPoint.getTranslation()));
-
-            waypoints.add(new Waypoint(entryPoint, finalPose.getTranslation(), finalPose.getTranslation()));
-        } else {
+        // if (endInsideHexagon && !isClose) {
+            
+        //     waypoints.addAll(generateDetourWaypoints(initialPose.getTranslation(),approachPoint.getTranslation()));
+        //     waypoints.add(new Waypoint(approachPoint.getTranslation(), finalPose.getTranslation(), finalPose.getTranslation()));
+        // } else {
             waypoints.addAll(generateDetourWaypoints(initialPose.getTranslation(), finalPose.getTranslation()));
 
             waypoints.add(new Waypoint(approachPoint.getTranslation(), approachPoint.getTranslation(),
                     approachPoint.getTranslation()));
 
-        }
+        // }
 
         waypoints.add(new Waypoint(finalPose.getTranslation(), finalPose.getTranslation(), finalPose.getTranslation()));
 
@@ -156,48 +151,6 @@ public class ToPos {
         return t >= 0 && t <= 1 && u >= 0 && u <= 1;
     }
 
-    /**
-     * Finds the closest safe point to a given point, based on the robot's heading.
-     *
-     * @param point        The current point.
-     * @param heading      The robot's orientation.
-     * @param isFinalPoint Whether the point is the final destination.
-     * @return The closest safe point.
-     */
-    private Translation2d findClosestSafePointWithHeading(Translation2d point, Rotation2d heading,
-            boolean isFinalPoint) {
-        Translation2d closest = null;
-        double minDistance = Double.MAX_VALUE;
-
-        // Find the closest vertex
-        for (Translation2d vertex : HEXAGON_VERTICES) {
-            double distance = point.getDistance(vertex);
-            if (distance < minDistance) {
-                minDistance = distance;
-                closest = vertex;
-            }
-        }
-
-        if (closest == null) {
-            return point; // Fallback to original point if no safe point is found.
-        }
-
-        double safeX, safeY;
-
-        if (isFinalPoint) {
-            // For the final point, use the heading to move away from the point
-            safeX = point.getX() - Math.cos(heading.getRadians());
-            safeY = point.getY() - Math.sin(heading.getRadians());
-        } else {
-            // For other points, apply a clamped margin and adjust the point based on
-            // heading
-            double clampedMargin = Math.min(SAFE_MARGIN, point.getDistance(closest) * 0.5);
-            safeX = point.getX() - clampedMargin * Math.cos(heading.getRadians());
-            safeY = point.getY() - clampedMargin * Math.sin(heading.getRadians());
-        }
-
-        return new Translation2d(safeX, safeY);
-    }
 
     /**
      * Generates detour waypoints to avoid obstacles between two points.
