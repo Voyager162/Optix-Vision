@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.swerve;
 
-import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
-
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
