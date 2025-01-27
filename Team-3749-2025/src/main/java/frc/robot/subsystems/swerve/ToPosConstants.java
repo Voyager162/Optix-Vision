@@ -113,8 +113,8 @@ public class ToPosConstants {
         public static final Pose2d cSetpoint = reefTrig(reefCloseRight, TrigDirection.LEFT);
         public static final Pose2d dSetpoint = reefTrig(reefCloseRight, TrigDirection.RIGHT);
 
-        public static final Pose2d eSetpoint = reefTrig(reefFarLeft, TrigDirection.LEFT);
-        public static final Pose2d fSetpoint = reefTrig(reefFarLeft, TrigDirection.RIGHT);
+        public static final Pose2d eSetpoint = reefTrig(reefFarRight, TrigDirection.LEFT);
+        public static final Pose2d fSetpoint = reefTrig(reefFarRight, TrigDirection.RIGHT);
 
         public static final Pose2d gSetpoint = reefTrig(reefFar, TrigDirection.LEFT);
         public static final Pose2d hSetpoint = reefTrig(reefFar, TrigDirection.RIGHT);
