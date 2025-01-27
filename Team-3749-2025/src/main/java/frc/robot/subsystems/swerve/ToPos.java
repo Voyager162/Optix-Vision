@@ -282,28 +282,27 @@ public class ToPos {
     }
 
     /**
-     * Finds the closest vertex of the hexagon to the path, ensuring it aligns with
-     * the path direction.
+     * Finds the single best vertex of the hexagon for a given point by evaluating
+     * the two closest vertices.
      *
      * @param point     The point to evaluate.
      * @param pathStart The start point of the path.
      * @param pathEnd   The end point of the path.
-     * @return The index of the vertex closest to the path and aligned with its
-     *         direction.
+     * @return The index of the best vertex.
      */
     private int findFirstVertex(Translation2d point, Translation2d pathStart, Translation2d pathEnd) {
         int closestVertex1 = -1, closestVertex2 = -1;
         double minDistance1 = Double.MAX_VALUE, minDistance2 = Double.MAX_VALUE;
-    
+
         // Step 1: Find the two closest vertices to the given point.
         for (int i = 0; i < HEXAGON_VERTICES.size(); i++) {
             double distance = point.getDistance(HEXAGON_VERTICES.get(i));
-    
+
             if (distance < minDistance1) {
                 // Update second closest
                 minDistance2 = minDistance1;
                 closestVertex2 = closestVertex1;
-    
+
                 // Update closest
                 minDistance1 = distance;
                 closestVertex1 = i;
@@ -313,56 +312,52 @@ public class ToPos {
                 closestVertex2 = i;
             }
         }
-        // HEXAGON_VERTICES.
-    
-        // Ensure the two closest vertices are consecutive, adjusting for wrap-around.
-        closestVertex1 = normalizeVertexIndex(closestVertex1);
-        closestVertex2 = normalizeVertexIndex(closestVertex2);
-    
+
+        // Step 2: Ensure consecutive vertices.
+        // Adjust for wrap-around (consecutive vertices should form a hexagon edge).
         if (Math.abs(closestVertex1 - closestVertex2) != 1 &&
                 !(closestVertex1 == 0 && closestVertex2 == HEXAGON_VERTICES.size() - 1) &&
                 !(closestVertex2 == 0 && closestVertex1 == HEXAGON_VERTICES.size() - 1)) {
-            // If vertices are not consecutive, fix the indices by re-evaluating with wrap-around logic.
-            closestVertex1 = Math.min(closestVertex1, closestVertex2);
             closestVertex2 = (closestVertex1 + 1) % HEXAGON_VERTICES.size();
         }
-    
-        // Step 2: Evaluate alignment with path direction.
+
+        // Step 3: Evaluate alignment with the path direction.
         Translation2d vertex1 = HEXAGON_VERTICES.get(closestVertex1);
         Translation2d vertex2 = HEXAGON_VERTICES.get(closestVertex2);
-    
-        // Path direction vector
-        Translation2d pathDirection = new Translation2d(pathEnd.getX() - pathStart.getX(), pathEnd.getY() - pathStart.getY());
-    
+
+        Translation2d pathDirection = new Translation2d(pathEnd.getX() - pathStart.getX(),
+                pathEnd.getY() - pathStart.getY());
+
         // Normalize path direction
-        double pathLength = Math.sqrt(pathDirection.getX() * pathDirection.getX() + pathDirection.getY() * pathDirection.getY());
-        pathDirection = new Translation2d(pathDirection.getX() / pathLength, pathDirection.getY() / pathLength);
-    
-        // Vectors to the vertices
+        double pathLength = Math
+                .sqrt(pathDirection.getX() * pathDirection.getX() + pathDirection.getY() * pathDirection.getY());
+        if (pathLength > 0) {
+            pathDirection = new Translation2d(pathDirection.getX() / pathLength, pathDirection.getY() / pathLength);
+        }
+
+        // Calculate vectors from the point to the vertices
         Translation2d toVertex1 = new Translation2d(vertex1.getX() - point.getX(), vertex1.getY() - point.getY());
         Translation2d toVertex2 = new Translation2d(vertex2.getX() - point.getX(), vertex2.getY() - point.getY());
-    
-        // Dot products to check alignment
+
+        // Dot products to measure alignment
         double alignment1 = (toVertex1.getX() * pathDirection.getX() + toVertex1.getY() * pathDirection.getY());
         double alignment2 = (toVertex2.getX() * pathDirection.getX() + toVertex2.getY() * pathDirection.getY());
-    
-        // Step 3: Calculate distances to the path.
+
+        // Step 4: Calculate distances to the path.
         double distanceToPath1 = calculatePointToLineDistance(vertex1, pathStart, pathEnd);
         double distanceToPath2 = calculatePointToLineDistance(vertex2, pathStart, pathEnd);
-    
-        // Step 4: Select vertex based on alignment and distance.
+
+        // Step 5: Choose the best vertex.
         if (alignment1 < 0 && alignment2 >= 0) {
-            // Vertex 1 goes opposite to the path; choose Vertex 2
-            return closestVertex2;
+            return closestVertex2; // Vertex 1 misaligned, choose Vertex 2
         } else if (alignment2 < 0 && alignment1 >= 0) {
-            // Vertex 2 goes opposite to the path; choose Vertex 1
-            return closestVertex1;
+            return closestVertex1; // Vertex 2 misaligned, choose Vertex 1
         } else {
-            // Both vertices are aligned; choose the closer one to the path
+            // Both vertices are aligned; choose the one closer to the path
             return distanceToPath1 < distanceToPath2 ? closestVertex1 : closestVertex2;
         }
     }
-    
+
     /**
      * Normalizes the vertex index to ensure it's within valid bounds.
      *
@@ -372,7 +367,6 @@ public class ToPos {
     private int normalizeVertexIndex(int index) {
         return (index + HEXAGON_VERTICES.size()) % HEXAGON_VERTICES.size();
     }
-    
 
     /**
      * Calculates the perpendicular distance from a point to a line segment.
