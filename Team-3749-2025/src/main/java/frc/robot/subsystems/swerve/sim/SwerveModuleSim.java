@@ -71,6 +71,7 @@ public class SwerveModuleSim implements SwerveModuleIO {
         data.drivePositionM = data.drivePositionM
                 + (driveSim.getAngularVelocityRadPerSec() * 0.02 * ModuleConstants.wheelDiameterMeters) / 2;
         data.driveVelocityMPerSec = driveSim.getAngularVelocityRadPerSec() * ModuleConstants.wheelDiameterMeters / 2;
+        data.driveAccelerationMPerSecSquared = driveSim.getAngularAccelerationRadPerSecSq();
         data.driveAppliedVolts = driveAppliedVolts;
         data.driveCurrentAmps = Math.abs(driveSim.getCurrentDrawAmps());
         data.driveTempCelcius = 0;

@@ -69,10 +69,10 @@ public class JoystickIO {
         // Example binding
         operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        operator.a().onTrue(Robot.elevator.getSysIdTuner().sysIdQuasistatic(Direction.kForward));
-        operator.b().onTrue(Robot.elevator.getSysIdTuner().sysIdQuasistatic(Direction.kReverse));
-        operator.x().onTrue(Robot.elevator.getSysIdTuner().sysIdDynamic(Direction.kForward));
-        operator.y().onTrue(Robot.elevator.getSysIdTuner().sysIdDynamic(Direction.kReverse));
+        operator.a().onTrue(Robot.swerve.getTurningSysIdTuner().sysIdQuasistatic(Direction.kForward));
+        operator.b().onTrue(Robot.swerve.getTurningSysIdTuner().sysIdQuasistatic(Direction.kReverse));
+        operator.x().onTrue(Robot.swerve.getTurningSysIdTuner().sysIdDynamic(Direction.kForward));
+        operator.y().onTrue(Robot.swerve.getTurningSysIdTuner().sysIdDynamic(Direction.kReverse));
     }
 
     public static void pilotBindings() {

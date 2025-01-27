@@ -20,8 +20,8 @@ import static edu.wpi.first.units.Units.Volts;;
  */
 public class SysIdTuner {
     private final SysIdRoutine sysIdRoutine;
-    private static Consumer<SysIdRoutineLog> setLog;
-    private static Consumer<Voltage> setVolts;
+    private Consumer<SysIdRoutineLog> setLog;
+    private Consumer<Voltage> setVolts;
 
     private VoltageDrive io;
     private Map<String, MotorData> motorData;
@@ -43,6 +43,10 @@ public class SysIdTuner {
 
     private void setLog(SysIdRoutineLog log) {
         motorData.forEach((motorName, data) -> {
+            System.out.println("volts" + data.appliedVolts);
+            System.out.println("pos" + data.position);
+            System.out.println("vel" + data.velocity);
+            System.out.println("acceleration" + data.acceleration);
             log.motor(motorName)
                     .voltage(Voltage.ofBaseUnits(data.appliedVolts, Volts))
                     .linearPosition(Meters.ofBaseUnits(data.position))
@@ -63,24 +67,12 @@ public class SysIdTuner {
             System.err.println("Failed to set voltage: " + e.getMessage());
         }
     }
-
+// make abstract
     public interface VoltageDrive {
         void setVoltage(double volts);
     }
 
-    public static class MotorData {
-        public double appliedVolts;
-        public double position;
-        public double velocity;
-        public double acceleration;
 
-        public MotorData(double appliedVolts, double position, double velocity, double acceleration) {
-            this.appliedVolts = appliedVolts;
-            this.position = position;
-            this.velocity = velocity;
-            this.acceleration = acceleration;
-        }
-    }
 
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.quasistatic(direction);

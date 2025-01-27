@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.swerve;
 
+import java.util.Map;
+
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -12,6 +14,7 @@ import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
 import frc.robot.commands.auto.AutoConstants;
 import frc.robot.subsystems.swerve.GyroIO.GyroData;
@@ -19,6 +22,7 @@ import frc.robot.subsystems.swerve.SwerveConstants.DriveConstants;
 import frc.robot.subsystems.swerve.real.*;
 import frc.robot.subsystems.swerve.sim.*;
 import frc.robot.utils.*;
+import static edu.wpi.first.units.Units.*;
 
 /***
  * Subsystem class for swerve drive, used to manage four swerve
@@ -104,6 +108,7 @@ public class Swerve extends SubsystemBase {
       "gyro connected",
 
       false);
+
   private ShuffleData<Boolean> gyroCalibratingLog = new ShuffleData<Boolean>(
       this.getName(),
       "gyro calibrating",
@@ -135,11 +140,21 @@ public class Swerve extends SubsystemBase {
       this.getName(),
       "setpoint acceleration",
       0.0);
-
   private ShuffleData<Double> setpointRotationalAccelerationLog = new ShuffleData<Double>(
       this.getName(),
       "setpoint rotational acceleration",
       0.0);
+
+  private SysIdTuner driveSysIdTuner;
+  private SysIdTuner turningSysIdTuner;
+  private Map<String, MotorData> driveMotorData;
+  private Map<String, MotorData> turningMotorData;
+
+  SysIdRoutine.Config config = new SysIdRoutine.Config(
+      Volts.per(Seconds).of(1.2), // Voltage ramp rate
+      Volts.of(12), // Max voltage
+      Seconds.of(10) // Test duration
+  );
 
   public Swerve() {
 
@@ -172,12 +187,44 @@ public class Swerve extends SubsystemBase {
         VecBuilder.fill(0.04, 0.04, 0.00),
         VecBuilder.fill(0.965, 0.965, 5000));
 
+    driveMotorData = Map.of("drive_left",
+        new MotorData(
+            modules[0].getModuleData().driveAppliedVolts,
+            modules[0].getModuleData().drivePositionM,
+            modules[0].getModuleData().driveVelocityMPerSec,
+            modules[0].getModuleData().driveAccelerationMPerSecSquared));
+    
+    turningMotorData = Map.of("turning_left",
+    new MotorData(
+        modules[0].getModuleData().turnAppliedVolts,
+        modules[0].getModuleData().turnAbsolutePositionRad,
+        modules[0].getModuleData().turnVelocityRadPerSec,
+        0));
+
+    driveSysIdTuner = new SysIdTuner("drive", config, this, (volts) -> {
+      for (int i = 0; i < 4; i++) {
+        modules[i].setDriveVoltage(volts);
+      }}, driveMotorData);
+    
+    turningSysIdTuner = new SysIdTuner("turn", config, this, (volts) -> {
+      for (int i = 0; i < 4; i++) {
+        modules[i].setTurnVoltage(volts);
+      }}, turningMotorData);
+
     // put us on the field with a default orientation
     resetGyro();
     setOdometry(new Pose2d(1.33, 5.53, new Rotation2d(0)));
     logSetpoints(
         new SwerveSample(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, new double[] { 0, 0, 0, 0 }, new double[] { 0, 0, 0, 0 }));
 
+  }
+
+  public SysIdTuner getDriveSysIdTuner() {
+    return driveSysIdTuner;
+  }
+
+  public SysIdTuner getTurningSysIdTuner() {
+    return turningSysIdTuner;
   }
 
   /**
@@ -434,7 +481,6 @@ public class Swerve extends SubsystemBase {
         modules[3].getState().speedMetersPerSecond
     };
 
-
     // SmartDashboard.puTarr("Swerve: Real States",realSwerveModuleStates);
     Double[] desiredStates = {
         modules[0].getDesiredState().angle.getRadians(),
@@ -488,6 +534,14 @@ public class Swerve extends SubsystemBase {
 
     logData();
 
-  }
+    driveMotorData.get("drive_left").appliedVolts = modules[0].getModuleData().driveAppliedVolts;
+    driveMotorData.get("drive_left").position = modules[0].getModuleData().drivePositionM;
+    driveMotorData.get("drive_left").velocity = modules[0].getModuleData().driveVelocityMPerSec;
+    driveMotorData.get("drive_left").acceleration = modules[0].getModuleData().driveAccelerationMPerSecSquared;
 
+    turningMotorData.get("turning_left").appliedVolts = modules[0].getModuleData().turnAppliedVolts;
+    turningMotorData.get("turning_left").position = modules[0].getModuleData().turnAbsolutePositionRad;
+    turningMotorData.get("turning_left").velocity = modules[0].getModuleData().turnVelocityRadPerSec;
+    turningMotorData.get("turning_left").acceleration = 0;
+  }
 }

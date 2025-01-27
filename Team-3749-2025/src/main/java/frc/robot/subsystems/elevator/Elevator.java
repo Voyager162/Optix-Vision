@@ -23,7 +23,7 @@ import frc.robot.subsystems.elevator.real.ElevatorSparkMax;
 import frc.robot.subsystems.elevator.sim.ElevatorSimulation;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.SysIdTuner;
-import frc.robot.utils.SysIdTuner.MotorData;
+import frc.robot.utils.MotorData;
 import frc.robot.utils.UtilityFunctions;
 
 import static edu.wpi.first.units.Units.*;
@@ -112,7 +112,6 @@ public class Elevator extends SubsystemBase {
         } else {
             elevatorio = new ElevatorSparkMax();
         }
-
         sysIdTuner = new SysIdTuner("elevator", config, this, elevatorio::setVoltage, motorData);
     }
 
@@ -150,10 +149,6 @@ public class Elevator extends SubsystemBase {
             default:
                 return false;
         }
-    }
-
-    public void setVoltage(Voltage volts) {
-        elevatorio.setVoltage(volts.magnitude());
     }
 
     public void setVoltage(double volts) {
@@ -247,6 +242,20 @@ public class Elevator extends SubsystemBase {
 
         runState();
         logData();
+
+        motorData.get("elevator_motor").position = data.positionMeters;
+        motorData.get("elevator_motor").acceleration = data.accelerationUnits;
+        motorData.get("elevator_motor").velocity = data.velocityMetersPerSecond;
+        motorData.get("elevator_motor").appliedVolts = (data.leftAppliedVolts + data.rightAppliedVolts) / 2.0;
+
+        // Map<String, MotorData> motorData = Map.of(
+        //     "elevator_motor", new MotorData(
+        //             (data.leftAppliedVolts + data.rightAppliedVolts) / 2.0,
+        //             data.positionMeters,
+        //             data.velocityMetersPerSecond,
+        //             data.accelerationUnits));
+                    
+        // sysIdTuner = new SysIdTuner("elevator", config, this, elevatorio::setVoltage, motorData);
         // pidController.setPID(kPData.get(),0,kDData.get())
     }
 }

@@ -9,6 +9,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.swerve.SwerveModuleIO;
+import frc.robot.utils.MiscConstants.SimConstants;
 import frc.robot.subsystems.swerve.SwerveConstants.DriveConstants;
 import frc.robot.subsystems.swerve.SwerveConstants.ModuleConstants;
 
@@ -26,6 +27,8 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
 
     private double driveAppliedVolts;
     private double turnAppliedVolts;
+
+    private double previousVelocity = 0;
 
     public SwerveModuleSparkMax(int index) {
         driveMotor = new SparkMax(DriveConstants.driveMotorPorts[index], SparkMax.MotorType.kBrushless);
@@ -62,10 +65,11 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
 
     @Override
     public void updateData(ModuleData data) {
-
+        previousVelocity = data.driveVelocityMPerSec;
         driveAppliedVolts = driveMotor.getBusVoltage() * driveMotor.getAppliedOutput();
         data.drivePositionM = getDrivePositionMeters();
         data.driveVelocityMPerSec = getDriveVelocityMetersPerSec();
+        data.driveAccelerationMPerSecSquared = (data.driveVelocityMPerSec - previousVelocity) / SimConstants.loopPeriodSec;
         data.driveAppliedVolts = driveAppliedVolts;
         data.driveCurrentAmps = Math.abs(driveMotor.getOutputCurrent());
         data.driveTempCelcius = driveMotor.getMotorTemperature();

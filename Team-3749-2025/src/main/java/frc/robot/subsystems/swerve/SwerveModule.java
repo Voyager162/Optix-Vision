@@ -36,6 +36,7 @@ public class SwerveModule {
     private ShuffleData<Double> driveTemp;
     private ShuffleData<Double> driveVolts;
     private ShuffleData<Double> driveCurrent;
+    private ShuffleData<Double> driveAcceleration;
 
     private ShuffleData<Double> turningSpeed;
     private ShuffleData<Double> turningPosition;
@@ -53,7 +54,6 @@ public class SwerveModule {
         turningPidController = new PIDController(ModuleConstants.kPturning, 0, ModuleConstants.kDTurning);
         turningPidController.enableContinuousInput(0, 2 * Math.PI);
 
-
         if (index == 0) {
             name = "FL module";
         } else if (index == 1) {
@@ -68,6 +68,8 @@ public class SwerveModule {
                 moduleData.driveVelocityMPerSec);
         drivePosition = new ShuffleData<>("Swerve/" + name, " drive position",
                 moduleData.drivePositionM);
+        driveAcceleration = new ShuffleData<>("Swerve/" + name, "drive acceleration",
+                moduleData.driveAccelerationMPerSecSquared);
         driveTemp = new ShuffleData<>("Swerve/" + name, "drive temp",
                 moduleData.driveTempCelcius);
         driveVolts = new ShuffleData<>("Swerve/" + name, "drive volts",
@@ -146,9 +148,9 @@ public class SwerveModule {
      * @param speedMetersPerSecond - the drive speed setpoint for the module
      */
     public void setDriveSpeed(double speedMetersPerSecond) {
-        
+
         double drive_volts = 0;
-        double setpointAcceleration = (speedMetersPerSecond-previousSetpointVelocity)/0.02;
+        double setpointAcceleration = (speedMetersPerSecond - previousSetpointVelocity) / 0.02;
 
         drive_volts = drivingFeedFordward.calculate(speedMetersPerSecond, setpointAcceleration)
                 + drivingPidController.calculate(moduleData.driveVelocityMPerSec, speedMetersPerSecond);
@@ -198,6 +200,7 @@ public class SwerveModule {
         // Logging
         driveSpeed.set(moduleData.driveVelocityMPerSec);
         drivePosition.set(moduleData.drivePositionM);
+        driveAcceleration.set(moduleData.driveAccelerationMPerSecSquared);
         driveTemp.set(moduleData.driveTempCelcius);
         driveVolts.set(moduleData.driveAppliedVolts);
         driveCurrent.set(moduleData.driveCurrentAmps);
