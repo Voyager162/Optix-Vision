@@ -3,6 +3,7 @@ package frc.robot.subsystems.swerve;
 import java.util.*;
 import com.pathplanner.lib.path.*;
 import edu.wpi.first.math.geometry.*;
+
 /**
  * This class generates dynamic paths for a robot to move from one pose to
  * another
@@ -11,20 +12,19 @@ import edu.wpi.first.math.geometry.*;
  */
 public class ToPos {
 
-    // MAKE CONSTANTS 
-    private static final double SAFE_MARGIN = .88 ; // Safety margin around the robot.
+    // MAKE CONSTANTS
+    private static final double SAFE_MARGIN = .88; // Safety margin around the robot.
     private static final double xComponenet = Math.cos(Math.toRadians(30));
     private static final double yComponenet = Math.sin(Math.toRadians(30));
     // Vertices of the hexagon, adjusted for safety margins.
     private static final List<Translation2d> HEXAGON_VERTICES = List.of(
-        new Translation2d(3.668 - xComponenet*SAFE_MARGIN, 3.520 - yComponenet*SAFE_MARGIN),
-        new Translation2d(4.5, 3.039 - SAFE_MARGIN),
-        new Translation2d(5.332 + xComponenet*SAFE_MARGIN, 3.520 - yComponenet*SAFE_MARGIN),
-        new Translation2d(5.332 + xComponenet*SAFE_MARGIN, 4.480 + yComponenet*SAFE_MARGIN),
-        new Translation2d(4.5, 4.961 + SAFE_MARGIN),
-        new Translation2d(3.668 - xComponenet*SAFE_MARGIN, 4.480 + yComponenet*SAFE_MARGIN),
-        new Translation2d(3.668 - xComponenet*SAFE_MARGIN, 3.520 - yComponenet*SAFE_MARGIN)
-    );
+            new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN),
+            new Translation2d(4.5, 3.039 - SAFE_MARGIN),
+            new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN),
+            new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 4.480 + yComponenet * SAFE_MARGIN),
+            new Translation2d(4.5, 4.961 + SAFE_MARGIN),
+            new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 4.480 + yComponenet * SAFE_MARGIN),
+            new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN));
 
     /**
      * Generates a dynamic path for the robot from an initial pose to a final pose.
@@ -56,12 +56,14 @@ public class ToPos {
 
         // Handle starting point inside the hexagon.
         // if (startInsideHexagon && !isClose) {
-        //     Translation2d exitPoint = findClosestSafePointWithHeading(initialPose.getTranslation(),
-        //             initialPose.getRotation(), false);
-        //     waypoints.add(new Waypoint(initialPose.getTranslation(), exitPoint, exitPoint));
+        // Translation2d exitPoint =
+        // findClosestSafePointWithHeading(initialPose.getTranslation(),
+        // initialPose.getRotation(), false);
+        // waypoints.add(new Waypoint(initialPose.getTranslation(), exitPoint,
+        // exitPoint));
         // } else {
-            waypoints.add(new Waypoint(initialPose.getTranslation(), initialPose.getTranslation(),
-                    initialPose.getTranslation()));
+        waypoints.add(new Waypoint(initialPose.getTranslation(), initialPose.getTranslation(),
+                initialPose.getTranslation()));
         // }
         // Handle ending point inside the hexagon.
         if (endInsideHexagon && !isClose) {
@@ -206,43 +208,45 @@ public class ToPos {
      */
     private List<Waypoint> generateDetourWaypoints(Translation2d start, Translation2d end) {
         List<Waypoint> detourWaypoints = new ArrayList<>();
-    
+
         if (!isPathIntersectingObstacle(start, end)) {
             detourWaypoints.add(new Waypoint(start, start, end));
             return detourWaypoints;
         }
-    
-        int startVertexIndex = findClosestVertexIndex(start);
-        int endVertexIndex = findClosestVertexIndex(end);
-    
+
+        // Use the path direction to determine the best vertices
+        Translation2d pathDirection = new Translation2d(end.getX() - start.getX(), end.getY() - start.getY());
+        int startVertexIndex = findClosestHexagonSide(start, start, end);
+        int endVertexIndex = findClosestHexagonSide(end, start, end);
+
         // Calculate clockwise and counterclockwise distances
         int clockwiseDistance = (endVertexIndex - startVertexIndex + HEXAGON_VERTICES.size()) % HEXAGON_VERTICES.size();
-        int counterclockwiseDistance = (startVertexIndex - endVertexIndex + HEXAGON_VERTICES.size()) % HEXAGON_VERTICES.size();
-    
+        int counterclockwiseDistance = (startVertexIndex - endVertexIndex + HEXAGON_VERTICES.size())
+                % HEXAGON_VERTICES.size();
+
         // Choose the direction based on shorter angular displacement
         boolean goClockwise = clockwiseDistance < counterclockwiseDistance;
-    
+
         // Adjust to move in the correct global direction
         int currentIndex = startVertexIndex;
         while (true) {
             Translation2d vertex = HEXAGON_VERTICES.get(currentIndex);
             detourWaypoints.add(new Waypoint(vertex, vertex, vertex));
-    
+
             // Stop when reaching the end vertex
             if (currentIndex == endVertexIndex) {
                 break;
             }
-    
+
             // Move to the next vertex in the correct direction
             currentIndex = goClockwise
                     ? (currentIndex + 1) % HEXAGON_VERTICES.size()
                     : (currentIndex - 1 + HEXAGON_VERTICES.size()) % HEXAGON_VERTICES.size();
         }
-    
+
         detourWaypoints.add(new Waypoint(HEXAGON_VERTICES.get(endVertexIndex), end, end));
         return detourWaypoints;
     }
-    
 
     /**
      * Checks if a path between two points intersects any obstacle.
@@ -282,4 +286,94 @@ public class ToPos {
 
         return closestIndex;
     }
+
+    /**
+     * Finds the closest vertex of the hexagon to the path, based on the two nearest
+     * vertices to a given point.
+     *
+     * @param point     The point to evaluate.
+     * @param pathStart The start point of the path.
+     * @param pathEnd   The end point of the path.
+     * @return The index of the vertex closest to the path.
+     */
+    private int findClosestHexagonSide(Translation2d point, Translation2d pathStart, Translation2d pathEnd) {
+        int closestVertex1 = -1, closestVertex2 = -1;
+        double minDistance1 = Double.MAX_VALUE, minDistance2 = Double.MAX_VALUE;
+
+        // Step 1: Find the two closest vertices to the given point.
+        for (int i = 0; i < HEXAGON_VERTICES.size(); i++) {
+            double distance = point.getDistance(HEXAGON_VERTICES.get(i));
+
+            if (distance < minDistance1) {
+                // Update second closest
+                minDistance2 = minDistance1;
+                closestVertex2 = closestVertex1;
+
+                // Update closest
+                minDistance1 = distance;
+                closestVertex1 = i;
+            } else if (distance < minDistance2) {
+                // Update only the second closest
+                minDistance2 = distance;
+                closestVertex2 = i;
+            }
+        }
+
+        // Ensure vertices are consecutive (adjust for hexagon wrap-around).
+        if (Math.abs(closestVertex1 - closestVertex2) != 1 &&
+                !(closestVertex1 == 0 && closestVertex2 == HEXAGON_VERTICES.size() - 1) &&
+                !(closestVertex2 == 0 && closestVertex1 == HEXAGON_VERTICES.size() - 1)) {
+            throw new IllegalStateException("Closest vertices are not consecutive!");
+        }
+
+        // Step 2: Evaluate the distances of the two vertices to the path.
+        Translation2d vertex1 = HEXAGON_VERTICES.get(closestVertex1);
+        Translation2d vertex2 = HEXAGON_VERTICES.get(closestVertex2);
+
+        double distanceToPath1 = calculatePointToLineDistance(vertex1, pathStart, pathEnd);
+        double distanceToPath2 = calculatePointToLineDistance(vertex2, pathStart, pathEnd);
+
+        // Step 3: Return the index of the vertex closer to the path.
+        return distanceToPath1 < distanceToPath2 ? closestVertex1 : closestVertex2;
+    }
+
+    /**
+     * Calculates the perpendicular distance from a point to a line segment.
+     *
+     * @param point     The point to check.
+     * @param lineStart The start of the line segment.
+     * @param lineEnd   The end of the line segment.
+     * @return The perpendicular distance from the point to the line segment.
+     */
+    private double calculatePointToLineDistance(Translation2d point, Translation2d lineStart, Translation2d lineEnd) {
+        double x0 = point.getX();
+        double y0 = point.getY();
+        double x1 = lineStart.getX();
+        double y1 = lineStart.getY();
+        double x2 = lineEnd.getX();
+        double y2 = lineEnd.getY();
+
+        // Line segment vector (x2 - x1, y2 - y1)
+        double dx = x2 - x1;
+        double dy = y2 - y1;
+
+        // Handle case where lineStart and lineEnd are the same point
+        if (dx == 0 && dy == 0) {
+            return point.getDistance(lineStart);
+        }
+
+        // Calculate the projection of (x0 - x1, y0 - y1) onto the line segment vector
+        double t = ((x0 - x1) * dx + (y0 - y1) * dy) / (dx * dx + dy * dy);
+
+        // Clamp t to the range [0, 1] to stay within the line segment
+        t = Math.max(0, Math.min(1, t));
+
+        // Closest point on the line segment
+        double closestX = x1 + t * dx;
+        double closestY = y1 + t * dy;
+
+        // Return the distance from the point to the closest point on the line
+        return Math.sqrt((x0 - closestX) * (x0 - closestX) + (y0 - closestY) * (y0 - closestY));
+    }
+
 }
