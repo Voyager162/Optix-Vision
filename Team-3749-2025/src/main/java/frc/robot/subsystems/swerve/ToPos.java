@@ -180,7 +180,8 @@ public class ToPos {
             boolean isFinalPoint) {
         Translation2d closest = null;
         double minDistance = Double.MAX_VALUE;
-
+    
+        // Find the closest vertex
         for (Translation2d vertex : HEXAGON_VERTICES) {
             double distance = point.getDistance(vertex);
             if (distance < minDistance) {
@@ -188,26 +189,27 @@ public class ToPos {
                 closest = vertex;
             }
         }
-
+    
         if (closest == null) {
             return point; // Fallback to original point if no safe point is found.
         }
-
-        double angle = Math.atan2(closest.getY() - point.getY(), closest.getX() - point.getX());
+    
         double safeX, safeY;
-
+    
         if (isFinalPoint) {
+            // For the final point, use the heading to move away from the point
             safeX = point.getX() - Math.cos(heading.getRadians());
             safeY = point.getY() - Math.sin(heading.getRadians());
         } else {
+            // For other points, apply a clamped margin and adjust the point based on heading
             double clampedMargin = Math.min(SAFE_MARGIN, point.getDistance(closest) * 0.5);
-            safeX = closest.getX() + clampedMargin * Math.cos(angle);
-            safeY = closest.getY() + clampedMargin * Math.sin(angle);
+            safeX = point.getX() - clampedMargin * Math.cos(heading.getRadians());
+            safeY = point.getY() - clampedMargin * Math.sin(heading.getRadians());
         }
-
+    
         return new Translation2d(safeX, safeY);
     }
-
+    
     /**
      * Generates detour waypoints to avoid obstacles between two points.
      *
