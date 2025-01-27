@@ -18,9 +18,9 @@ public class ToPos {
     private static final double yComponenet = Math.sin(Math.toRadians(30));
     // Vertices of the hexagon, adjusted for safety margins.
     private static final List<Translation2d> HEXAGON_VERTICES = List.of(
-            new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN), //close right
-            new Translation2d(4.5, 3.039 - SAFE_MARGIN),// middle right
-            new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN), //far right
+            new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN), // close right
+            new Translation2d(4.5, 3.039 - SAFE_MARGIN), // middle right
+            new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN), // far right
             new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 4.480 + yComponenet * SAFE_MARGIN), // far left
             new Translation2d(4.5, 4.961 + SAFE_MARGIN), // middle left
             new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 4.480 + yComponenet * SAFE_MARGIN), // close left
@@ -45,53 +45,18 @@ public class ToPos {
         if (initialPose == null) {
             throw new IllegalArgumentException("Initial pose cannot be null!");
         }
-        // if the starting and ending postions are less than the approach point distance
-        boolean isClose = finalPose.getTranslation()
-                .getDistance(initialPose.getTranslation()) < ToPosConstants.Setpoints.approachPointDistance;
 
         List<Waypoint> waypoints = new ArrayList<>();
 
-        // Check if the start or end points are inside the hexagonal obstacle.
-        boolean endInsideHexagon = isPointInsideHexagon(finalPose.getTranslation());
-
-        // Handle starting point inside the hexagon.
-        // if (startInsideHexagon && !isClose) {
-        // Translation2d exitPoint =
-        // findClosestSafePointWithHeading(initialPose.getTranslation(),
-        // initialPose.getRotation(), false);
-        // waypoints.add(new Waypoint(initialPose.getTranslation(), exitPoint,
-        // exitPoint));
-        // } else {
-        waypoints.add(new Waypoint(initialPose.getTranslation(), initialPose.getTranslation(),
-                initialPose.getTranslation()));
-        // }
-        // Handle ending point inside the hexagon.
-        if (endInsideHexagon && !isClose) {
-
-            waypoints.addAll(generateDetourWaypoints(initialPose.getTranslation(), approachPoint.getTranslation()));
-
-            waypoints.add(new Waypoint(approachPoint.getTranslation(), approachPoint.getTranslation(),
-                    approachPoint.getTranslation()));
-
-            waypoints.add(new Waypoint(approachPoint.getTranslation(), finalPose.getTranslation(),
-                    finalPose.getTranslation()));
-        } else {
-            waypoints.addAll(generateDetourWaypoints(initialPose.getTranslation(), finalPose.getTranslation()));
-
-            waypoints.add(new Waypoint(approachPoint.getTranslation(), approachPoint.getTranslation(),
-                    approachPoint.getTranslation()));
-
-        }
-
-        waypoints.add(new Waypoint(finalPose.getTranslation(), finalPose.getTranslation(), finalPose.getTranslation()));
-
-        // Remove redundant waypoints to prevent small loops.
+        waypoints.add(
+                new Waypoint(initialPose.getTranslation(), initialPose.getTranslation(), initialPose.getTranslation()));
+        waypoints.addAll(generateDetourWaypoints(initialPose.getTranslation(), approachPoint.getTranslation()));
+        waypoints.add(
+                new Waypoint(approachPoint.getTranslation(), finalPose.getTranslation(), finalPose.getTranslation()));
         removeRedundantWaypoints(waypoints);
 
-        return new PathPlannerPath(
-                waypoints,
-                new PathConstraints(maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration),
-                null,
+        return new PathPlannerPath(waypoints,
+                new PathConstraints(maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration), null,
                 new GoalEndState(0.0, finalPose.getRotation()));
     }
 
@@ -172,11 +137,11 @@ public class ToPos {
         }
 
         // Use the path direction to determine the best vertices
-        Translation2d pathDirection = new Translation2d(end.getX() - start.getX(), end.getY() - start.getY());
         int startVertexIndex = findClosestHexagonVertex(start, start, end);
         int endVertexIndex = findClosestHexagonVertex(end, start, end);
 
-        // Calculate clockwise and counterclockwise distances based on # verticies traveled
+        // Calculate clockwise and counterclockwise distances based on # verticies
+        // traveled
         int clockwiseDistance = (endVertexIndex - startVertexIndex + HEXAGON_VERTICES.size()) % HEXAGON_VERTICES.size();
         int counterclockwiseDistance = (startVertexIndex - endVertexIndex + HEXAGON_VERTICES.size())
                 % HEXAGON_VERTICES.size();
