@@ -22,8 +22,8 @@ public class ToPos {
             new Translation2d(5.332 + SAFE_MARGIN, 3.520 - SAFE_MARGIN),
             new Translation2d(5.332 + SAFE_MARGIN, 4.480 + SAFE_MARGIN),
             new Translation2d(4.5, 4.961 + SAFE_MARGIN),
-            new Translation2d(3.668 - SAFE_MARGIN, 4.480 + SAFE_MARGIN));
-            new Translation2d(3.668 - SAFE_MARGIN, 3.520 - SAFE_MARGIN),
+            new Translation2d(3.668 - SAFE_MARGIN, 4.480 + SAFE_MARGIN),
+            new Translation2d(3.668 - SAFE_MARGIN, 3.520 - SAFE_MARGIN));
 
     /**
      * Generates a dynamic path for the robot from an initial pose to a final pose.
