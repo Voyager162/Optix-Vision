@@ -285,15 +285,25 @@ public class ToPos {
 
         // Step 5: Choose the best vertex.
         if (alignment1 < 0 && alignment2 >= 0) {
+            if (point.equals(pathEnd)) {
+                System.out.println("alignment to " + closestVertex1);
+
+                return closestVertex1;
+            }
             System.out.println("alignment to " + closestVertex2);
             return closestVertex2; // Vertex 1 misaligned, choose Vertex 2
         } else if (alignment2 < 0 && alignment1 >= 0) {
-            System.out.println("alignment to " + closestVertex1);
+            if (point.equals(pathEnd)) {
+                System.out.println("alignment to " + closestVertex2);
 
+                return closestVertex2;
+
+            }
+            System.out.println("alignment to " + closestVertex1);
             return closestVertex1; // Vertex 2 misaligned, choose Vertex 1
         } else {
             int chosenVertex = distanceToPath1 < distanceToPath2 ? closestVertex1 : closestVertex2;
-            System.out.println("distance based to " +chosenVertex);
+            System.out.println("distance based to " + chosenVertex);
             // Both vertices are aligned; choose the one closer to the path
             return chosenVertex;
         }
