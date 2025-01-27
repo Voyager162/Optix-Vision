@@ -340,24 +340,16 @@ public class Swerve extends SubsystemBase {
 
   public void cyclePPSetpoint() {
     currentPPSetpointIndex++;
+
     if (currentPPSetpointIndex >= ToPosConstants.Setpoints.PPSetpoints.values().length) {
       currentPPSetpointIndex = 0;
     }
   }
 
-  public void cyclePPApproachSetpoint() {
-    currentPPApproachSetpointIndex++;
-    if (currentPPApproachSetpointIndex >= ToPosConstants.Setpoints.PPSetpoints.values().length) {
-      currentPPApproachSetpointIndex = 0;
-    }
-  }
+  
 
-  public Pose2d getPPSetpoint() {
-    return PPSetpoints.values()[currentPPSetpointIndex].setpoint;
-  }
-
-  public Pose2d getPPApproachSetpoint() {
-    return PPSetpoints.values()[currentPPApproachSetpointIndex].setpoint;
+  public PPSetpoints getPPSetpoint() {
+    return PPSetpoints.values()[currentPPSetpointIndex];
   }
 
   /**
@@ -469,13 +461,14 @@ public class Swerve extends SubsystemBase {
 
   public void showSetpointEndGoal() {
     setpointGoalStateLog.set(
-        new Double[] { getPPSetpoint().getX(), getPPSetpoint().getY(), getPPSetpoint().getRotation().getRadians() });
+        new Double[] { getPPSetpoint().setpoint.getX(), getPPSetpoint().setpoint.getY(),
+            getPPSetpoint().setpoint.getRotation().getRadians() });
   }
 
   public void showApproachSetpointEndGoal() {
     setpointGoalStateLog.set(
-        new Double[] { getPPApproachSetpoint().getX(), getPPApproachSetpoint().getY(),
-            getPPApproachSetpoint().getRotation().getRadians() });
+        new Double[] { getPPSetpoint().approachPoint.getX(), getPPSetpoint().approachPoint.getY(),
+            getPPSetpoint().approachPoint.getRotation().getRadians() });
   }
 
   public void logSetpoints(PathPlannerTrajectoryState state) {

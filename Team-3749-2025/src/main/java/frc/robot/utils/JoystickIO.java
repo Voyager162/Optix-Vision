@@ -22,8 +22,8 @@ public class JoystickIO {
     private static final CommandXboxController pilot = new CommandXboxController(0);
     private static final CommandXboxController operator = new CommandXboxController(1);
     //private static final Command sample = new ExampleSubsystemCommand(); it was getting on my nerves seeing the warning
-    private static final Command DriveStraight = new DriveStraight();
-    private static final Command OnTheFly = new OnTheFly();
+    private static final Command driveStraight = new DriveStraight();
+    private static final Command onTheFly = new OnTheFly();
 
     public JoystickIO() {
     }
@@ -56,13 +56,12 @@ public class JoystickIO {
     public static void pilotAndOperatorBindings() {
         // gyro reset
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
-        pilot.a().whileTrue(DriveStraight);
+        pilot.a().whileTrue(driveStraight);
         pilot.x().onTrue(Commands.runOnce(()->{Robot.swerve.needsToCloseIn=false;Robot.swerve.isOTF=true;}));
-        new Trigger(()->Robot.swerve.isOTF).whileTrue(OnTheFly);
+        new Trigger(()->Robot.swerve.isOTF).whileTrue(onTheFly);
         pilot.b().onTrue(Commands.runOnce(() -> {
             Robot.swerve.isOTF = false;
             Robot.swerve.cyclePPSetpoint();
-            Robot.swerve.cyclePPApproachSetpoint();
             Robot.swerve.showSetpointEndGoal();
             Robot.swerve.needsToCloseIn = false;
         }));
