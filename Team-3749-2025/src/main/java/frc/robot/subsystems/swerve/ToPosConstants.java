@@ -3,7 +3,6 @@ package frc.robot.subsystems.swerve;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 
 public class ToPosConstants {
 
@@ -22,18 +21,12 @@ public class ToPosConstants {
     public static final class Setpoints {
 
         public static enum TrigDirection {
-        public static enum TrigDirection {
             LEFT,
             RIGHT,
             FORWARD
         }
 
         public static Pose2d buttonBoardSetpointMap(int index) {
-
-        public static Pose2d buttonBoardSetpointMap(int index) {
-            return ppSetpoints[index];
-        }
-        public static Pose2d buttonBoardApproachSetpointMap(int index) {
             return ppSetpoints[index];
         }
 
@@ -45,17 +38,11 @@ public class ToPosConstants {
             double forwardMagnitudeMultiplier = 1;
             double angleOffset = 90; // 90 for perpindicular
             switch (direction) {
-            double angleOffset = 90; // 90 for perpindicular
-            switch (direction) {
                 case LEFT:
-                    offsetMultiplier = 1;
-                    break;
                     offsetMultiplier = 1;
                     break;
 
                 case RIGHT:
-                    offsetMultiplier = -1;
-                    break;
                     offsetMultiplier = -1;
                     break;
 
@@ -63,11 +50,8 @@ public class ToPosConstants {
                     angleOffset = 0;
                     forwardMagnitudeMultiplier = 1.5;
                     break;
-                    break;
 
                 default:
-                    System.out.println("did not specify trig direction");
-                    break;
                     System.out.println("did not specify trig direction");
                     break;
             }
@@ -149,32 +133,6 @@ public class ToPosConstants {
             return new Pose2d(position.plus(offset), heading);
         }
 
-
-        public static final Pose2d reef17LApproach = createApproachPoint(reef17L);
-        public static final Pose2d reef17RApproach = createApproachPoint(reef17R);
-
-        public static final Pose2d reef18LApproach = createApproachPoint(reef18L);
-        public static final Pose2d reef18RApproach = createApproachPoint(reef18R);
-
-        public static final Pose2d reef19LApproach = createApproachPoint(reef19L);
-        public static final Pose2d reef19RApproach = createApproachPoint(reef19R);
-
-        public static final Pose2d reef20LApproach = createApproachPoint(reef20L);
-        public static final Pose2d reef20RApproach = createApproachPoint(reef20R);
-
-        public static final Pose2d reef21LApproach = createApproachPoint(reef21L);
-        public static final Pose2d reef21RApproach = createApproachPoint(reef21R);
-
-        public static final Pose2d reef22LApproach = createApproachPoint(reef22L);
-        public static final Pose2d reef22RApproach = createApproachPoint(reef22R);
-
-        private static Pose2d createApproachPoint(Pose2d pose) {
-            Translation2d position = pose.getTranslation();
-            Rotation2d heading = pose.getRotation();
-            Translation2d offset = new Translation2d(1.0 * Math.cos(heading.getRadians()),
-                    1.0 * Math.sin(heading.getRadians()));
-            return new Pose2d(position.plus(offset), heading);
-        }
 
         // public static final Pose2d a = new Pose2d(3.76, 3.49, new Rotation2d(0));
         // public static final Pose2d b = new Pose2d(4.39, 4.93, new Rotation2d(0));

@@ -473,7 +473,7 @@ public class Swerve extends SubsystemBase {
   }
   public void showApproachSetpointEndGoal() {
     setpointGoalStateLog.set(
-        new Double[] { getPPApproachSetpoint().getX(), getPPApproachSetpoint().getY(), getPPSetpoint().getRotation().getRadians() });
+        new Double[] { getPPApproachSetpoint().getX(), getPPApproachSetpoint().getY(), getPPApproachSetpoint().getRotation().getRadians() });
   }
 
   public void logSetpoints(PathPlannerTrajectoryState state) {
