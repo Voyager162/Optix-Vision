@@ -67,8 +67,6 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
                 driveMotorConfig.smartCurrentLimit(MotorControllerConstants.standardStallLimit,
                                 MotorControllerConstants.standardFreeLimit);
                 driveMotorConfig.idleMode(IdleMode.kBrake);
-                driveMotor.configure(driveMotorConfig, com.revrobotics.spark.SparkBase.ResetMode.kResetSafeParameters,
-                                PersistMode.kPersistParameters);
 
                 turnMotor = new SparkMax(DriveConstants.turningMotorPorts[index],
                                 SparkMax.MotorType.kBrushless);
@@ -83,9 +81,6 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
                 turnMotorConfig.smartCurrentLimit(MotorControllerConstants.relaxedStallLimit,
                                 MotorControllerConstants.relaxedFreeLimit);
                 turnMotorConfig.idleMode(IdleMode.kBrake);
-
-                turnMotor.configure(turnMotorConfig, com.revrobotics.spark.SparkBase.ResetMode.kResetSafeParameters,
-                                PersistMode.kPersistParameters);
 
                 // absoluteEncoder = new CANcoder(DriveConstants.absoluteEncoderPorts[index]);
                 absoluteEncoderOffsetRad = Units.degreesToRadians(DriveConstants.absoluteEncoderOffsetDeg[index]);
@@ -145,10 +140,10 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
 
                 driveController.setReference(1, ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot2);
 
-                driveMotorConfig.closedLoop.maxMotion
-                                .maxVelocity(DriveConstants.maxSpeedMetersPerSecond)
-                                .maxAcceleration(DriveConstants.maxAccelerationMetersPerSecondSquared)
-                                .allowedClosedLoopError(DriveConstants.maxDriveVelocityError);
+                driveMotor.configure(driveMotorConfig, com.revrobotics.spark.SparkBase.ResetMode.kResetSafeParameters,
+                                PersistMode.kPersistParameters);
+                turnMotor.configure(turnMotorConfig, com.revrobotics.spark.SparkBase.ResetMode.kResetSafeParameters,
+                                PersistMode.kPersistParameters);
 
         };
 
@@ -193,26 +188,26 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
                         turningController.setReference(setpointPosition, ControlType.kMAXMotionVelocityControl,
                                         ClosedLoopSlot.kSlot1, feedforward);
                 }
-                
+
         }
 
         // public void set
 
         // @Override
         // public void setDriveVoltage(double volts) {
-        //         driveAppliedVolts = MathUtil.clamp(volts, -DriveConstants.maxMotorVolts,
-        //                         DriveConstants.maxMotorVolts);
-        //         driveAppliedVolts = MathUtil.applyDeadband(driveAppliedVolts, 0.05);
-        //         driveMotor.setVoltage(driveAppliedVolts);
+        // driveAppliedVolts = MathUtil.clamp(volts, -DriveConstants.maxMotorVolts,
+        // DriveConstants.maxMotorVolts);
+        // driveAppliedVolts = MathUtil.applyDeadband(driveAppliedVolts, 0.05);
+        // driveMotor.setVoltage(driveAppliedVolts);
         // };
 
         // @Override
         // public void setTurnVoltage(double volts) {
-        //         turnAppliedVolts = MathUtil.clamp(volts, -DriveConstants.maxMotorVolts,
-        //                         DriveConstants.maxMotorVolts);
-        //         turnAppliedVolts = MathUtil.applyDeadband(turnAppliedVolts, 0.05);
+        // turnAppliedVolts = MathUtil.clamp(volts, -DriveConstants.maxMotorVolts,
+        // DriveConstants.maxMotorVolts);
+        // turnAppliedVolts = MathUtil.applyDeadband(turnAppliedVolts, 0.05);
 
-        //         turnMotor.setVoltage(turnAppliedVolts);
+        // turnMotor.setVoltage(turnAppliedVolts);
         // };
 
         private double getDrivePositionMeters() {
