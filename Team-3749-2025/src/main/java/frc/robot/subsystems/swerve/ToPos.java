@@ -52,14 +52,15 @@ public class ToPos {
         } else {
             waypoints.add(new Waypoint(initialPose.getTranslation(), initialPose.getTranslation(), initialPose.getTranslation()));
         }
-        waypoints.add(new Waypoint(approachPoint.getTranslation(),approachPoint.getTranslation(), approachPoint.getTranslation()));
         // Handle ending point inside the hexagon.
         if (endInsideHexagon) {
             Translation2d entryPoint = findClosestSafePointWithHeading(finalPose.getTranslation(), finalPose.getRotation(), true);
             waypoints.addAll(generateDetourWaypoints(initialPose.getTranslation(), entryPoint));
+            waypoints.add(new Waypoint(approachPoint.getTranslation(),approachPoint.getTranslation(), approachPoint.getTranslation()));
             waypoints.add(new Waypoint(entryPoint, finalPose.getTranslation(), finalPose.getTranslation()));
         } else {
             waypoints.addAll(generateDetourWaypoints(initialPose.getTranslation(), finalPose.getTranslation()));
+            waypoints.add(new Waypoint(approachPoint.getTranslation(),approachPoint.getTranslation(), approachPoint.getTranslation()));
         }
 
         waypoints.add(new Waypoint(finalPose.getTranslation(), finalPose.getTranslation(), finalPose.getTranslation()));
