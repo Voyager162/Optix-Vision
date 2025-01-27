@@ -8,6 +8,8 @@ public class ToPosConstants {
 
     // private final double hexOffset = SwerveConstants.DriveConstants.trackWidth /
     // 2.0;
+    // private final double hexOffset = SwerveConstants.DriveConstants.trackWidth /
+    // 2.0;
 
     public static final class PathPlannerConstants {
         public static final double maxVelocity = 0;
@@ -27,8 +29,9 @@ public class ToPosConstants {
         public static Pose2d buttonBoardSetpointMap(int index) {
             return ppSetpoints[index];
         }
+
         public static Pose2d buttonBoardApproachSetpointMap(int index) {
-            return ppSetpoints[index];
+            return ppApproachSetpoints[index];
         }
         public static Pose2d reefTrig(Pose2d reefPose, TrigDirection direction) {
             double offsetMultiplier = 1;
@@ -70,12 +73,12 @@ public class ToPosConstants {
         public static final Pose2d coralBottom = adjustPose(0.851154, 0.65532, Math.toRadians(55));
         public static final Pose2d processor = adjustPose(5.987542, -0.00381, Math.toRadians(-90));
 
-        public static final Pose2d reef18 = adjustPose(3.6576, 4.0259, Math.toRadians(0));
-        public static final Pose2d reef17 = adjustPose(4.073906, 3.306318, Math.toRadians(60));
-        public static final Pose2d reef22 = adjustPose(4.90474, 3.306318, Math.toRadians(120));
-        public static final Pose2d reef21 = adjustPose(5.321046, 4.0259, Math.toRadians(180));
-        public static final Pose2d reef20 = adjustPose(4.90474, 4.745482, Math.toRadians(-120));
-        public static final Pose2d reef19 = adjustPose(4.073906, 4.745482, Math.toRadians(-60));
+        public static final Pose2d reefClose = adjustPose(3.6576, 4.0259, Math.toRadians(0));
+        public static final Pose2d reefCloseRight = adjustPose(4.073906, 3.306318, Math.toRadians(60));
+        public static final Pose2d reefFarRight = adjustPose(4.90474, 3.306318, Math.toRadians(120));
+        public static final Pose2d reefFar = adjustPose(5.321046, 4.0259, Math.toRadians(180));
+        public static final Pose2d reefFarLeft = adjustPose(4.90474, 4.745482, Math.toRadians(-120));
+        public static final Pose2d reefCloseLeft = adjustPose(4.073906, 4.745482, Math.toRadians(-60));
 
         // Helper method to adjust Pose2d
         public static Pose2d adjustPose(double x, double y, double heading) {
@@ -87,42 +90,40 @@ public class ToPosConstants {
             return new Pose2d(x - offsetX, y - offsetY, new Rotation2d(heading));
         };
 
-        public static final Pose2d reef17L = reefTrig(reef17, TrigDirection.LEFT);
-        public static final Pose2d reef17R = reefTrig(reef17, TrigDirection.RIGHT);
+        //Please refer to: https://firstfrc.blob.core.windows.net/frc2025/Manual/Sections/2025GameManual-05ARENA.pdf
+        //to see what each letter setpoint refers to
 
-        public static final Pose2d reef18L = reefTrig(reef18, TrigDirection.LEFT);
-        public static final Pose2d reef18R = reefTrig(reef18, TrigDirection.RIGHT);
+        public static final Pose2d A = reefTrig(reefClose, TrigDirection.LEFT);
+        public static final Pose2d B = reefTrig(reefClose, TrigDirection.RIGHT);
 
-        public static final Pose2d reef19L = reefTrig(reef19, TrigDirection.LEFT);
-        public static final Pose2d reef19R = reefTrig(reef19, TrigDirection.RIGHT);
+        public static final Pose2d C = reefTrig(reefCloseRight, TrigDirection.LEFT);
+        public static final Pose2d D = reefTrig(reefCloseRight, TrigDirection.RIGHT);
 
-        public static final Pose2d reef20L = reefTrig(reef20, TrigDirection.LEFT);
-        public static final Pose2d reef20R = reefTrig(reef20, TrigDirection.RIGHT);
+        public static final Pose2d E = reefTrig(reefFarLeft, TrigDirection.LEFT);
+        public static final Pose2d F = reefTrig(reefFarLeft, TrigDirection.RIGHT);
 
-        public static final Pose2d reef21L = reefTrig(reef21, TrigDirection.LEFT);
-        public static final Pose2d reef21R = reefTrig(reef21, TrigDirection.RIGHT);
+        public static final Pose2d G = reefTrig(reefFar, TrigDirection.LEFT);
+        public static final Pose2d H = reefTrig(reefFar, TrigDirection.RIGHT);
 
-        public static final Pose2d reef22L = reefTrig(reef22, TrigDirection.LEFT);
-        public static final Pose2d reef22R = reefTrig(reef22, TrigDirection.RIGHT);
+        public static final Pose2d I = reefTrig(reefFarLeft, TrigDirection.LEFT);
+        public static final Pose2d J = reefTrig(reefFarLeft, TrigDirection.RIGHT);
+
+        public static final Pose2d K = reefTrig(reefCloseLeft, TrigDirection.LEFT);
+        public static final Pose2d L = reefTrig(reefCloseLeft, TrigDirection.RIGHT);
 
 
-        public static final Pose2d reef17LApproach = createApproachPoint(reef17L);
-        public static final Pose2d reef17RApproach = createApproachPoint(reef17R);
-
-        public static final Pose2d reef18LApproach = createApproachPoint(reef18L);
-        public static final Pose2d reef18RApproach = createApproachPoint(reef18R);
-
-        public static final Pose2d reef19LApproach = createApproachPoint(reef19L);
-        public static final Pose2d reef19RApproach = createApproachPoint(reef19R);
-
-        public static final Pose2d reef20LApproach = createApproachPoint(reef20L);
-        public static final Pose2d reef20RApproach = createApproachPoint(reef20R);
-
-        public static final Pose2d reef21LApproach = createApproachPoint(reef21L);
-        public static final Pose2d reef21RApproach = createApproachPoint(reef21R);
-
-        public static final Pose2d reef22LApproach = createApproachPoint(reef22L);
-        public static final Pose2d reef22RApproach = createApproachPoint(reef22R);
+        public static final Pose2d aApproach = createApproachPoint(A);
+        public static final Pose2d bApproach = createApproachPoint(B);
+        public static final Pose2d cApproach = createApproachPoint(C);
+        public static final Pose2d dApproach = createApproachPoint(D);
+        public static final Pose2d eApproach = createApproachPoint(E);
+        public static final Pose2d fApproach = createApproachPoint(F);
+        public static final Pose2d gApproach = createApproachPoint(G);
+        public static final Pose2d hApproach = createApproachPoint(H);
+        public static final Pose2d iApproach = createApproachPoint(I);
+        public static final Pose2d jApproach = createApproachPoint(J);
+        public static final Pose2d kApproach = createApproachPoint(K);
+        public static final Pose2d lApproach = createApproachPoint(L);
 
         private static Pose2d createApproachPoint(Pose2d pose) {
             Translation2d position = pose.getTranslation();
@@ -132,62 +133,53 @@ public class ToPosConstants {
             return new Pose2d(position.plus(offset), heading);
         }
 
+
         // public static final Pose2d a = new Pose2d(3.76, 3.49, new Rotation2d(0));
         // public static final Pose2d b = new Pose2d(4.39, 4.93, new Rotation2d(0));
+        // public static final Pose2d c = new Pose2d( 5.22, 4.57, new Rotation2d(0));
         // public static final Pose2d c = new Pose2d( 5.22, 4.57, new Rotation2d(0));
         // public static final Pose2d d = new Pose2d(3.76, 3.49, new Rotation2d(0));
         // public static final Pose2d e = new Pose2d(5.32, 3.67, new Rotation2d(0));
         // public static final Pose2d f = new Pose2d(4.59, 3.13, new Rotation2d(0));
+        //these aren't reef letter id's just verticies of the hexagon
 
         public static final Pose2d[] ppSetpoints = new Pose2d[] {
-                // ToPosConstants.Setpoints.a,
-                // ToPosConstants.Setpoints.b,
-                // ToPosConstants.Setpoints.c,
-                // ToPosConstants.Setpoints.d,
-                // ToPosConstants.Setpoints.e,
-                // ToPosConstants.Setpoints.f,
-                ToPosConstants.Setpoints.coralBottom,
-                ToPosConstants.Setpoints.coralTop,
-                ToPosConstants.Setpoints.processor, // index 2, and if you add or remove any setpoints, this will break
+                coralBottom,
+                coralTop,
+                processor, // index 2, and if you add or remove any setpoints, this will break
                                                     // on the fly,
                 // read on the fly command for context
-                ToPosConstants.Setpoints.reef17L,
-                ToPosConstants.Setpoints.reef17R,
-                ToPosConstants.Setpoints.reef18L,
-                ToPosConstants.Setpoints.reef18R,
-                ToPosConstants.Setpoints.reef19L,
-                ToPosConstants.Setpoints.reef19R,
-                ToPosConstants.Setpoints.reef20L,
-                ToPosConstants.Setpoints.reef20R,
-                ToPosConstants.Setpoints.reef21L,
-                ToPosConstants.Setpoints.reef21R,
-                ToPosConstants.Setpoints.reef22L,
-                ToPosConstants.Setpoints.reef22R,
+                A,
+                B,
+                C,
+                D,
+                E,
+                F,
+                G,
+                H,
+                I,
+                J,
+                K,
+                L
         };
         public static final Pose2d[] ppApproachSetpoints = new Pose2d[] {
-            // ToPosConstants.Setpoints.a,
-            // ToPosConstants.Setpoints.b,
-            // ToPosConstants.Setpoints.c,
-            // ToPosConstants.Setpoints.d,
-            // ToPosConstants.Setpoints.e,
-            // ToPosConstants.Setpoints.f,
-            ToPosConstants.Setpoints.coralBottom,
-            ToPosConstants.Setpoints.coralTop,
-            ToPosConstants.Setpoints.processor, // index 2, and if you add or remove any setpoints, this will break
+            coralBottom,
+            coralTop,
+            processor, // index 2, and if you add or remove any setpoints, this will break
                                                 // on the fly,
             // read on the fly command for context
-            ToPosConstants.Setpoints.reef17LApproach,
-            ToPosConstants.Setpoints.reef17RApproach,
-            ToPosConstants.Setpoints.reef18LApproach,
-            ToPosConstants.Setpoints.reef18RApproach,
-            ToPosConstants.Setpoints.reef19LApproach,
-            ToPosConstants.Setpoints.reef19RApproach,
-            ToPosConstants.Setpoints.reef20LApproach,
-            ToPosConstants.Setpoints.reef20RApproach,
-            ToPosConstants.Setpoints.reef21LApproach,
-            ToPosConstants.Setpoints.reef21RApproach,
-            ToPosConstants.Setpoints.reef22LApproach,
-            ToPosConstants.Setpoints.reef22RApproach,
+            aApproach,
+            bApproach,
+            cApproach,
+            dApproach,
+            eApproach,
+            fApproach,
+            gApproach,
+            hApproach,
+            iApproach,
+            jApproach,
+            kApproach,
+            lApproach,
     };
     }
 
