@@ -58,10 +58,7 @@ public class OnTheFly extends Command {
                     Robot.swerve.getMaxDriveSpeed(),
                     SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
                     Robot.swerve.getMaxAngularSpeed(),
-                    SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared,
-                    Math.hypot(Robot.swerve.getRobotRelativeSpeeds().vxMetersPerSecond,
-                            Robot.swerve.getRobotRelativeSpeeds().vyMetersPerSecond),
-                    Robot.swerve.getPose().getRotation().getRadians());
+                    SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared);
         } else {
             path = ToPos.generateDynamicPath(
                     Robot.swerve.getPose(),
@@ -69,10 +66,7 @@ public class OnTheFly extends Command {
                     Robot.swerve.getMaxDriveSpeed(),
                     SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
                     Robot.swerve.getMaxAngularSpeed(),
-                    SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared,
-                    Math.hypot(Robot.swerve.getRobotRelativeSpeeds().vxMetersPerSecond,
-                            Robot.swerve.getRobotRelativeSpeeds().vyMetersPerSecond),
-                    Robot.swerve.getPose().getRotation().getRadians());
+                    SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared);
         }
 
         if (path == null) {
@@ -168,8 +162,7 @@ public class OnTheFly extends Command {
         double yError = Math.abs(setpoint.relativeTo(Robot.swerve.getPose()).getY());
         double thetaError = setpoint.relativeTo(Robot.swerve.getPose()).getRotation()
                 .getDegrees();
-        // System.out.println("x "+xError+" y "+yError+" theta " + thetaError);
-        System.out.println(setpoint.relativeTo(Robot.swerve.getPose()));
+        // System.out.println("x "+xError+" y "+yError+" theta " + thetaError)
         return xError < alternatePositionTolerance && yError < alternatePositionTolerance
                 && thetaError < rotationTolerance;
     }

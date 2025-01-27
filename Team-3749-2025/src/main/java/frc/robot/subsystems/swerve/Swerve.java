@@ -150,6 +150,7 @@ public class Swerve extends SubsystemBase {
       0.0);
 
   public int currentPPSetpointIndex = 0;
+  public int currentPPApproachSetpointIndex = 0;
   public boolean isOTF = false;
   public boolean needsToCloseIn = false;
 
@@ -341,6 +342,12 @@ public class Swerve extends SubsystemBase {
       currentPPSetpointIndex = 0;
     }
   }
+  public void cyclePPApproachSetpoint() {
+    currentPPApproachSetpointIndex++;
+    if (currentPPApproachSetpointIndex >= ToPosConstants.Setpoints.ppApproachSetpoints.length) {
+      currentPPApproachSetpointIndex= 0;
+    }
+  }
 
   public Pose2d getPPSetpoint(boolean isApprorach) {
     if(isApprorach)
@@ -348,6 +355,9 @@ public class Swerve extends SubsystemBase {
       return ToPosConstants.Setpoints.buttonBoardApproachSetpointMap(currentPPSetpointIndex);
     }
     return ToPosConstants.Setpoints.buttonBoardSetpointMap(currentPPSetpointIndex);
+  }
+  public Pose2d getPPApproachSetpoint() {
+    return ToPosConstants.Setpoints.buttonBoardApproachSetpointMap(currentPPSetpointIndex);
   }
 
   /**
@@ -460,6 +470,10 @@ public class Swerve extends SubsystemBase {
   public void showSetpointEndGoal() {
     setpointGoalStateLog.set(
         new Double[] { getPPSetpoint(false).getX(), getPPSetpoint(false).getY(), getPPSetpoint(false).getRotation().getRadians() });
+  }
+  public void showApproachSetpointEndGoal() {
+    setpointGoalStateLog.set(
+        new Double[] { getPPApproachSetpoint().getX(), getPPApproachSetpoint().getY(), getPPSetpoint().getRotation().getRadians() });
   }
 
   public void logSetpoints(PathPlannerTrajectoryState state) {
