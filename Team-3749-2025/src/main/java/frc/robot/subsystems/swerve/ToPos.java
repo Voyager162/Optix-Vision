@@ -22,7 +22,8 @@ public class ToPos {
         new Translation2d(5.332 + xComponenet*SAFE_MARGIN, 3.520 - yComponenet*SAFE_MARGIN),
         new Translation2d(5.332 + xComponenet*SAFE_MARGIN, 4.480 + yComponenet*SAFE_MARGIN),
         new Translation2d(4.5, 4.961 + SAFE_MARGIN),
-        new Translation2d(3.668 - xComponenet*SAFE_MARGIN, 4.480 + yComponenet*SAFE_MARGIN)
+        new Translation2d(3.668 - xComponenet*SAFE_MARGIN, 4.480 + yComponenet*SAFE_MARGIN),
+        new Translation2d(3.668 - xComponenet*SAFE_MARGIN, 3.520 - yComponenet*SAFE_MARGIN)
     );
 
     /**
