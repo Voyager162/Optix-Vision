@@ -349,11 +349,7 @@ public class Swerve extends SubsystemBase {
     }
   }
 
-  public Pose2d getPPSetpoint(boolean isApprorach) {
-    if(isApprorach)
-    {
-      return ToPosConstants.Setpoints.buttonBoardApproachSetpointMap(currentPPSetpointIndex);
-    }
+  public Pose2d getPPSetpoint() {
     return ToPosConstants.Setpoints.buttonBoardSetpointMap(currentPPSetpointIndex);
   }
   public Pose2d getPPApproachSetpoint() {
@@ -469,7 +465,7 @@ public class Swerve extends SubsystemBase {
 
   public void showSetpointEndGoal() {
     setpointGoalStateLog.set(
-        new Double[] { getPPSetpoint(false).getX(), getPPSetpoint(false).getY(), getPPSetpoint(false).getRotation().getRadians() });
+        new Double[] { getPPSetpoint().getX(), getPPSetpoint().getY(), getPPSetpoint().getRotation().getRadians() });
   }
   public void showApproachSetpointEndGoal() {
     setpointGoalStateLog.set(
