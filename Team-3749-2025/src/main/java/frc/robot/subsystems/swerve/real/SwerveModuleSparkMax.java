@@ -106,7 +106,8 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
                  */
                 for (int i = 0; i < 4; i++) {
                         turnMotorConfig.closedLoop.pidf(ModuleConstants.turnPID[i][0], ModuleConstants.turnPID[i][1],
-                                        ModuleConstants.turnPID[i][2], 1 / 473,
+                                        ModuleConstants.turnPID[i][2],
+                                        1 / 473,
                                         MotorControllerConstants.slots[i])
                                         .positionWrappingEnabled(true)
                                         .positionWrappingInputRange(0, 2 * Math.PI);
@@ -128,7 +129,8 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
 
                 for (int i = 0; i < 4; i++) {
                         driveMotorConfig.closedLoop.pidf(ModuleConstants.drivePID[i][0], ModuleConstants.drivePID[i][1],
-                                        ModuleConstants.drivePID[i][2], 1 / 473,
+                                        ModuleConstants.drivePID[i][2],
+                                        1 / 473,
                                         MotorControllerConstants.slots[i]);
 
                         driveMotorConfig.closedLoop.maxMotion.positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal,
@@ -141,7 +143,7 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
                                                         MotorControllerConstants.slots[i]);
                 }
 
-                driveController.setReference(0, ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot2);
+                driveController.setReference(1, ControlType.kMAXMotionVelocityControl, ClosedLoopSlot.kSlot2);
 
                 driveMotorConfig.closedLoop.maxMotion
                                 .maxVelocity(DriveConstants.maxSpeedMetersPerSecond)
@@ -191,26 +193,27 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
                         turningController.setReference(setpointPosition, ControlType.kMAXMotionVelocityControl,
                                         ClosedLoopSlot.kSlot1, feedforward);
                 }
+                
         }
 
         // public void set
 
-        @Override
-        public void setDriveVoltage(double volts) {
-                driveAppliedVolts = MathUtil.clamp(volts, -DriveConstants.maxMotorVolts,
-                                DriveConstants.maxMotorVolts);
-                driveAppliedVolts = MathUtil.applyDeadband(driveAppliedVolts, 0.05);
-                driveMotor.setVoltage(driveAppliedVolts);
-        };
+        // @Override
+        // public void setDriveVoltage(double volts) {
+        //         driveAppliedVolts = MathUtil.clamp(volts, -DriveConstants.maxMotorVolts,
+        //                         DriveConstants.maxMotorVolts);
+        //         driveAppliedVolts = MathUtil.applyDeadband(driveAppliedVolts, 0.05);
+        //         driveMotor.setVoltage(driveAppliedVolts);
+        // };
 
-        @Override
-        public void setTurnVoltage(double volts) {
-                turnAppliedVolts = MathUtil.clamp(volts, -DriveConstants.maxMotorVolts,
-                                DriveConstants.maxMotorVolts);
-                turnAppliedVolts = MathUtil.applyDeadband(turnAppliedVolts, 0.05);
+        // @Override
+        // public void setTurnVoltage(double volts) {
+        //         turnAppliedVolts = MathUtil.clamp(volts, -DriveConstants.maxMotorVolts,
+        //                         DriveConstants.maxMotorVolts);
+        //         turnAppliedVolts = MathUtil.applyDeadband(turnAppliedVolts, 0.05);
 
-                turnMotor.setVoltage(turnAppliedVolts);
-        };
+        //         turnMotor.setVoltage(turnAppliedVolts);
+        // };
 
         private double getDrivePositionMeters() {
                 return driveMotor.getEncoder().getPosition();

@@ -147,7 +147,7 @@ public class SwerveModule {
         double feedforward = drivingFeedFordward.calculate(speedMetersPerSecond, setpointAcceleration);
         
 
-        moduleIO.setDriveVelocityControl(speedMetersPerSecond, feedforward);
+        moduleIO.setDriveVelocityControl(speedMetersPerSecond, 0);
 
     }
 
@@ -159,14 +159,14 @@ public class SwerveModule {
         moduleIO.setTurningPositionControl(positionRad, 0);
     }
 
-    public void setDriveVoltage(double volts) {
-        moduleIO.setDriveVoltage(volts);
+    // public void setDriveVoltage(double volts) {
+    //     moduleIO.setDriveVoltage(volts);
 
-    }
+    // }
 
-    public void setTurnVoltage(double volts) {
-        moduleIO.setTurnVoltage(volts);
-    }
+    // public void setTurnVoltage(double volts) {
+    //     moduleIO.setTurnVoltage(volts);
+    // }
 
     public void setBreakMode(boolean enabled) {
         moduleIO.setDriveBrakeMode(enabled);
@@ -175,8 +175,8 @@ public class SwerveModule {
     }
 
     public void stop() {
-        setDriveVoltage(0);
-        setTurnVoltage(0);
+        // setDriveVoltage(0);
+        // setTurnVoltage(0);
     }
 
     public ModuleData getModuleData() {
