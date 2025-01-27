@@ -81,8 +81,8 @@ public class ToPosConstants {
         private static Pose2d createApproachPoint(Pose2d pose) {
             Translation2d position = pose.getTranslation();
             Rotation2d heading = pose.getRotation();
-            Translation2d offset = new Translation2d(1.0 * Math.cos(heading.getRadians()),
-                    1.0 * Math.sin(heading.getRadians()));
+            Translation2d offset = new Translation2d(-1.0 * Math.cos(heading.getRadians()),
+                    -1.0 * Math.sin(heading.getRadians()));
             return new Pose2d(position.plus(offset), heading);
         }
 
