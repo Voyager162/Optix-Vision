@@ -25,8 +25,8 @@ import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 
 public class OnTheFly extends Command {
     private PathPlannerPath[] paths;
-    private PathPlannerTrajectory[] trajectories = new PathPlannerTrajectory[2];
-    private int currentTrajectoryIndex = 0;
+    private PathPlannerTrajectory[] trajectories;
+    private int currentTrajectoryIndex;
     private final Timer timer = new Timer();
     private final PPHolonomicDriveController SwerveController = new PPHolonomicDriveController(
             new PIDConstants(AutoConstants.kPDrive, 0, AutoConstants.kDDrive),
@@ -41,6 +41,8 @@ public class OnTheFly extends Command {
 
     @Override
     public void initialize() {
+        currentTrajectoryIndex = 0;
+        trajectories = new PathPlannerTrajectory[2];
         finalSetpoint = Robot.swerve.getPPSetpoint();
 
         if (withinSetpointTolerance(ToPosConstants.Setpoints.reefTrig(finalSetpoint.setpoint,
@@ -88,6 +90,10 @@ public class OnTheFly extends Command {
         if (trajectories[currentTrajectoryIndex].getTotalTimeSeconds() < currentTime) {
             currentTrajectoryIndex++;
         }
+        if (currentTrajectoryIndex > 1) {
+            this.cancel();
+            return;
+        }
 
         if (trajectories[currentTrajectoryIndex] == null || !Robot.swerve.isOTF) {
             this.cancel();
@@ -109,6 +115,9 @@ public class OnTheFly extends Command {
 
     @Override
     public boolean isFinished() {
+        if (currentTrajectoryIndex > 1) {
+            return true;
+        }
         if (trajectories[currentTrajectoryIndex] == null) {
             return true;
         }
