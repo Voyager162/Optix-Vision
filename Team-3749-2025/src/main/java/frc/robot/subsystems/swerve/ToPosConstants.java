@@ -86,7 +86,7 @@ public class ToPosConstants {
             return new Pose2d(position.plus(offset), heading);
         }
 
-        public static final double ROBOT_LENGTH = .838; // Length of the robot in meters
+        public static final double ROBOT_LENGTH = .888; // Length of the robot in meters
         public static final double ROBOT_WIDTH = .888; // Width of the robot in meters
 
         // Adjusted setpoints
