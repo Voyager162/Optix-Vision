@@ -3,8 +3,6 @@ package frc.robot.subsystems.swerve;
 import java.util.*;
 import com.pathplanner.lib.path.*;
 import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.math.*;
-
 /**
  * This class generates dynamic paths for a robot to move from one pose to
  * another
@@ -54,18 +52,17 @@ public class ToPos {
         List<Waypoint> waypoints = new ArrayList<>();
 
         // Check if the start or end points are inside the hexagonal obstacle.
-        boolean startInsideHexagon = isPointInsideHexagon(initialPose.getTranslation());
         boolean endInsideHexagon = isPointInsideHexagon(finalPose.getTranslation());
 
         // Handle starting point inside the hexagon.
-        if (startInsideHexagon && !isClose) {
-            Translation2d exitPoint = findClosestSafePointWithHeading(initialPose.getTranslation(),
-                    initialPose.getRotation(), false);
-            waypoints.add(new Waypoint(initialPose.getTranslation(), exitPoint, exitPoint));
-        } else {
+        // if (startInsideHexagon && !isClose) {
+        //     Translation2d exitPoint = findClosestSafePointWithHeading(initialPose.getTranslation(),
+        //             initialPose.getRotation(), false);
+        //     waypoints.add(new Waypoint(initialPose.getTranslation(), exitPoint, exitPoint));
+        // } else {
             waypoints.add(new Waypoint(initialPose.getTranslation(), initialPose.getTranslation(),
                     initialPose.getTranslation()));
-        }
+        // }
         // Handle ending point inside the hexagon.
         if (endInsideHexagon && !isClose) {
             Translation2d entryPoint = findClosestSafePointWithHeading(finalPose.getTranslation(),
@@ -209,33 +206,43 @@ public class ToPos {
      */
     private List<Waypoint> generateDetourWaypoints(Translation2d start, Translation2d end) {
         List<Waypoint> detourWaypoints = new ArrayList<>();
-
+    
         if (!isPathIntersectingObstacle(start, end)) {
             detourWaypoints.add(new Waypoint(start, start, end));
             return detourWaypoints;
         }
-
+    
         int startVertexIndex = findClosestVertexIndex(start);
         int endVertexIndex = findClosestVertexIndex(end);
-
+    
+        // Calculate clockwise and counterclockwise distances
         int clockwiseDistance = (endVertexIndex - startVertexIndex + HEXAGON_VERTICES.size()) % HEXAGON_VERTICES.size();
-        int counterclockwiseDistance = (startVertexIndex - endVertexIndex + HEXAGON_VERTICES.size())
-                % HEXAGON_VERTICES.size();
-
+        int counterclockwiseDistance = (startVertexIndex - endVertexIndex + HEXAGON_VERTICES.size()) % HEXAGON_VERTICES.size();
+    
+        // Choose the direction based on shorter angular displacement
         boolean goClockwise = clockwiseDistance < counterclockwiseDistance;
-
+    
+        // Adjust to move in the correct global direction
         int currentIndex = startVertexIndex;
-        while (currentIndex != endVertexIndex) {
+        while (true) {
             Translation2d vertex = HEXAGON_VERTICES.get(currentIndex);
             detourWaypoints.add(new Waypoint(vertex, vertex, vertex));
+    
+            // Stop when reaching the end vertex
+            if (currentIndex == endVertexIndex) {
+                break;
+            }
+    
+            // Move to the next vertex in the correct direction
             currentIndex = goClockwise
                     ? (currentIndex + 1) % HEXAGON_VERTICES.size()
                     : (currentIndex - 1 + HEXAGON_VERTICES.size()) % HEXAGON_VERTICES.size();
         }
-
+    
         detourWaypoints.add(new Waypoint(HEXAGON_VERTICES.get(endVertexIndex), end, end));
         return detourWaypoints;
     }
+    
 
     /**
      * Checks if a path between two points intersects any obstacle.
