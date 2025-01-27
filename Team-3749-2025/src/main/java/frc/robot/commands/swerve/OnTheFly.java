@@ -38,7 +38,7 @@ public class OnTheFly extends Command {
 
     @Override
     public void initialize() {
-        if (withinSetpointTolerance(ToPosConstants.Setpoints.reefTrig(Robot.swerve.getPPSetpoint(),
+        if (withinSetpointTolerance(ToPosConstants.Setpoints.reefTrig(Robot.swerve.getPPSetpoint(false),
                 ToPosConstants.Setpoints.TrigDirection.FORWARD), true)) {
             this.cancel();
             Robot.swerve.isOTF = false;
@@ -53,7 +53,7 @@ public class OnTheFly extends Command {
         if (Robot.swerve.needsToCloseIn) {
             path = ToPos.generateDynamicPath(
                     Robot.swerve.getPose(),
-                    ToPosConstants.Setpoints.reefTrig(Robot.swerve.getPPSetpoint(),
+                    ToPosConstants.Setpoints.reefTrig(Robot.swerve.getPPSetpoint(true),
                             ToPosConstants.Setpoints.TrigDirection.FORWARD),
                     Robot.swerve.getMaxDriveSpeed(),
                     SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
@@ -65,7 +65,7 @@ public class OnTheFly extends Command {
         } else {
             path = ToPos.generateDynamicPath(
                     Robot.swerve.getPose(),
-                    Robot.swerve.getPPSetpoint(),
+                    Robot.swerve.getPPSetpoint(false),
                     Robot.swerve.getMaxDriveSpeed(),
                     SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
                     Robot.swerve.getMaxAngularSpeed(),
