@@ -77,7 +77,7 @@ public class ToPos {
         // Remove redundant waypoints to prevent small loops.
         removeRedundantWaypoints(waypoints);
 
-        if (finalPose.equals(appoachPoint)) {
+        // if (finalPose.equals(appoachPoint)) {
 
             return new PathPlannerPath[] {
                     new PathPlannerPath(
@@ -86,25 +86,25 @@ public class ToPos {
                                     maxAngularAcceleration),
                             null,
                             new GoalEndState(0.0, appoachPoint.getRotation())) };
-        }
+        // }
 
-        List<Waypoint> waypointsApproachToFinal = PathPlannerPath.waypointsFromPoses(appoachPoint, finalPose);
+        // List<Waypoint> waypointsApproachToFinal = PathPlannerPath.waypointsFromPoses(appoachPoint, finalPose);
 
-        return new PathPlannerPath[] {
-                new PathPlannerPath(
-                        waypoints,
-                        new PathConstraints(maxVelocity, maxAcceleration, maxAngularVelocity,
-                                maxAngularAcceleration),
-                        null,
-                        new GoalEndState(1, appoachPoint.getRotation())),
-                new PathPlannerPath(
-                        waypointsApproachToFinal,
-                        new PathConstraints(maxVelocity, maxAcceleration, maxAngularVelocity,
-                                maxAngularAcceleration),
-                        null,
-                        new GoalEndState(0, appoachPoint.getRotation()))
+        // return new PathPlannerPath[] {
+        //         new PathPlannerPath(
+        //                 waypoints,
+        //                 new PathConstraints(maxVelocity, maxAcceleration, maxAngularVelocity,
+        //                         maxAngularAcceleration),
+        //                 null,
+        //                 new GoalEndState(1, appoachPoint.getRotation())),
+        //         new PathPlannerPath(
+        //                 waypointsApproachToFinal,
+        //                 new PathConstraints(maxVelocity, maxAcceleration, maxAngularVelocity,
+        //                         maxAngularAcceleration),
+        //                 null,
+        //                 new GoalEndState(0, appoachPoint.getRotation()))
 
-        };
+        // };
 
     }
 

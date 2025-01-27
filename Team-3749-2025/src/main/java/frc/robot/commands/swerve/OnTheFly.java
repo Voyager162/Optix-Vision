@@ -28,9 +28,7 @@ public class OnTheFly extends Command {
     private PathPlannerTrajectory[] trajectories;
     private int currentTrajectoryIndex;
     private final Timer timer = new Timer();
-    private final PPHolonomicDriveController SwerveController = new PPHolonomicDriveController(
-            new PIDConstants(AutoConstants.kPDrive, 0, AutoConstants.kDDrive),
-            new PIDConstants(AutoConstants.kPTurn, 0, AutoConstants.kDTurn));
+
     private static double positionTolerance = 0.01; // meters
     private static double rotationTolerance = 2.0; // degrees
 
@@ -101,10 +99,13 @@ public class OnTheFly extends Command {
         }
 
         PathPlannerTrajectoryState goalState = trajectories[currentTrajectoryIndex].sample(currentTime);
-        ChassisSpeeds speeds = SwerveController.calculateRobotRelativeSpeeds(Robot.swerve.getPose(), goalState);
 
-        Robot.swerve.setModuleStates(SwerveConstants.DriveConstants.driveKinematics.toSwerveModuleStates(speeds));
-        Robot.swerve.logSetpoints(goalState);
+        Robot.swerve.followSample(goalState.pose,
+                new Pose2d(
+                        goalState.fieldSpeeds.vxMetersPerSecond,
+                        goalState.fieldSpeeds.vyMetersPerSecond,
+                        new Rotation2d(goalState.fieldSpeeds.omegaRadiansPerSecond)));
+
 
     }
 
