@@ -36,7 +36,7 @@ public class OnTheFly extends Command {
     private PPSetpoints finalSetpoint;
 
     public OnTheFly(PPSetpoints setpoint) {
-        finalSetpoint=setpoint
+        finalSetpoint=setpoint;
     }
 
     @Override
@@ -95,20 +95,6 @@ public class OnTheFly extends Command {
         Robot.swerve.setModuleStates(SwerveConstants.DriveConstants.driveKinematics.toSwerveModuleStates(speeds));
         Robot.swerve.logSetpoints(goalState);
 
-        if (isFinished()) {
-            if (isAReefSetpoint && trajectory != null) {
-                isAReefSetpoint = false;
-                Robot.swerve.needsToCloseIn = true;
-                this.end(true);
-                this.initialize();
-                return;
-            }
-            this.end(true);
-            Robot.swerve.isOTF = false;
-
-            // if we add LED's here now would be a good time to shine our bots lights to
-            // signify you can move again
-        }
     }
 
     @Override
