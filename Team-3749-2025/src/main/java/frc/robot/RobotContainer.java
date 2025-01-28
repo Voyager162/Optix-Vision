@@ -32,6 +32,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return Autos.getSelectedCommand();
+    return Autos.get3CoralAnd2Algae();
   }
 }

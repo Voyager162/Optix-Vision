@@ -106,8 +106,18 @@ public class AutoUtils {
         // Made sendable, use SmartDashbaord now
 
         chooser.addCmd("3-Piece", () -> Autos.get3Piece());
+        chooser.addCmd("TeamTaxi", () -> Autos.getTeamtaxi());
+        chooser.addCmd("Taxi", () -> Autos.getTaxi());
+        chooser.addCmd("One Piece Center", () -> Autos.getOnePieceCenter());
+        chooser.addCmd("4-Piece", () -> Autos.get4PieceCoral());
+        chooser.addCmd("3 Coral and Algae", () -> Autos.get3CoralAnd2Algae());
 
         chooser.select("3-Piece");
+        chooser.select("TeamTaxi");
+        chooser.select("Taxi");
+        chooser.select("One Piece Center");
+        chooser.select("4-Piece");
+        chooser.select("3 Coral and Algae");
         SmartDashboard.putData("Auto: Auto Chooser", chooser);
 
     }
