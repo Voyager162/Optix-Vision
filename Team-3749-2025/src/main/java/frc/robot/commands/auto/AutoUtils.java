@@ -224,6 +224,21 @@ public class AutoUtils {
 
     }
 
+    public static Command addProcessorScore(AutoTrajectory trajectory) {
+        Pose2d endingPose2d = getFinalPose2d(trajectory);
+        // unflip the alliance so that atPose can flip it; it's a quirk of referencing
+        // the trajectory
+        if (DriverStation.getAlliance().get() == Alliance.Red) {
+            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
+        }
+        Command ProcessorScore = Commands.print("SCORE Processor");
+
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(ProcessorScore);
+        return ProcessorScore;
+
+    }
+    
+
     /**
      * This will begin "nextTrajectory" following the completion of "curTrajectory"
      * and scoring. This should be used to link trajectories together, but only
