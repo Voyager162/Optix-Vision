@@ -1,6 +1,7 @@
 package frc.robot.subsystems.arm.coral;
 
 import edu.wpi.first.math.util.Units;
+import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorSpecs;
 
 /**
  * Constants file for the climb arm subsystem
@@ -36,6 +37,7 @@ public class CoralConstants {
     public static final double handOffSetPoint_rad = 40 * Math.PI / 180; // 40
     public static final double coralPickUpSetPoint_rad = 175 * Math.PI / 180; // 175, 3.05432619099
     public static final double L1SetPoint_rad = 180 * Math.PI / 180; // placeholder
+    public static final double sourceSetPoint_rad = 90 * Math.PI/ 180; // placeholder
 
     public static final double maxVelocity = 0;
     public static final double maxAcceleration = 0;
@@ -48,6 +50,7 @@ public class CoralConstants {
         MOVING_UP,
         CORAL_PICKUP,
         L1,
+        SOURCE,
         HAND_OFF,
         STOWED,
         STOPPED

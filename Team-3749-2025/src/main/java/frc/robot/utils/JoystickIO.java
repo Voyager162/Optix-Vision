@@ -8,6 +8,7 @@ import frc.robot.Robot;
 import frc.robot.commands.elevator.SetElevatorState;
 
 import frc.robot.commands.example.ExampleSubsystemCommand;
+import frc.robot.commands.integration.CoralIntakeSource;
 import frc.robot.commands.integration.Handoff;
 import frc.robot.commands.integration.IntakeFloor;
 import frc.robot.commands.integration.IntakeSource;
@@ -15,6 +16,7 @@ import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.OuttakeCoral;
 import frc.robot.commands.integration.ScoreL1;
 import frc.robot.commands.integration.ScoreL234;
+import frc.robot.commands.integration.SensorSwitch;
 import frc.robot.commands.roller.MaintainCommand;
 import frc.robot.commands.roller.RunCommand;
 import frc.robot.commands.roller.StopCommand;
@@ -46,13 +48,15 @@ public class JoystickIO {
     private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
     private static final SetElevatorState stow = new SetElevatorState(ElevatorStates.STOW);
 
-    private static final KnockAlgae knockAlgae = new KnockAlgae(Robot.elevator, Robot.algaeRoller, ElevatorStates.L2);
-    private static final Handoff handoff = new Handoff(Robot.chute, Robot.coralArm, Robot.elevator, Robot.coralRoller);
-    private static final IntakeFloor intakeFloor = new IntakeFloor(Robot.coralArm, Robot.coralRoller);
-    private static final IntakeSource intakeSource = new IntakeSource(Robot.scoringRoller, Robot.elevator, Robot.chute);
-    private static final OuttakeCoral outtakeCoral = new OuttakeCoral(Robot.coralArm, Robot.coralRoller);
-    private static final ScoreL1 scoreL1 = new ScoreL1(Robot.coralArm, Robot.coralRoller);
-    private static final ScoreL234 scoreL234 = new ScoreL234 (Robot.chute, Robot.coralArm, Robot.elevator, Robot.coralRoller, Robot.scoringRoller, ElevatorStates.L4);
+    private static final KnockAlgae knockAlgae = new KnockAlgae(ElevatorStates.L2);
+    private static final Handoff handoff = new Handoff();
+    private static final IntakeFloor intakeFloor = new IntakeFloor();
+    private static final IntakeSource intakeSource = new IntakeSource();
+    private static final CoralIntakeSource coralIntakeSource = new CoralIntakeSource();
+    private static final OuttakeCoral outtakeCoral = new OuttakeCoral();
+    private static final ScoreL1 scoreL1 = new ScoreL1();
+    private static final ScoreL234 scoreL4 = new ScoreL234(ElevatorStates.L4);
+    private static final SensorSwitch sensorSwitch = new SensorSwitch();
 
     public JoystickIO() {
     }
@@ -92,10 +96,10 @@ public class JoystickIO {
         // Example binding 
         // operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        operator.a().onTrue(handoff);
-        operator.b().onTrue(scoreL1);
-        operator.x().onTrue(intakeFloor);
-        operator.y().onTrue(outtakeCoral);
+        operator.a().onTrue(coralIntakeSource);
+        operator.b().onTrue(outtakeCoral);
+        operator.x().onTrue(sensorSwitch);
+        operator.y().onTrue(scoreL4);
 
     }
 
