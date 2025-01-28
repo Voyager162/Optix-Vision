@@ -55,6 +55,8 @@ public class ToPos {
                 new Waypoint(approachPoint.getTranslation(), finalPose.getTranslation(), finalPose.getTranslation()));
 
         removeRedundantWaypoints(waypoints);
+        removeExtraStartVertex(waypoints);
+        removeExtraEndVertex(waypoints);
 
         return new PathPlannerPath(waypoints,
                 new PathConstraints(maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration), null,
@@ -77,7 +79,11 @@ public class ToPos {
                 i--; // Adjust index after removal.
             }
         }
-        if (waypoints.size() < 3) {
+
+    }
+
+    private void removeExtraStartVertex(List<Waypoint> waypoints) {
+        if (waypoints.size() < 4) {
             return;
         }
         Translation2d start = waypoints.get(0).anchor();
@@ -90,16 +96,21 @@ public class ToPos {
                 + startToFirstVertexVector.getY() * firstVertexToSecondVertexVector.getY());
 
         if (startingAlignment < 0) {
+            System.out.println(waypoints.size());
+            System.out.println(waypoints.get(0).anchor().toString());
+            System.out.println(waypoints.get(1).anchor().toString());
+            System.out.println(waypoints.get(2).anchor().toString());
+            // System.out.println(waypoints.get(3).anchor().toString());
+
+
             waypoints.remove(1);
         }
+    }
 
+    private void removeExtraEndVertex(List<Waypoint> waypoints) {
         if (waypoints.size() < 4) {
             return;
         }
-        System.out.println(waypoints.get(waypoints.size() - 1).anchor().toString());
-        System.out.println(waypoints.get(waypoints.size() - 2).anchor().toString());
-        System.out.println(waypoints.get(waypoints.size() - 3).anchor().toString());
-        System.out.println(waypoints.get(waypoints.size() - 4).anchor().toString());
 
         Translation2d end = waypoints.get(waypoints.size() - 2).anchor();
         Translation2d finalVertex = waypoints.get(waypoints.size() - 3).anchor();
@@ -113,13 +124,10 @@ public class ToPos {
         System.out.println(endingAlignment);
 
         if (endingAlignment < 0) {
-            // System.out.println(waypoints.get(waypoints.size() - 4).anchor().toString());
+            System.out.println(waypoints.get(waypoints.size() - 3).anchor().toString());
 
             waypoints.remove(waypoints.size() - 3);
         }
-        System.out.println(waypoints.get(waypoints.size() - 1).anchor().toString());
-        System.out.println(waypoints.get(waypoints.size() - 2).anchor().toString());
-        System.out.println(waypoints.get(waypoints.size() - 3).anchor().toString());
     }
 
     /**
@@ -194,7 +202,6 @@ public class ToPos {
                     : (currentIndex - 1 + HEXAGON_VERTICES.size()) % HEXAGON_VERTICES.size();
         }
 
-        // detourWaypoints.add(new Waypoint(HEXAGON_VERTICES.get(endVertexIndex), end, end));
         return detourWaypoints;
     }
 
