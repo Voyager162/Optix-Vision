@@ -78,27 +78,6 @@ public class ToPos {
     }
 
     /**
-     * Checks if a given point lies inside the hexagon.
-     *
-     * @param point The point to check.
-     * @return True if the point is inside the hexagon, false otherwise.
-     */
-    private boolean isPointInsideHexagon(Translation2d point) {
-        int intersectCount = 0;
-        Translation2d farPoint = new Translation2d(10000, point.getY());
-
-        for (int i = 0; i < HEXAGON_VERTICES.size(); i++) {
-            Translation2d vertex1 = HEXAGON_VERTICES.get(i);
-            Translation2d vertex2 = HEXAGON_VERTICES.get((i + 1) % HEXAGON_VERTICES.size());
-            if (doLinesIntersect(point, farPoint, vertex1, vertex2)) {
-                intersectCount++;
-            }
-        }
-
-        return intersectCount % 2 == 1;
-    }
-
-    /**
      * Determines if two line segments intersect.
      *
      * @param p1 First point of the first line segment.
@@ -135,12 +114,13 @@ public class ToPos {
             detourWaypoints.add(new Waypoint(start, start, end));
             return detourWaypoints;
         }
-
+        System.out.println();
+        System.out.println();
         // Use the path direction to determine the best vertices
         int startVertexIndex = findClosestHexagonVertex(start, start, end);
-        int endVertexIndex = findClosestHexagonVertex(end, start, end);
+        int endVertexIndex = findClosestHexagonVertex(end,start, end);
 
-        System.out.println("Start: " + startVertexIndex + "\nEnd: " + endVertexIndex);
+        // System.out.println("Start: " + startVertexIndex + "\nEnd: " + endVertexIndex);
 
         // Calculate clockwise and counterclockwise distances based on # verticies
         // traveled
@@ -188,27 +168,6 @@ public class ToPos {
             }
         }
         return false;
-    }
-
-    /**
-     * Finds the index of the closest hexagon vertex to a given point.
-     *
-     * @param point The point to check.
-     * @return The index of the closest vertex.
-     */
-    private int findClosestVertexIndex(Translation2d point) {
-        int closestIndex = -1;
-        double minDistance = Double.MAX_VALUE;
-
-        for (int i = 0; i < HEXAGON_VERTICES.size(); i++) {
-            double distance = point.getDistance(HEXAGON_VERTICES.get(i));
-            if (distance < minDistance) {
-                minDistance = distance;
-                closestIndex = i;
-            }
-        }
-
-        return closestIndex;
     }
 
     /**
@@ -279,23 +238,38 @@ public class ToPos {
         // Step 4: Calculate distances to the path.
         double distanceToPath1 = calculatePointToLineDistance(vertex1, pathStart, pathEnd);
         double distanceToPath2 = calculatePointToLineDistance(vertex2, pathStart, pathEnd);
-
+            System.out.println("Options: ");
+        System.out.println(closestVertex1 + " : " + closestVertex2);
         // Step 5: Choose the best vertex.
         if (alignment1 < 0 && alignment2 >= 0) {
             if (point.equals(pathEnd)) {
+                System.out.println("end alignment to " + closestVertex1);
                 return closestVertex1;
             }
+            System.out.println("start alignment to " + closestVertex2);
+
             return closestVertex2; // Vertex 1 misaligned, choose Vertex 2
         } else if (alignment2 < 0 && alignment1 >= 0) {
             if (point.equals(pathEnd)) {
+                System.out.println("end alignment to " + closestVertex2);
 
                 return closestVertex2;
 
             }
+            System.out.println("start alignment to " + closestVertex1);
+
             return closestVertex1; // Vertex 2 misaligned, choose Vertex 1
         } else {
+            if (alignment1>0 && alignment2>0){
+                System.out.println("both aligned");
+            } else{
+                System.out.println("both misaligned");
+            }
+
             int chosenVertex = distanceToPath1 < distanceToPath2 ? closestVertex1 : closestVertex2;
             // Both vertices are aligned; choose the one closer to the path
+            System.out.println("distance to " + chosenVertex);
+
             return chosenVertex;
         }
     }
