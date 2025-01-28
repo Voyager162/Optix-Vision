@@ -1,5 +1,7 @@
 package frc.robot.commands.integration;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
+import frc.robot.subsystems.arm.algae.AlgaeConstants.ArmStates;
 import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.subsystems.arm.coral.CoralConstants;
 import frc.robot.subsystems.chute.Chute;
@@ -9,36 +11,34 @@ import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
 
 public class IntakeSource extends Command {
-    private final Roller scoringRoller;
-    private final Elevator elevator;
-    private final Chute chute;
 
-    public IntakeSource(Roller scoringRoller, Elevator elevator, Chute chute) {
-        this.scoringRoller = scoringRoller;
-        this.elevator = elevator;
-        this.chute = chute;
+    public IntakeSource() {
+        addRequirements(Robot.getAllSuperStructureSubsystems());
     }
 
     @Override
     public void initialize() {
-        elevator.setState(ElevatorStates.SOURCE); 
-        scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
+        Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
+        Robot.elevator.setState(ElevatorStates.SOURCE); 
+        Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
+        Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
     }
 
     @Override
     public void execute() {
-        if (elevator.getState() == ElevatorStates.SOURCE && elevator.getIsStableState()) { 
-            scoringRoller.setState(RollerConstants.RollerStates.RUN);
+        if (Robot.elevator.getState() == ElevatorStates.SOURCE && Robot.elevator.getIsStableState()) { 
+            Robot.scoringRoller.setState(RollerConstants.RollerStates.RUN);
         }
     }
  
     @Override
     public void end(boolean interrupted) {
-        scoringRoller.setState(RollerConstants.RollerStates.STOP); 
+        Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
+        System.out.println("end");
     }
 
     @Override
     public boolean isFinished() {
-        return chute.hasPiece();
+        return Robot.scoringRoller.hasPiece();
     }
 }

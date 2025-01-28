@@ -1,6 +1,7 @@
 package frc.robot.commands.integration;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.subsystems.chute.Chute;
 import frc.robot.subsystems.elevator.Elevator;
@@ -17,42 +18,36 @@ import frc.robot.subsystems.roller.Roller;
  */
 
 public class Handoff extends Command {
-    private final Chute chute;
-    private final CoralArm coralArm;
-    private final Elevator elevator;
-    private final Roller coralRoller;
 
-    public Handoff(Chute chute, CoralArm coralArm, Elevator elevator, Roller coralRoller) {
-        this.chute = chute;
-        this.coralArm = coralArm;
-        this.elevator = elevator;
-        this.coralRoller = coralRoller;
+    public Handoff() {
+        addRequirements(Robot.getAllSuperStructureSubsystems());
+
     }
 
     @Override
     public void initialize() {
-        coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
-        coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
+        Robot.elevator.setState(ElevatorStates.STOW);
+        Robot.coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
+        Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
+        Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);
     }
 
     @Override
     public void execute() {
-        if (coralArm.getState() == CoralConstants.ArmStates.HAND_OFF && coralArm.getIsStableState()){
-            elevator.setState(ElevatorConstants.ElevatorStates.STOW);
-        }
-        if (elevator.getState() == ElevatorStates.STOW){ // might need to edit elevator.getIsStableState()
-            coralRoller.setState(RollerConstants.RollerStates.SCORE); // reverse spinning
+        if (Robot.coralArm.getState() == CoralConstants.ArmStates.HAND_OFF && Robot.coralArm.getIsStableState() && Robot.elevator.getState() == ElevatorStates.STOW){ // might need to edit elevator.getIsStableState()
+            Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE); // reverse spinning
         }
     }
 
     @Override
     public void end(boolean interrupted) {
-        coralArm.setState(CoralConstants.ArmStates.STOPPED);
-        coralRoller.setState(RollerConstants.RollerStates.STOP);
+        Robot.coralArm.setState(CoralConstants.ArmStates.STOPPED);
+        Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
+        System.out.println("end");
     }
 
     @Override
     public boolean isFinished() {
-        return chute.hasPiece();
+        return Robot.scoringRoller.hasPiece();
     }
 }

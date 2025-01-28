@@ -1,73 +1,74 @@
 package frc.robot.commands.integration;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.subsystems.chute.Chute;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.roller.RollerConstants;
+import frc.robot.subsystems.roller.sim.PhotoelectricSim;
 import frc.robot.subsystems.arm.coral.CoralConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.roller.Roller;
 
 //works for l2-4 change name
 public class ScoreL234 extends Command {
-    private final Chute chute;
-    private final CoralArm coralArm;
-    private final Elevator elevator;
-    private final Roller coralRoller;
-    private final Roller scoringRoller;
     private final ElevatorStates state;
     private boolean handoffComplete = false;
 
-    public ScoreL234(Chute chute, CoralArm coralArm, Elevator elevator, Roller coralRoller, Roller scoringRoller, ElevatorStates state) {
-        this.chute = chute;
-        this.coralArm = coralArm;
-        this.elevator = elevator;
-        this.coralRoller = coralRoller;
-        this.scoringRoller = scoringRoller;
+    public ScoreL234(ElevatorStates state) {
         this.state = state;
+        addRequirements(Robot.getAllSuperStructureSubsystems());
     }
 
     @Override
     public void initialize() {
-        if (chute.hasPiece()) {
-            elevator.setState(state); 
-            scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
+        if (Robot.scoringRoller.hasPiece()) {
+            Robot.elevator.setState(state); 
+            Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
+            Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
+            System.out.println("DEBUG >>>>> ScoreL234: Initalize coralArm");
+        } else if(Robot.coralArm.hasPiece()) {
+            Robot.coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
+            Robot.elevator.setState(ElevatorStates.STOW);
+            Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
+            System.out.println("DEBUG >>>>> ScoreL234: Initalize coralArm");
         } else {
-            coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
-            elevator.setState(ElevatorStates.STOW);
-            coralRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
-        }
-        if (chute.hasPiece() && coralArm.getState() == CoralConstants.ArmStates.HAND_OFF) {
-            elevator.setState(ElevatorStates.STOW);
+            System.out.println("DEBUG >>>>> ScoreL234: Cancel");
+            // this.cancel(); // HACK
         }
     }
 
     @Override
     public void execute() {
-        if (coralArm.getState() == CoralConstants.ArmStates.HAND_OFF && coralArm.getIsStableState() && elevator.getState() == ElevatorStates.STOW) { // add working elevator isStableState later
-            coralRoller.setState(RollerConstants.RollerStates.SCORE); 
+        if (Robot.coralArm.getState() == CoralConstants.ArmStates.HAND_OFF && Robot.coralArm.getIsStableState() && Robot.elevator.getState() == ElevatorStates.STOW) { // add working elevator isStableState later
+            Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE); 
             handoffComplete = true;
         }
-        if (handoffComplete && !coralArm.hasPiece() && chute.hasPiece()) { // should work once hasPiece logic is made
-            elevator.setState(state);
+        if (handoffComplete && !Robot.coralArm.hasPiece() && Robot.scoringRoller.hasPiece()) { // should work once hasPiece logic is made
+            Robot.elevator.setState(state);
+        }
+        if (Robot.elevator.getState() == state && Robot.elevator.getIsStableState()) {
+            Robot.scoringRoller.setState(RollerConstants.RollerStates.SCORE); 
+            // photoelectricSim.setSensing(this.scoreTimer, Robot.scoringRoller.hasPiece());
         }
 
-        if (elevator.getState() == state && elevator.getIsStableState()) {
-            scoringRoller.setState(RollerConstants.RollerStates.SCORE); 
-        }
     }
 
     @Override
     public void end(boolean interrupted) {
-        coralArm.setState(CoralConstants.ArmStates.STOPPED);
-        elevator.setState(ElevatorStates.STOP);
-        scoringRoller.setState(RollerConstants.RollerStates.STOP); 
-        coralRoller.setState(RollerConstants.RollerStates.STOP); 
+        Robot.coralArm.setState(CoralConstants.ArmStates.STOPPED);
+        Robot.elevator.setState(ElevatorStates.STOP);
+        Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP); 
+        Robot.coralRoller.setState(RollerConstants.RollerStates.STOP); 
+        System.out.println("end");
     }
 
     @Override
     public boolean isFinished() {
-        return elevator.getState() == state && !chute.hasPiece(); // add working elevator isStableState later
+        System.out.println("DEBUG >>>>> ScoreL234: " + Robot.coralArm.hasPiece());
+        return Robot.coralArm.hasPiece();
+        // return Robot.elevator.getState() == state && !Robot.scoringRoller.hasPiece(); // add working elevator isStableState later
     }
 }
