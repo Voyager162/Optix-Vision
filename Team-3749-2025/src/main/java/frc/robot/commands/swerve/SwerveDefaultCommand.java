@@ -46,11 +46,9 @@ public class SwerveDefaultCommand extends Command {
     // one combined magnitutde
     double linearMagnitude = Math.hypot(xMagnitude, yMagnitude);
     // to make a 0,0 rotation 2d not throw an error
-    if (xMagnitude == 0 && yMagnitude == 0) {
-      yMagnitude = 0.001;
-    }
+
     // one combined direction
-    Rotation2d linearDirection = new Rotation2d(xMagnitude, yMagnitude);
+    Rotation2d linearDirection = UtilityFunctions.safeRotation(xMagnitude, yMagnitude);
 
     // deadbands
     // is always postive

@@ -20,6 +20,7 @@ import frc.robot.Robot;
 import frc.robot.commands.auto.AutoConstants;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.ToPos;
+import frc.robot.utils.UtilityFunctions;
 
 public class OnTheFly extends Command {
 
@@ -60,7 +61,7 @@ public class OnTheFly extends Command {
         try {
             trajectory = path.generateTrajectory(
                     Robot.swerve.getChassisSpeeds(),
-                    safeRotation(Robot.swerve.getRotation2d()),
+                    Robot.swerve.getRotation2d(),
                     RobotConfig.fromGUISettings());
         } catch (IOException | ParseException e) {
             e.printStackTrace();
@@ -116,20 +117,7 @@ public class OnTheFly extends Command {
         return false;
     }
 
-    /**
-     * Ensures safe initialization of Rotation2d. Falls back to a default rotation
-     * if invalid.
-     *
-     * @param rotation The rotation to validate.
-     * @return A valid Rotation2d object.
-     */
-    private Rotation2d safeRotation(Rotation2d rotation) {
-        if (Math.abs(rotation.getCos()) < 1e-6 && Math.abs(rotation.getSin()) < 1e-6) {
-            System.out.println("Warning: Invalid Rotation2d detected. Falling back to neutral rotation.");
-            return new Rotation2d(0); // Neutral rotation
-        }
-        return rotation;
-    }
+
 
     /**
      * Checks if the robot's current pose is within tolerance of a given setpoint.
