@@ -53,6 +53,7 @@ public class ToPos {
         waypoints.addAll(generateDetourWaypoints(initialPose.getTranslation(), approachPoint.getTranslation()));
         waypoints.add(
                 new Waypoint(approachPoint.getTranslation(), finalPose.getTranslation(), finalPose.getTranslation()));
+
         removeRedundantWaypoints(waypoints);
 
         return new PathPlannerPath(waypoints,
@@ -61,7 +62,8 @@ public class ToPos {
     }
 
     /**
-     * Removes redundant waypoints that are too close to each other.
+     * Removes redundant waypoints that are too close to each other or move the
+     * wrong direction
      *
      * @param waypoints The list of waypoints to be cleaned.
      */
@@ -75,6 +77,49 @@ public class ToPos {
                 i--; // Adjust index after removal.
             }
         }
+        if (waypoints.size() < 3) {
+            return;
+        }
+        Translation2d start = waypoints.get(0).anchor();
+        Translation2d firstVertex = waypoints.get(1).anchor();
+        Translation2d secondVertex = waypoints.get(2).anchor();
+        Translation2d startToFirstVertexVector = firstVertex.minus(start);
+        Translation2d firstVertexToSecondVertexVector = secondVertex.minus(firstVertex);
+
+        double startingAlignment = (startToFirstVertexVector.getX() * firstVertexToSecondVertexVector.getX()
+                + startToFirstVertexVector.getY() * firstVertexToSecondVertexVector.getY());
+
+        if (startingAlignment < 0) {
+            waypoints.remove(1);
+        }
+
+        if (waypoints.size() < 4) {
+            return;
+        }
+        System.out.println(waypoints.get(waypoints.size() - 1).anchor().toString());
+        System.out.println(waypoints.get(waypoints.size() - 2).anchor().toString());
+        System.out.println(waypoints.get(waypoints.size() - 3).anchor().toString());
+        System.out.println(waypoints.get(waypoints.size() - 4).anchor().toString());
+
+        Translation2d end = waypoints.get(waypoints.size() - 2).anchor();
+        Translation2d finalVertex = waypoints.get(waypoints.size() - 3).anchor();
+        Translation2d secondToFinalVertex = waypoints.get(waypoints.size() - 4).anchor();
+
+        Translation2d finalVertexToEndVector = end.minus(finalVertex);
+        Translation2d secondToFInalVertexToFinalVertexVector = finalVertex.minus(secondToFinalVertex);
+
+        double endingAlignment = (finalVertexToEndVector.getX() * secondToFInalVertexToFinalVertexVector.getX()
+                + finalVertexToEndVector.getY() * secondToFInalVertexToFinalVertexVector.getY());
+        System.out.println(endingAlignment);
+
+        if (endingAlignment < 0) {
+            // System.out.println(waypoints.get(waypoints.size() - 4).anchor().toString());
+
+            waypoints.remove(waypoints.size() - 3);
+        }
+        System.out.println(waypoints.get(waypoints.size() - 1).anchor().toString());
+        System.out.println(waypoints.get(waypoints.size() - 2).anchor().toString());
+        System.out.println(waypoints.get(waypoints.size() - 3).anchor().toString());
     }
 
     /**
@@ -118,9 +163,10 @@ public class ToPos {
         System.out.println();
         // Use the path direction to determine the best vertices
         int startVertexIndex = findClosestHexagonVertex(start, start, end);
-        int endVertexIndex = findClosestHexagonVertex(end,start, end);
+        int endVertexIndex = findClosestHexagonVertex(end, start, end);
 
-        // System.out.println("Start: " + startVertexIndex + "\nEnd: " + endVertexIndex);
+        // System.out.println("Start: " + startVertexIndex + "\nEnd: " +
+        // endVertexIndex);
 
         // Calculate clockwise and counterclockwise distances based on # verticies
         // traveled
@@ -238,7 +284,7 @@ public class ToPos {
         // Step 4: Calculate distances to the path.
         double distanceToPath1 = calculatePointToLineDistance(vertex1, pathStart, pathEnd);
         double distanceToPath2 = calculatePointToLineDistance(vertex2, pathStart, pathEnd);
-            System.out.println("Options: ");
+        System.out.println("Options: ");
         System.out.println(closestVertex1 + " : " + closestVertex2);
         // Step 5: Choose the best vertex.
         if (alignment1 < 0 && alignment2 >= 0) {
@@ -260,9 +306,9 @@ public class ToPos {
 
             return closestVertex1; // Vertex 2 misaligned, choose Vertex 1
         } else {
-            if (alignment1>0 && alignment2>0){
+            if (alignment1 > 0 && alignment2 > 0) {
                 System.out.println("both aligned");
-            } else{
+            } else {
                 System.out.println("both misaligned");
             }
 

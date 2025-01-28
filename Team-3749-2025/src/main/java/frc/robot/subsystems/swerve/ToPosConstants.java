@@ -21,7 +21,7 @@ public class ToPosConstants {
 
     public static final class Setpoints {
 
-        public static final double approachPointDistance = 0.75;
+        public static final double approachPointDistance = 0.6;
 
         public static enum TrigDirection {
             LEFT,
