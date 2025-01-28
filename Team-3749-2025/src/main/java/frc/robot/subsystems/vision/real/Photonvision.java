@@ -106,10 +106,15 @@ public class Photonvision implements VisionIO {
             poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(VisionConstants.StandardDeviations.OneTag.xy,
                     VisionConstants.StandardDeviations.OneTag.xy, VisionConstants.StandardDeviations.OneTag.thetaRads));
         }
-        if (result.getTargets().size() >= 2) {
+        if (result.getTargets().size() == 2) {
             poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(VisionConstants.StandardDeviations.TwoTag.xy,
                     VisionConstants.StandardDeviations.TwoTag.xy,
                     VisionConstants.StandardDeviations.TwoTag.thetaRads));
+        }
+        if(result.getTargets().size() > 2) {
+            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(VisionConstants.StandardDeviations.ManyTag.xy,
+                    VisionConstants.StandardDeviations.ManyTag.xy,
+                    VisionConstants.StandardDeviations.ManyTag.thetaRads));
         }
     }
 }

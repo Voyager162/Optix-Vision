@@ -29,7 +29,7 @@ public class VisionConstants {
                         public static final double xy = Math.hypot(0.005, 0.008);
                         public static final double thetaRads = Units.degreesToRadians(2);
                 }
-                public class GreaterThanTwoTag {
+                public class ManyTag {
                         public static final double xy = Math.hypot(0.002, 0.003);
                         public static final double thetaRads = Units.degreesToRadians(2);
                 }
