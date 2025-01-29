@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
@@ -108,6 +109,7 @@ public class AutoUtils {
      */
 
     private static void setupChooser() {
+
         // interface for choreo
 
         // Made sendable, use SmartDashbaord now
@@ -120,12 +122,8 @@ public class AutoUtils {
         chooser.addCmd("4-Piece", () -> Autos.get4PieceCoral());
         chooser.addCmd("3 Coral and 2 Algae", () -> Autos.get3CoralAnd2Algae());
 
-        chooser.select("3-Piece");
-        chooser.select("TeamTaxi");
-        chooser.select("Taxi");
-        chooser.select("One Piece Center");
+
         chooser.select("4-Piece");
-        chooser.select("3 Coral and Algae");
         SmartDashboard.putData("Auto: Auto Chooser", chooser);
 
     }

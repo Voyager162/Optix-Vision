@@ -136,7 +136,7 @@ public class Autos {
         AutoTrajectory trajectory6 = routine.trajectory("L3-KnockAlgae2");
         AutoTrajectory trajectory7 = routine.trajectory("KnockAlgae2-Station");
         AutoTrajectory trajectory8 = routine.trajectory("Station-L2");
-        AutoTrajectory trajectory9 = routine.trajectory("L2-KnockAlgae1 (1)");
+        AutoTrajectory trajectory9 = routine.trajectory("L2-KnockAlgae1");
 
 
         Command score1 = AutoUtils.addScoreL4(trajectory1);
