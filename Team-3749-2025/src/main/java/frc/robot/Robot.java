@@ -7,16 +7,13 @@ import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.elevator.Elevator;
 
-import frc.robot.subsystems.arm.algae.AlgaeArm;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
-import frc.robot.subsystems.elevator.Elevator;
 
 import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.subsystems.roller.Roller;
@@ -37,7 +34,6 @@ public class Robot extends TimedRobot {
   public static ExampleSubsystem subsystem = new ExampleSubsystem();
   public static Elevator elevator = new Elevator();
 
-  public static AlgaeArm algaeArm = new AlgaeArm();
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
 
