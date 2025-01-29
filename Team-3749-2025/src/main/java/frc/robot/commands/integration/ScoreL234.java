@@ -24,20 +24,25 @@ public class ScoreL234 extends Command {
 
     @Override
     public void initialize() {
+        /**
+         * need to have an external source setting the initial hasPiece or else sim doesn't work
+         * problem is scoringRoller and coralArm use the same sensing variable for hasPiece
+        */
         if (Robot.scoringRoller.hasPiece()) {
             Robot.elevator.setState(state); 
             Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
             Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
-            System.out.println("DEBUG >>>>> ScoreL234: Initalize coralArm");
-        } else if(Robot.coralArm.hasPiece()) {
+            System.out.println("DEBUG >>>>> ScoreL234: Initalize scoringRoller");
+        } else if (Robot.coralArm.hasPiece()) {
             Robot.coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
             Robot.elevator.setState(ElevatorStates.STOW);
             Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
-            System.out.println("DEBUG >>>>> ScoreL234: Initalize coralArm");
+            System.out.println("DEBUG >>>>> ScoreL234: Initialize coralArm");
         } else {
             System.out.println("DEBUG >>>>> ScoreL234: Cancel");
             // this.cancel(); // HACK
         }
+        
     }
 
     @Override

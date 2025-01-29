@@ -80,8 +80,8 @@ public class ScoringRoller extends Roller {
         if (Robot.isSimulation()) {
             if (this.getCurrentCommand() != null) {
 
-                // photoelectricIO.setSensing(this.getCurrentCommand().getName());
-                // setHasPiece(photoelectricData.sensing);
+                photoelectricIO.setSensing(this.getCurrentCommand().getName());
+                setHasPiece(photoelectricData.sensing);
 
                 // if (photoelectricData.sensing) {
                 //     setHasPiece(true);
