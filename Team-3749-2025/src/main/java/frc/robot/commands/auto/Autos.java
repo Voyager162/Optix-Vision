@@ -125,7 +125,7 @@ public class Autos {
     }
 
     public static Command get3CoralAnd2Algae() {
-        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("3-Coral and 2-Algae");
+        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("3 Coral and 2 Algae");
 
         // loop.trajectory, or the new name
         AutoTrajectory trajectory1 = routine.trajectory("Start-L5");
@@ -133,11 +133,10 @@ public class Autos {
         AutoTrajectory trajectory3 = routine.trajectory("Station-L4");
         AutoTrajectory trajectory4 = routine.trajectory("L4-Station");
         AutoTrajectory trajectory5 = routine.trajectory("Station-L3");
-        AutoTrajectory trajectory6 = routine.trajectory("L3-Algae");
-        AutoTrajectory trajectory7 = routine.trajectory("Algae1 - Processor");
-        AutoTrajectory trajectory8 = routine.trajectory("Processor-Algae3");
-        AutoTrajectory trajectory9 = routine.trajectory("Algae3-Processor");
-        AutoTrajectory trajectory10 = routine.trajectory("Processor-L1");
+        AutoTrajectory trajectory6 = routine.trajectory("L3-KnockAlgae2");
+        AutoTrajectory trajectory7 = routine.trajectory("KnockAlgae2-Station");
+        AutoTrajectory trajectory8 = routine.trajectory("Station-L2");
+        AutoTrajectory trajectory9 = routine.trajectory("L2-KnockAlgae1 (1)");
 
 
         Command score1 = AutoUtils.addScoreL4(trajectory1);
@@ -145,17 +144,15 @@ public class Autos {
         Command score2 = AutoUtils.addScoreL4(trajectory3);
         Command intake2 = AutoUtils.addIntake(trajectory4);
         Command score3 = AutoUtils.addScoreL4(trajectory5); 
-        Command algaeintake1 = AutoUtils.addIntake(trajectory6);
-        Command algaescore1 = AutoUtils.addProcessorScore(trajectory7);
-        Command algaeintake2 = AutoUtils.addIntake(trajectory8);
-        Command algaescore2 = AutoUtils.addProcessorScore(trajectory9);
-        AutoUtils.addScoreL4(trajectory10); // final score is the end of the routine, so no need for reference
+        Command knockalgae1 = AutoUtils.addKnockAlgae(trajectory6);
+        Command intake3 = AutoUtils.addIntake(trajectory7);
+        Command score4 = AutoUtils.addScoreL4(trajectory8);
+        AutoUtils.addKnockAlgae(trajectory9); // final score is the end of the routine, so no need for reference
 
         // reverse order here (ex. connect 3 to 2, THEN 2 to 1)
-        AutoUtils.goNextAfterIntake(trajectory9, trajectory10, algaescore2);
-        AutoUtils.goNextAfterIntake(trajectory8, trajectory9, algaeintake2);
-        AutoUtils.goNextAfterIntake(trajectory7, trajectory8, algaescore1);
-        AutoUtils.goNextAfterIntake(trajectory6, trajectory7, algaeintake1);
+        AutoUtils.goNextAfterIntake(trajectory8, trajectory9, score4);
+        AutoUtils.goNextAfterIntake(trajectory7, trajectory8, intake3);
+        AutoUtils.goNextAfterIntake(trajectory6, trajectory7, knockalgae1);
         AutoUtils.goNextAfterIntake(trajectory5, trajectory6, score3);
         AutoUtils.goNextAfterIntake(trajectory4, trajectory5, intake2);
         AutoUtils.goNextAfterScored(trajectory3, trajectory4, score2);

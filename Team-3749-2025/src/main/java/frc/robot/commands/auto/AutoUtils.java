@@ -104,13 +104,14 @@ public class AutoUtils {
         // interface for choreo
 
         // Made sendable, use SmartDashbaord now
+        chooser = new AutoChooser();
 
         chooser.addCmd("3-Piece", () -> Autos.get3Piece());
         chooser.addCmd("TeamTaxi", () -> Autos.getTeamtaxi());
         chooser.addCmd("Taxi", () -> Autos.getTaxi());
         chooser.addCmd("One Piece Center", () -> Autos.getOnePieceCenter());
         chooser.addCmd("4-Piece", () -> Autos.get4PieceCoral());
-        chooser.addCmd("3 Coral and Algae", () -> Autos.get3CoralAnd2Algae());
+        chooser.addCmd("3 Coral and 2 Algae", () -> Autos.get3CoralAnd2Algae());
 
         chooser.select("3-Piece");
         chooser.select("TeamTaxi");
@@ -234,14 +235,14 @@ public class AutoUtils {
 
     }
 
-    public static Command addProcessorScore(AutoTrajectory trajectory) {
+    public static Command addKnockAlgae(AutoTrajectory trajectory) {
         Pose2d endingPose2d = getFinalPose2d(trajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
         if (DriverStation.getAlliance().get() == Alliance.Red) {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
-        Command ProcessorScore = Commands.print("SCORE Processor");
+        Command ProcessorScore = Commands.print("Knock Algae");
 
         trajectory.atPose(endingPose2d, 1, 1.57).onTrue(ProcessorScore);
         return ProcessorScore;
