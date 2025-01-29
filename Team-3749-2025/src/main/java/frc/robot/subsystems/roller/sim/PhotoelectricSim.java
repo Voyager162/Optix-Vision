@@ -64,9 +64,17 @@ public class PhotoelectricSim implements PhotoelectricIO {
                     }
                 break;
             case "ScoreL234": 
-                System.out.println("sensing before: " + sensing);
-                sensing = !sensing;
-                System.out.println("sensing after: " + sensing);
+                // System.out.println("sensing before: " + sensing);
+                // sensing = !sensing;
+                // System.out.println("sensing after: " + sensing);
+                sensing = false;
+                if (Timer.getFPGATimestamp() - scoreTimer > 2) {
+                    sensing = true;
+                    if (scoreTimer != -1) {
+                        scoreTimer = 999999999; // scoreTimer = -1; // Reset timer when sensing turns false
+                    } 
+                    System.out.println("DEBUG : intake done after 2 second, scoreTimer == " + scoreTimer);
+                }
                 break;
              // A new command to pre-set the status of "sensing"   
             case "SensorSwitch":
