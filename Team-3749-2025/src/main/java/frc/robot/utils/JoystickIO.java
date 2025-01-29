@@ -57,8 +57,11 @@ public class JoystickIO {
         // gyro reset
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
         pilot.a().whileTrue(driveStraight);
-        pilot.x().onTrue(Commands.runOnce(()->{Robot.swerve.needsToCloseIn=false;Robot.swerve.isOTF=true;}));
+
+        pilot.x().onTrue(Commands.runOnce(()->{Robot.swerve.isOTF=true;}));
+
         new Trigger(()->Robot.swerve.isOTF).whileTrue(onTheFly);
+
         pilot.b().onTrue(Commands.runOnce(() -> {
             Robot.swerve.isOTF = false;
             Robot.swerve.cyclePPSetpoint();
@@ -107,12 +110,6 @@ public class JoystickIO {
                         new SwerveDefaultCommand(
                                 () -> pilot.getLeftX(),
                                 () -> pilot.getLeftY(),
-                                // () -> {
-                                //     if (pilot.y().getAsBoolean()) {
-                                //         return 1.0;
-                                //     }
-                                //     return 0.0;
-                                // }
                                 () -> pilot.getRightX()
                                 ));
     }

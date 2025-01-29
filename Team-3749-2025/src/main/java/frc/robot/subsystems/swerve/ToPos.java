@@ -53,6 +53,7 @@ public class ToPos {
         waypoints.add(
                 new Waypoint(initialPose.getTranslation(), initialPose.getTranslation(), initialPose.getTranslation()));
         waypoints.addAll(generateDetourWaypoints(initialPose.getTranslation(), approachPoint.getTranslation()));
+
         waypoints.add(
                 new Waypoint(approachPoint.getTranslation(), finalPose.getTranslation(), finalPose.getTranslation()));
 
@@ -110,11 +111,7 @@ public class ToPos {
                 + startToFirstVertexVector.getY() * firstVertexToSecondVertexVector.getY());
 
         if (startingAlignment < 0) {
-            System.out.println(waypoints.size());
-            System.out.println(waypoints.get(0).anchor().toString());
-            System.out.println(waypoints.get(1).anchor().toString());
-            System.out.println(waypoints.get(2).anchor().toString());
-            // System.out.println(waypoints.get(3).anchor().toString());
+  
 
             waypoints.remove(1);
         }
@@ -125,21 +122,29 @@ public class ToPos {
             return;
         }
 
-        Translation2d end = waypoints.get(waypoints.size() - 2).anchor();
-        Translation2d finalVertex = waypoints.get(waypoints.size() - 3).anchor();
-        Translation2d secondToFinalVertex = waypoints.get(waypoints.size() - 4).anchor();
+        Translation2d end = waypoints.get(waypoints.size() - 1).anchor();
+        Translation2d finalVertex = waypoints.get(waypoints.size() - 2).anchor();
+        Translation2d secondToFinalVertex = waypoints.get(waypoints.size() - 3).anchor();
 
         Translation2d finalVertexToEndVector = end.minus(finalVertex);
-        Translation2d secondToFInalVertexToFinalVertexVector = finalVertex.minus(secondToFinalVertex);
+        Translation2d secondToFinalVertexToFinalVertexVector = finalVertex.minus(secondToFinalVertex);
+        System.out.println("Vectors");
+        System.out.println(finalVertexToEndVector.toString());
+        System.out.println(secondToFinalVertexToFinalVertexVector);
 
-        double endingAlignment = (finalVertexToEndVector.getX() * secondToFInalVertexToFinalVertexVector.getX()
-                + finalVertexToEndVector.getY() * secondToFInalVertexToFinalVertexVector.getY());
-
+        double endingAlignment = (finalVertexToEndVector.getX() * secondToFinalVertexToFinalVertexVector.getX()
+                + finalVertexToEndVector.getY() * secondToFinalVertexToFinalVertexVector.getY());
+        System.out.println("alignment and size");
         System.out.println(endingAlignment);
+        System.out.println(waypoints.size());
+        System.out.println("waypoints");
+        System.out.println(waypoints.get(waypoints.size()-1).anchor().toString());
+        System.out.println(waypoints.get(waypoints.size()-2).anchor().toString());
+        System.out.println(waypoints.get(waypoints.size()-3).anchor().toString());
+        System.out.println(waypoints.get(waypoints.size()-4).anchor().toString());
         if (endingAlignment < 0) {
-            System.out.println(waypoints.get(waypoints.size() - 3).anchor().toString());
 
-            waypoints.remove(waypoints.size() - 3);
+            waypoints.remove(waypoints.size() - 2);
         }
     }
 
@@ -180,8 +185,6 @@ public class ToPos {
             detourWaypoints.add(new Waypoint(start, start, end));
             return detourWaypoints;
         }
-        System.out.println();
-        System.out.println();
         // Use the path direction to determine the best vertices
         int startVertexIndex = findClosestHexagonVertex(start, start, end);
         int endVertexIndex = findClosestHexagonVertex(end, start, end);
@@ -304,8 +307,7 @@ public class ToPos {
         // Step 4: Calculate distances to the path.
         double distanceToPath1 = calculatePointToLineDistance(vertex1, pathStart, pathEnd);
         double distanceToPath2 = calculatePointToLineDistance(vertex2, pathStart, pathEnd);
-        System.out.println("Options: ");
-        System.out.println(closestVertex1 + " : " + closestVertex2);
+
         // Step 5: Choose the best vertex.
         if (alignment1 < 0 && alignment2 >= 0) {
             if (point.equals(pathEnd)) {
