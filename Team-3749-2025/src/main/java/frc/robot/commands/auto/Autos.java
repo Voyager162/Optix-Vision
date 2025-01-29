@@ -152,7 +152,7 @@ public class Autos {
         // reverse order here (ex. connect 3 to 2, THEN 2 to 1)
         AutoUtils.goNextAfterIntake(trajectory8, trajectory9, score4);
         AutoUtils.goNextAfterIntake(trajectory7, trajectory8, intake3);
-        AutoUtils.goNextAfterIntake(trajectory6, trajectory7, knockalgae1);
+        AutoUtils.goNextAfterKnockAlgae(trajectory6, trajectory7, knockalgae1);
         AutoUtils.goNextAfterIntake(trajectory5, trajectory6, score3);
         AutoUtils.goNextAfterIntake(trajectory4, trajectory5, intake2);
         AutoUtils.goNextAfterScored(trajectory3, trajectory4, score2);

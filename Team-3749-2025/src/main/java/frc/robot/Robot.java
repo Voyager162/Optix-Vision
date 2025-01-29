@@ -3,14 +3,29 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+
 import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.subsystems.elevator.Elevator;
+
+import frc.robot.subsystems.arm.algae.AlgaeArm;
+import frc.robot.subsystems.arm.climb.ClimbArm;
+import frc.robot.subsystems.arm.coral.CoralArm;
+import frc.robot.subsystems.chute.Chute;
+import frc.robot.subsystems.elevator.Elevator;
+
 import frc.robot.subsystems.example.ExampleSubsystem;
+import frc.robot.subsystems.roller.Roller;
+import frc.robot.subsystems.roller.implementations.AlgaeRoller;
+import frc.robot.subsystems.roller.implementations.CoralRoller;
+import frc.robot.subsystems.roller.implementations.ScoringRoller;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.ShuffleData;
 
@@ -18,7 +33,16 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   public static Swerve swerve = new Swerve();
+  public static AlgaeRoller algaeRoller = new AlgaeRoller();
+  public static CoralRoller coralRoller = new CoralRoller();
+  public static ScoringRoller scoringRoller = new ScoringRoller();
+
   public static ExampleSubsystem subsystem = new ExampleSubsystem();
+  public static Elevator elevator = new Elevator();
+
+  public static AlgaeArm algaeArm = new AlgaeArm();
+  public static CoralArm coralArm = new CoralArm();
+  public static ClimbArm climbArm = new ClimbArm();
 
   private ShuffleData<Double> batteryVoltageLog = new ShuffleData<Double>("DS", "battery voltage", 0.0);
   private ShuffleData<Boolean> isBrownedOutLog = new ShuffleData<Boolean>("DS", "brownout", false);
@@ -29,9 +53,14 @@ public class Robot extends TimedRobot {
   private ShuffleData<Boolean> FMSLog = new ShuffleData<Boolean>("DS", "FMS connected", false);
   private RobotContainer m_robotContainer;
 
+  public static Subsystem[] getAllSuperStructureSubsystems() {
+    return new Subsystem[] {algaeRoller, coralRoller, scoringRoller, elevator, algaeArm, coralArm, climbArm};
+  }
+
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+
   }
 
   @Override
@@ -54,7 +83,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-
   }
 
   @Override
@@ -84,10 +112,12 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
   }
 
   @Override
   public void teleopPeriodic() {
+
   }
 
   @Override
@@ -106,8 +136,9 @@ public class Robot extends TimedRobot {
   @Override
   public void testExit() {
   }
+
   @Override
-  public void simulationInit(){
+  public void simulationInit() {
     DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
   }
 }

@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.swerve;
 
+import choreo.auto.AutoTrajectory;
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -231,6 +232,7 @@ public class Swerve extends SubsystemBase {
   public void followSample(SwerveSample sample, boolean isFlipped) {
 
     // ternaries are for x-axis flipping
+
     double xPos = sample.x;
 
     double xVel = sample.vx;
