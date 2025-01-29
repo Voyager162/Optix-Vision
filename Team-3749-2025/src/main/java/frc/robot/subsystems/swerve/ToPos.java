@@ -328,16 +328,6 @@ public class ToPos {
     }
 
     /**
-     * Normalizes the vertex index to ensure it's within valid bounds.
-     *
-     * @param index The index to normalize.
-     * @return The normalized index.
-     */
-    private int normalizeVertexIndex(int index) {
-        return (index + HEXAGON_VERTICES.size()) % HEXAGON_VERTICES.size();
-    }
-
-    /**
      * Calculates the perpendicular distance from a point to a line segment.
      *
      * @param point     The point to check.

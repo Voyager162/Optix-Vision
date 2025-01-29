@@ -4,31 +4,23 @@ import java.io.IOException;
 
 import org.json.simple.parser.ParseException;
 
-import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
-import frc.robot.commands.auto.AutoConstants;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.ToPos;
-import frc.robot.utils.UtilityFunctions;
 
 public class OnTheFly extends Command {
 
     private PathPlannerTrajectory trajectory;
     private final Timer timer = new Timer();
-    private final PPHolonomicDriveController SwerveController = new PPHolonomicDriveController(
-            new PIDConstants(AutoConstants.kPDrive, 0, AutoConstants.kDDrive),
-            new PIDConstants(AutoConstants.kPTurn, 0, AutoConstants.kDTurn));
     private static double positionTolerance = 0.003; // meters
     private static double rotationTolerance = 2.0; // degrees
 
@@ -79,7 +71,6 @@ public class OnTheFly extends Command {
 
         double currentTime = timer.get();
         PathPlannerTrajectoryState goalState = trajectory.sample(currentTime);
-        ChassisSpeeds speeds = SwerveController.calculateRobotRelativeSpeeds(Robot.swerve.getPose(), goalState);
 
         Robot.swerve.followSample(goalState.pose,
                 new Pose2d(
