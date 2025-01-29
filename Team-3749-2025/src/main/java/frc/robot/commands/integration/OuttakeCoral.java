@@ -18,7 +18,7 @@ public class OuttakeCoral extends Command {
     public OuttakeCoral() {
         addRequirements(Robot.getAllSuperStructureSubsystems());
     }
-    
+
     @Override
     public void initialize() {
         Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE);

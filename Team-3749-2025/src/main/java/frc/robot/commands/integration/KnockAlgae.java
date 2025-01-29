@@ -12,7 +12,7 @@ import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 
-public class KnockAlgae extends Command{   
+public class KnockAlgae extends Command {
     private final ElevatorStates state;
 
     public KnockAlgae(ElevatorStates state) {
@@ -30,14 +30,14 @@ public class KnockAlgae extends Command{
         Robot.elevator.setState(state);
     }
 
-    @Override 
+    @Override
     public void execute() {
     }
 
-    @Override 
+    @Override
     public void end(boolean interrupted) {
         Robot.elevator.setState(ElevatorStates.STOW);
-        Robot.algaeRoller.setState(RollerConstants.RollerStates.STOP); 
+        Robot.algaeRoller.setState(RollerConstants.RollerStates.STOP);
         System.out.println("end");
     }
 

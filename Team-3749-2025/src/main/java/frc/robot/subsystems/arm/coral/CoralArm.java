@@ -42,7 +42,6 @@ public class CoralArm extends Arm {
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
     private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Coral Arm", 24, 0));
 
-
     /**
      * Constructor for the CoralArm subsystem.
      * Determines if simulation or real hardware is used.
@@ -51,20 +50,20 @@ public class CoralArm extends Arm {
         if (Robot.isSimulation()) {
 
             armIO = new ArmSim(
-                CoralConstants.numMotors,
-                CoralConstants.armGearing,
-                CoralConstants.momentOfInertia,
-                CoralConstants.armLength_meters,
-                CoralConstants.armMinAngle_degrees,
-                CoralConstants.armMaxAngle_degrees,
-                CoralConstants.simulateGravity,
-                CoralConstants.armStartingAngle_degrees);
-            
+                    CoralConstants.numMotors,
+                    CoralConstants.armGearing,
+                    CoralConstants.momentOfInertia,
+                    CoralConstants.armLength_meters,
+                    CoralConstants.armMinAngle_degrees,
+                    CoralConstants.armMaxAngle_degrees,
+                    CoralConstants.simulateGravity,
+                    CoralConstants.armStartingAngle_degrees);
+
             this.photoelectricIO = new PhotoelectricSim();
 
         } else {
             armIO = new ArmSparkMax(CoralConstants.motorId);
-            this.photoelectricIO = new JTVisiSight(); 
+            this.photoelectricIO = new JTVisiSight();
         }
         SmartDashboard.putData("Coral Arm Mechanism", mechanism2d);
     }
@@ -89,19 +88,19 @@ public class CoralArm extends Arm {
         switch (state) {
             case STOWED:
                 return UtilityFunctions.withinMargin(0.01, CoralConstants.stowSetPoint_rad,
-                data.positionUnits);
+                        data.positionUnits);
             case HAND_OFF:
                 return UtilityFunctions.withinMargin(0.01, CoralConstants.handOffSetPoint_rad,
-                data.positionUnits);
+                        data.positionUnits);
             case CORAL_PICKUP:
                 return UtilityFunctions.withinMargin(0.01, CoralConstants.coralPickUpSetPoint_rad,
-                data.positionUnits);
+                        data.positionUnits);
             case L1:
                 return UtilityFunctions.withinMargin(0.01, CoralConstants.L1SetPoint_rad,
-                data.positionUnits);
+                        data.positionUnits);
             case SOURCE:
                 return UtilityFunctions.withinMargin(0.01, CoralConstants.sourceSetPoint_rad,
-                data.positionUnits);
+                        data.positionUnits);
             case MOVING_DOWN:
                 return data.velocityUnits < 0;
             case MOVING_UP:
@@ -129,19 +128,24 @@ public class CoralArm extends Arm {
     private void runState() {
         switch (state) {
             case STOWED:
-                setVoltage(controller.calculate(data.positionUnits, CoralConstants.stowSetPoint_rad) + calculateFeedForward());
+                setVoltage(controller.calculate(data.positionUnits, CoralConstants.stowSetPoint_rad)
+                        + calculateFeedForward());
                 break;
             case HAND_OFF:
-                setVoltage(controller.calculate(data.positionUnits, CoralConstants.handOffSetPoint_rad) + calculateFeedForward());
+                setVoltage(controller.calculate(data.positionUnits, CoralConstants.handOffSetPoint_rad)
+                        + calculateFeedForward());
                 break;
             case CORAL_PICKUP:
-                setVoltage(controller.calculate(data.positionUnits, CoralConstants.coralPickUpSetPoint_rad) + calculateFeedForward());
+                setVoltage(controller.calculate(data.positionUnits, CoralConstants.coralPickUpSetPoint_rad)
+                        + calculateFeedForward());
                 break;
             case L1:
-                setVoltage(controller.calculate(data.positionUnits, CoralConstants.L1SetPoint_rad) + calculateFeedForward());
+                setVoltage(controller.calculate(data.positionUnits, CoralConstants.L1SetPoint_rad)
+                        + calculateFeedForward());
                 break;
             case SOURCE:
-                setVoltage(controller.calculate(data.positionUnits, CoralConstants.sourceSetPoint_rad) + calculateFeedForward());
+                setVoltage(controller.calculate(data.positionUnits, CoralConstants.sourceSetPoint_rad)
+                        + calculateFeedForward());
                 break;
             case STOPPED:
                 setVoltage(0 + calculateFeedForward());
@@ -191,7 +195,7 @@ public class CoralArm extends Arm {
     public PhotoelectricIO getPhotoElectricIO() {
         return photoelectricIO;
     }
-    
+
     /**
      * Periodic method for updating arm behavior.
      */
@@ -204,12 +208,12 @@ public class CoralArm extends Arm {
         runState();
 
         // Ensure photoelectricData is updated
-        
+
         photoelectricIO.updateData(photoelectricData);
 
         if (Robot.isSimulation()) {
             if (this.getCurrentCommand() != null) {
-                photoelectricIO.setSensing(this.getCurrentCommand().getName());                
+                photoelectricIO.setSensing(this.getCurrentCommand().getName());
                 // Update hasPiece based on sensing
                 setHasPiece(photoelectricData.sensing);
 
