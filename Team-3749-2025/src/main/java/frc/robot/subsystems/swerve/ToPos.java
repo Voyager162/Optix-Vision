@@ -70,9 +70,9 @@ public class ToPos {
     public void flipForRedAlliance(List<Waypoint> waypoints) {
         if (UtilityFunctions.isRedAlliance()){
 
-            for (Waypoint waypoint : waypoints){
-    
-                waypoint.flip();
+            for(int i=0;i<waypoints.size();i++)
+            {
+                waypoints.set(i,waypoints.get(i).flip());
             }
         }
 
