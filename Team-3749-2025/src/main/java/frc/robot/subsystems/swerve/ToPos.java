@@ -3,6 +3,8 @@ package frc.robot.subsystems.swerve;
 import java.util.*;
 import com.pathplanner.lib.path.*;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.utils.UtilityFunctions;
 
 /**
  * This class generates dynamic paths for a robot to move from one pose to
@@ -57,10 +59,22 @@ public class ToPos {
         removeRedundantWaypoints(waypoints);
         removeExtraStartVertex(waypoints);
         removeExtraEndVertex(waypoints);
+        flipForRedAlliance(waypoints);
 
         return new PathPlannerPath(waypoints,
                 new PathConstraints(maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration), null,
                 new GoalEndState(0.0, finalPose.getRotation()));
+    }
+
+    public void flipForRedAlliance(List<Waypoint> waypoints) {
+        if (UtilityFunctions.isRedAlliance()){
+
+            for (Waypoint waypoint : waypoints){
+    
+                waypoint.flip();
+            }
+        }
+
     }
 
     /**
@@ -102,7 +116,6 @@ public class ToPos {
             System.out.println(waypoints.get(2).anchor().toString());
             // System.out.println(waypoints.get(3).anchor().toString());
 
-
             waypoints.remove(1);
         }
     }
@@ -121,8 +134,8 @@ public class ToPos {
 
         double endingAlignment = (finalVertexToEndVector.getX() * secondToFInalVertexToFinalVertexVector.getX()
                 + finalVertexToEndVector.getY() * secondToFInalVertexToFinalVertexVector.getY());
-        System.out.println(endingAlignment);
 
+        System.out.println(endingAlignment);
         if (endingAlignment < 0) {
             System.out.println(waypoints.get(waypoints.size() - 3).anchor().toString());
 
@@ -296,32 +309,22 @@ public class ToPos {
         // Step 5: Choose the best vertex.
         if (alignment1 < 0 && alignment2 >= 0) {
             if (point.equals(pathEnd)) {
-                System.out.println("end alignment to " + closestVertex1);
                 return closestVertex1;
             }
-            System.out.println("start alignment to " + closestVertex2);
 
             return closestVertex2; // Vertex 1 misaligned, choose Vertex 2
         } else if (alignment2 < 0 && alignment1 >= 0) {
             if (point.equals(pathEnd)) {
-                System.out.println("end alignment to " + closestVertex2);
 
                 return closestVertex2;
 
             }
-            System.out.println("start alignment to " + closestVertex1);
 
             return closestVertex1; // Vertex 2 misaligned, choose Vertex 1
         } else {
-            if (alignment1 > 0 && alignment2 > 0) {
-                System.out.println("both aligned");
-            } else {
-                System.out.println("both misaligned");
-            }
 
             int chosenVertex = distanceToPath1 < distanceToPath2 ? closestVertex1 : closestVertex2;
             // Both vertices are aligned; choose the one closer to the path
-            System.out.println("distance to " + chosenVertex);
 
             return chosenVertex;
         }
