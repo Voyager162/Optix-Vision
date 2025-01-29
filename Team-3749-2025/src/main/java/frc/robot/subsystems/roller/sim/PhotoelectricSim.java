@@ -1,15 +1,7 @@
 package frc.robot.subsystems.roller.sim;
 
-import java.time.Duration;
-
-import com.ctre.phoenix6.signals.SensorDirectionValue;
-
 import edu.wpi.first.wpilibj.Timer;
-import frc.robot.Robot;
-import frc.robot.commands.integration.ScoreL234;
 import frc.robot.subsystems.roller.PhotoelectricIO;
-import frc.robot.subsystems.roller.RollerConstants;
-import frc.robot.subsystems.roller.implementations.ScoringRoller;
 
 public class PhotoelectricSim implements PhotoelectricIO { 
     private double scoreTimer = -1;
@@ -78,10 +70,11 @@ public class PhotoelectricSim implements PhotoelectricIO {
                 break;
              // A new command to pre-set the status of "sensing"   
             case "SensorSwitch":
+                scoreTimer = 1;
+                // System.out.println("sensing before: " + sensing);
                 sensing = !sensing;
-                System.out.println("sensing: " + sensing);
+                // System.out.println("sensing after: " + sensing);
                 break;
-                
     }
         // if (scoreTimer < 0) {
         //     scoreTimer = Timer.getFPGATimestamp();

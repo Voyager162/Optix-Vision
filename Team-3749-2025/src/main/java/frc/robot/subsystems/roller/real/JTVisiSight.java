@@ -1,7 +1,6 @@
 package frc.robot.subsystems.roller.real;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.roller.PhotoelectricIO;
 
 public class JTVisiSight implements PhotoelectricIO{

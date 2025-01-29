@@ -1,15 +1,10 @@
 package frc.robot.commands.integration;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.arm.coral.CoralArm;
-import frc.robot.subsystems.chute.Chute;
-import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.arm.coral.CoralConstants;
-import frc.robot.subsystems.roller.Roller;
 
 public class OuttakeCoral extends Command {
 
@@ -21,6 +16,7 @@ public class OuttakeCoral extends Command {
 
     @Override
     public void initialize() {
+        Robot.coralArm.setState(CoralConstants.ArmStates.CORAL_PICKUP);
         Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE);
         Robot.elevator.setState(ElevatorStates.STOW);
     }
@@ -31,6 +27,7 @@ public class OuttakeCoral extends Command {
 
     @Override
     public void end(boolean interrupted) {
+        Robot.elevator.setState(ElevatorStates.STOW);
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
         System.out.println("DEBUG : outtake command end");
     }

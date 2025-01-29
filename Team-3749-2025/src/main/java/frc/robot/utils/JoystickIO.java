@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot;
 import frc.robot.commands.elevator.SetElevatorState;
 
-import frc.robot.commands.example.ExampleSubsystemCommand;
 import frc.robot.commands.integration.CoralIntakeSource;
 import frc.robot.commands.integration.Handoff;
 import frc.robot.commands.integration.IntakeFloor;
@@ -20,7 +19,6 @@ import frc.robot.commands.integration.SensorSwitch;
 import frc.robot.commands.roller.MaintainCommand;
 import frc.robot.commands.roller.RunCommand;
 import frc.robot.commands.roller.StopCommand;
-import frc.robot.commands.elevator.SetElevatorState;
 
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
@@ -96,7 +94,7 @@ public class JoystickIO {
         // Example binding 
         // operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        operator.a().onTrue(coralIntakeSource);
+        operator.a().onTrue(scoreL4);
         operator.b().onTrue(outtakeCoral);
         operator.x().onTrue(sensorSwitch);
         operator.y().onTrue(scoreL4);

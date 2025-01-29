@@ -4,12 +4,10 @@ import frc.robot.Robot;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.real.ArmSparkMax;
 import frc.robot.subsystems.arm.sim.ArmSim;
-import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.roller.PhotoelectricIO;
 import frc.robot.subsystems.roller.PhotoelectricIO.PhotoelectricData;
 import frc.robot.subsystems.roller.real.JTVisiSight;
 import frc.robot.subsystems.roller.sim.PhotoelectricSim;
-import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 import edu.wpi.first.math.controller.PIDController;
@@ -28,7 +26,6 @@ public class CoralArm extends Arm {
 
     private CoralConstants.ArmStates state = CoralConstants.ArmStates.STOPPED;
     private boolean hasPiece;
-    private boolean delay = true;
     private PhotoelectricData photoelectricData = new PhotoelectricData();
     private PhotoelectricIO photoelectricIO;
     private PIDController controller = new PIDController(
