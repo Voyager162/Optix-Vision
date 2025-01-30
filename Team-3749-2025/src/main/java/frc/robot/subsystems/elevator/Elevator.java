@@ -2,8 +2,17 @@ package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -16,6 +25,10 @@ import frc.robot.subsystems.elevator.real.ElevatorSparkMax;
 import frc.robot.subsystems.elevator.sim.ElevatorSimulation;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
+
+import org.littletonrobotics.junction.Logger;
+
+import static edu.wpi.first.units.Units.*;
 
 /**
  * Elevator subsystem
@@ -45,7 +58,8 @@ public class Elevator extends SubsystemBase {
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position", 0.0);
     private ShuffleData<Double> velocityMetersPerSecLog = new ShuffleData<Double>("Elevator", "velocity", 0.0);
-    private ShuffleData<Double> accelerationMetersPerSecSquaredLog = new ShuffleData<Double>("Elevator", "acceleration", 0.0);
+    private ShuffleData<Double> accelerationMetersPerSecSquaredLog = new ShuffleData<Double>("Elevator", "acceleration",
+            0.0);
 
     private ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Elevator", "input volts", 0.0);
     private ShuffleData<Double> leftAppliedVoltsLog = new ShuffleData<Double>("Elevator", "left applied volts", 0.0);
@@ -54,6 +68,33 @@ public class Elevator extends SubsystemBase {
     private ShuffleData<Double> rightCurrentAmpsLog = new ShuffleData<Double>("Elevator", "right current amps", 0.0);
     private ShuffleData<Double> leftTempCelciusLog = new ShuffleData<Double>("Elevator", "left temp celcius", 0.0);
     private ShuffleData<Double> rightTempCelciusLog = new ShuffleData<Double>("Elevator", "right temp celcius", 0.0);
+    // private ShuffleData<Double[]> elevatorPose3dLog = new ShuffleData<Double[]>("Elevator", "elevator pose3d",
+    //         new Double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
+
+    private Angle roll = Angle.ofBaseUnits(0, Radians);
+    private Angle pitch = Angle.ofBaseUnits(0, Radians);
+    private Angle yaw = Angle.ofBaseUnits(0, Radians);
+    private Pose3d zeroedComponentPose = new Pose3d(0, 0, 0, new Rotation3d(roll, pitch, yaw));
+
+    // private Double[] poses = convertPoseArrayToDoubleArray(zeroedComponentPoses);
+
+    // public Double[] convertPoseArrayToDoubleArray(Pose3d[] poses) {
+    // Double[] result = new Double[6];
+
+    // int index = 0;
+    // for (Pose3d pose : poses) {
+    // result[index++] = pose.getX();
+    // result[index++] = pose.getY();
+    // result[index++] = pose.getZ();
+    // result[index++] = pose.getRotation().getX(); // roll
+    // result[index++] = pose.getRotation().getY(); // pitch
+    // result[index++] = pose.getRotation().getZ(); // yaw
+    // }
+    // for (Double results : result) {
+    // System.out.println(results);
+    // }
+    // return result;
+    // }
 
     // For tuning on real
     // private ShuffleData<Double> kPData = new ShuffleData<Double>("Elevator",
@@ -68,7 +109,7 @@ public class Elevator extends SubsystemBase {
     // "kAData", ElevatorConstants.ElevatorControl.kASim);
 
     private Mechanism2d mech = new Mechanism2d(3, 3);
-    private MechanismRoot2d root = mech.getRoot("elevator", 2, 0);
+    private MechanismRoot2d root = mech.getRoot("elevator", 1, 0);
     private MechanismLigament2d elevatorMech = root
             .append(new MechanismLigament2d("elevator", ElevatorConstants.ElevatorSpecs.baseHeight, 90));
 
@@ -193,12 +234,34 @@ public class Elevator extends SubsystemBase {
 
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
         SmartDashboard.putData("elevator mechanism", mech);
+        Logger.recordOutput("zeropose", zeroedComponentPose);
+
+        publisher.set(new Pose3d(getTransform3d().getTranslation(), getTransform3d().getRotation()));
+        // elevatorPose3dLog.set(
+        //     new Double[] {
+        //         getTransform3d().getTranslation().getX(),
+        //         getTransform3d().getTranslation().getY(),
+        //         getTransform3d().getTranslation().getZ(),
+        //         getTransform3d().getRotation().getAngle()
+        //     }
+        // )
     }
+
+    private Transform3d getTransform3d() {
+        Transform3d transform = new Transform3d(0, 0, data.positionMeters, new Rotation3d(roll, pitch, yaw));
+        return transform;
+    }
+
+    StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
+            .getStructTopic("Elevator Pose", Pose3d.struct).publish();
+    // StructArrayPublisher<Pose3d> arrayPublisher =
+    // NetworkTableInstance.getDefault()
+    // .getStructArrayTopic("MyPoseArray", Pose3d.struct).publish();
 
     @Override
     public void periodic() {
         elevatorio.updateData(data);
-
+        // arrayPublisher.set(new Pose3d[] {poseA, poseB});
         runState();
         logData();
         // pidController.setPID(kPData.get(),0,kDData.get())

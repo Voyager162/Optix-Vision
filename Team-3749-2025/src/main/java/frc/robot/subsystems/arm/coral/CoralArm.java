@@ -7,10 +7,18 @@ import frc.robot.subsystems.arm.sim.ArmSim;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import static edu.wpi.first.units.Units.*;
 
 /**
  * Subsystem class for the arm
@@ -33,6 +41,13 @@ public class CoralArm extends Arm {
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
     private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Coral Arm", 24, 0));
 
+    private Angle roll = Angle.ofBaseUnits(data.positionUnits, Radians);
+    private Angle pitch = Angle.ofBaseUnits(0, Radians);
+    private Angle yaw = Angle.ofBaseUnits(0, Radians);
+    private Pose3d zeroedComponentPose = new Pose3d(0, 0, 0, new Rotation3d(roll, pitch, yaw));
+
+    StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
+            .getStructTopic("CoralArm Pose", Pose3d.struct).publish();
 
     /**
      * Constructor for the CoralArm subsystem.
@@ -42,14 +57,14 @@ public class CoralArm extends Arm {
         if (Robot.isSimulation()) {
 
             armIO = new ArmSim(
-                CoralConstants.numMotors,
-                CoralConstants.armGearing,
-                CoralConstants.momentOfInertia,
-                CoralConstants.armLength_meters,
-                CoralConstants.armMinAngle_degrees,
-                CoralConstants.armMaxAngle_degrees,
-                CoralConstants.simulateGravity,
-                CoralConstants.armStartingAngle_degrees);
+                    CoralConstants.numMotors,
+                    CoralConstants.armGearing,
+                    CoralConstants.momentOfInertia,
+                    CoralConstants.armLength_meters,
+                    CoralConstants.armMinAngle_degrees,
+                    CoralConstants.armMaxAngle_degrees,
+                    CoralConstants.simulateGravity,
+                    CoralConstants.armStartingAngle_degrees);
 
         } else {
             armIO = new ArmSparkMax(CoralConstants.motorId);
@@ -108,13 +123,16 @@ public class CoralArm extends Arm {
     private void runState() {
         switch (state) {
             case STOWED:
-                setVoltage(controller.calculate(data.positionUnits, CoralConstants.stowSetPoint_rad) + calculateFeedForward());
+                setVoltage(controller.calculate(data.positionUnits, CoralConstants.stowSetPoint_rad)
+                        + calculateFeedForward());
                 break;
             case HAND_OFF:
-                setVoltage(controller.calculate(data.positionUnits, CoralConstants.handOffSetPoint_rad) + calculateFeedForward());
+                setVoltage(controller.calculate(data.positionUnits, CoralConstants.handOffSetPoint_rad)
+                        + calculateFeedForward());
                 break;
             case CORAL_PICKUP:
-                setVoltage(controller.calculate(data.positionUnits, CoralConstants.coralPickUpSetPoint_rad) + calculateFeedForward());
+                setVoltage(controller.calculate(data.positionUnits, CoralConstants.coralPickUpSetPoint_rad)
+                        + calculateFeedForward());
                 break;
             case STOPPED:
                 setVoltage(0 + calculateFeedForward());
@@ -145,6 +163,23 @@ public class CoralArm extends Arm {
         armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
         stateLog.set(state.name());
+
+        // Logger.recordOutput("zeropose", zeroedComponentPose);
+
+        publisher.set(new Pose3d(getTransform3d().getTranslation(), getTransform3d().getRotation()));
+        // elevatorPose3dLog.set(
+        // new Double[] {
+        // getTransform3d().getTranslation().getX(),
+        // getTransform3d().getTranslation().getY(),
+        // getTransform3d().getTranslation().getZ(),
+        // getTransform3d().getRotation().getAngle()
+        // }
+        // )
+    }
+
+    private Transform3d getTransform3d() {
+        Transform3d transform = new Transform3d(0, 0, 0, new Rotation3d(roll, pitch, yaw));
+        return transform;
     }
 
     private double calculateFeedForward() {
