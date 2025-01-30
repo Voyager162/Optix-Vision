@@ -1,4 +1,11 @@
 {
+    "comments": [
+        {
+            "model": "drive train",
+            "model_0": "elevator",
+            "model_1" : "coral arm"
+        }
+    ],
     "name": "VACT",
     "rotations": [
         {
