@@ -30,7 +30,7 @@ public class KnockAlgae extends Command {
     public void end(boolean interrupted) {
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.algaeRoller.setState(RollerConstants.RollerStates.STOP);
-        System.out.println("end");
+        System.out.println("knock algae end");
     }
 
     @Override

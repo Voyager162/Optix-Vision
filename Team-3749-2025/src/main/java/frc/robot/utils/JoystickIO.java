@@ -46,7 +46,8 @@ public class JoystickIO {
     private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
     private static final SetElevatorState stow = new SetElevatorState(ElevatorStates.STOW);
 
-    private static final KnockAlgae knockAlgae = new KnockAlgae(ElevatorStates.L2);
+    private static final KnockAlgae knockAlgaeLow = new KnockAlgae(ElevatorStates.ALGAE_LOW);
+    private static final KnockAlgae knockAlgaeHigh = new KnockAlgae(ElevatorStates.ALGAE_HIGH);
     private static final Handoff handoff = new Handoff();
     private static final IntakeFloor intakeFloor = new IntakeFloor();
     private static final IntakeSource intakeSource = new IntakeSource();
@@ -94,8 +95,8 @@ public class JoystickIO {
         // Example binding 
         // operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        operator.a().onTrue(scoreL4);
-        operator.b().onTrue(outtakeCoral);
+        operator.a().onTrue(knockAlgaeLow);
+        operator.b().onTrue(knockAlgaeHigh);
         operator.x().onTrue(sensorSwitch);
         operator.y().onTrue(scoreL4);
 
