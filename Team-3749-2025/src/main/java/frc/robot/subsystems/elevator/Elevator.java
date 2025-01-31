@@ -119,7 +119,7 @@ public class Elevator extends SubsystemBase {
                 return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.algaeHighHeight,
                         data.positionMeters);
             case STOW:
-                return UtilityFunctions.withinMargin(0.01, 0,
+                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.stowHeight,
                         data.positionMeters);
             default:
                 return false;
@@ -161,6 +161,8 @@ public class Elevator extends SubsystemBase {
                 setGoal(6);
                 break;
             case STOW:
+                setGoal(ElevatorConstants.StateHeights.stowHeight);
+                break;
             default:
                 setGoal(0);
                 break;
