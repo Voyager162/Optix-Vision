@@ -15,6 +15,17 @@ public class ClimbArmSim implements ClimbArmIO {
 
 	private SingleJointedArmSim armSim;
 
+	/**
+	 * creates a new arm simulation motor form the single jointed arm class
+	 * @param numMotors
+	 * @param gearing
+	 * @param momentOfInertia
+	 * @param length_meters
+	 * @param minAngle_degrees
+	 * @param maxAngle_degrees
+	 * @param simulateGravity
+	 * @param startingAngle_Degrees
+	 */
 	public ClimbArmSim(
 			int numMotors,
 			double gearing,
