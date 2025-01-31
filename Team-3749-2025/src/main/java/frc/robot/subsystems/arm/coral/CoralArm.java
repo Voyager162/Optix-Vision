@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static edu.wpi.first.units.Units.*;
 
+import javax.sound.sampled.SourceDataLine;
+
 /**
  * Subsystem class for the arm
  * 
@@ -39,7 +41,7 @@ public class CoralArm extends Arm {
     private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
     private Mechanism2d mechanism2d = new Mechanism2d(3, 3);
-    private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 3, 3);
+    private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 2, 0);
     private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Coral Arm", 3, 0));
 
     private Angle roll = Angle.ofBaseUnits(0, Degrees);
@@ -71,6 +73,7 @@ public class CoralArm extends Arm {
             armIO = new ArmSparkMax(CoralConstants.motorId);
         }
         SmartDashboard.putData("Coral Arm Mechanism", mechanism2d);
+        System.out.println(data.positionUnits);
     }
 
     /**
@@ -177,9 +180,10 @@ public class CoralArm extends Arm {
         // }
         // )
     }
+
     private Angle getPitch(){
         System.out.println(data.positionUnits);
-        return Angle.ofBaseUnits(data.positionUnits, Radians);
+        return Angle.ofBaseUnits(data.positionUnits + Units.degreesToRadians(-65), Radians); // remove offset once coral arm code is fixed
     }
 
     private Transform3d getTransform3d() {

@@ -16,7 +16,7 @@ public class CoralConstants {
     public static final double armLength_inches = 17.796; // from cad max length of arm
     public static final double armLength_meters = Units.inchesToMeters(armLength_inches);
 
-    public static final int armMinAngle_degrees = 0;
+    public static final int armMinAngle_degrees = -180;
     public static final int armMaxAngle_degrees = 180;
     public static final int armStartingAngle_degrees = 0;
 
@@ -33,8 +33,8 @@ public class CoralConstants {
     public static final double kV = 0.0;
 
     public static final double stowSetPoint_rad = 70 * Math.PI / 180; // 70, 1.2217304764
-    public static final double handOffSetPoint_rad = 40 * Math.PI / 180; // 40
-    public static final double coralPickUpSetPoint_rad = 175 * Math.PI / 180; // 175, 3.05432619099
+    public static final double handOffSetPoint_rad = -40 * Math.PI / 180; // 40 set to negative for ascope
+    public static final double coralPickUpSetPoint_rad = 150 * Math.PI / 180; // 175, 3.05432619099
 
     public static final double maxVelocity = 0;
     public static final double maxAcceleration = 0;

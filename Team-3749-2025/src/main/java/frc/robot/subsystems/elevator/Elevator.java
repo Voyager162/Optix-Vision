@@ -234,7 +234,7 @@ public class Elevator extends SubsystemBase {
 
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
         SmartDashboard.putData("elevator mechanism", mech);
-        Logger.recordOutput("zeropose", zeroedComponentPose);
+        // Logger.recordOutput("zeropose", zeroedComponentPose);
 
         publisher.set(new Pose3d(getTransform3d().getTranslation(), getTransform3d().getRotation()));
         // elevatorPose3dLog.set(
