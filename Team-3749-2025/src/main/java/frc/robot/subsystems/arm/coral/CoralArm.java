@@ -10,10 +10,10 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.subsystems.arm.ClimbArmIO;
-import frc.robot.subsystems.arm.ClimbArmIO.ArmData;
+import frc.robot.subsystems.arm.climb.ClimbArmIO;
 import frc.robot.subsystems.arm.climb.ClimbArmSim;
 import frc.robot.subsystems.arm.climb.ClimbArmSparkMax;
+import frc.robot.subsystems.arm.climb.ClimbArmIO.ArmData;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 

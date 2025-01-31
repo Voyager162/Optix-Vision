@@ -3,7 +3,6 @@ package frc.robot.subsystems.arm.climb;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import frc.robot.subsystems.arm.ClimbArmIO;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**

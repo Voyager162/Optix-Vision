@@ -1,4 +1,4 @@
-package frc.robot.subsystems.arm;
+package frc.robot.subsystems.arm.climb;
 
 /**
  * Interface file for arm subsystem
@@ -20,15 +20,24 @@ public interface ClimbArmIO {
 		public double secondMotorTempCelcius = 0;
 	}
 
-	/* Updates the set of loggable inputs. */
+	/**
+	 * Updates the set of loggable inputs. 
+	 * @param data
+	 */
 	public default void updateData(ArmData data) {
 	};
 
-	/* Run the motor at the specified voltage. */
+	/**
+	 * Run the motor at the specified voltage.
+	 * @param volts
+	 */
 	public default void setVoltage(double volts) {
 	};
 
-	/* Enable or disable brake mode on the motor. */
+	/**
+	 * Enable or disable brake mode on the motor.
+	 * @param enable
+	 */
 	public default void setBrakeMode(boolean enable) {
 	};
 }
