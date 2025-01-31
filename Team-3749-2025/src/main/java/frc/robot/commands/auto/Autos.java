@@ -33,8 +33,9 @@ public class Autos {
    
     /**
      * 
-     * @return a command that scores at positions 4, 3, and 2 at L4 
+     * @return a command that scores at positions 5, 4, and 3 at L4 
      */
+
     public static Command get3Piece() {
         AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("3-Piece");
 
@@ -61,6 +62,11 @@ public class Autos {
                 AutoUtils.startRoutine(routine, "Start-L5", trajectory1));
     }
 
+     /**
+     * 
+     * @return a command that Taxi's to L5
+     */
+
     public static Command getTaxi() {
         AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("Taxi");
 
@@ -71,6 +77,11 @@ public class Autos {
                 AutoUtils.startRoutine(routine, "Start-L5", trajectory1));
     }
 
+      /**
+     * 
+     * @return a command that Taxi's your teammate
+     */
+
     public static Command getTeamtaxi() {
         AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("Team Taxi");
 
@@ -80,6 +91,11 @@ public class Autos {
         return Commands.print("Team Taxi").andThen(
                 AutoUtils.startRoutine(routine, "Start-TeamTaxi", trajectory1));
     }
+
+      /**
+     * 
+     * @return a command that goes to middle to score(used when in middle)
+     */
 
     public static Command getOnePieceCenter() {
         AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("One Piece Center");
@@ -92,7 +108,12 @@ public class Autos {
                 AutoUtils.startRoutine(routine, "MidStart-L6", trajectory1));
     }
 
-    public static Command get4PieceCoral() {
+      /**
+     * 
+     * @return a command that scores at positions 5, 4, 3, and 2 at L4 
+     */
+
+    public static Command get4Piece() {
         AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("4-Piece Coral");
 
         // loop.trajectory, or the new name
@@ -123,6 +144,11 @@ public class Autos {
         return Commands.print("4 piece auto!").andThen(
                 AutoUtils.startRoutine(routine, "Start-L5", trajectory1));
     }
+
+      /**
+     * 
+     * @return a command that scores at positions 5, 4, and 3 at L4. Then, it goes to knock algae at 2, then it scores at 2 and finally Knocks Algae at 1. 
+     */
 
     public static Command get3CoralAnd2Algae() {
         AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("3 Coral and 2 Algae");

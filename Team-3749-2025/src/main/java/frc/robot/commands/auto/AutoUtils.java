@@ -15,11 +15,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
-import frc.robot.subsystems.roller.RollerConstants.RollerStates;
-import frc.robot.utils.JoystickIO;
 import frc.robot.commands.integration.IntakeSource;
 import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.ScoreL234;
@@ -119,7 +116,7 @@ public class AutoUtils {
         chooser.addCmd("TeamTaxi", () -> Autos.getTeamtaxi());
         chooser.addCmd("Taxi", () -> Autos.getTaxi());
         chooser.addCmd("One Piece Center", () -> Autos.getOnePieceCenter());
-        chooser.addCmd("4-Piece", () -> Autos.get4PieceCoral());
+        chooser.addCmd("4-Piece", () -> Autos.get4Piece());
         chooser.addCmd("3 Coral and 2 Algae", () -> Autos.get3CoralAnd2Algae());
 
 
@@ -127,6 +124,10 @@ public class AutoUtils {
         SmartDashboard.putData("Auto: Auto Chooser", chooser);
 
     }
+
+     /**
+     * This just sets up AutoChooser in Robot Sim 
+     */
 
     private static void setupFlipChooser() {
         flippedChooser = new SendableChooser<Boolean>();
