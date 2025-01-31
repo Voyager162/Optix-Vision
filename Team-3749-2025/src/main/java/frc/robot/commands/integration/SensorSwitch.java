@@ -27,5 +27,5 @@ public class SensorSwitch extends Command {
     public void end(boolean interrupted) {
 
     }
-    
+
 }

@@ -1,7 +1,6 @@
 package frc.robot.subsystems.arm.coral;
 
 import edu.wpi.first.math.util.Units;
-import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorSpecs;
 
 /**
  * Constants file for the climb arm subsystem

@@ -112,6 +112,12 @@ public class Elevator extends SubsystemBase {
             case SOURCE:
                 return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.sourceHeight,
                         data.positionMeters);
+            case ALGAE_LOW:
+                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.algaeLowHeight,
+                        data.positionMeters);
+            case ALGAE_HIGH:
+                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.algaeHighHeight,
+                        data.positionMeters);
             case STOW:
                 return UtilityFunctions.withinMargin(0.01, 0,
                         data.positionMeters);
@@ -144,6 +150,12 @@ public class Elevator extends SubsystemBase {
                 break;
             case SOURCE:
                 setGoal(ElevatorConstants.StateHeights.sourceHeight);
+                break;
+            case ALGAE_LOW:
+                setGoal(ElevatorConstants.StateHeights.algaeLowHeight);
+                break;
+            case ALGAE_HIGH:
+                setGoal(ElevatorConstants.StateHeights.algaeHighHeight);
                 break;
             case MAX:
                 setGoal(6);

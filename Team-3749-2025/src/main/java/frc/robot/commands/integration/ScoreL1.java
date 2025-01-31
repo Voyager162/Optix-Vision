@@ -2,10 +2,8 @@ package frc.robot.commands.integration;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.subsystems.arm.coral.CoralConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants;
-import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 
@@ -13,7 +11,7 @@ public class ScoreL1 extends Command {
 
     public int delay_counter = 0;
 
-    public ScoreL1 () {
+    public ScoreL1() {
         addRequirements(Robot.getAllSuperStructureSubsystems());
     }
 
@@ -21,7 +19,7 @@ public class ScoreL1 extends Command {
     public void initialize() {
         Robot.elevator.setState(ElevatorConstants.ElevatorStates.STOW);
         Robot.coralArm.setState(CoralConstants.ArmStates.L1);
-        Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
+        Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
         Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
     }
 
@@ -32,14 +30,14 @@ public class ScoreL1 extends Command {
         }
     }
 
-    @Override 
+    @Override
     public void end(boolean interrupted) {
         Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
         Robot.coralRoller.setState(RollerStates.STOP);
         System.out.println("end");
     }
 
-    @Override 
+    @Override
     public boolean isFinished() {
         if (delay_counter < 2) {
             delay_counter++;

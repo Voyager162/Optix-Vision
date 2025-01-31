@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot;
 import frc.robot.commands.elevator.SetElevatorState;
 
-import frc.robot.commands.example.ExampleSubsystemCommand;
 import frc.robot.commands.integration.CoralIntakeSource;
 import frc.robot.commands.integration.Handoff;
 import frc.robot.commands.integration.IntakeFloor;
@@ -20,7 +19,6 @@ import frc.robot.commands.integration.SensorSwitch;
 import frc.robot.commands.roller.MaintainCommand;
 import frc.robot.commands.roller.RunCommand;
 import frc.robot.commands.roller.StopCommand;
-import frc.robot.commands.elevator.SetElevatorState;
 
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
@@ -48,7 +46,8 @@ public class JoystickIO {
     private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
     private static final SetElevatorState stow = new SetElevatorState(ElevatorStates.STOW);
 
-    private static final KnockAlgae knockAlgae = new KnockAlgae(ElevatorStates.L2);
+    private static final KnockAlgae knockAlgaeLow = new KnockAlgae(ElevatorStates.ALGAE_LOW);
+    private static final KnockAlgae knockAlgaeHigh = new KnockAlgae(ElevatorStates.ALGAE_HIGH);
     private static final Handoff handoff = new Handoff();
     private static final IntakeFloor intakeFloor = new IntakeFloor();
     private static final IntakeSource intakeSource = new IntakeSource();
@@ -96,8 +95,8 @@ public class JoystickIO {
         // Example binding 
         // operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        operator.a().onTrue(coralIntakeSource);
-        operator.b().onTrue(outtakeCoral);
+        operator.a().onTrue(knockAlgaeLow);
+        operator.b().onTrue(knockAlgaeHigh);
         operator.x().onTrue(sensorSwitch);
         operator.y().onTrue(scoreL4);
 
