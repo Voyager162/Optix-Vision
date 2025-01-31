@@ -22,10 +22,10 @@ public class SwerveConstants {
                 public static final double turnMotorGearRatio = 12.8;
 
                 public static final double[][] turnPID = new double[][] {
-                                { 3.75, 0, 0 }, // small error position
-                                { 3.75, 0, 0 }, // large error position
-                                { 0, 0, 0 }, // no slow velocity control
-                                { 0, 0, 0 } }; // no fast velocity control
+                                { 8, 0, 0 }, // large error position
+                                { 12, 0, 0 }, // small error position
+                                { 0, 0, 0 }, // deadband error position
+                                { 0, 0, 0 } }; // 
                 public static final double[][] drivePID = new double[][] {
                                 { 0, 0, 0 }, // small error position
                                 { 0, 0, 0 }, // large error position
