@@ -12,6 +12,7 @@ import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.MAXMotionConfig;
+import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
@@ -106,18 +107,19 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
                                         MotorControllerConstants.slots[i])
                                         .positionWrappingEnabled(true)
                                         .positionWrappingInputRange(0, 2 * Math.PI);
-
                         turnMotorConfig.closedLoop.maxMotion.positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal,
                                         MotorControllerConstants.slots[i])
                                         .maxAcceleration(1, MotorControllerConstants.slots[i])
                                         .maxVelocity(1, MotorControllerConstants.slots[i])
                                         .allowedClosedLoopError(0.015, MotorControllerConstants.slots[i]);
 
+                        turnMotorConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+                        // turnMotorConfig.closedLoop.
                 }
                 // turnMotorConfig
 
                 // setpoint, control type, slot, FF from our code
-                turningController.setReference(0, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
+                turningController.setReference(0, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
                 driveMotor.setControlFramePeriodMs(20);
                 driveController = driveMotor.getClosedLoopController();
@@ -127,7 +129,6 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
                                         ModuleConstants.drivePID[i][2],
                                         1 / 473,
                                         MotorControllerConstants.slots[i]);
-
                         driveMotorConfig.closedLoop.maxMotion.positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal,
                                         MotorControllerConstants.slots[i])
                                         .maxAcceleration(DriveConstants.maxAccelerationMetersPerSecondSquared,
@@ -153,16 +154,14 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
                 driveAppliedVolts = driveMotor.getBusVoltage() * driveMotor.getAppliedOutput();
                 data.drivePositionM = getDrivePositionMeters();
                 data.driveVelocityMPerSec = getDriveVelocityMetersPerSec();
-                data.driveAppliedVolts = driveAppliedVolts;
                 data.driveCurrentAmps = Math.abs(driveMotor.getOutputCurrent());
                 data.driveTempCelcius = driveMotor.getMotorTemperature();
 
                 turnAppliedVolts = turnMotor.getBusVoltage() * turnMotor.getAppliedOutput();
-                data.turnAbsolutePositionRad = turnMotor.getEncoder().getPosition();
+                data.turnAbsolutePositionRad = getAbsoluteTurningPositionRad();
                 data.turnVelocityRadPerSec = turnMotor.getEncoder().getVelocity();
                 // data.turnAbsolutePositionRad = getAbsoluteTurningPositionRad();
                 // data.turnVelocityRadPerSec = getAbsoluteTurningVelocityRadPerSec();
-                data.turnAppliedVolts = turnAppliedVolts;
                 data.turnCurrentAmps = Math.abs(turnMotor.getOutputCurrent());
                 data.turnTempCelcius = turnMotor.getMotorTemperature();
         };
@@ -181,51 +180,35 @@ public class SwerveModuleSparkMax implements SwerveModuleIO {
 
         @Override
         public void setTurningPositionControl(double setpointPosition, double feedforward) {
-                if (Math.abs(setpointPosition) < 0.25) {
-                        turningController.setReference(setpointPosition, ControlType.kMAXMotionVelocityControl,
-                                        ClosedLoopSlot.kSlot0, feedforward);
+                System.out.println(setpointPosition);
+                if (Math.abs(setpointPosition - turnMotor.getEncoder().getPosition()) < 0.0174 * 8) {
+                        System.out.println("0 PID");
+                        turningController.setReference(setpointPosition, ControlType.kPosition,
+                                        ClosedLoopSlot.kSlot2, feedforward);
                 } else {
-                        turningController.setReference(setpointPosition, ControlType.kMAXMotionVelocityControl,
-                                        ClosedLoopSlot.kSlot1, feedforward);
+                        turningController.setReference(setpointPosition, ControlType.kPosition,
+                                        ClosedLoopSlot.kSlot0, feedforward);
                 }
 
         }
 
-        // public void set
 
-        // @Override
-        // public void setDriveVoltage(double volts) {
-        // driveAppliedVolts = MathUtil.clamp(volts, -DriveConstants.maxMotorVolts,
-        // DriveConstants.maxMotorVolts);
-        // driveAppliedVolts = MathUtil.applyDeadband(driveAppliedVolts, 0.05);
-        // driveMotor.setVoltage(driveAppliedVolts);
-        // };
-
-        // @Override
-        // public void setTurnVoltage(double volts) {
-        // turnAppliedVolts = MathUtil.clamp(volts, -DriveConstants.maxMotorVolts,
-        // DriveConstants.maxMotorVolts);
-        // turnAppliedVolts = MathUtil.applyDeadband(turnAppliedVolts, 0.05);
-
-        // turnMotor.setVoltage(turnAppliedVolts);
-        // };
 
         private double getDrivePositionMeters() {
                 return driveMotor.getEncoder().getPosition();
         };
 
-        // private double getAbsoluteTurningPositionRad() {
-        // double pos =
-        // Units.rotationsToRadians(absoluteEncoder.getPosition().getValueAsDouble())
-        // - absoluteEncoderOffsetRad;
-        // while (pos < 0) {
-        // pos += 2 * Math.PI;
-        // }
-        // while (pos > 2 * Math.PI) {
-        // pos -= 2 * Math.PI;
-        // }
-        // return pos;
-        // };
+        private double getAbsoluteTurningPositionRad() {
+                double pos = Units.rotationsToRadians(turnMotor.getEncoder().getPosition())
+                                - absoluteEncoderOffsetRad;
+                while (pos < 0) {
+                        pos += 2 * Math.PI;
+                }
+                while (pos > 2 * Math.PI) {
+                        pos -= 2 * Math.PI;
+                }
+                return pos;
+        };
 
         // private double getAbsoluteTurningVelocityRadPerSec() {
         // return
