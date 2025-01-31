@@ -42,11 +42,7 @@ public class CoralConstants {
 	public static final double momentOfInertia = 0.775; // from last years MOI
 	public static final boolean simulateGravity = true;
 
-	public static final double staticMovementVoltage = 2;
-
 	public enum ArmStates {
-		MOVING_DOWN,
-		MOVING_UP,
 		CORAL_PICKUP,
 		HAND_OFF,
 		STOWED,

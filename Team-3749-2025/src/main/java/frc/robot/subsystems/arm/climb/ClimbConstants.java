@@ -10,7 +10,7 @@ import edu.wpi.first.math.util.Units;
 public class ClimbConstants {
 	public static final int firstMotorId = 0;
 	public static final int secondMotorId = 1;
-	public static final int numMotors = 1;
+	public static final int numMotors = 2;
 
 	public static final int armLength_inches = 16;
 	public static final double armLength_meters = Units.inchesToMeters(armLength_inches);
@@ -41,11 +41,7 @@ public class ClimbConstants {
 	public static final double momentOfInertia = 0.775;
 	public static final boolean simulateGravity = true;
 
-	public static final double staticMovementVoltage = 2;
-
 	public enum ArmStates {
-		MOVING_DOWN,
-		MOVING_UP,
 		PREPARE_FOR_CLIMB,
 		CLIMB,
 		STOWED,
