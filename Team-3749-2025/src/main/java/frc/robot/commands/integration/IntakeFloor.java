@@ -29,11 +29,14 @@ public class IntakeFloor extends Command {
     public void end(boolean interrupted) {
         Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
         Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
+        Robot.coralRoller.setHasPiece(true);
         System.out.println("end");
+
+
     }
 
     @Override
     public boolean isFinished() {
-        return Robot.coralArm.hasPiece();
+        return Robot.coralRoller.hasPiece() && !Robot.coralRoller.getIsStableState();
     }
 }

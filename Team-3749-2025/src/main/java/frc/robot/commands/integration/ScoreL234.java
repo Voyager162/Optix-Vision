@@ -18,25 +18,17 @@ public class ScoreL234 extends Command {
 
     @Override
     public void initialize() {
-        /**
-         * need to have an external source setting the initial hasPiece or else sim
-         * doesn't work
-         * problem is scoringRoller and coralArm use the same sensing variable for
-         * hasPiece
-         */
-
-        if (!Robot.scoringRoller.hasPiece()) { // wrong conditional but temporarily setting it to this so that sim runs
+        if (Robot.scoringRoller.hasPiece()) { 
             Robot.elevator.setState(state);
             Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
             Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
-        } else if (Robot.coralArm.hasPiece()) {
+        } else if (Robot.coralRoller.hasPiece()) {
             Robot.coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
             Robot.elevator.setState(ElevatorStates.STOW);
             Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
         } else {
             this.cancel();
         }
-
     }
 
     @Override
@@ -47,15 +39,13 @@ public class ScoreL234 extends Command {
             Robot.scoringRoller.setState(RollerConstants.RollerStates.RUN);
             handoffComplete = true;
         }
-        if (handoffComplete && !Robot.coralArm.hasPiece() && Robot.scoringRoller.hasPiece()) { // should work once hasPiece logic is made
+        if (handoffComplete && !Robot.coralRoller.hasPiece() && Robot.scoringRoller.hasPiece()) { // should work once hasPiece logic is made
             Robot.scoringRoller.setState(RollerStates.MAINTAIN);
             Robot.elevator.setState(state);
         }
         if (Robot.elevator.getState() == state && Robot.elevator.getIsStableState()) {
             Robot.scoringRoller.setState(RollerConstants.RollerStates.SCORE);
-            // photoelectricSim.setSensing(this.scoreTimer, Robot.scoringRoller.hasPiece());
         }
-
     }
 
     @Override
@@ -69,9 +59,7 @@ public class ScoreL234 extends Command {
 
     @Override
     public boolean isFinished() {
-        System.out.println("DEBUG >>>>> ScoreL234: " + Robot.coralArm.hasPiece());
-        return Robot.coralArm.hasPiece();
-        // return Robot.elevator.getState() == state && !Robot.scoringRoller.hasPiece();
-        // // add working elevator isStableState later
+        System.out.println("ScoreL234: " + Robot.coralRoller.hasPiece());
+        return !Robot.scoringRoller.hasPiece();
     }
 }

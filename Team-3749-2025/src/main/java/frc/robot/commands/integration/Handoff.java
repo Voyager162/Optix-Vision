@@ -17,7 +17,6 @@ public class Handoff extends Command {
 
     public Handoff() {
         addRequirements(Robot.getAllSuperStructureSubsystems());
-
     }
 
     @Override
@@ -32,7 +31,7 @@ public class Handoff extends Command {
     public void execute() {
         if (Robot.coralArm.getState() == CoralConstants.ArmStates.HAND_OFF && Robot.coralArm.getIsStableState()
                 && Robot.elevator.getState() == ElevatorStates.STOW) { // might need to edit elevator.getIsStableState()
-            Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE); // reverse spinning
+            Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE); 
         }
     }
 
