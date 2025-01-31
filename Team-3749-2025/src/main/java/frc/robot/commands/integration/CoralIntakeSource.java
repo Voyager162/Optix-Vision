@@ -27,12 +27,13 @@ public class CoralIntakeSource extends Command {
     public void end(boolean interrupted) {
         Robot.coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
         Robot.coralRoller.setState(RollerStates.MAINTAIN);
-        System.out.println("DEBUG : intake command end");
+        Robot.coralRoller.setHasPiece(true);
+        System.out.println("end");
     }
 
     @Override
     public boolean isFinished() {
-        System.out.println("coralintakesource: " + Robot.coralArm.hasPiece());
-        return Robot.coralArm.hasPiece();
+        System.out.println("coralintakesource: " + Robot.coralRoller.hasPiece());
+        return Robot.coralRoller.hasPiece() && !Robot.coralRoller.getIsStableState();
     }
 }

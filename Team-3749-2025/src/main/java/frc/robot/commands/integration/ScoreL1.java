@@ -9,8 +9,6 @@ import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 
 public class ScoreL1 extends Command {
 
-    public int delay_counter = 0;
-
     public ScoreL1() {
         addRequirements(Robot.getAllSuperStructureSubsystems());
     }
@@ -39,12 +37,7 @@ public class ScoreL1 extends Command {
 
     @Override
     public boolean isFinished() {
-        if (delay_counter < 2) {
-            delay_counter++;
-            return false;
-        } else {
-            System.out.println("scoreL1: " + Robot.coralArm.hasPiece());
-            return !Robot.coralArm.hasPiece();
-        }
+        System.out.println("scoreL1: " + Robot.coralRoller.hasPiece());
+        return !Robot.coralRoller.hasPiece() && !Robot.coralRoller.getIsStableState();
     }
 }
