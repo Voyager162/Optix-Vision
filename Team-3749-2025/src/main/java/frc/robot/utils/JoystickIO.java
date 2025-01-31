@@ -5,17 +5,13 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.commands.elevator.SetElevatorState;
 
-import frc.robot.commands.example.ExampleSubsystemCommand;
 import frc.robot.commands.roller.MaintainCommand;
 import frc.robot.commands.roller.RunCommand;
 import frc.robot.commands.roller.StopCommand;
-import frc.robot.commands.elevator.SetElevatorState;
 
-import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 
@@ -29,7 +25,6 @@ public class JoystickIO {
 
     private static final CommandXboxController pilot = new CommandXboxController(0);
     private static final CommandXboxController operator = new CommandXboxController(1);
-    private static final Command DriveStraight = new DriveStraight();
     private static final Command MaintainCommand = new MaintainCommand();
     private static final Command RunCommand = new RunCommand();
     private static final Command StopCommand = new StopCommand();
