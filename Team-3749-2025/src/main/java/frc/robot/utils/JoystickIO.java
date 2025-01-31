@@ -8,15 +8,11 @@ import frc.robot.Robot;
 // import frc.robot.commands.arm.SetArmState;
 import frc.robot.commands.elevator.SetElevatorState;
 
-import frc.robot.commands.example.ExampleSubsystemCommand;
 import frc.robot.commands.roller.MaintainCommand;
 import frc.robot.commands.roller.RunCommand;
 import frc.robot.commands.roller.StopCommand;
-import frc.robot.commands.elevator.SetElevatorState;
-
-import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
-import frc.robot.subsystems.arm.coral.CoralConstants;
+import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 
 /**
  * Util class for button bindings
@@ -27,7 +23,6 @@ import frc.robot.subsystems.arm.coral.CoralConstants;
 public class JoystickIO {
     private static final CommandXboxController pilot = new CommandXboxController(0);
     private static final CommandXboxController operator = new CommandXboxController(1);
-    private static final Command DriveStraight = new DriveStraight();
     private static final Command MaintainCommand = new MaintainCommand();
     private static final Command RunCommand = new RunCommand();
     private static final Command StopCommand = new StopCommand();
