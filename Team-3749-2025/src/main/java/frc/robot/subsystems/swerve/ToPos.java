@@ -41,7 +41,7 @@ public class ToPos {
         waypoints.add(
                 new Waypoint(approachPoint.getTranslation(), finalPose.getTranslation(), finalPose.getTranslation()));
 
-        removeRedundantWaypoints(waypoints);
+        removeRedundantWaypoints(waypoints, initialPose, finalPose);
         removeExtraStartVertex(waypoints);
         removeExtraEndVertex(waypoints);
         // flipForRedAlliance(waypoints);
@@ -76,7 +76,25 @@ public class ToPos {
      *
      * @param waypoints The list of waypoints to be cleaned.
      */
-    private void removeRedundantWaypoints(List<Waypoint> waypoints) {
+    private void removeRedundantWaypoints(List<Waypoint> waypoints, Pose2d initialpose, Pose2d finalpose) {
+        Translation2d initialTranslation = initialpose.getTranslation();
+        Translation2d finalTranslation = finalpose.getTranslation();
+        double distance = initialTranslation.getDistance(finalTranslation);
+        double headingInit = initialpose.getRotation().getDegrees();
+        double headingFinal = finalpose.getRotation().getDegrees();
+        System.out.println("all of the things for removing the points");
+        System.out.println(distance);
+        System.out.println(headingFinal - headingInit);
+
+// Check if the heading difference is within ±5 degrees
+    if (distance < 2.0 && 5 >= Math.abs(headingFinal - headingFinal) || 365 <= Math.abs(headingFinal - headingFinal)  ) {
+        System.out.println("called");
+        if (waypoints.size() > 2) {
+            waypoints.subList(1, waypoints.size() - 1).clear();
+        }
+    }
+        
+    
         double threshold = 0.05; // Minimum distance between waypoints to consider them unique (5 cm).
         for (int i = 1; i < waypoints.size(); i++) {
             Translation2d current = waypoints.get(i).anchor();
@@ -86,7 +104,7 @@ public class ToPos {
                 i--; // Adjust index after removal.
             }
         }
-
+    
     }
 
     private void removeExtraStartVertex(List<Waypoint> waypoints) {
@@ -103,7 +121,6 @@ public class ToPos {
                 + startToFirstVertexVector.getY() * firstVertexToSecondVertexVector.getY());
 
         if (startingAlignment < 0) {
-  
 
             waypoints.remove(1);
         }
@@ -130,10 +147,10 @@ public class ToPos {
         System.out.println(endingAlignment);
         System.out.println(waypoints.size());
         System.out.println("waypoints");
-        System.out.println(waypoints.get(waypoints.size()-1).anchor().toString());
-        System.out.println(waypoints.get(waypoints.size()-2).anchor().toString());
-        System.out.println(waypoints.get(waypoints.size()-3).anchor().toString());
-        System.out.println(waypoints.get(waypoints.size()-4).anchor().toString());
+        System.out.println(waypoints.get(waypoints.size() - 1).anchor().toString());
+        System.out.println(waypoints.get(waypoints.size() - 2).anchor().toString());
+        System.out.println(waypoints.get(waypoints.size() - 3).anchor().toString());
+        System.out.println(waypoints.get(waypoints.size() - 4).anchor().toString());
         if (endingAlignment < 0) {
 
             waypoints.remove(waypoints.size() - 2);
