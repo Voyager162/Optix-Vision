@@ -3,7 +3,6 @@ package frc.robot.subsystems.arm.coral;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import frc.robot.subsystems.arm.CoralArmIO;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
