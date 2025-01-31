@@ -92,8 +92,10 @@ public class CoralArm extends SubsystemBase{
 
 	// SET FUNCTIONS
 
-
-	// Method to set the voltage for the arm
+	/**
+	 * sets the voltage of the arm
+	 * @param volts
+	 */
 	public void setVoltage(double volts) {
 		armIO.setVoltage(volts);
 	}
@@ -122,6 +124,10 @@ public class CoralArm extends SubsystemBase{
 		}
 	}
 
+	/**
+	 * sets the goal of the arm controller
+	 * @param setPoint
+	 */
 	public void setGoal(double setPoint) {
 		controller.setGoal(setPoint);
 	}
@@ -200,7 +206,9 @@ public class CoralArm extends SubsystemBase{
 
 
 
-	/** Runs the logic for the current arm state. */
+	/** 
+	 * Runs the logic for the current arm state. 
+	 */
 	private void runState() {
 		switch (state) {
 			case STOPPED:
@@ -212,7 +220,9 @@ public class CoralArm extends SubsystemBase{
 		}
 	}
 
-	/** Logs data to Shuffleboard. */
+	/** 
+	 * Logs data to Shuffleboard. 
+	 */
 	private void logData() {
 		currentCommandLog.set(
 				this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
@@ -231,7 +241,9 @@ public class CoralArm extends SubsystemBase{
 		stateLog.set(state.name());
 	}
 
-	/** Periodic method for updating arm behavior. */
+	/** 
+	 * Periodic method for updating arm behavior. 
+	 */
 	@Override
 	public void periodic() {
 
