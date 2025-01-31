@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.swerve.ToPosConstants;
 import frc.robot.utils.ShuffleData;
 
 public class Robot extends TimedRobot {
@@ -135,6 +136,15 @@ public class Robot extends TimedRobot {
   }
   @Override
   public void simulationInit(){
-    DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
+    DriverStationSim.setAllianceStationId(AllianceStationID.Red2);
+    if(DriverStationSim.getAllianceStationId() == AllianceStationID.Red1 
+    || DriverStationSim.getAllianceStationId() == AllianceStationID.Red2 ||
+    DriverStationSim.getAllianceStationId() == AllianceStationID.Red3)
+    {
+      ToPosConstants.Setpoints.flipPoints(); //oohhhh nooo jonathan you cant just code it like this this wont work on actual
+      //alliance change
+
+      //too bad
+    }
   }
 }
