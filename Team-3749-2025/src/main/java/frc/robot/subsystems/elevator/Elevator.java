@@ -248,7 +248,7 @@ public class Elevator extends SubsystemBase {
     }
 
     private Transform3d getTransform3d() {
-        Transform3d transform = new Transform3d(0, 0, data.positionMeters - 0.6317996, new Rotation3d(roll, pitch, yaw));
+        Transform3d transform = new Transform3d(0, 0, data.positionMeters, new Rotation3d(roll, pitch, yaw));
         return transform;
     }
 

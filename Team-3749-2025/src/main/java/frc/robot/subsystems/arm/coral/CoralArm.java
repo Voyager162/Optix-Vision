@@ -10,6 +10,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Angle;
@@ -37,12 +38,12 @@ public class CoralArm extends Arm {
 
     private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
-    private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
-    private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
-    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Coral Arm", 24, 0));
+    private Mechanism2d mechanism2d = new Mechanism2d(3, 3);
+    private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 3, 3);
+    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Coral Arm", 3, 0));
 
     private Angle roll = Angle.ofBaseUnits(0, Degrees);
-    private Angle pitch = Angle.ofBaseUnits(data.positionUnits, Degrees);
+    private Angle pitch = Angle.ofBaseUnits(data.positionUnits, Radians);
     private Angle yaw = Angle.ofBaseUnits(0, Degrees);
     // private Pose3d zeroedComponentPose = new Pose3d(0, 0, 0, new Rotation3d(roll, pitch, yaw));
 
@@ -177,11 +178,12 @@ public class CoralArm extends Arm {
         // )
     }
     private Angle getPitch(){
-        return Angle.ofBaseUnits(data.positionUnits + 270, Degrees);
+        System.out.println(data.positionUnits);
+        return Angle.ofBaseUnits(data.positionUnits, Radians);
     }
 
     private Transform3d getTransform3d() {
-        Transform3d transform = new Transform3d(0, 0, 0, new Rotation3d(roll, getPitch(), yaw));
+        Transform3d transform = new Transform3d(0.35, 0, 0.4, new Rotation3d(roll, getPitch(), yaw));
         return transform;
     }
 

@@ -16,9 +16,9 @@ public class CoralConstants {
     public static final double armLength_inches = 17.796; // from cad max length of arm
     public static final double armLength_meters = Units.inchesToMeters(armLength_inches);
 
-    public static final int armMinAngle_degrees = 10;
+    public static final int armMinAngle_degrees = 0;
     public static final int armMaxAngle_degrees = 180;
-    public static final int armStartingAngle_degrees = 90;
+    public static final int armStartingAngle_degrees = 0;
 
     public static final double armMass_kg = 1.132; // from cad, I highlighted all of the components on the arm and used the mass feature
     public static final double armGearing = 40;
