@@ -12,21 +12,22 @@ import frc.robot.commands.auto.Autos;
 import frc.robot.utils.JoystickIO;
 
 public class RobotContainer {
+  
+  // private final setstate stop = new setstate(ElevatorStates.STOP);
+  public RobotContainer() {
+    DriverStation.silenceJoystickConnectionWarning(true);
+    DriverStation.removeRefreshedDataEventHandle(44000);
 
-	// private final setstate stop = new setstate(ElevatorStates.STOP);
-	public RobotContainer() {
-		DriverStation.silenceJoystickConnectionWarning(true);
-		DriverStation.removeRefreshedDataEventHandle(44000);
+    // When to go into brownout protection
+    RobotController.setBrownoutVoltage(7.0);
 
-		// When to go into brownout protection
-		RobotController.setBrownoutVoltage(7.0);
+    // robot setup
+    JoystickIO.getButtonBindings();
+    AutoUtils.initAuto();
+    
+  }
 
-		// robot setup
-		JoystickIO.getButtonBindings();
-		AutoUtils.initAuto();
-	}
-
-	public Command getAutonomousCommand() {
-		return Autos.getSelectedCommand();
-	}
+  public Command getAutonomousCommand() {
+    return Autos.getSelectedCommand();
+  }
 }

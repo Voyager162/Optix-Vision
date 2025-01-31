@@ -5,7 +5,7 @@ package frc.robot.subsystems.arm;
  *
  * @author Weston Gardner
  */
-public interface ArmIO {
+public interface ClimbArmIO {
 
 	public static class ArmData {
 		public double positionUnits = 0;

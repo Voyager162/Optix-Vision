@@ -1,9 +1,9 @@
-package frc.robot.subsystems.arm.sim;
+package frc.robot.subsystems.arm.coral;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
-import frc.robot.subsystems.arm.ArmIO;
+import frc.robot.subsystems.arm.CoralArmIO;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
@@ -11,11 +11,12 @@ import frc.robot.utils.MiscConstants.SimConstants;
  *
  * @author Weston Gardner
  */
-public class ArmSim implements ArmIO {
+public class CoralArmSim implements CoralArmIO {
 
 	private SingleJointedArmSim armSim;
 
-	public ArmSim(
+	public CoralArmSim(
+			int numMotors,
 			double gearing,
 			double momentOfInertia,
 			double length_meters,
@@ -27,7 +28,7 @@ public class ArmSim implements ArmIO {
 		System.out.println("[Init] Creating ArmSim");
 
 		armSim = new SingleJointedArmSim(
-				DCMotor.getNEO(2),
+				DCMotor.getNEO(numMotors),
 				gearing,
 				momentOfInertia,
 				length_meters,
@@ -56,14 +57,11 @@ public class ArmSim implements ArmIO {
 		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
 
 		data.inputVolts = inputVolts;
-		data.firstMotorAppliedVolts = inputVolts;
-		data.secondMotorAppliedVolts = inputVolts;
-		data.firstMotorCurrentAmps = armSim.getCurrentDrawAmps();
-		data.secondMotorCurrentAmps = data.firstMotorCurrentAmps;
+		data.motorAppliedVolts = inputVolts;
+		data.motorCurrentAmps = armSim.getCurrentDrawAmps();
 
 		// Sim has no temp
-		data.firstMotorTempCelcius = 0;
-		data.secondMotorTempCelcius = 0;
+		data.motorTempCelcius = 0;
 	}
 
 	/**

@@ -9,9 +9,10 @@ import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
  * Simulation for elevator subsystem
- *
+ * 
  * @author Dhyan Soni
  */
+
 public class ElevatorSimulation implements ElevatorIO {
     private double inputVolts = 0;
     private double previousVelocity = 0;

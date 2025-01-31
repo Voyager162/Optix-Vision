@@ -10,106 +10,107 @@ import frc.robot.utils.ShuffleData;
 
 /**
  * An example subsystem to model
- *
+ * 
  * @author Noah Simon
  */
 public class ExampleSubsystem extends SubsystemBase {
 
-	private ExampleSubsystemIO subsystemIO;
-	private SubsystemData data = new SubsystemData();
-	private SubsystemStates state = SubsystemStates.STOP;
+    private ExampleSubsystemIO subsystemIO;
+    private SubsystemData data = new SubsystemData();
+    private SubsystemStates state = SubsystemStates.STOP;
 
-	private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
-	public ShuffleData<Double> positionUnitsLog = new ShuffleData<Double>("Subsystem", "position units", 0.0);
-	public ShuffleData<Double> velocityUnitsLog = new ShuffleData<Double>("Subsystem", "velocity units", 0.0);
-	public ShuffleData<Double> accelerationUnitsLog = new ShuffleData<Double>("Subsystem", "acceleration units", 0.0);
-	public ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Subsystem", "input volts", 0.0);
-	public ShuffleData<Double> appliedVoltsLog = new ShuffleData<Double>("Subsystem", "applied volts", 0.0);
-	public ShuffleData<Double> currentAmpsLog = new ShuffleData<Double>("Subsystem", "current amps", 0.0);
-	public ShuffleData<Double> tempCelciusLog = new ShuffleData<Double>("Subsystem", "temp celcius", 0.0);
+    private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
+    public ShuffleData<Double> positionUnitsLog = new ShuffleData<Double>("Subsystem", "position units", 0.0);
+    public ShuffleData<Double> velocityUnitsLog = new ShuffleData<Double>("Subsystem", "velocity units", 0.0);
+    public ShuffleData<Double> accelerationUnitsLog = new ShuffleData<Double>("Subsystem", "acceleration units", 0.0);
+    public ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Subsystem", "input volts", 0.0);
+    public ShuffleData<Double> appliedVoltsLog = new ShuffleData<Double>("Subsystem", "applied volts", 0.0);
+    public ShuffleData<Double> currentAmpsLog = new ShuffleData<Double>("Subsystem", "current amps", 0.0);
+    public ShuffleData<Double> tempCelciusLog = new ShuffleData<Double>("Subsystem", "temp celcius", 0.0);
 
-	private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
+    private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
-	public ExampleSubsystem() {
-		if (Robot.isSimulation()) {
-			subsystemIO = new SubsystemSim();
+    public ExampleSubsystem() {
+        if (Robot.isSimulation()) {
+            subsystemIO = new SubsystemSim();
 
-		} else {
-			subsystemIO = new SubsystemSparkMax();
-		}
-	}
+        } else {
+            subsystemIO = new SubsystemSparkMax();
+        }
+    }
 
-	public double getPositionRad() {
-		return data.positionUnits;
-	}
+    public double getPositionRad() {
+        return data.positionUnits;
+    }
 
-	public double getVelocityRadPerSec() {
-		return data.velocityUnits;
-	}
+    public double getVelocityRadPerSec() {
+        return data.velocityUnits;
+    }
 
-	public SubsystemStates getState() {
-		return state;
-	}
+    public SubsystemStates getState() {
+        return state;
+    }
 
-	// returns true when the state is reached
-	public boolean getIsStableState() {
+    // returns true when the state is reached
+    public boolean getIsStableState() {
 
-		switch (state) {
-			case STOP:
-				return data.velocityUnits == 0;
-			case GO:
-				return data.appliedVolts == 6;
-			default:
-				return false;
-		}
-	}
+        switch (state) {
+            case STOP:
+                return data.velocityUnits == 0;
+            case GO:
+                return data.appliedVolts == 6;
+            default:
+                return false;
+        }
+    }
 
-	public void setState(SubsystemStates state) {
-		this.state = state;
-	}
+    public void setState(SubsystemStates state) {
+        this.state = state;
+    }
 
-	private void setVoltage(double volts) {
-		subsystemIO.setVoltage(volts);
-	}
+    private void setVoltage(double volts) {
+        subsystemIO.setVoltage(volts);
+    }
 
-	private void logData() {
-		currentCommandLog.set(
-				this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-		positionUnitsLog.set(data.positionUnits);
-		velocityUnitsLog.set(data.velocityUnits);
-		inputVoltsLog.set(data.inputVolts);
-		appliedVoltsLog.set(data.appliedVolts);
-		currentAmpsLog.set(data.currentAmps);
-		tempCelciusLog.set(data.tempCelcius);
+    private void logData() {
+        currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
+        positionUnitsLog.set(data.positionUnits);
+        velocityUnitsLog.set(data.velocityUnits);
+        inputVoltsLog.set(data.inputVolts);
+        appliedVoltsLog.set(data.appliedVolts);
+        currentAmpsLog.set(data.currentAmps);
+        tempCelciusLog.set(data.tempCelcius);
 
-		stateLog.set(state.name());
-	}
+        stateLog.set(state.name());
 
-	private void runState() {
-		switch (state) {
-			case STOP:
-				runStateStop();
-				break;
-			case GO:
-				runStateGo();
-				break;
-		}
-	}
+    }
 
-	private void runStateStop() {
-		setVoltage(0);
-	}
+    private void runState() {
+        switch (state) {
+            case STOP:
+                runStateStop();
+                break;
+            case GO:
+                runStateGo();
+                break;
+        }
+    }
 
-	private void runStateGo() {
-		setVoltage(6);
-	}
+    private void runStateStop() {
+        setVoltage(0);
+    }
 
-	@Override
-	public void periodic() {
-		subsystemIO.updateData(data);
+    private void runStateGo() {
+        setVoltage(6);
+    }
 
-		runState();
+    @Override
+    public void periodic() {
+        subsystemIO.updateData(data);
 
-		logData();
-	}
+        runState();
+
+        logData();
+    }
+
 }
