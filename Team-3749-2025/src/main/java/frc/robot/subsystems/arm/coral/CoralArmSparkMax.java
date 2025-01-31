@@ -30,6 +30,10 @@ public class CoralArmSparkMax implements ClimbArmIO {
 	private double previousVelocity = 0;
 	private double velocity = 0;
 
+	/**
+	 * creates an io implementation of a single real spark max motor
+	 * @param motorId
+	 */
 	public CoralArmSparkMax(int motorId) {
 
 		motor = new SparkMax(motorId, MotorType.kBrushless);
@@ -75,13 +79,7 @@ public class CoralArmSparkMax implements ClimbArmIO {
 	}
 
 	/**
-	 * Takes the volts parameter, then uses inputVolts to set the motor voltage
-	 * Clamp takes the volts
-	 * and makes sure that the amount of volts isn't above or below the boundary for
-	 * the voltage
-	 * Deadband makes it so that the value returns 0.0 if the volts is between -0.05
-	 * to 0.05
-	 *
+	 * Sets the voltage of the motor
 	 * @param volts
 	 */
 	@Override
