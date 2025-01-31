@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
@@ -248,6 +249,12 @@ public class Elevator extends SubsystemBase {
     }
 
     private Transform3d getTransform3d() {
+        // double posZ;
+        // if (data.positionMeters > 0 ){
+        //     posZ =  - Units.inchesToMeters(2.766);
+        // } else {
+        //     posZ = 0;
+        // }
         Transform3d transform = new Transform3d(0, 0, data.positionMeters, new Rotation3d(roll, pitch, yaw));
         return transform;
     }
