@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,17 +25,17 @@ import frc.robot.subsystems.swerve.ToPosConstants;
 import frc.robot.utils.ShuffleData;
 
 public class Robot extends TimedRobot {
-   private Field2d field2d = new Field2d();
+  private Field2d field2d = new Field2d();
 
-    private static final List<Translation2d> HEXAGON_VERTICES = List.of(
-        new Translation2d(4.5 + 1.0, 4.0),
-        new Translation2d(4.5 + 0.5, 4.0 + Math.sqrt(3) / 2),
-        new Translation2d(4.5 - 0.5, 4.0 + Math.sqrt(3) / 2),
-        new Translation2d(4.5 - 1.0, 4.0),
-        new Translation2d(4.5 - 0.5, 4.0 - Math.sqrt(3) / 2),
-        new Translation2d(4.5 + 0.5, 4.0 - Math.sqrt(3) / 2),
-        new Translation2d(4.5 + 1.0, 4.0) // Close loop
-    );
+  private static final List<Translation2d> HEXAGON_VERTICES = List.of(
+      new Translation2d(4.5 + 1.0, 4.0),
+      new Translation2d(4.5 + 0.5, 4.0 + Math.sqrt(3) / 2),
+      new Translation2d(4.5 - 0.5, 4.0 + Math.sqrt(3) / 2),
+      new Translation2d(4.5 - 1.0, 4.0),
+      new Translation2d(4.5 - 0.5, 4.0 - Math.sqrt(3) / 2),
+      new Translation2d(4.5 + 0.5, 4.0 - Math.sqrt(3) / 2),
+      new Translation2d(4.5 + 1.0, 4.0) // Close loop
+  );
   private Command m_autonomousCommand;
 
   public static Swerve swerve = new Swerve();
@@ -66,14 +67,14 @@ public class Robot extends TimedRobot {
     allianceLog.set(DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get().name() : "None");
     FMSLog.set(DriverStation.isFMSAttached());
     // Publish hexagon points to NetworkTables
-          List<Pose2d> hexagonPoses = new ArrayList<>();
-        for (Translation2d vertex : HEXAGON_VERTICES) {
-            hexagonPoses.add(new Pose2d(vertex, new Rotation2d()));
-        }
-
-        // Add hexagon points as "Object" on the field
-        field2d.getObject("Hexagon").setPoses(hexagonPoses);
+    List<Pose2d> hexagonPoses = new ArrayList<>();
+    for (Translation2d vertex : HEXAGON_VERTICES) {
+      hexagonPoses.add(new Pose2d(vertex, new Rotation2d()));
     }
+
+    // Add hexagon points as "Object" on the field
+    field2d.getObject("Hexagon").setPoses(hexagonPoses);
+  }
 
   @Override
   public void disabledInit() {
@@ -134,17 +135,17 @@ public class Robot extends TimedRobot {
   @Override
   public void testExit() {
   }
-  @Override
-  public void simulationInit(){
-    DriverStationSim.setAllianceStationId(AllianceStationID.Red2);
-    if(DriverStationSim.getAllianceStationId() == AllianceStationID.Red1 
-    || DriverStationSim.getAllianceStationId() == AllianceStationID.Red2 ||
-    DriverStationSim.getAllianceStationId() == AllianceStationID.Red3)
-    {
-      ToPosConstants.Setpoints.flipPoints(); //oohhhh nooo jonathan you cant just code it like this this wont work on actual
-      //alliance change
 
-      //too bad
+  @Override
+  public void simulationInit() {
+    DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
+    //only use red1 and blue1 for nwo
+    //at the end of the day all we really care about given this is a sim is that you can do red and blue
+    //on real hardware this doesn't change a whole lot anyways if you're on red3 or red1
+    //only reason we'd care is for auto 
+    if(DriverStationSim.getAllianceStationId().equals(AllianceStationID.Red1))
+    {
+      swerve.setOdometry(ToPosConstants.flipPose(swerve.getPose()));
     }
   }
 }

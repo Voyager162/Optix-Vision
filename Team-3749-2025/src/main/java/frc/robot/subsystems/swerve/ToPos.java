@@ -44,31 +44,12 @@ public class ToPos {
         removeRedundantWaypoints(waypoints, initialPose, finalPose);
         removeExtraStartVertex(waypoints);
         removeExtraEndVertex(waypoints);
-        // flipForRedAlliance(waypoints);
 
         return new PathPlannerPath(waypoints,
                 new PathConstraints(maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration), null,
                 new GoalEndState(0.0, finalPose.getRotation()));
     }
-
-    // public void flipForRedAlliance(List<Waypoint> waypoints) {
-    //     if (UtilityFunctions.isRedAlliance()){
-
-    //         for(int i=0;i<waypoints.size();i++)
-    //         {
-    //             Waypoint point = waypoints.get(i);
-    //             point = point.flip();
-    //             Translation2d prev = point.prevControl();
-    //             Translation2d anchor = point.anchor();
-    //             Translation2d next = point.nextControl();
-    //             System.out.println(anchor.getAngle());
-    //             anchor = new Translation2d(anchor.getDistance(new Translation2d(0,0)),new Rotation2d(anchor.getAngle().getRadians()+Math.PI));
-    //             point = new Waypoint(prev, anchor, next);
-    //             waypoints.set(i,point);
-    //         }
-    //     }
-
-    // }
+    
 
     /**
      * Removes redundant waypoints that are too close to each other or move the
@@ -87,7 +68,7 @@ public class ToPos {
         System.out.println(headingFinal - headingInit);
 
 // Check if the heading difference is within ±5 degrees
-    if (distance < 1.0 && 5 >= Math.abs(headingFinal - headingFinal) || 365 >= Math.abs(headingFinal - headingFinal)  ) {
+    if (distance < 2.0 && 5 >= Math.abs(headingFinal - headingFinal) || 365 <= Math.abs(headingFinal - headingFinal)  ) {
         System.out.println("called");
         if (waypoints.size() > 2) {
             waypoints.subList(1, waypoints.size() - 1).clear();
@@ -203,9 +184,9 @@ public class ToPos {
 
         // Calculate clockwise and counterclockwise distances based on # verticies
         // traveled
-        int clockwiseDistance = (endVertexIndex - startVertexIndex + ToPosConstants.ReefVerticies.HEXAGON_VERTICES.length) % ToPosConstants.ReefVerticies.HEXAGON_VERTICES.length;
-        int counterclockwiseDistance = (startVertexIndex - endVertexIndex + ToPosConstants.ReefVerticies.HEXAGON_VERTICES.length)
-                % ToPosConstants.ReefVerticies.HEXAGON_VERTICES.length;
+        int clockwiseDistance = (endVertexIndex - startVertexIndex + ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size()) % ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size();
+        int counterclockwiseDistance = (startVertexIndex - endVertexIndex + ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size())
+                % ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size();
 
         // Choose the direction based on shorter angular displacement
         boolean goClockwise = clockwiseDistance < counterclockwiseDistance;
@@ -213,7 +194,7 @@ public class ToPos {
         // Adjust to move in the correct global direction
         int currentIndex = startVertexIndex;
         while (true) {
-            Translation2d vertex = ToPosConstants.ReefVerticies.HEXAGON_VERTICES[currentIndex];
+            Translation2d vertex = ToPosConstants.ReefVerticies.HEXAGON_VERTICES.get(currentIndex);
             detourWaypoints.add(new Waypoint(vertex, vertex, vertex));
 
             // Stop when reaching the end vertex
@@ -223,8 +204,8 @@ public class ToPos {
 
             // Move to the next vertex in the correct direction
             currentIndex = goClockwise
-                    ? (currentIndex + 1) % ToPosConstants.ReefVerticies.HEXAGON_VERTICES.length
-                    : (currentIndex - 1 + ToPosConstants.ReefVerticies.HEXAGON_VERTICES.length) % ToPosConstants.ReefVerticies.HEXAGON_VERTICES.length;
+                    ? (currentIndex + 1) % ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size()
+                    : (currentIndex - 1 + ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size()) % ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size();
         }
 
         return detourWaypoints;
@@ -238,9 +219,9 @@ public class ToPos {
      * @return True if the path intersects an obstacle, false otherwise.
      */
     private boolean isPathIntersectingObstacle(Translation2d start, Translation2d end) {
-        for (int i = 0; i < ToPosConstants.ReefVerticies.HEXAGON_VERTICES.length; i++) {
-            Translation2d vertex1 = ToPosConstants.ReefVerticies.HEXAGON_VERTICES[i];
-            Translation2d vertex2 = ToPosConstants.ReefVerticies.HEXAGON_VERTICES[(i + 1) % ToPosConstants.ReefVerticies.HEXAGON_VERTICES.length];
+        for (int i = 0; i < ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size(); i++) {
+            Translation2d vertex1 = ToPosConstants.ReefVerticies.HEXAGON_VERTICES.get(i);
+            Translation2d vertex2 = ToPosConstants.ReefVerticies.HEXAGON_VERTICES.get((i + 1) % ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size());
             if (doLinesIntersect(start, end, vertex1, vertex2)) {
                 return true;
             }
@@ -262,8 +243,8 @@ public class ToPos {
         double minDistance1 = Double.MAX_VALUE, minDistance2 = Double.MAX_VALUE;
 
         // Step 1: Find the two closest vertices to the given point.
-        for (int i = 0; i < ToPosConstants.ReefVerticies.HEXAGON_VERTICES.length - 1; i++) {
-            double distance = point.getDistance(ToPosConstants.ReefVerticies.HEXAGON_VERTICES[i]);
+        for (int i = 0; i < ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size() - 1; i++) {
+            double distance = point.getDistance(ToPosConstants.ReefVerticies.HEXAGON_VERTICES.get(i));
 
             if (distance < minDistance1) {
                 // Update second closest
@@ -283,16 +264,16 @@ public class ToPos {
         // Step 2: Ensure consecutive vertices.
         // Adjust for wrap-around (consecutive vertices should form a hexagon edge).
         if (Math.abs(closestVertex1 - closestVertex2) != 1 &&
-                !(closestVertex1 == 0 && closestVertex2 == ToPosConstants.ReefVerticies.HEXAGON_VERTICES.length - 2) &&
-                !(closestVertex2 == 0 && closestVertex1 == ToPosConstants.ReefVerticies.HEXAGON_VERTICES.length - 2)) {
+                !(closestVertex1 == 0 && closestVertex2 == ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size() - 2) &&
+                !(closestVertex2 == 0 && closestVertex1 == ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size() - 2)) {
 
             System.out.println("MATH MISTAKE: " + closestVertex1 + ", " + closestVertex2);
-            closestVertex2 = (closestVertex1 + 1) % ToPosConstants.ReefVerticies.HEXAGON_VERTICES.length;
+            closestVertex2 = (closestVertex1 + 1) % ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size();
         }
 
         // Step 3: Evaluate alignment with the path direction.
-        Translation2d vertex1 = ToPosConstants.ReefVerticies.HEXAGON_VERTICES[closestVertex1];
-        Translation2d vertex2 = ToPosConstants.ReefVerticies.HEXAGON_VERTICES[closestVertex2];
+        Translation2d vertex1 = ToPosConstants.ReefVerticies.HEXAGON_VERTICES.get(closestVertex1);
+        Translation2d vertex2 = ToPosConstants.ReefVerticies.HEXAGON_VERTICES.get(closestVertex2);
 
         // the vector representing a translation from the start to the end
         Translation2d pathDirection = new Translation2d(pathEnd.getX() - pathStart.getX(),

@@ -1,11 +1,14 @@
 package frc.robot.subsystems.swerve;
 
+import java.util.List;
+
 import choreo.util.ChoreoAllianceFlipUtil;
+import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.Robot;
+import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 
 public class ToPosConstants {
 
@@ -16,6 +19,12 @@ public class ToPosConstants {
     // 2.0;
 
     public static final ChoreoAllianceFlipUtil.Flipper flipper = ChoreoAllianceFlipUtil.getFlipper();
+    public static Pose2d flipPose(Pose2d pose)
+    {
+        Translation2d translation = new Translation2d(flipper.flipX(pose.getX()),flipper.flipY(pose.getY()));
+        Rotation2d rotation = new Rotation2d(flipper.flipHeading(pose.getRotation().getRadians()));
+        return new Pose2d(translation,rotation);
+    }
 
     public static final class ReefVerticies
     {
@@ -24,16 +33,25 @@ public class ToPosConstants {
     private static final double SAFE_MARGIN = .88; // Safety margin around the robot.
     private static final double xComponenet = Math.cos(Math.toRadians(30));
     private static final double yComponenet = Math.sin(Math.toRadians(30));
+
+    private static Translation2d flipAccount(Translation2d translation)
+    {
+        if(DriverStationSim.getAllianceStationId().equals(AllianceStationID.Red1))
+        {
+            return new Translation2d(flipper.flipX(translation.getX()),flipper.flipY(translation.getY()));
+        }
+        return translation;
+    }
     // Vertices of the hexagon, adjusted for safety margins.
 
-        public static Translation2d[] HEXAGON_VERTICES = {
-            new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN), // close right
-            new Translation2d(4.5, 3.039 - SAFE_MARGIN), // middle right
-            new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN), // far right
-            new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 4.480 + yComponenet * SAFE_MARGIN), // far left
-            new Translation2d(4.5, 4.961 + SAFE_MARGIN), // middle left
-            new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 4.480 + yComponenet * SAFE_MARGIN), // close left
-            new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN)}; // close right
+        public static List<Translation2d> HEXAGON_VERTICES = List.of(
+            flipAccount(new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN)), // close right
+            flipAccount(new Translation2d(4.5, 3.039 - SAFE_MARGIN)), // middle right
+            flipAccount(new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN)), // far right
+            flipAccount(new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 4.480 + yComponenet * SAFE_MARGIN)), // far left
+            flipAccount(new Translation2d(4.5, 4.961 + SAFE_MARGIN)), // middle left
+            flipAccount(new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 4.480 + yComponenet * SAFE_MARGIN)), // close left
+            flipAccount(new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN))); // close right
     }
 
     public static final class PathPlannerConstants {
@@ -101,9 +119,17 @@ public class ToPosConstants {
 
             // Adjust coordinates to align the robot’s front edge with the target
             if (isCoralStation) {
+                // if(DriverStationSim.getAllianceStationId().equals(AllianceStationID.Red1))
+                // {
+                //     return flipPose(new Pose2d(x + offsetX, y + offsetY, new Rotation2d(heading)));
+                // }
                 return new Pose2d(x + offsetX, y + offsetY, new Rotation2d(heading));
 
             }
+            // if(DriverStationSim.getAllianceStationId().equals(AllianceStationID.Red1))
+            // {
+            //     return flipPose(new Pose2d(x - offsetX, y - offsetY, new Rotation2d(heading)));
+            // }
             return new Pose2d(x - offsetX, y - offsetY, new Rotation2d(heading));
         };
 
@@ -165,31 +191,13 @@ public class ToPosConstants {
         public static  Pose2d kApproach = createApproachPoint(kSetpoint);
         public static  Pose2d lApproach = createApproachPoint(lSetpoint);
 
-        public static void flipPoints()
-        {
-            for(int i=0;i<PPSetpoints.values().length;i++)
-            {
-                Pose2d approachPoint = PPSetpoints.values()[i].approachPoint;
-                Pose2d setpoint = PPSetpoints.values()[i].setpoint;
-                PPSetpoints.values()[i].approachPoint = flipPose(approachPoint);
-                PPSetpoints.values()[i].setpoint = flipPose(setpoint);
-            }
-            Robot.swerve.setOdometry(ToPosConstants.Setpoints.flipPose(Robot.swerve.getPose()));
-            for(int i=0;i<ToPosConstants.ReefVerticies.HEXAGON_VERTICES.length;i++)
-            {
-                Translation2d vertex = ToPosConstants.ReefVerticies.HEXAGON_VERTICES[i];
-                ToPosConstants.ReefVerticies.HEXAGON_VERTICES[i] = new Translation2d(flipper.flipX(vertex.getX()),
-                flipper.flipY(vertex.getY()));
-            }
-
-        }
-
-        public static Pose2d flipPose(Pose2d pose)
-        {
-            Translation2d translation = new Translation2d(flipper.flipX(pose.getX()),flipper.flipY(pose.getY()));
-            Rotation2d rotation = new Rotation2d(flipper.flipHeading(pose.getRotation().getRadians()));
-            return new Pose2d(translation,rotation);
-        }
+            // for(int i=0;i<PPSetpoints.values().length;i++)
+            // {
+            //     Pose2d approachPoint = PPSetpoints.values()[i].approachPoint;
+            //     Pose2d setpoint = PPSetpoints.values()[i].setpoint;
+            //     PPSetpoints.values()[i].approachPoint = flipPose(approachPoint);
+            //     PPSetpoints.values()[i].setpoint = flipPose(setpoint);
+            // }
 
         public enum PPSetpoints {
 
@@ -212,8 +220,16 @@ public class ToPosConstants {
             public Pose2d approachPoint;
 
             private PPSetpoints(Pose2d setpoint, Pose2d approachPoint) {
-                this.setpoint = setpoint;
-                this.approachPoint = approachPoint;
+                if(DriverStationSim.getAllianceStationId().equals(AllianceStationID.Red1))
+                {
+                    this.setpoint = flipPose(setpoint);
+                    this.approachPoint = flipPose(approachPoint);
+                }
+                else
+                {
+                    this.setpoint = setpoint;
+                    this.approachPoint = approachPoint;
+                }
             }
 
         }
