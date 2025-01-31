@@ -84,7 +84,7 @@ public class ClimbArm extends SubsystemBase {
 		} else {
 			armIO = new ClimbArmSparkMax(ClimbConstants.firstMotorId, ClimbConstants.secondMotorId);
 		}
-		SmartDashboard.putData("Coral Arm Mechanism", mechanism2d);
+		SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
 	}
 
 
