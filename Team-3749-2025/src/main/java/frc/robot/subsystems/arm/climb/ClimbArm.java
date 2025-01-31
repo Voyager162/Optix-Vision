@@ -58,7 +58,6 @@ public class ClimbArm extends SubsystemBase {
 			"second motor temp celcius", 0.0);
 	private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
-
 	private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
 	private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
 	private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Climb Arm", 24, 0));
@@ -87,11 +86,11 @@ public class ClimbArm extends SubsystemBase {
 		SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
 	}
 
-
 	// SET FUNCTIONS
 
 	/**
 	 * method to set the voltage for the arm
+	 * 
 	 * @param volts
 	 */
 	public void setVoltage(double volts) {
@@ -124,12 +123,12 @@ public class ClimbArm extends SubsystemBase {
 
 	/**
 	 * method to set the goal of the controller
+	 * 
 	 * @param setPoint
 	 */
 	public void setGoal(double setPoint) {
 		controller.setGoal(setPoint);
 	}
-
 
 	// GET FUNCTIONS
 
@@ -139,7 +138,6 @@ public class ClimbArm extends SubsystemBase {
 	public ClimbConstants.ArmStates getState() {
 		return state;
 	}
-
 
 	/**
 	 * @return the current arm position.
@@ -157,7 +155,8 @@ public class ClimbArm extends SubsystemBase {
 			case STOWED:
 				return UtilityFunctions.withinMargin(0.001, ClimbConstants.stowSetPoint_rad, data.positionUnits);
 			case PREPARE_FOR_CLIMB:
-				return UtilityFunctions.withinMargin(0.001, ClimbConstants.PrepareForClimbSetPoint_rad, data.positionUnits);
+				return UtilityFunctions.withinMargin(0.001, ClimbConstants.PrepareForClimbSetPoint_rad,
+						data.positionUnits);
 			case CLIMB:
 				return UtilityFunctions.withinMargin(0.001, ClimbConstants.climbSetPoint_rad, data.positionUnits);
 			case STOPPED:
@@ -166,7 +165,6 @@ public class ClimbArm extends SubsystemBase {
 				return false;
 		}
 	}
-
 
 	// UTILITY FUNCTIONS
 
@@ -197,14 +195,10 @@ public class ClimbArm extends SubsystemBase {
 		armIO.setVoltage(pidVoltage + ffVoltage);
 	}
 
-
-
 	// PERIODIC FUNCTIONS
 
-
-
-	/** 
-	 * Runs the logic for the current arm state. 
+	/**
+	 * Runs the logic for the current arm state.
 	 */
 	private void runState() {
 		switch (state) {
@@ -217,8 +211,8 @@ public class ClimbArm extends SubsystemBase {
 		}
 	}
 
-	/** 
-	 * Logs data to Shuffleboard. 
+	/**
+	 * Logs data to Shuffleboard.
 	 */
 	private void logData() {
 		currentCommandLog.set(
@@ -238,8 +232,8 @@ public class ClimbArm extends SubsystemBase {
 		stateLog.set(state.name());
 	}
 
-	/** 
-	 * Periodic method for updating arm behavior. 
+	/**
+	 * Periodic method for updating arm behavior.
 	 */
 	@Override
 	public void periodic() {

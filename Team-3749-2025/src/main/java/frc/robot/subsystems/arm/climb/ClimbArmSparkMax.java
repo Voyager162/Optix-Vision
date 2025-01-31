@@ -31,6 +31,13 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 	private double previousVelocity = 0;
 	private double velocity = 0;
 
+	/**
+	 * creates a new io implementation of a real arm that uses an absolute encoder
+	 * with two motors
+	 * 
+	 * @param frontMotorId
+	 * @param backMotorId
+	 */
 	public ClimbArmSparkMax(int frontMotorId, int backMotorId) {
 
 		frontMotor = new SparkMax(frontMotorId, MotorType.kBrushless);
@@ -76,9 +83,6 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 	public void updateData(ArmData data) {
 		previousVelocity = velocity;
 		velocity = (frontMotor.getEncoder().getVelocity() + backMotor.getEncoder().getVelocity()) / 2;
-		// data.positionMeters = (leftMotor.getEncoder().getPosition() +
-		// rightMotor.getEncoder().getVelocity()) / 2
-		// + absolutePos;
 		data.positionUnits = (frontMotor.getEncoder().getPosition() + backMotor.getEncoder().getVelocity()) / 2;
 		data.velocityUnits = velocity;
 		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
@@ -92,13 +96,8 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 	}
 
 	/**
-	 * Takes the volts parameter, then uses inputVolts to set the motor voltage
-	 * Clamp takes the volts
-	 * and makes sure that the amount of volts isn't above or below the boundary for
-	 * the voltage
-	 * Deadband makes it so that the value returns 0.0 if the volts is between -0.05
-	 * to 0.05
-	 *
+	 * sets the voltage of the motor
+	 * 
 	 * @param volts
 	 */
 	@Override
