@@ -5,7 +5,9 @@ import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
-
+/**
+ * CoralIntakeSource command for intaking coral from source
+ */
 public class CoralIntakeSource extends Command {
     public CoralIntakeSource() {
         addRequirements(Robot.getAllSuperStructureSubsystems());
@@ -28,7 +30,6 @@ public class CoralIntakeSource extends Command {
         Robot.coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
         Robot.coralRoller.setState(RollerStates.MAINTAIN);
         Robot.coralRoller.setHasPiece(true);
-        System.out.println("end");
     }
 
     @Override

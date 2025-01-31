@@ -6,7 +6,9 @@ import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 import frc.robot.subsystems.arm.coral.CoralConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
-//works for l2-4 change name
+/*
+ * ScoreL234 command for scoring coral on L2, L3, L4
+ */
 public class ScoreL234 extends Command {
     private final ElevatorStates state;
     private boolean handoffComplete = false;
@@ -22,7 +24,6 @@ public class ScoreL234 extends Command {
             Robot.elevator.setState(state);
             Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
             Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
-            System.out.println("here");
         } else if (Robot.coralRoller.hasPiece()) {
             Robot.coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
             Robot.elevator.setState(ElevatorStates.STOW);
@@ -56,7 +57,6 @@ public class ScoreL234 extends Command {
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
-        System.out.println("end");
     }
 
     @Override

@@ -40,7 +40,6 @@ public class Handoff extends Command {
         Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
         Robot.scoringRoller.setState(RollerStates.MAINTAIN);
-        System.out.println("end");
     }
 
     @Override

@@ -6,7 +6,9 @@ import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 import frc.robot.subsystems.arm.coral.CoralConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
-
+/*
+ * IntakeFloor command for intaking coral from floor
+ */
 public class IntakeFloor extends Command {
 
     public IntakeFloor() {
@@ -30,9 +32,6 @@ public class IntakeFloor extends Command {
         Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
         Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
         Robot.coralRoller.setHasPiece(true);
-        System.out.println("end");
-
-
     }
 
     @Override
