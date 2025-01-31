@@ -25,15 +25,9 @@ jobs:
       run: chmod +777 ./gradlew
       # CHANGE THIS TO DIRECTORY PATH
       working-directory: ./Team-3749-2025
-      # Advantage Kit
-    - name: Checkout repository
-      uses: actions/checkout@v4
-    - name: Grant execute permission
-      run: chmod +x gradlew
 
-    # Build Robot Code
+    # Runs a single command using the runners shell
     - name: Compile and run tests on robot code
       run: ./gradlew build
       # CHANGE THIS TO DIRECTORY PATH
       working-directory: ./Team-3749-2025
-
