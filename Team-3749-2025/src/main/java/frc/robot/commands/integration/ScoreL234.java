@@ -78,6 +78,7 @@ public class ScoreL234 extends Command {
         elevator.setState(ElevatorStates.STOP);
         scoringRoller.setState(RollerConstants.RollerStates.STOP);
         coralRoller.setState(RollerConstants.RollerStates.STOP);
+        Robot.led.setLEDPattern(LEDPattern.WHITE);
     }
 
     @Override

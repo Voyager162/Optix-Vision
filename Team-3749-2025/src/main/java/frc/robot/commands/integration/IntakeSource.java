@@ -33,9 +33,6 @@ public class IntakeSource extends Command {
         if (elevator.getState() == ElevatorStates.SOURCE && elevator.getIsStableState()) { 
             scoringRoller.setState(RollerConstants.RollerStates.RUN);
         }
-        if (scoringRoller.hasPiece()){
-            Robot.led.setLEDPattern(LEDPattern.GREEN);
-        }
     }
  
     @Override
@@ -45,6 +42,10 @@ public class IntakeSource extends Command {
 
     @Override
     public boolean isFinished() {
-        return chute.hasPiece();
+        if (scoringRoller.hasPiece()){
+            Robot.led.setLEDPattern(LEDPattern.GREEN);
+            return true;
+        }
+        return false;
     }
 }

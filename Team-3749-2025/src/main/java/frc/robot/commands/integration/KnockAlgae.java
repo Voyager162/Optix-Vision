@@ -33,9 +33,6 @@ public class KnockAlgae extends Command{
         algaeRoller.setState(RollerConstants.RollerStates.RUN);
         elevator.setState(state);
         System.out.println(elevator.getState());
-        if (elevator.getState() == state && elevator.getIsStableState()) {
-            Robot.led.setLEDPattern(LEDPattern.BLUE);
-        }
     }
 
     @Override 
@@ -46,6 +43,10 @@ public class KnockAlgae extends Command{
 
     @Override
     public boolean isFinished() {
-        return elevator.getIsStableState(); // change later to isAlgaeRemoved()
+        if (elevator.getState() == state && elevator.getIsStableState()) {
+            Robot.led.setLEDPattern(LEDPattern.BLUE);
+            return true;
+        }
+        return false; // change later to isAlgaeRemoved()
     }
 }

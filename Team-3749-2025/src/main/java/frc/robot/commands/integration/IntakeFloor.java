@@ -29,9 +29,6 @@ public class IntakeFloor extends Command {
         if (coralArm.getState() == CoralArmConstants.ArmStates.CORAL_PICKUP && coralArm.getIsStableState()) {
             Robot.led.setLEDPattern(LEDPattern.BLUE);
         }
-        if (coralArm.hasPiece()){
-            Robot.led.setLEDPattern(LEDPattern.GREEN);
-        }
     }
 
     @Override
@@ -42,6 +39,10 @@ public class IntakeFloor extends Command {
 
     @Override
     public boolean isFinished() {
-        return coralArm.hasPiece();
+        if (coralArm.hasPiece()){
+            Robot.led.setLEDPattern(LEDPattern.GREEN);
+            return true;
+        }
+        return false;
     }
 }

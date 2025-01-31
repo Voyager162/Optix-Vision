@@ -22,6 +22,7 @@ import frc.robot.commands.elevator.SetElevatorState;
 
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
+import frc.robot.subsystems.arm.coral.CoralArmConstants.ArmStates;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 
 /**
@@ -51,7 +52,7 @@ public class JoystickIO {
     private static final IntakeFloor intakeFloor = new IntakeFloor(Robot.coralArm, Robot.coralRoller);
     private static final IntakeSource intakeSource = new IntakeSource(Robot.scoringRoller, Robot.elevator, Robot.chute);
     private static final OuttakeCoral outtakeCoral = new OuttakeCoral(Robot.coralArm, Robot.coralRoller);
-    private static final ScoreL1 scoreL1 = new ScoreL1(Robot.coralArm, Robot.coralRoller);
+    private static final ScoreL1 scoreL1 = new ScoreL1(Robot.coralArm, Robot.coralRoller, ArmStates.L1);
     private static final ScoreL234 scoreL234 = new ScoreL234 (Robot.chute, Robot.coralArm, Robot.elevator, Robot.coralRoller, Robot.scoringRoller, ElevatorStates.L4);
 
     public JoystickIO() {
