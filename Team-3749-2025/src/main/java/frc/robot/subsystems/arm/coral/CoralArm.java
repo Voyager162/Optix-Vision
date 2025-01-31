@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class CoralArm extends Arm {
 
     private CoralConstants.ArmStates state = CoralConstants.ArmStates.STOPPED;
-    private boolean hasPiece;
+    // private boolean hasPiece;
     private PhotoelectricData photoelectricData = new PhotoelectricData();
     private PhotoelectricIO photoelectricIO;
     private PIDController controller = new PIDController(
@@ -180,14 +180,14 @@ public class CoralArm extends Arm {
         return feedForward;
     }
 
-    public boolean hasPiece() {
-        return photoelectricData.sensing;
-        // return hasPiece;
-    }
+    // public boolean hasPiece() {
+    //     return photoelectricData.sensing;
+    //     // return hasPiece;
+    // }
 
-    public void setHasPiece(boolean hasPiece) {
-        this.hasPiece = hasPiece;
-    }
+    // public void setHasPiece(boolean hasPiece) {
+    //     this.hasPiece = hasPiece;
+    // }
 
     public PhotoelectricIO getPhotoElectricIO() {
         return photoelectricIO;
@@ -212,7 +212,7 @@ public class CoralArm extends Arm {
             if (this.getCurrentCommand() != null) {
                 photoelectricIO.setSensing(this.getCurrentCommand().getName());
                 // Update hasPiece based on sensing
-                setHasPiece(photoelectricData.sensing);
+                // setHasPiece(photoelectricData.sensing);
 
                 // Debugging logs
                 // System.out.println("Command: " + this.getCurrentCommand().getName());
