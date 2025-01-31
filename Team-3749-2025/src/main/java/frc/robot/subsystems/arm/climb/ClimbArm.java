@@ -90,8 +90,10 @@ public class ClimbArm extends SubsystemBase {
 
 	// SET FUNCTIONS
 
-
-	// Method to set the voltage for the arm
+	/**
+	 * method to set the voltage for the arm
+	 * @param volts
+	 */
 	public void setVoltage(double volts) {
 		armIO.setVoltage(volts);
 	}
@@ -120,6 +122,10 @@ public class ClimbArm extends SubsystemBase {
 		}
 	}
 
+	/**
+	 * method to set the goal of the controller
+	 * @param setPoint
+	 */
 	public void setGoal(double setPoint) {
 		controller.setGoal(setPoint);
 	}
@@ -127,9 +133,8 @@ public class ClimbArm extends SubsystemBase {
 
 	// GET FUNCTIONS
 
-
 	/**
-	 * @return the current arm state.
+	 * @return the state the arm is in
 	 */
 	public ClimbConstants.ArmStates getState() {
 		return state;
@@ -198,7 +203,9 @@ public class ClimbArm extends SubsystemBase {
 
 
 
-	/** Runs the logic for the current arm state. */
+	/** 
+	 * Runs the logic for the current arm state. 
+	 */
 	private void runState() {
 		switch (state) {
 			case STOPPED:
@@ -210,7 +217,9 @@ public class ClimbArm extends SubsystemBase {
 		}
 	}
 
-	/** Logs data to Shuffleboard. */
+	/** 
+	 * Logs data to Shuffleboard. 
+	 */
 	private void logData() {
 		currentCommandLog.set(
 				this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
@@ -229,7 +238,9 @@ public class ClimbArm extends SubsystemBase {
 		stateLog.set(state.name());
 	}
 
-	/** Periodic method for updating arm behavior. */
+	/** 
+	 * Periodic method for updating arm behavior. 
+	 */
 	@Override
 	public void periodic() {
 
