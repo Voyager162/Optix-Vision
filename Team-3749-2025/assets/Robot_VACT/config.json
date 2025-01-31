@@ -10,7 +10,7 @@
     "rotations": [
         {
             "axis": "x",
-            "degrees": 0
+            "degrees": 90
         },
         {
             "axis": "z",
@@ -22,29 +22,16 @@
         0,
         0
     ],
-    "cameras": [
-        {
-          "name": "Northstar 0",
-          "rotations": [
-            {
-              "axis": "y",
-              "degrees": -28.125
-            },
-            {
-              "axis": "z",
-              "degrees": 30.0
-            }
-          ],
-          "position": [0.225425, 0.2667, 0.20955],
-          "resolution": [1600, 1200],
-          "fov": 75
-        }
-    ],
+    "cameras": [],
     "components": [
         {
             "zeroedRotations": [
                 {
                     "axis": "x",
+                    "degrees": 90
+                },
+                {
+                    "axis": "y",
                     "degrees": 0
                 },
                 {
@@ -53,9 +40,9 @@
                 }
             ],
             "zeroedPosition": [
-                0.1,
+                0.2,
                 -1,
-                0
+                -0.7
             ]
         },
         {
@@ -66,16 +53,16 @@
                 },
                 {
                     "axis": "y",
-                    "degrees": 90
+                    "degrees": 270
                 },
                 {
                     "axis": "z",
-                    "degrees": 270
+                    "degrees": 0
                 }
             ],
             "zeroedPosition": [
-                0.2,
-                -0.65,
+                0,
+                0,
                 0
             ]
         }

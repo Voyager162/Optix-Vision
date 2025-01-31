@@ -41,10 +41,10 @@ public class CoralArm extends Arm {
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
     private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Coral Arm", 24, 0));
 
-    private Angle roll = Angle.ofBaseUnits(data.positionUnits, Radians);
-    private Angle pitch = Angle.ofBaseUnits(0, Radians);
-    private Angle yaw = Angle.ofBaseUnits(0, Radians);
-    private Pose3d zeroedComponentPose = new Pose3d(0, 0, 0, new Rotation3d(roll, pitch, yaw));
+    private Angle roll = Angle.ofBaseUnits(0, Degrees);
+    private Angle pitch = Angle.ofBaseUnits(data.positionUnits, Degrees);
+    private Angle yaw = Angle.ofBaseUnits(0, Degrees);
+    // private Pose3d zeroedComponentPose = new Pose3d(0, 0, 0, new Rotation3d(roll, pitch, yaw));
 
     StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
             .getStructTopic("CoralArm Pose", Pose3d.struct).publish();
@@ -176,9 +176,12 @@ public class CoralArm extends Arm {
         // }
         // )
     }
+    private Angle getPitch(){
+        return Angle.ofBaseUnits(data.positionUnits + 270, Degrees);
+    }
 
     private Transform3d getTransform3d() {
-        Transform3d transform = new Transform3d(0, 0, 0, new Rotation3d(roll, pitch, yaw));
+        Transform3d transform = new Transform3d(0, 0, 0, new Rotation3d(roll, getPitch(), yaw));
         return transform;
     }
 
