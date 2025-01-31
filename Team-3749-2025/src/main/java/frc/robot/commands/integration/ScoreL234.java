@@ -22,6 +22,7 @@ public class ScoreL234 extends Command {
             Robot.elevator.setState(state);
             Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
             Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
+            System.out.println("here");
         } else if (Robot.coralRoller.hasPiece()) {
             Robot.coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
             Robot.elevator.setState(ElevatorStates.STOW);
@@ -34,12 +35,13 @@ public class ScoreL234 extends Command {
     @Override
     public void execute() {
         if (Robot.coralArm.getState() == CoralConstants.ArmStates.HAND_OFF && Robot.coralArm.getIsStableState() 
-                && Robot.elevator.getState() == ElevatorStates.STOW) { // add working elevator isStableState later
+                && Robot.elevator.getState() == ElevatorStates.STOW && Robot.elevator.getIsStableState()) { 
             Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE); 
             Robot.scoringRoller.setState(RollerConstants.RollerStates.RUN);
             handoffComplete = true;
         }
-        if (handoffComplete && !Robot.coralRoller.hasPiece() && Robot.scoringRoller.hasPiece()) { // should work once hasPiece logic is made
+
+        if (handoffComplete && !Robot.coralRoller.hasPiece() && Robot.scoringRoller.hasPiece()) { 
             Robot.scoringRoller.setState(RollerStates.MAINTAIN);
             Robot.elevator.setState(state);
         }
@@ -50,8 +52,8 @@ public class ScoreL234 extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        Robot.coralArm.setState(CoralConstants.ArmStates.STOPPED);
-        Robot.elevator.setState(ElevatorStates.STOP);
+        Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
+        Robot.elevator.setState(ElevatorStates.STOW);
         Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
         System.out.println("end");
@@ -59,7 +61,6 @@ public class ScoreL234 extends Command {
 
     @Override
     public boolean isFinished() {
-        System.out.println("ScoreL234: " + Robot.coralRoller.hasPiece());
         return !Robot.scoringRoller.hasPiece();
     }
 }

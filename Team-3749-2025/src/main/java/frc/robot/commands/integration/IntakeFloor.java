@@ -37,6 +37,6 @@ public class IntakeFloor extends Command {
 
     @Override
     public boolean isFinished() {
-        return Robot.coralRoller.hasPiece() && !Robot.coralRoller.getIsStableState();
+        return Robot.coralRoller.hasPiece();
     }
 }

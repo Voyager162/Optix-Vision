@@ -18,7 +18,7 @@ public class ScoreL1 extends Command {
         Robot.elevator.setState(ElevatorConstants.ElevatorStates.STOW);
         Robot.coralArm.setState(CoralConstants.ArmStates.L1);
         Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
-        Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
+        Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);
     }
 
     @Override
@@ -38,6 +38,6 @@ public class ScoreL1 extends Command {
     @Override
     public boolean isFinished() {
         System.out.println("scoreL1: " + Robot.coralRoller.hasPiece());
-        return !Robot.coralRoller.hasPiece() && !Robot.coralRoller.getIsStableState();
+        return !Robot.coralRoller.hasPiece();
     }
 }

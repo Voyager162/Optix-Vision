@@ -32,12 +32,13 @@ public class OuttakeCoral extends Command {
     public void end(boolean interrupted) {
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
+        System.out.println("end");
     }
 
     @Override
     public boolean isFinished() {
         System.out.println("outtake coral: " + Robot.coralRoller.hasPiece());
-        return !Robot.coralRoller.hasPiece() && !Robot.coralRoller.getIsStableState();
+        return !Robot.coralRoller.hasPiece();
     }
 }
 

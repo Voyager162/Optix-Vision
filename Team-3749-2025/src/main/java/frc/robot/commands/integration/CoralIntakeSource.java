@@ -33,7 +33,6 @@ public class CoralIntakeSource extends Command {
 
     @Override
     public boolean isFinished() {
-        System.out.println("coralintakesource: " + Robot.coralRoller.hasPiece());
-        return Robot.coralRoller.hasPiece() && !Robot.coralRoller.getIsStableState();
+        return Robot.coralRoller.hasPiece();
     }
 }
