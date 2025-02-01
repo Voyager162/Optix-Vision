@@ -37,11 +37,36 @@ public class JoystickIO {
     private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
 
     private final static GenericHID buttonBoard = new GenericHID(1);
-    private final static JoystickButton button1 = new JoystickButton(buttonBoard, 1);
-    private final static JoystickButton button2 = new JoystickButton(buttonBoard, 2);
-    private final static JoystickButton button3 = new JoystickButton(buttonBoard, 3);
-    private final static JoystickButton button4 = new JoystickButton(buttonBoard, 4);
 
+    // coral elevator positions
+    private final static JoystickButton buttonl1 = new JoystickButton(buttonBoard, 1);
+    private final static JoystickButton buttonl2 = new JoystickButton(buttonBoard, 2);
+    private final static JoystickButton buttonl3 = new JoystickButton(buttonBoard, 3);
+    private final static JoystickButton buttonl4 = new JoystickButton(buttonBoard, 4);
+
+    // source buttons
+    private final static JoystickButton buttonRightSource = new JoystickButton(buttonBoard, 5);
+    private final static JoystickButton buttonLeftSource = new JoystickButton(buttonBoard, 6);
+
+    // reef positions
+    private final static JoystickButton buttonReefZoneA = new JoystickButton(buttonBoard, 7);
+    private final static JoystickButton buttonReefZoneB = new JoystickButton(buttonBoard, 8);
+    private final static JoystickButton buttonReefZoneC = new JoystickButton(buttonBoard, 9);
+    private final static JoystickButton buttonReefZoneD = new JoystickButton(buttonBoard, 10);
+    private final static JoystickButton buttonReefZoneE = new JoystickButton(buttonBoard, 11);
+    private final static JoystickButton buttonReefZoneF = new JoystickButton(buttonBoard, 12);
+    private final static JoystickButton buttonReefZoneG = new JoystickButton(buttonBoard, 13);
+    private final static JoystickButton buttonReefZoneH = new JoystickButton(buttonBoard, 14);
+    private final static JoystickButton buttonReefZoneI = new JoystickButton(buttonBoard, 15);
+    private final static JoystickButton buttonReefZoneJ = new JoystickButton(buttonBoard, 16);
+    private final static JoystickButton buttonReefZoneK = new JoystickButton(buttonBoard, 17);
+    private final static JoystickButton buttonReefZoneL = new JoystickButton(buttonBoard, 18);
+
+    // miscellaneous buttons
+    private final static JoystickButton buttonAlgaeKnockoff = new JoystickButton(buttonBoard, 19);
+    private final static JoystickButton buttonA = new JoystickButton(buttonBoard, 20);
+    private final static JoystickButton buttonB = new JoystickButton(buttonBoard, 21);
+    private final static JoystickButton buttonC = new JoystickButton(buttonBoard, 22);
     public JoystickIO() {
     }
 
@@ -85,10 +110,10 @@ public class JoystickIO {
         operator.x().onTrue(l3);
         operator.y().onTrue(l4);
 
-        button1.onTrue(l1);
-        button2.onTrue(l2);
-        button3.onTrue(l3);
-        button4.onTrue(l4);
+        buttonl1.onTrue(l1);
+        buttonl2.onTrue(l2);
+        buttonl3.onTrue(l3);
+        buttonl4.onTrue(l4);
         
     }
 
