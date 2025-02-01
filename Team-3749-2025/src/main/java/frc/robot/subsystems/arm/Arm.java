@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.arm.ArmIO.ArmData;
 import frc.robot.utils.ShuffleData;
-import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.MotorData;
 
 import java.util.Map;
