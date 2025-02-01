@@ -28,7 +28,7 @@ public class ToPosConstants {
     public static final class ReefVerticies {
 
         // MAKE CONSTANTS
-        private static final double SAFE_MARGIN = .88; // Safety margin around the robot.
+        private static final double SAFE_MARGIN = .95; // Safety margin around the robot.
         private static final double xComponenet = Math.cos(Math.toRadians(30));
         private static final double yComponenet = Math.sin(Math.toRadians(30));
 

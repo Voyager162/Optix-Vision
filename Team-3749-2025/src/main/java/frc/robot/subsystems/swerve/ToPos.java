@@ -69,8 +69,8 @@ public class ToPos {
         // 360 degrees
         double headingDifference = Math.abs((headingFinal - headingInit + 180) % 360 - 180);
 
-        // Check if the heading difference is within ±5 degrees
-        if (distance < 1.0 && headingDifference <= 5) {
+        // Check if the heading difference is within ±10 degrees
+        if (distance < 1.0 && headingDifference <= 10) {
             System.out.println("called");
             if (waypoints.size() > 2) {
                 waypoints.subList(1, waypoints.size() - 1).clear();
