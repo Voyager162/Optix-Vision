@@ -57,7 +57,7 @@ public class Autos {
         AutoUtils.goNextAfterScored(trajectory4, trajectory5, intake2);
         AutoUtils.goNextAfterScored(trajectory3, trajectory4, score2);
         AutoUtils.goNextAfterScored(trajectory2, trajectory3, intake1);
-        AutoUtils.goNextAfterScored(trajectory1, trajectory2, score1,);
+        AutoUtils.goNextAfterScored(trajectory1, trajectory2, score1);
 
         return Commands.print("3 piece auto!").andThen(
                 AutoUtils.startRoutine(routine, "Start-L5", trajectory1));

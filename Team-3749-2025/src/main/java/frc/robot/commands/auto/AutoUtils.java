@@ -272,16 +272,15 @@ public class AutoUtils {
      * @param ScoreL234
      */
     public static void goNextAfterScored(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory,
-            Command ScoreL234, Command IntakeSoucre) {
+            Command ScoreL234) {
         Pose2d endingPose2d = getFinalPose2d(curTrajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
         if (DriverStation.getAlliance().get() == Alliance.Red) {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
-        curTrajectory.done()
-        .and(() -> IntakeSoucre.isFinished())
-        .onTrue(ScoreL234.andThen(nextTrajectory.cmd()));
+        
+        curTrajectory.done().and(() -> ScoreL234.isFinished()).onTrue(nextTrajectory.cmd());
 
     }
 
