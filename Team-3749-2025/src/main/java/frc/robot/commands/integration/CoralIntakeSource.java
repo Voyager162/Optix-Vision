@@ -29,7 +29,6 @@ public class CoralIntakeSource extends Command {
     public void end(boolean interrupted) {
         Robot.coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
         Robot.coralRoller.setState(RollerStates.MAINTAIN);
-        Robot.coralRoller.setHasPiece(true);
     }
 
     @Override
