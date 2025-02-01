@@ -17,7 +17,6 @@ public class PigeonGyro implements GyroIO {
             pigeonGyro.reset();
         } catch (Exception e) {
         }
-        ;
     }
 
     @Override
@@ -29,7 +28,6 @@ public class PigeonGyro implements GyroIO {
 
         } catch (Exception e) {
         }
-        ;
     }
 
     @Override
