@@ -19,14 +19,21 @@ import static edu.wpi.first.units.Units.Volts;;
  * @author Dhyan Soni
  */
 public class SysIdTuner {
-    private final SysIdRoutine sysIdRoutine;
+    private SysIdRoutine sysIdRoutine;
     private Consumer<SysIdRoutineLog> setLog;
     private Consumer<Voltage> setVolts;
 
     private VoltageDrive io;
     private Map<String, MotorData> motorData;
 
-    // just use a list or map for this?
+    /**
+     * Setup SysId
+     * 
+     * @param name - name of the mechanism
+     * @param config - SysIdRoutine.Config object
+     * @param subsystem - Subsystem you are characterizing
+     * @param io - VoltageDriv
+     */
     public SysIdTuner(String name, SysIdRoutine.Config config, Subsystem subsystem, VoltageDrive io,
             Map<String, MotorData> motorData) {
 
@@ -41,12 +48,16 @@ public class SysIdTuner {
                 new SysIdRoutine.Mechanism(setVolts, setLog, subsystem, name));
     }
 
+    /**
+     * Update logs with voltage, linearPosition, linearVelocity, and linearAcceleration
+     * @param log - SysIdRoutineLog object
+     */
     private void setLog(SysIdRoutineLog log) {
         motorData.forEach((motorName, data) -> {
-            System.out.println("volts" + data.appliedVolts);
-            System.out.println("pos" + data.position);
-            System.out.println("vel" + data.velocity);
-            System.out.println("acceleration" + data.acceleration);
+            // System.out.println("volts" + data.appliedVolts);
+            // System.out.println("pos" + data.position);
+            // System.out.println("vel" + data.velocity);
+            // System.out.println("acceleration" + data.acceleration);
             log.motor(motorName)
                     .voltage(Voltage.ofBaseUnits(data.appliedVolts, Volts))
                     .linearPosition(Meters.ofBaseUnits(data.position))
@@ -60,6 +71,11 @@ public class SysIdTuner {
         // log.motor("motor").linearAcceleration(MetersPerSecondPerSecond.ofBaseUnits(acceleration));
     }
 
+    /**
+     * Set voltage method in the Voltage unit
+     * 
+     * @param volts - voltage to be applied
+     */
     public void setVoltage(Voltage volts) {
         try {
             io.setVoltage(volts.magnitude());
@@ -67,17 +83,26 @@ public class SysIdTuner {
             System.err.println("Failed to set voltage: " + e.getMessage());
         }
     }
-// make abstract
+
+    /*
+     * Used as the type for all subsystem IOs
+     */
     public interface VoltageDrive {
         void setVoltage(double volts);
     }
 
-
-
+    /**
+     * Command for Quasistatic test
+     * @return command and direction for Quasistatic test
+     */
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.quasistatic(direction);
     }
 
+    /**
+     * Command for Dynamic test
+     * @return command and direction for Dynamic test
+     */
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.dynamic(direction);
     }
