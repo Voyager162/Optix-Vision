@@ -26,16 +26,6 @@ import frc.robot.utils.ShuffleData;
 
 public class Robot extends TimedRobot {
   private Field2d field2d = new Field2d();
-
-  private static final List<Translation2d> HEXAGON_VERTICES = List.of(
-      new Translation2d(4.5 + 1.0, 4.0),
-      new Translation2d(4.5 + 0.5, 4.0 + Math.sqrt(3) / 2),
-      new Translation2d(4.5 - 0.5, 4.0 + Math.sqrt(3) / 2),
-      new Translation2d(4.5 - 1.0, 4.0),
-      new Translation2d(4.5 - 0.5, 4.0 - Math.sqrt(3) / 2),
-      new Translation2d(4.5 + 0.5, 4.0 - Math.sqrt(3) / 2),
-      new Translation2d(4.5 + 1.0, 4.0) // Close loop
-  );
   private Command m_autonomousCommand;
 
   public static Swerve swerve = new Swerve();
@@ -68,7 +58,7 @@ public class Robot extends TimedRobot {
     FMSLog.set(DriverStation.isFMSAttached());
     // Publish hexagon points to NetworkTables
     List<Pose2d> hexagonPoses = new ArrayList<>();
-    for (Translation2d vertex : HEXAGON_VERTICES) {
+    for (Translation2d vertex : ToPosConstants.ReefVerticies.HEXAGON_VERTICES) {
       hexagonPoses.add(new Pose2d(vertex, new Rotation2d()));
     }
 
@@ -138,7 +128,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationInit() {
-    DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
+    DriverStationSim.setAllianceStationId(AllianceStationID.Red1);
     //only use red1 and blue1 for nwo
     //at the end of the day all we really care about given this is a sim is that you can do red and blue
     //on real hardware this doesn't change a whole lot anyways if you're on red3 or red1
