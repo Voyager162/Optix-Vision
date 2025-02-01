@@ -13,7 +13,10 @@ import frc.robot.commands.roller.RunCommand;
 import frc.robot.commands.roller.StopCommand;
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.subsystems.arm.coral.CoralConstants;
+import frc.robot.subsystems.arm.coral.CoralConstants.ArmStates;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 
 /**
@@ -32,7 +35,9 @@ public class JoystickIO {
     private static final Command StopCommand = new StopCommand();
 
 
-    private static final SetElevatorState l1 = new SetElevatorState(ElevatorStates.L1);
+    private static final SetArmState<CoralConstants.ArmStates> l1 = new SetArmState<CoralConstants.ArmStates>(
+			Robot.coralArm,
+			CoralConstants.ArmStates.L1);
     private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
     private static final SetElevatorState l3 = new SetElevatorState(ElevatorStates.L3);
     private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);

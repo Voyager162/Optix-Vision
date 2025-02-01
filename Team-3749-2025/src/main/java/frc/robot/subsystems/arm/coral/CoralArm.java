@@ -99,6 +99,8 @@ public class CoralArm extends Arm {
                 return data.velocityUnits < 0;
             case MOVING_UP:
                 return data.velocityUnits > 0;
+            case L1:
+                return data.positionUnits == CoralConstants.scoreL1_rad;
             case STOPPED:
                 return UtilityFunctions.withinMargin(0.001, 0, data.velocityUnits);
             default:
@@ -133,6 +135,10 @@ public class CoralArm extends Arm {
                 setVoltage(controller.calculate(data.positionUnits, CoralConstants.coralPickUpSetPoint_rad)
                         + calculateFeedForward());
                 break;
+            case L1:
+                setVoltage(controller.calculate(data.positionUnits, CoralConstants.scoreL1_rad)
+                + calculateFeedForward());
+                    break;
             case STOPPED:
                 setVoltage(0 + calculateFeedForward());
                 break;
