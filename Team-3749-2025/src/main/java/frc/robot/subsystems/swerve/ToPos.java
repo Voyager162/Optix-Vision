@@ -49,7 +49,6 @@ public class ToPos {
                 new PathConstraints(maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration), null,
                 new GoalEndState(0.0, finalPose.getRotation()));
     }
-    
 
     /**
      * Removes redundant waypoints that are too close to each other or move the
@@ -66,16 +65,18 @@ public class ToPos {
         System.out.println("all of the things for removing the points");
         System.out.println(distance);
         System.out.println(headingFinal - headingInit);
+        // Compute the smallest difference between angles, considering wrap-around at
+        // 360 degrees
+        double headingDifference = Math.abs((headingFinal - headingInit + 180) % 360 - 180);
 
-// Check if the heading difference is within ±5 degrees
-    if (distance < 1.0 && 5 >= Math.abs(headingFinal - headingInit) || (365 >= Math.abs(headingFinal - headingInit) && 355 <= Math.abs(headingFinal - headingInit)) ) {
-        System.out.println("called");
-        if (waypoints.size() > 2) {
-            waypoints.subList(1, waypoints.size() - 1).clear();
+        // Check if the heading difference is within ±5 degrees
+        if (distance < 1.0 && headingDifference <= 5) {
+            System.out.println("called");
+            if (waypoints.size() > 2) {
+                waypoints.subList(1, waypoints.size() - 1).clear();
+            }
         }
-    }
-        
-    
+
         double threshold = 0.05; // Minimum distance between waypoints to consider them unique (5 cm).
         for (int i = 1; i < waypoints.size(); i++) {
             Translation2d current = waypoints.get(i).anchor();
@@ -85,7 +86,7 @@ public class ToPos {
                 i--; // Adjust index after removal.
             }
         }
-    
+
     }
 
     private void removeExtraStartVertex(List<Waypoint> waypoints) {
@@ -184,8 +185,11 @@ public class ToPos {
 
         // Calculate clockwise and counterclockwise distances based on # verticies
         // traveled
-        int clockwiseDistance = (endVertexIndex - startVertexIndex + ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size()) % ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size();
-        int counterclockwiseDistance = (startVertexIndex - endVertexIndex + ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size())
+        int clockwiseDistance = (endVertexIndex - startVertexIndex
+                + ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size())
+                % ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size();
+        int counterclockwiseDistance = (startVertexIndex - endVertexIndex
+                + ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size())
                 % ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size();
 
         // Choose the direction based on shorter angular displacement
@@ -205,7 +209,8 @@ public class ToPos {
             // Move to the next vertex in the correct direction
             currentIndex = goClockwise
                     ? (currentIndex + 1) % ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size()
-                    : (currentIndex - 1 + ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size()) % ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size();
+                    : (currentIndex - 1 + ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size())
+                            % ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size();
         }
 
         return detourWaypoints;
@@ -221,7 +226,8 @@ public class ToPos {
     private boolean isPathIntersectingObstacle(Translation2d start, Translation2d end) {
         for (int i = 0; i < ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size(); i++) {
             Translation2d vertex1 = ToPosConstants.ReefVerticies.HEXAGON_VERTICES.get(i);
-            Translation2d vertex2 = ToPosConstants.ReefVerticies.HEXAGON_VERTICES.get((i + 1) % ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size());
+            Translation2d vertex2 = ToPosConstants.ReefVerticies.HEXAGON_VERTICES
+                    .get((i + 1) % ToPosConstants.ReefVerticies.HEXAGON_VERTICES.size());
             if (doLinesIntersect(start, end, vertex1, vertex2)) {
                 return true;
             }
