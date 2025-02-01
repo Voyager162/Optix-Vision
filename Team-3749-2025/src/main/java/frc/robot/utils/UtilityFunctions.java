@@ -74,11 +74,9 @@ public class UtilityFunctions {
     }
 
     public static Rotation2d safeRotation(double x, double y) {
-        double rads;
+        double rads = Math.atan(y / x);
         if (x == 0) {
             rads = Math.copySign(Math.PI / 2, y);
-        } else {
-            rads = Math.atan(y / x);
         }
         
         if (Math.abs(Math.cos(rads)) < 1e-6 && Math.abs(Math.sin(rads)) < 1e-6) {
