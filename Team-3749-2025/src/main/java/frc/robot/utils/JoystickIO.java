@@ -22,6 +22,7 @@ import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
  * @author Rohin Sood
  * @author Noah Simon
  */
+@SuppressWarnings("unused")
 public class JoystickIO {
 
     private static final CommandXboxController pilot = new CommandXboxController(0);
