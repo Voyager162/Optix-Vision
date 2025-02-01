@@ -66,7 +66,6 @@ public class JoystickIO {
             Robot.swerve.isOTF = false;
             Robot.swerve.cyclePPSetpoint();
             Robot.swerve.showSetpointEndGoal();
-            Robot.swerve.needsToCloseIn = false;
         }));
 
         // Example binding
