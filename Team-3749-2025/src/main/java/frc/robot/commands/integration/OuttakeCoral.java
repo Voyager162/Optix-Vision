@@ -3,11 +3,8 @@ package frc.robot.commands.integration;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArm;
-import frc.robot.subsystems.chute.Chute;
-import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.led.LEDConstants.LEDPattern;
 import frc.robot.subsystems.roller.RollerConstants;
-import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.roller.Roller;
 
 public class OuttakeCoral extends Command {

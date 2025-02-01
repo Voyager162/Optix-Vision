@@ -8,7 +8,6 @@ import frc.robot.subsystems.arm.coral.CoralArmConstants.ArmStates;
 import frc.robot.subsystems.led.LEDConstants.LEDPattern;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
-import frc.robot.subsystems.roller.RollerConstants.Coral;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 
 public class ScoreL1 extends Command {
@@ -16,7 +15,7 @@ public class ScoreL1 extends Command {
     private final Roller coralRoller;
     private final ArmStates state;
 
-    public ScoreL1 (CoralArm coralArm, Roller coralRoller, ArmStates state) {
+    public ScoreL1(CoralArm coralArm, Roller coralRoller, ArmStates state) {
         this.coralArm = coralArm;
         this.coralRoller = coralRoller;
         this.state = state;
@@ -25,7 +24,7 @@ public class ScoreL1 extends Command {
     @Override
     public void initialize() {
         coralArm.setState(CoralArmConstants.ArmStates.L1);
-        coralRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
+        coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
     }
 
     @Override
@@ -35,14 +34,14 @@ public class ScoreL1 extends Command {
         }
     }
 
-    @Override 
+    @Override
     public void end(boolean interrupted) {
         coralArm.setState(CoralArmConstants.ArmStates.STOWED);
         coralRoller.setState(RollerStates.STOP);
         Robot.led.setLEDPattern(LEDPattern.WHITE);
     }
 
-    @Override 
+    @Override
     public boolean isFinished() {
         if (coralArm.getState() == state && coralArm.getIsStableState()) {
             Robot.led.setLEDPattern(LEDPattern.BLUE);

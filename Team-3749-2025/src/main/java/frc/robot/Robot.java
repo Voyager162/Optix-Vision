@@ -8,7 +8,6 @@ import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -18,7 +17,6 @@ import frc.robot.subsystems.arm.algae.AlgaeArm;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.subsystems.chute.Chute;
-import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.led.LED;
 
 import frc.robot.subsystems.example.ExampleSubsystem;

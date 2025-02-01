@@ -4,8 +4,6 @@ import frc.robot.Robot;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.real.ArmSparkMax;
 import frc.robot.subsystems.arm.sim.ArmSim;
-import frc.robot.subsystems.elevator.ElevatorConstants;
-import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 import edu.wpi.first.math.controller.PIDController;

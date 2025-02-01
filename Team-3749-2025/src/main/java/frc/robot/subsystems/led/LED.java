@@ -1,6 +1,5 @@
 package frc.robot.subsystems.led;
 
-import java.sql.Driver;
 import java.util.Optional;
 
 import edu.wpi.first.wpilibj.AddressableLED;
