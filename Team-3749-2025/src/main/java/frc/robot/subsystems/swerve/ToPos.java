@@ -51,118 +51,6 @@ public class ToPos {
     }
 
     /**
-     * Removes redundant waypoints that are too close to each other or move the
-     * wrong direction
-     *
-     * @param waypoints The list of waypoints to be cleaned.
-     */
-    private void removeRedundantWaypoints(List<Waypoint> waypoints, Pose2d initialpose, Pose2d finalpose) {
-        Translation2d initialTranslation = initialpose.getTranslation();
-        Translation2d finalTranslation = finalpose.getTranslation();
-        double distance = initialTranslation.getDistance(finalTranslation);
-        double headingInit = initialpose.getRotation().getDegrees();
-        double headingFinal = finalpose.getRotation().getDegrees();
-        System.out.println("all of the things for removing the points");
-        System.out.println(distance);
-        System.out.println(headingFinal - headingInit);
-        // Compute the smallest difference between angles, considering wrap-around at
-        // 360 degrees
-        double headingDifference = Math.abs((headingFinal - headingInit + 180) % 360 - 180);
-
-        // Check if the heading difference is within ±10 degrees
-        if (distance < 1.0 && headingDifference <= 10) {
-            System.out.println("called");
-            if (waypoints.size() > 2) {
-                waypoints.subList(1, waypoints.size() - 1).clear();
-            }
-        }
-
-        double threshold = 0.05; // Minimum distance between waypoints to consider them unique (5 cm).
-        for (int i = 1; i < waypoints.size(); i++) {
-            Translation2d current = waypoints.get(i).anchor();
-            Translation2d previous = waypoints.get(i - 1).anchor();
-            if (current.getDistance(previous) < threshold) {
-                waypoints.remove(i);
-                i--; // Adjust index after removal.
-            }
-        }
-
-    }
-
-    private void removeExtraStartVertex(List<Waypoint> waypoints) {
-        if (waypoints.size() < 4) {
-            return;
-        }
-        Translation2d start = waypoints.get(0).anchor();
-        Translation2d firstVertex = waypoints.get(1).anchor();
-        Translation2d secondVertex = waypoints.get(2).anchor();
-        Translation2d startToFirstVertexVector = firstVertex.minus(start);
-        Translation2d firstVertexToSecondVertexVector = secondVertex.minus(firstVertex);
-
-        double startingAlignment = (startToFirstVertexVector.getX() * firstVertexToSecondVertexVector.getX()
-                + startToFirstVertexVector.getY() * firstVertexToSecondVertexVector.getY());
-
-        if (startingAlignment < 0) {
-
-            waypoints.remove(1);
-        }
-    }
-
-    private void removeExtraEndVertex(List<Waypoint> waypoints) {
-        if (waypoints.size() < 4) {
-            return;
-        }
-
-        Translation2d end = waypoints.get(waypoints.size() - 1).anchor();
-        Translation2d finalVertex = waypoints.get(waypoints.size() - 2).anchor();
-        Translation2d secondToFinalVertex = waypoints.get(waypoints.size() - 3).anchor();
-
-        Translation2d finalVertexToEndVector = end.minus(finalVertex);
-        Translation2d secondToFinalVertexToFinalVertexVector = finalVertex.minus(secondToFinalVertex);
-        System.out.println("Vectors");
-        System.out.println(finalVertexToEndVector.toString());
-        System.out.println(secondToFinalVertexToFinalVertexVector);
-
-        double endingAlignment = (finalVertexToEndVector.getX() * secondToFinalVertexToFinalVertexVector.getX()
-                + finalVertexToEndVector.getY() * secondToFinalVertexToFinalVertexVector.getY());
-        System.out.println("alignment and size");
-        System.out.println(endingAlignment);
-        System.out.println(waypoints.size());
-        System.out.println("waypoints");
-        System.out.println(waypoints.get(waypoints.size() - 1).anchor().toString());
-        System.out.println(waypoints.get(waypoints.size() - 2).anchor().toString());
-        System.out.println(waypoints.get(waypoints.size() - 3).anchor().toString());
-        System.out.println(waypoints.get(waypoints.size() - 4).anchor().toString());
-        if (endingAlignment < 0) {
-
-            waypoints.remove(waypoints.size() - 2);
-        }
-    }
-
-    /**
-     * Determines if two line segments intersect.
-     *
-     * @param p1 First point of the first line segment.
-     * @param p2 Second point of the first line segment.
-     * @param q1 First point of the second line segment.
-     * @param q2 Second point of the second line segment.
-     * @return True if the lines intersect, false otherwise.
-     */
-    private boolean doLinesIntersect(Translation2d p1, Translation2d p2, Translation2d q1, Translation2d q2) {
-        double det = (q2.getX() - q1.getX()) * (p2.getY() - p1.getY())
-                - (q2.getY() - q1.getY()) * (p2.getX() - p1.getX());
-        if (det == 0)
-            return false;
-
-        double t = ((q1.getY() - p1.getY()) * (q2.getX() - q1.getX())
-                - (q1.getX() - p1.getX()) * (q2.getY() - q1.getY())) / det;
-        double u = ((q1.getY() - p1.getY()) * (p2.getX() - p1.getX())
-                - (q1.getX() - p1.getX()) * (p2.getY() - p1.getY())) / det;
-
-        return t >= 0 && t <= 1 && u >= 0 && u <= 1;
-    }
-
-    /**
      * Generates detour waypoints to avoid obstacles between two points.
      *
      * @param start The starting point.
@@ -233,6 +121,29 @@ public class ToPos {
             }
         }
         return false;
+    }
+
+    /**
+     * Determines if two line segments intersect.
+     *
+     * @param p1 First point of the first line segment.
+     * @param p2 Second point of the first line segment.
+     * @param q1 First point of the second line segment.
+     * @param q2 Second point of the second line segment.
+     * @return True if the lines intersect, false otherwise.
+     */
+    private boolean doLinesIntersect(Translation2d p1, Translation2d p2, Translation2d q1, Translation2d q2) {
+        double det = (q2.getX() - q1.getX()) * (p2.getY() - p1.getY())
+                - (q2.getY() - q1.getY()) * (p2.getX() - p1.getX());
+        if (det == 0)
+            return false;
+
+        double t = ((q1.getY() - p1.getY()) * (q2.getX() - q1.getX())
+                - (q1.getX() - p1.getX()) * (q2.getY() - q1.getY())) / det;
+        double u = ((q1.getY() - p1.getY()) * (p2.getX() - p1.getX())
+                - (q1.getX() - p1.getX()) * (p2.getY() - p1.getY())) / det;
+
+        return t >= 0 && t <= 1 && u >= 0 && u <= 1;
     }
 
     /**
@@ -365,6 +276,109 @@ public class ToPos {
 
         // Return the distance from the point to the closest point on the line
         return Math.sqrt((x0 - closestX) * (x0 - closestX) + (y0 - closestY) * (y0 - closestY));
+    }
+
+    /**
+     * Removes redundant waypoints that are too close to each other or move the
+     * wrong direction as well as removes all waypoints if distance and heading are
+     * close and the same respectively.
+     *
+     * @param waypoints  The list of waypoints to be cleaned.
+     * @param initalPose The pose2d where robot is at
+     * @param fianlPose  The list of waypoints to be cleaned.
+     */
+
+    private void removeRedundantWaypoints(List<Waypoint> waypoints, Pose2d initialPose, Pose2d finalPose) {
+        Translation2d initialTranslation = initialPose.getTranslation();
+        Translation2d finalTranslation = finalPose.getTranslation();
+        double distance = initialTranslation.getDistance(finalTranslation);
+        double headingInit = initialPose.getRotation().getDegrees();
+        double headingFinal = finalPose.getRotation().getDegrees();
+        System.out.println("all of the things for removing the points");
+        System.out.println(distance);
+        System.out.println(headingFinal - headingInit);
+        // Compute the smallest difference between angles, considering wrap-around at
+        // 360 degrees
+        double headingDifference = Math.abs((headingFinal - headingInit + 180) % 360 - 180);
+
+        // Check if the heading difference is within ±10 degrees
+        if (distance < 1.0 && headingDifference <= 10) {
+            System.out.println("called");
+            if (waypoints.size() > 2) {
+                waypoints.subList(1, waypoints.size() - 1).clear();
+            }
+        }
+
+        double threshold = 0.05; // Minimum distance between waypoints to consider them unique (5 cm).
+        for (int i = 1; i < waypoints.size(); i++) {
+            Translation2d current = waypoints.get(i).anchor();
+            Translation2d previous = waypoints.get(i - 1).anchor();
+            if (current.getDistance(previous) < threshold) {
+                waypoints.remove(i);
+                i--; // Adjust index after removal.
+            }
+        }
+
+    }
+
+    /**
+     * Removes overshooting wrong start hexagon vertex
+     *
+     * @param waypoints The list of waypoints to be cleaned.
+     */
+    private void removeExtraStartVertex(List<Waypoint> waypoints) {
+        if (waypoints.size() < 4) {
+            return;
+        }
+        Translation2d start = waypoints.get(0).anchor();
+        Translation2d firstVertex = waypoints.get(1).anchor();
+        Translation2d secondVertex = waypoints.get(2).anchor();
+        Translation2d startToFirstVertexVector = firstVertex.minus(start);
+        Translation2d firstVertexToSecondVertexVector = secondVertex.minus(firstVertex);
+
+        double startingAlignment = (startToFirstVertexVector.getX() * firstVertexToSecondVertexVector.getX()
+                + startToFirstVertexVector.getY() * firstVertexToSecondVertexVector.getY());
+
+        if (startingAlignment < 0) {
+
+            waypoints.remove(1);
+        }
+    }
+
+    /**
+     * Removes overshooting wrong end hexagon vertex
+     *
+     * @param waypoints The list of waypoints to be cleaned.
+     */
+    private void removeExtraEndVertex(List<Waypoint> waypoints) {
+        if (waypoints.size() < 4) {
+            return;
+        }
+
+        Translation2d end = waypoints.get(waypoints.size() - 1).anchor();
+        Translation2d finalVertex = waypoints.get(waypoints.size() - 2).anchor();
+        Translation2d secondToFinalVertex = waypoints.get(waypoints.size() - 3).anchor();
+
+        Translation2d finalVertexToEndVector = end.minus(finalVertex);
+        Translation2d secondToFinalVertexToFinalVertexVector = finalVertex.minus(secondToFinalVertex);
+        System.out.println("Vectors");
+        System.out.println(finalVertexToEndVector.toString());
+        System.out.println(secondToFinalVertexToFinalVertexVector);
+
+        double endingAlignment = (finalVertexToEndVector.getX() * secondToFinalVertexToFinalVertexVector.getX()
+                + finalVertexToEndVector.getY() * secondToFinalVertexToFinalVertexVector.getY());
+        System.out.println("alignment and size");
+        System.out.println(endingAlignment);
+        System.out.println(waypoints.size());
+        System.out.println("waypoints");
+        System.out.println(waypoints.get(waypoints.size() - 1).anchor().toString());
+        System.out.println(waypoints.get(waypoints.size() - 2).anchor().toString());
+        System.out.println(waypoints.get(waypoints.size() - 3).anchor().toString());
+        System.out.println(waypoints.get(waypoints.size() - 4).anchor().toString());
+        if (endingAlignment < 0) {
+
+            waypoints.remove(waypoints.size() - 2);
+        }
     }
 
 }
