@@ -13,7 +13,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
      * @param initialState 
      */
     @Override
-    public void setInitialState(boolean initialState){
+    public void setInitialState(boolean initialState) {
         if (initialState) {
             sensing = true;
         } else {
@@ -31,41 +31,43 @@ public class PhotoelectricSim implements PhotoelectricIO {
             scoreTimer = -1;
         }
 
-        switch(Robot.scoringRoller.getCurrentCommand().getName()) {
-            case "Handoff": 
-            case "IntakeFloor": 
-            case "IntakeSource":
-            case "CoralIntakeSource":
-                System.out.println("sensing before score timer" + sensing);
-                sensing = false;
-                if (Timer.getFPGATimestamp() - scoreTimer > 2) {
-                    sensing = true;
-                    if (scoreTimer != -1) {
-                        scoreTimer = 999999999;
-                        System.out.println("sensing set after score timer: " + sensing);
-                    } 
-                }
-                break;
+        if (Robot.scoringRoller.getCurrentCommand() != null) {
+            switch (Robot.scoringRoller.getCurrentCommand().getName()) {
+                case "Handoff": 
+                case "IntakeFloor": 
+                case "IntakeSource":
+                case "CoralIntakeSource":
+                    System.out.println("sensing before score timer" + sensing);
+                    // sensing = false;
+                    if (Timer.getFPGATimestamp() - scoreTimer > 2) {
+                        sensing = true;
+                        if (scoreTimer != -1) {
+                            scoreTimer = 999999999;
+                            System.out.println("sensing set after score timer: " + sensing);
+                        } 
+                    }
+                    break;
 
-            case "ScoreL1": 
-            case "OuttakeCoral":
-                    sensing = true; 
+                case "ScoreL1": 
+                case "OuttakeCoral":
+                        // sensing = true; 
+                        if (Timer.getFPGATimestamp() - scoreTimer > 2) {
+                            sensing = false;
+                            if (scoreTimer != -1) {
+                                scoreTimer = 999999999; 
+                            }
+                        }
+                    break;
+                case "ScoreL234": 
+                    // sensing = true;
                     if (Timer.getFPGATimestamp() - scoreTimer > 2) {
                         sensing = false;
                         if (scoreTimer != -1) {
                             scoreTimer = 999999999; 
-                        }
+                        } 
                     }
-                break;
-            case "ScoreL234": 
-                sensing = true;
-                if (Timer.getFPGATimestamp() - scoreTimer > 2) {
-                    sensing = false;
-                    if (scoreTimer != -1) {
-                        scoreTimer = 999999999; 
-                    } 
-                }
-                break;
+                    break;
+            }
         }
         data.sensing = sensing;
     }

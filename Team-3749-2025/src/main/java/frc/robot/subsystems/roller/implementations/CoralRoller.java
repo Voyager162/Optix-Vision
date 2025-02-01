@@ -10,6 +10,7 @@ import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.PhotoelectricIO.PhotoelectricData;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
 import frc.robot.subsystems.roller.RollerIO.RollerData;
+import frc.robot.subsystems.roller.sim.PhotoelectricSim;
 
 public class CoralRoller extends Roller {
     private double lastVelocity = 0.0;
@@ -20,6 +21,7 @@ public class CoralRoller extends Roller {
     
     public CoralRoller() {
         super(Implementations.CORAL, velocityController(), FF(), positionController());
+        this.photoelectricIO = new PhotoelectricSim();
         photoelectricIO.setInitialState(true);
     }
 
