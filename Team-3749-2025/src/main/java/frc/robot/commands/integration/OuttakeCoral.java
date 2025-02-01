@@ -4,10 +4,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.roller.RollerConstants;
-import frc.robot.subsystems.roller.RollerConstants.RollerStates;
-import frc.robot.subsystems.arm.algae.AlgaeConstants.ArmStates;
 import frc.robot.subsystems.arm.coral.CoralConstants;
-
+/*
+ * OuttakeCoral command for shooting coral from coral arm
+ */
 public class OuttakeCoral extends Command {
 
     public OuttakeCoral() {
@@ -36,8 +36,7 @@ public class OuttakeCoral extends Command {
 
     @Override
     public boolean isFinished() {
-        System.out.println("outtake coral: " + Robot.coralRoller.hasPiece());
-        return !Robot.coralRoller.hasPiece() && !Robot.coralRoller.getIsStableState();
+        return !Robot.coralRoller.hasPiece();
     }
 }
 

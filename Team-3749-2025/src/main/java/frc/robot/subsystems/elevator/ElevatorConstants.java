@@ -60,5 +60,6 @@ public class ElevatorConstants {
         public static final double algaeLowHeight = Units.inchesToMeters(31.875);
         public static final double algaeHighHeight = Units.inchesToMeters(47.625);
         public static final double sourceHeight = Units.inchesToMeters(ElevatorSpecs.baseHeight);
+        public static final double stowHeight = Units.inchesToMeters(5.0); // placedholder
     }
 }

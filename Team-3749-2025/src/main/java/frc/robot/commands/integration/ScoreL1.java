@@ -6,7 +6,9 @@ import frc.robot.subsystems.arm.coral.CoralConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
-
+/*
+ * ScoreL1 command for scoring coral on L1 using coral arm
+ */
 public class ScoreL1 extends Command {
 
     public ScoreL1() {
@@ -18,7 +20,7 @@ public class ScoreL1 extends Command {
         Robot.elevator.setState(ElevatorConstants.ElevatorStates.STOW);
         Robot.coralArm.setState(CoralConstants.ArmStates.L1);
         Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
-        Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
+        Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);
     }
 
     @Override
@@ -32,12 +34,10 @@ public class ScoreL1 extends Command {
     public void end(boolean interrupted) {
         Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
         Robot.coralRoller.setState(RollerStates.STOP);
-        System.out.println("end");
     }
 
     @Override
     public boolean isFinished() {
-        System.out.println("scoreL1: " + Robot.coralRoller.hasPiece());
-        return !Robot.coralRoller.hasPiece() && !Robot.coralRoller.getIsStableState();
+        return !Robot.coralRoller.hasPiece();
     }
 }

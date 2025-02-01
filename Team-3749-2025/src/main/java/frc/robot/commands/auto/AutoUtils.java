@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Robot;
+import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.commands.integration.IntakeSource;
 import frc.robot.commands.integration.KnockAlgae;
@@ -193,11 +194,10 @@ public class AutoUtils {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
         Command scoreL4 = new ScoreL234(ElevatorStates.L4);
-        Command print = Commands.print("SCORE L4");
 
 
-        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(print);
-        return print;
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(scoreL4);
+        return scoreL4;
 
     }
 
@@ -216,11 +216,9 @@ public class AutoUtils {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
         Command scoreL3 = new ScoreL234(ElevatorStates.L3);
-        Command print = Commands.print("SCORE L3");
-        
 
-        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(print);
-        return print;
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(scoreL3);
+        return scoreL3;
 
     }
 
@@ -239,10 +237,9 @@ public class AutoUtils {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
         Command intake = new IntakeSource();
-        Command print = Commands.print("Intake");
 
-        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(print);
-        return print;
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(intake);
+        return intake;
 
     }
 
@@ -255,10 +252,9 @@ public class AutoUtils {
         }
 
         Command KnockAlgae = new KnockAlgae(ElevatorStates.L4);
-        Command print = Commands.print("SCORE L3");
 
-        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(print);
-        return print;
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(KnockAlgae);
+        return KnockAlgae;
 
     }
     
