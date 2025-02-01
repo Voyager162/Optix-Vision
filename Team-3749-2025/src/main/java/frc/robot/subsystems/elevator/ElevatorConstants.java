@@ -51,8 +51,8 @@ public class ElevatorConstants {
 
     public static class StateHeights {
         public static final double l1Height = Units.inchesToMeters(18);
-        public static final double l2Height = Units.inchesToMeters(31.875 - 28.5 + 14.428);
-        public static final double l3Height = Units.inchesToMeters(47.625 - 28.5 + 14.428);
-        public static final double l4Height = Units.inchesToMeters(72 - 28.5 + 14.428);
+        public static final double l2Height = Units.inchesToMeters(31.875 - 28.5 + 14.428 - 4.9 + 0.6 + 3);
+        public static final double l3Height = Units.inchesToMeters(47.625 - 28.5 + 14.428 - 4.9 + 0.6 + 3);
+        public static final double l4Height = Units.inchesToMeters(72 - 28.5 + 14.428 - 4.9 + 0.6 + 3);
     }
 }

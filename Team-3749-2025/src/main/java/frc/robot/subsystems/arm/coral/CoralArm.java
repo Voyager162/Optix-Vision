@@ -189,7 +189,7 @@ public class CoralArm extends Arm {
     }
 
     private Transform3d getTransform3d() {
-        Transform3d transform = new Transform3d(0.35, 0, 0.4,
+        Transform3d transform = new Transform3d(0.285, 0.01, 0.4,
                 new Rotation3d(Angle.ofBaseUnits(0, Radians), getPitch(), Angle.ofBaseUnits(0, Radians)));
         return transform;
     }
