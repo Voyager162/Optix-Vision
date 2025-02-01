@@ -178,7 +178,7 @@ public class CoralArm extends Arm {
 
     private Angle getPitch() {
         System.out.println(data.positionUnits);
-        return Angle.ofBaseUnits(data.positionUnits + Units.degreesToRadians(-65), Radians); // remove offset once coral
+        return Angle.ofBaseUnits(data.positionUnits + Units.degreesToRadians(-55), Radians); // remove offset once coral
                                                                                              // arm code is fixed
     }
 
