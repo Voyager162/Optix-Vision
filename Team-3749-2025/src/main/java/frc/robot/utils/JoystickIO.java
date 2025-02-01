@@ -84,9 +84,9 @@ public class JoystickIO {
         // operator.a().whileTrue(new ExampleSubsystemCommand());
 
         operator.a().onTrue(l1);
-        operator.b().onTrue(l4);
-        operator.x().onTrue(handoff);
-        operator.y().onTrue(pickup);
+        operator.b().onTrue(l2);
+        operator.x().onTrue(l3);
+        operator.y().onTrue(l4);
     }
 
     public static void pilotBindings() {
