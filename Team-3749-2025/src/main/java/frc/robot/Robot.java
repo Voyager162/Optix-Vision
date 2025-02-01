@@ -3,6 +3,7 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
+
 import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
@@ -35,7 +36,7 @@ public class Robot extends TimedRobot {
   public static Roller algaeRoller = new AlgaeRoller();
   public static Roller coralRoller = new CoralRoller();
   public static Roller scoringRoller = new ScoringRoller();
-  
+
   public static ExampleSubsystem subsystem = new ExampleSubsystem();
   public static Elevator elevator = new Elevator();
 
@@ -59,7 +60,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-    
   }
 
   @Override
@@ -116,7 +116,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    
+
   }
 
   @Override
@@ -135,8 +135,9 @@ public class Robot extends TimedRobot {
   @Override
   public void testExit() {
   }
+
   @Override
-  public void simulationInit(){
+  public void simulationInit() {
     DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
   }
 }
