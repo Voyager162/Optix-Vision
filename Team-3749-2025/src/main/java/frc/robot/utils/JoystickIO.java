@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Robot;
 import frc.robot.commands.elevator.SetElevatorState;
 
@@ -35,7 +36,11 @@ public class JoystickIO {
     private static final SetElevatorState l3 = new SetElevatorState(ElevatorStates.L3);
     private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
 
-    private final GenericHID buttonBoard = new GenericHID(1);
+    private final static GenericHID buttonBoard = new GenericHID(1);
+    private final static JoystickButton button1 = new JoystickButton(buttonBoard, 1);
+    private final static JoystickButton button2 = new JoystickButton(buttonBoard, 2);
+    private final static JoystickButton button3 = new JoystickButton(buttonBoard, 3);
+    private final static JoystickButton button4 = new JoystickButton(buttonBoard, 4);
 
     public JoystickIO() {
     }
@@ -79,6 +84,12 @@ public class JoystickIO {
         operator.b().onTrue(l2);
         operator.x().onTrue(l3);
         operator.y().onTrue(l4);
+
+        button1.onTrue(l1);
+        button2.onTrue(l2);
+        button3.onTrue(l3);
+        button4.onTrue(l4);
+        
     }
 
     public static void pilotBindings() {
