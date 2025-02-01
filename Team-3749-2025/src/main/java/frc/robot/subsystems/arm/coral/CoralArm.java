@@ -21,8 +21,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static edu.wpi.first.units.Units.*;
 
-import javax.sound.sampled.SourceDataLine;
-
 /**
  * Subsystem class for the arm
  * 
@@ -43,11 +41,8 @@ public class CoralArm extends Arm {
     private Mechanism2d mechanism2d = new Mechanism2d(3, 3);
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 2, 0);
     private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Coral Arm", 3, 0));
-
-    private Angle roll = Angle.ofBaseUnits(0, Degrees);
-    private Angle pitch = Angle.ofBaseUnits(data.positionUnits, Radians);
-    private Angle yaw = Angle.ofBaseUnits(0, Degrees);
-    // private Pose3d zeroedComponentPose = new Pose3d(0, 0, 0, new Rotation3d(roll, pitch, yaw));
+    // private Pose3d zeroedComponentPose = new Pose3d(0, 0, 0, new Rotation3d(roll,
+    // pitch, yaw));
 
     StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
             .getStructTopic("CoralArm Pose", Pose3d.struct).publish();
@@ -181,13 +176,15 @@ public class CoralArm extends Arm {
         // )
     }
 
-    private Angle getPitch(){
+    private Angle getPitch() {
         System.out.println(data.positionUnits);
-        return Angle.ofBaseUnits(data.positionUnits + Units.degreesToRadians(-65), Radians); // remove offset once coral arm code is fixed
+        return Angle.ofBaseUnits(data.positionUnits + Units.degreesToRadians(-65), Radians); // remove offset once coral
+                                                                                             // arm code is fixed
     }
 
     private Transform3d getTransform3d() {
-        Transform3d transform = new Transform3d(0.35, 0, 0.4, new Rotation3d(roll, getPitch(), yaw));
+        Transform3d transform = new Transform3d(0.35, 0, 0.4,
+                new Rotation3d(Angle.ofBaseUnits(0, Radians), getPitch(), Angle.ofBaseUnits(0, Radians)));
         return transform;
     }
 
@@ -201,7 +198,6 @@ public class CoralArm extends Arm {
      */
     @Override
     public void periodic() {
-
         armIO.updateData(data);
 
         logData();
