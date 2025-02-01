@@ -65,9 +65,8 @@ public class JoystickIO {
 
     // miscellaneous buttons
     private final static JoystickButton buttonAlgaeKnockoff = new JoystickButton(buttonBoard, 19);
-    private final static JoystickButton buttonA = new JoystickButton(buttonBoard, 20);
-    private final static JoystickButton buttonB = new JoystickButton(buttonBoard, 21);
-    private final static JoystickButton buttonC = new JoystickButton(buttonBoard, 22);
+    private final static JoystickButton buttonUtilityA = new JoystickButton(buttonBoard, 20);
+    private final static JoystickButton buttonUtilityB = new JoystickButton(buttonBoard, 21);
     public JoystickIO() {
     }
 
