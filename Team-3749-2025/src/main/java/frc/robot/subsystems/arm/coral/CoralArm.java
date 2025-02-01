@@ -39,8 +39,8 @@ public class CoralArm extends Arm {
     private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
     private Mechanism2d mechanism2d = new Mechanism2d(3, 3);
-    private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 2, 0);
-    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Coral Arm", 3, 0));
+    private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 1.8, .4);
+    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Coral Arm", CoralConstants.armLength_meters, 0));
     // private Pose3d zeroedComponentPose = new Pose3d(0, 0, 0, new Rotation3d(roll,
     // pitch, yaw));
 

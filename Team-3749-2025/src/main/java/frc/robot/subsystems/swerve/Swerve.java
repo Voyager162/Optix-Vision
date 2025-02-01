@@ -60,7 +60,7 @@ public class Swerve extends SubsystemBase {
   private ShuffleData<Double[]> odometryLog = new ShuffleData<Double[]>(
       this.getName(),
       "odometry",
-      new Double[] { 0.0, 0.0, 0.0 });
+      new Double[] { 0.0, 0.0, 0.0});
 
   private ShuffleData<Double[]> realStatesLog = new ShuffleData<Double[]>(
       this.getName(),

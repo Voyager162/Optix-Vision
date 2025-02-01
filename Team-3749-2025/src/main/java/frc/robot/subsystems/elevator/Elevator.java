@@ -1,10 +1,15 @@
 package frc.robot.subsystems.elevator;
 
+import static edu.wpi.first.units.Units.Radians;
+
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -22,8 +27,6 @@ import frc.robot.subsystems.elevator.real.ElevatorSparkMax;
 import frc.robot.subsystems.elevator.sim.ElevatorSimulation;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
-
-import static edu.wpi.first.units.Units.*;
 
 /**
  * Elevator subsystem
@@ -63,6 +66,8 @@ public class Elevator extends SubsystemBase {
     private ShuffleData<Double> rightCurrentAmpsLog = new ShuffleData<Double>("Elevator", "right current amps", 0.0);
     private ShuffleData<Double> leftTempCelciusLog = new ShuffleData<Double>("Elevator", "left temp celcius", 0.0);
     private ShuffleData<Double> rightTempCelciusLog = new ShuffleData<Double>("Elevator", "right temp celcius", 0.0);
+
+
 
     // For tuning on real
     // private ShuffleData<Double> kPData = new ShuffleData<Double>("Elevator",
@@ -200,11 +205,13 @@ public class Elevator extends SubsystemBase {
         leftTempCelciusLog.set(data.leftTempCelcius);
         rightTempCelciusLog.set(data.rightTempCelcius);
 
+
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
         SmartDashboard.putData("elevator mechanism", mech);
 
         publisher.set(new Pose3d(getTransform3d().getTranslation(), getTransform3d().getRotation()));
     }
+
 
     private Transform3d getTransform3d() {
         Transform3d transform = new Transform3d(0, 0, data.positionMeters, new Rotation3d(Angle.ofBaseUnits(0, Radians),
@@ -218,7 +225,6 @@ public class Elevator extends SubsystemBase {
     @Override
     public void periodic() {
         elevatorio.updateData(data);
-
         runState();
         logData();
         // pidController.setPID(kPData.get(),0,kDData.get())
