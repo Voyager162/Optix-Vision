@@ -2,6 +2,7 @@ package frc.robot.subsystems.roller.implementations;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.roller.PhotoelectricIO;
 import frc.robot.subsystems.roller.Roller;
@@ -16,7 +17,7 @@ public class ScoringRoller extends Roller {
     private RollerData rollerData;
     private PhotoelectricData photoelectricData = new PhotoelectricData();
     private PhotoelectricIO photoelectricIO;
-    private boolean hasPiece = false;
+    private boolean hasPiece = true;
 
     public ScoringRoller() {
         super(Implementations.SCORING, velocityController(), FF(), positionController());
@@ -58,11 +59,15 @@ public class ScoringRoller extends Roller {
     }
 
     public boolean hasPiece() {
-        return photoelectricData.sensing;
+        return hasPiece;
     }
 
     public void setHasPiece(boolean hasPiece) {
         this.hasPiece = hasPiece;
+    }
+
+    public Command getCurrentCommand(){
+        return this.getCurrentCommand();
     }
 
     @Override
@@ -70,12 +75,11 @@ public class ScoringRoller extends Roller {
         super.periodic();
         photoelectricIO.updateData(photoelectricData);
 
-        if (Robot.isSimulation()) {
-            if (this.getCurrentCommand() != null) {
-                photoelectricIO.setSensing(this.getCurrentCommand().getName());
-                setHasPiece(photoelectricData.sensing);
-            }
-        }
+        // if (Robot.isSimulation()) {
+        //     if (this.getCurrentCommand() != null) {
+        //         photoelectricIO.setSensing(this.getCurrentCommand().getName());
+        //     }
+        // }
 
     }
 }

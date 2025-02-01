@@ -1,6 +1,7 @@
 package frc.robot.subsystems.roller.sim;
 
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Robot;
 import frc.robot.subsystems.roller.PhotoelectricIO;
 
 public class PhotoelectricSim implements PhotoelectricIO { 
@@ -22,7 +23,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
             case "IntakeFloor": 
             case "IntakeSource":
             case "CoralIntakeSource":
-                sensing = false;
+                // sensing = false;
                 if (Timer.getFPGATimestamp() - scoreTimer > 2) {
                     sensing = true;
                     if (scoreTimer != -1) {
@@ -33,7 +34,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
 
             case "ScoreL1": 
             case "OuttakeCoral":
-                    sensing = true; 
+                    // sensing = true; 
                     if (Timer.getFPGATimestamp() - scoreTimer > 2) {
                         sensing = false;
                         if (scoreTimer != -1) {
@@ -42,7 +43,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
                     }
                 break;
             case "ScoreL234": 
-                sensing = true;
+                // sensing = true;
                 if (Timer.getFPGATimestamp() - scoreTimer > 2) {
                     sensing = false;
                     if (scoreTimer != -1) {
@@ -55,6 +56,8 @@ public class PhotoelectricSim implements PhotoelectricIO {
 
     @Override
     public void updateData(PhotoelectricData data) {
+        Robot.scoringRoller.getCurrentCommand == ""
+
         data.sensing = sensing;
     }
 }

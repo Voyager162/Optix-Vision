@@ -19,7 +19,8 @@ public class IntakeSource extends Command {
         Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
         Robot.elevator.setState(ElevatorStates.SOURCE);
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
-        Robot.scoringRoller.setState(RollerConstants.RollerStates.RUN); 
+        Robot.scoringRoller.setState(RollerConstants.RollerStates.RUN);
+        System.out.println("intake source start"); 
     }
 
     @Override
@@ -29,6 +30,7 @@ public class IntakeSource extends Command {
     @Override
     public void end(boolean interrupted) {
         Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
+        System.out.println("intake source end");
     }
 
     @Override

@@ -193,10 +193,11 @@ public class AutoUtils {
         if (DriverStation.getAlliance().get() == Alliance.Red) {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
+        Command intakeSource = new IntakeSource();
         Command scoreL4 = new ScoreL234(ElevatorStates.L4);
 
 
-        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(scoreL4);
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(intakeSource.andThen(scoreL4));
         return scoreL4;
 
     }
@@ -270,14 +271,16 @@ public class AutoUtils {
      * @param ScoreL234
      */
     public static void goNextAfterScored(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory,
-            Command ScoreL234) {
+            Command ScoreL234, Command IntakeSoucre) {
         Pose2d endingPose2d = getFinalPose2d(curTrajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
         if (DriverStation.getAlliance().get() == Alliance.Red) {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
-        curTrajectory.done().and(() -> ScoreL234.isFinished()).onTrue(nextTrajectory.cmd());
+        curTrajectory.done()
+        .and(() -> IntakeSoucre.isFinished())
+        .onTrue(ScoreL234.andThen(nextTrajectory.cmd()));
 
     }
 
@@ -324,6 +327,7 @@ public class AutoUtils {
         }
 
         curTrajectory.done().and(() -> KnockAlgae.isFinished()).onTrue(nexTrajectory.cmd());
+        System.out.println("Done with Knock");
 
     }
 
