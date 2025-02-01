@@ -16,7 +16,7 @@ public class ScoringRoller extends Roller {
     private RollerData rollerData;
     private PhotoelectricData photoelectricData = new PhotoelectricData();
     private PhotoelectricIO photoelectricIO;
-    private boolean hasPiece = false;
+    private boolean hasPiece = true;
 
     public ScoringRoller() {
         super(Implementations.SCORING, velocityController(), FF(), positionController());
