@@ -23,6 +23,7 @@ public class ScoringRoller extends Roller {
         this.rollerData = new RollerData();
         if (Robot.isSimulation()) {
             this.photoelectricIO = new PhotoelectricSim();
+            photoelectricIO.setInitialState(true);
         } else {
             this.photoelectricIO = new JTVisiSight(); 
         }
@@ -70,12 +71,11 @@ public class ScoringRoller extends Roller {
         super.periodic();
         photoelectricIO.updateData(photoelectricData);
 
-        if (Robot.isSimulation()) {
-            if (this.getCurrentCommand() != null) {
-                photoelectricIO.setSensing(this.getCurrentCommand().getName());
-                setHasPiece(photoelectricData.sensing);
-            }
+        System.out.println("sensing" + photoelectricData.sensing);
+        if (photoelectricData.sensing) {
+            hasPiece = true;
+        } else {
+            hasPiece = false;
         }
-
     }
 }

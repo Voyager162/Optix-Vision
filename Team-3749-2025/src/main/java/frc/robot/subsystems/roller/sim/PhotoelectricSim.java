@@ -1,14 +1,28 @@
 package frc.robot.subsystems.roller.sim;
 
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Robot;
 import frc.robot.subsystems.roller.PhotoelectricIO;
 
 public class PhotoelectricSim implements PhotoelectricIO { 
     private double scoreTimer = -1;
     private boolean sensing;
 
+    /**
+     * Should only be used for simulation implementation
+     * @param initialState 
+     */
     @Override
-    public void setSensing(String commandName) {
+    public void setInitialState(boolean initialState){
+        if (initialState) {
+            sensing = true;
+        } else {
+            sensing = false;
+        }
+    }
+
+    @Override
+    public void updateData(PhotoelectricData data) {
         if (scoreTimer < 0) {  // Initialize timer only once per command
             scoreTimer = Timer.getFPGATimestamp();
         }
@@ -17,16 +31,18 @@ public class PhotoelectricSim implements PhotoelectricIO {
             scoreTimer = -1;
         }
 
-        switch(commandName) {
+        switch(Robot.scoringRoller.getCurrentCommand().getName()) {
             case "Handoff": 
             case "IntakeFloor": 
             case "IntakeSource":
             case "CoralIntakeSource":
+                System.out.println("sensing before score timer" + sensing);
                 sensing = false;
                 if (Timer.getFPGATimestamp() - scoreTimer > 2) {
                     sensing = true;
                     if (scoreTimer != -1) {
                         scoreTimer = 999999999;
+                        System.out.println("sensing set after score timer: " + sensing);
                     } 
                 }
                 break;
@@ -51,10 +67,9 @@ public class PhotoelectricSim implements PhotoelectricIO {
                 }
                 break;
         }
-    }
-
-    @Override
-    public void updateData(PhotoelectricData data) {
         data.sensing = sensing;
     }
 }
+
+        
+

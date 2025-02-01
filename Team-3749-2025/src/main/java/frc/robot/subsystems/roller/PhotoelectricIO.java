@@ -22,10 +22,8 @@ public interface PhotoelectricIO {
     public default void updateData(PhotoelectricData data) {
 
     }
-    public default void setSensing(boolean sensing) {
 
-    }
-    public default void setSensing(String commandName) {
+    public default void setInitialState(boolean initialState){
 
     }
 }
