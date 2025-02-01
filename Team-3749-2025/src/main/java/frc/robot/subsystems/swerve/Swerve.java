@@ -4,25 +4,37 @@
 
 package frc.robot.subsystems.swerve;
 
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
+
 import java.util.Map;
 
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.math.kinematics.*;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.*;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
 import frc.robot.commands.auto.AutoConstants;
 import frc.robot.subsystems.swerve.GyroIO.GyroData;
 import frc.robot.subsystems.swerve.SwerveConstants.DriveConstants;
-import frc.robot.subsystems.swerve.real.*;
-import frc.robot.subsystems.swerve.sim.*;
-import frc.robot.utils.*;
-import static edu.wpi.first.units.Units.*;
+import frc.robot.subsystems.swerve.real.PigeonGyro;
+import frc.robot.subsystems.swerve.real.SwerveModuleSparkMax;
+import frc.robot.subsystems.swerve.sim.GyroSim;
+import frc.robot.subsystems.swerve.sim.SwerveModuleSim;
+import frc.robot.utils.MotorData;
+import frc.robot.utils.ShuffleData;
+import frc.robot.utils.SysIdTuner;
+import frc.robot.utils.UtilityFunctions;
 
 /***
  * Subsystem class for swerve drive, used to manage four swerve
@@ -147,8 +159,12 @@ public class Swerve extends SubsystemBase {
 
   private SysIdTuner driveSysIdTuner;
   private SysIdTuner turningSysIdTuner;
+  private SysIdTuner rotationalSysIdTuner;
+
   private Map<String, MotorData> driveMotorData;
   private Map<String, MotorData> turningMotorData;
+  private Map<String, MotorData> rotationalMotorData;
+
 
   SysIdRoutine.Config config = new SysIdRoutine.Config(
       Volts.per(Seconds).of(1.2), // Voltage ramp rate
@@ -200,6 +216,13 @@ public class Swerve extends SubsystemBase {
         modules[0].getModuleData().turnAbsolutePositionRad,
         modules[0].getModuleData().turnVelocityRadPerSec,
         0));
+    
+    rotationalMotorData = Map.of("drive_left",
+    new MotorData(
+        modules[0].getModuleData().driveAppliedVolts,
+        modules[0].getModuleData().drivePositionM,
+        modules[0].getModuleData().driveVelocityMPerSec,
+        modules[0].getModuleData().driveAccelerationMPerSecSquared));
 
     driveSysIdTuner = new SysIdTuner("drive", config, this, (volts) -> {
       for (int i = 0; i < 4; i++) {
@@ -211,6 +234,11 @@ public class Swerve extends SubsystemBase {
         modules[i].setTurnVoltage(volts);
       }}, turningMotorData);
 
+    rotationalSysIdTuner = new SysIdTuner("rotate", config, this, (volts) -> {
+      for (int i = 0; i < 4; i++) {
+        modules[i].setDriveVoltage(volts);
+      }}, rotationalMotorData);
+    
     // put us on the field with a default orientation
     resetGyro();
     setOdometry(new Pose2d(1.33, 5.53, new Rotation2d(0)));
@@ -225,6 +253,18 @@ public class Swerve extends SubsystemBase {
 
   public SysIdTuner getTurningSysIdTuner() {
     return turningSysIdTuner;
+  }
+
+  public SysIdTuner getRotationalSysIdTuner(){
+    return rotationalSysIdTuner;
+  }
+
+  public boolean getRotated(){
+    return UtilityFunctions.withinMargin(0.01, modules[0].getModuleData().turnAbsolutePositionRad, Rotation2d.fromDegrees(45).getRadians())
+    &&  UtilityFunctions.withinMargin(0.01, modules[1].getModuleData().turnAbsolutePositionRad, Rotation2d.fromDegrees(135).getRadians())
+    &&  UtilityFunctions.withinMargin(0.01, modules[2].getModuleData().turnAbsolutePositionRad, Rotation2d.fromDegrees(225).getRadians())
+    &&  UtilityFunctions.withinMargin(0.01, modules[3].getModuleData().turnAbsolutePositionRad, Rotation2d.fromDegrees(315).getRadians());
+
   }
 
   /**
@@ -376,6 +416,15 @@ public class Swerve extends SubsystemBase {
             modules[3].getPosition()
         },
         pose);
+  }
+
+  public void setRotation(){
+    modules[0].setTurnPosition(45*(Math.PI/180));
+    modules[1].setTurnPosition(135*Math.PI/180);
+
+    modules[2].setTurnPosition(225*Math.PI/180);
+    modules[3].setTurnPosition(315*Math.PI/180);
+
   }
 
   /**
@@ -543,5 +592,10 @@ public class Swerve extends SubsystemBase {
     turningMotorData.get("turning_left").position = modules[0].getModuleData().turnAbsolutePositionRad;
     turningMotorData.get("turning_left").velocity = modules[0].getModuleData().turnVelocityRadPerSec;
     turningMotorData.get("turning_left").acceleration = 0;
+
+    rotationalMotorData.get("drive_left").appliedVolts = modules[0].getModuleData().driveAppliedVolts;
+    rotationalMotorData.get("drive_left").position = modules[0].getModuleData().drivePositionM;
+    rotationalMotorData.get("drive_left").velocity = modules[0].getModuleData().driveVelocityMPerSec / 0.533;
+    rotationalMotorData.get("drive_left").acceleration = modules[0].getModuleData().driveAccelerationMPerSecSquared / 0.533;
   }
 }

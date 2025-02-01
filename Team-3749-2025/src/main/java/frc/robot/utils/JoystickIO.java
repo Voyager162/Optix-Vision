@@ -6,10 +6,10 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Robot;
-// import frc.robot.commands.auto.SysIdCommand;
 import frc.robot.commands.elevator.SetElevatorState;
 import frc.robot.commands.example.ExampleSubsystemCommand;
 import frc.robot.commands.swerve.DriveStraight;
+import frc.robot.commands.swerve.RotationialSysId;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 
@@ -29,9 +29,12 @@ public class JoystickIO {
     private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
     private static final SetElevatorState l3 = new SetElevatorState(ElevatorStates.L3);
     private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
+    private static final RotationialSysId rotate1 = new RotationialSysId(Robot.swerve.getDriveSysIdTuner().sysIdQuasistatic(Direction.kForward), Robot.swerve);
+    private static final RotationialSysId rotate2 = new RotationialSysId(Robot.swerve.getDriveSysIdTuner().sysIdQuasistatic(Direction.kReverse), Robot.swerve);
+    private static final RotationialSysId rotate3 = new RotationialSysId(Robot.swerve.getDriveSysIdTuner().sysIdDynamic(Direction.kForward), Robot.swerve);
+    private static final RotationialSysId rotate4 = new RotationialSysId(Robot.swerve.getDriveSysIdTuner().sysIdDynamic(Direction.kReverse), Robot.swerve);
 
-    // private static final SysIdCommand andrew = new SysIdCommand();
-    // private direction = andrew.sysIdDynamic(kForward);
+
 
     public JoystickIO() {
     }
@@ -69,10 +72,14 @@ public class JoystickIO {
         // Example binding
         operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        operator.a().onTrue(Robot.swerve.getTurningSysIdTuner().sysIdQuasistatic(Direction.kForward));
+        operator.a().onTrue(rotate1);
+        operator.b().onTrue(rotate2);
+        operator.x().onTrue(rotate3);
+        operator.y().onTrue(rotate4);
+        /*operator.a().onTrue(Robot.swerve.getTurningSysIdTuner().sysIdQuasistatic(Direction.kForward));
         operator.b().onTrue(Robot.swerve.getTurningSysIdTuner().sysIdQuasistatic(Direction.kReverse));
         operator.x().onTrue(Robot.swerve.getTurningSysIdTuner().sysIdDynamic(Direction.kForward));
-        operator.y().onTrue(Robot.swerve.getTurningSysIdTuner().sysIdDynamic(Direction.kReverse));
+        operator.y().onTrue(Robot.swerve.getTurningSysIdTuner().sysIdDynamic(Direction.kReverse));*/
     }
 
     public static void pilotBindings() {

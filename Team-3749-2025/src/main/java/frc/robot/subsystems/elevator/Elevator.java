@@ -135,16 +135,16 @@ public class Elevator extends SubsystemBase {
     public boolean getIsStableState() {
         switch (state) {
             case L1:
-                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.l1Height,
+                return UtilityFunctions.withinMargin(0.001, ElevatorConstants.StateHeights.l1Height,
                         data.positionMeters);
             case L2:
-                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
+                return UtilityFunctions.withinMargin(0.001, data.positionMeters,
                         ElevatorConstants.StateHeights.l2Height);
             case L3:
-                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
+                return UtilityFunctions.withinMargin(0.001, data.positionMeters,
                         ElevatorConstants.StateHeights.l3Height);
             case L4:
-                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
+                return UtilityFunctions.withinMargin(0.001, data.positionMeters,
                         ElevatorConstants.StateHeights.l4Height);
             default:
                 return false;
