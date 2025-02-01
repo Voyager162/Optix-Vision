@@ -5,7 +5,9 @@ import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.roller.RollerConstants;
-
+/*
+ * KnockAlgae command for knocking algae off reef
+ */
 public class KnockAlgae extends Command {
     private final ElevatorStates state;
 
@@ -30,7 +32,6 @@ public class KnockAlgae extends Command {
     public void end(boolean interrupted) {
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.algaeRoller.setState(RollerConstants.RollerStates.STOP);
-        System.out.println("knock algae end");
     }
 
     @Override

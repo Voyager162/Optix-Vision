@@ -10,7 +10,7 @@ import frc.robot.subsystems.roller.RollerIO.RollerData;
 public class CoralRoller extends Roller {
     private double lastVelocity = 0.0;
     private boolean hasPiece = false;
-    private RollerData data;
+    private RollerData data = new RollerData();
     
     public CoralRoller() {
         super(Implementations.CORAL, velocityController(), FF(), positionController());
@@ -31,26 +31,25 @@ public class CoralRoller extends Roller {
     public boolean getIsStableState() {
         double currentVelocity = data.rollerVelocityRadPerSec;
         double velocityChange = Math.abs(currentVelocity - lastVelocity);
-
         double velocityChangeThreshold = 0.5; // placeholder
-        double velocityDropThreshold = 0.1;
-
-        if (currentVelocity < lastVelocity - velocityDropThreshold) {
-            hasPiece = true;
-        }
-        boolean isStable = velocityChange < velocityChangeThreshold;
-        
-        return isStable;
+        return velocityChange < velocityChangeThreshold;
     }
 
     public boolean hasPiece() {
-        return hasPiece();
+        if (!getIsStableState() && lastVelocity > 0.1) { 
+            hasPiece = true; 
+        }
+        return hasPiece;
     }
 
     public void setHasPiece(boolean hasPiece) {
         this.hasPiece = hasPiece;
     }
-    
+
+    public boolean getHasPiece() {
+        return hasPiece;
+    }
+
     @Override
     public void run() {
         setVelocity(RollerConstants.Coral.velocity);

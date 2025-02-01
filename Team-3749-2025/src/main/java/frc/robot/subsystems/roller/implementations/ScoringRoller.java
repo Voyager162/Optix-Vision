@@ -16,9 +16,7 @@ public class ScoringRoller extends Roller {
     private RollerData rollerData;
     private PhotoelectricData photoelectricData = new PhotoelectricData();
     private PhotoelectricIO photoelectricIO;
-
     private boolean hasPiece = false;
-    // private double intakeStartTime = 100000;
 
     public ScoringRoller() {
         super(Implementations.SCORING, velocityController(), FF(), positionController());
@@ -74,25 +72,8 @@ public class ScoringRoller extends Roller {
 
         if (Robot.isSimulation()) {
             if (this.getCurrentCommand() != null) {
-
                 photoelectricIO.setSensing(this.getCurrentCommand().getName());
                 setHasPiece(photoelectricData.sensing);
-
-                // if (photoelectricData.sensing) {
-                //     setHasPiece(true);
-                //     // System.out.println("correct");
-                // } else {
-                //     setHasPiece(false);
-                // }
-                // if (this.getCurrentCommand().getName() == "IntakeFloor" || this.getCurrentCommand().getName() == "IntakeSource") {
-                    
-                    // if (intakeStartTime > 10000) {
-                    //     intakeStartTime = Timer.getFPGATimestamp();
-                    // }
-                    // if (Timer.getFPGATimestamp() - intakeStartTime > 2) {
-                        // setHasPiece(true);
-                    //     intakeStartTime = 100000;
-                    // }
             }
         }
 

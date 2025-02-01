@@ -15,7 +15,6 @@ import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.OuttakeCoral;
 import frc.robot.commands.integration.ScoreL1;
 import frc.robot.commands.integration.ScoreL234;
-import frc.robot.commands.integration.SensorSwitch;
 import frc.robot.commands.roller.MaintainCommand;
 import frc.robot.commands.roller.RunCommand;
 import frc.robot.commands.roller.StopCommand;
@@ -55,7 +54,6 @@ public class JoystickIO {
     private static final OuttakeCoral outtakeCoral = new OuttakeCoral();
     private static final ScoreL1 scoreL1 = new ScoreL1();
     private static final ScoreL234 scoreL4 = new ScoreL234(ElevatorStates.L4);
-    private static final SensorSwitch sensorSwitch = new SensorSwitch();
 
     public JoystickIO() {
     }
@@ -96,8 +94,8 @@ public class JoystickIO {
         // operator.a().whileTrue(new ExampleSubsystemCommand());
 
         operator.a().onTrue(knockAlgaeLow);
-        operator.b().onTrue(knockAlgaeHigh);
-        operator.x().onTrue(sensorSwitch);
+        operator.b().onTrue(outtakeCoral);
+        operator.x().onTrue(intakeSource);
         operator.y().onTrue(scoreL4);
 
     }

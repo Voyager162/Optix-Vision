@@ -30,7 +30,7 @@ public class Handoff extends Command {
     @Override
     public void execute() {
         if (Robot.coralArm.getState() == CoralConstants.ArmStates.HAND_OFF && Robot.coralArm.getIsStableState()
-                && Robot.elevator.getState() == ElevatorStates.STOW) { // might need to edit elevator.getIsStableState()
+                && Robot.elevator.getState() == ElevatorStates.STOW && Robot.elevator.getIsStableState()) { 
             Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE); 
         }
     }
@@ -40,7 +40,6 @@ public class Handoff extends Command {
         Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
         Robot.scoringRoller.setState(RollerStates.MAINTAIN);
-        System.out.println("end");
     }
 
     @Override
