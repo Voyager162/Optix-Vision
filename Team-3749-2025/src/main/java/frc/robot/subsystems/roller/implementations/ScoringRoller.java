@@ -2,6 +2,7 @@ package frc.robot.subsystems.roller.implementations;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.roller.PhotoelectricIO;
 import frc.robot.subsystems.roller.Roller;
@@ -66,6 +67,13 @@ public class ScoringRoller extends Roller {
         this.hasPiece = hasPiece;
     }
 
+    // public Command getCurrentCommand(){
+    //     if (this.getCurrentCommand() != null) {
+    //         return this.getCurrentCommand();
+    //     }
+    //     return null;
+    // }
+
     @Override
     public void periodic() {
         super.periodic();
@@ -75,6 +83,7 @@ public class ScoringRoller extends Roller {
         if (photoelectricData.sensing) {
             hasPiece = true;
         } else {
+        
             hasPiece = false;
         }
     }
