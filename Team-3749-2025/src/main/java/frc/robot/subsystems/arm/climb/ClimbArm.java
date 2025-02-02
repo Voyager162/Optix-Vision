@@ -84,6 +84,43 @@ public class ClimbArm extends SubsystemBase {
 		}
 		SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
 	}
+	
+	// GET FUNCTIONS
+
+	/**
+	 * @return the state the arm is in
+	 */
+	public ClimbConstants.ArmStates getState() {
+		return state;
+	}
+
+	/**
+	 * @return the current arm position.
+	 */
+	public double getPositionRad() {
+		return data.positionUnits;
+	}
+
+	/**
+	 * @return whether the arm is in a stable state.
+	 */
+	public boolean getIsStableState() {
+
+		switch (state) {
+			case STOWED:
+				return UtilityFunctions.withinMargin(0.001, ClimbConstants.stowSetPoint_rad, data.positionUnits);
+			case PREPARE_FOR_CLIMB:
+				return UtilityFunctions.withinMargin(0.001, ClimbConstants.PrepareForClimbSetPoint_rad,
+						data.positionUnits);
+			case CLIMB:
+				return UtilityFunctions.withinMargin(0.001, ClimbConstants.climbSetPoint_rad, data.positionUnits);
+			case STOPPED:
+				return UtilityFunctions.withinMargin(0.001, 0, data.velocityUnits);
+			default:
+				return false;
+		}
+	}
+
 
 	// SET FUNCTIONS
 
@@ -127,42 +164,6 @@ public class ClimbArm extends SubsystemBase {
 	 */
 	public void setGoal(double setPoint) {
 		controller.setGoal(setPoint);
-	}
-
-	// GET FUNCTIONS
-
-	/**
-	 * @return the state the arm is in
-	 */
-	public ClimbConstants.ArmStates getState() {
-		return state;
-	}
-
-	/**
-	 * @return the current arm position.
-	 */
-	public double getPositionRad() {
-		return data.positionUnits;
-	}
-
-	/**
-	 * @return whether the arm is in a stable state.
-	 */
-	public boolean getIsStableState() {
-
-		switch (state) {
-			case STOWED:
-				return UtilityFunctions.withinMargin(0.001, ClimbConstants.stowSetPoint_rad, data.positionUnits);
-			case PREPARE_FOR_CLIMB:
-				return UtilityFunctions.withinMargin(0.001, ClimbConstants.PrepareForClimbSetPoint_rad,
-						data.positionUnits);
-			case CLIMB:
-				return UtilityFunctions.withinMargin(0.001, ClimbConstants.climbSetPoint_rad, data.positionUnits);
-			case STOPPED:
-				return UtilityFunctions.withinMargin(0.001, 0, data.velocityUnits);
-			default:
-				return false;
-		}
 	}
 
 	// UTILITY FUNCTIONS
