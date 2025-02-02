@@ -69,15 +69,7 @@ public class ClimbArm extends SubsystemBase {
 
 		if (Robot.isSimulation()) {
 
-			armIO = new ClimbArmSim(
-					ClimbConstants.numMotors,
-					ClimbConstants.armGearing,
-					ClimbConstants.momentOfInertia,
-					ClimbConstants.armLength_meters,
-					ClimbConstants.armMinAngle_degrees,
-					ClimbConstants.armMaxAngle_degrees,
-					ClimbConstants.simulateGravity,
-					ClimbConstants.armStartingAngle_degrees);
+			armIO = new ClimbArmSim();
 
 		} else {
 			armIO = new ClimbArmSparkMax(ClimbConstants.firstMotorId, ClimbConstants.secondMotorId);

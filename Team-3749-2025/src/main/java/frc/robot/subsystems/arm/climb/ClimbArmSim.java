@@ -26,27 +26,19 @@ public class ClimbArmSim implements ClimbArmIO {
 	 * @param simulateGravity
 	 * @param startingAngle_Degrees
 	 */
-	public ClimbArmSim(
-			int numMotors,
-			double gearing,
-			double momentOfInertia,
-			double length_meters,
-			double minAngle_degrees,
-			double maxAngle_degrees,
-			boolean simulateGravity,
-			double startingAngle_Degrees) {
+	public ClimbArmSim() {
 
 		System.out.println("[Init] Creating ArmSim");
 
 		armSim = new SingleJointedArmSim(
-				DCMotor.getNEO(numMotors),
-				gearing,
-				momentOfInertia,
-				length_meters,
-				minAngle_degrees * Math.PI / 180,
-				maxAngle_degrees * Math.PI / 180,
-				simulateGravity,
-				startingAngle_Degrees * Math.PI / 180);
+				DCMotor.getNEO(ClimbConstants.numMotors),
+				ClimbConstants.armGearing,
+				ClimbConstants.momentOfInertia,
+				ClimbConstants.armLength_meters,
+				ClimbConstants.armMinAngle_degrees * Math.PI / 180,
+				ClimbConstants.armMaxAngle_degrees * Math.PI / 180,
+				ClimbConstants.simulateGravity,
+				ClimbConstants.armStartingAngle_degrees * Math.PI / 180);
 	}
 
 	private double inputVolts = 0;
