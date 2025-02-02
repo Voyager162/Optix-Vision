@@ -105,13 +105,13 @@ public class CoralArm extends SubsystemBase{
 
 		switch (state) {
 			case STOWED:
-				return UtilityFunctions.withinMargin(0.001, CoralConstants.stowSetPoint_rad, data.positionUnits);
+				return UtilityFunctions.withinMargin(CoralConstants.stateMarginOfError, CoralConstants.stowSetPoint_rad, data.positionUnits);
 			case HAND_OFF:
-				return UtilityFunctions.withinMargin(0.001, CoralConstants.handOffSetPoint_rad, data.positionUnits);
+				return UtilityFunctions.withinMargin(CoralConstants.stateMarginOfError, CoralConstants.handOffSetPoint_rad, data.positionUnits);
 			case CORAL_PICKUP:
-				return UtilityFunctions.withinMargin(0.001, CoralConstants.coralPickUpSetPoint_rad, data.positionUnits);
+				return UtilityFunctions.withinMargin(CoralConstants.stateMarginOfError, CoralConstants.coralPickUpSetPoint_rad, data.positionUnits);
 			case STOPPED:
-				return UtilityFunctions.withinMargin(0.001, 0, data.velocityUnits); // Ensure velocity is near zero when stopped.
+				return UtilityFunctions.withinMargin(CoralConstants.stateMarginOfError, 0, data.velocityUnits); // Ensure velocity is near zero when stopped.
 			default:
 				return false; // Return false if the state is unrecognized.
 		}
