@@ -10,7 +10,7 @@ public class Vision extends SubsystemBase {
     VisionIO visionIO;
     VisionData visionData = new VisionData();
 
-    Vision() {
+    public Vision() {
         if (Robot.isReal()) {
             visionIO = new Photonvision(visionData);
         } else {
