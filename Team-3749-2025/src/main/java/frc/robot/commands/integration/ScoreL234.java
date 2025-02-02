@@ -10,25 +10,27 @@ import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
  * ScoreL234 command for scoring coral on L2, L3, L4
  */
 public class ScoreL234 extends Command {
-    private final ElevatorStates state;
+    private final ElevatorStates elevatorState;
     private boolean handoffComplete = false;
 
-    public ScoreL234(ElevatorStates state) {
-        this.state = state;
+    public ScoreL234(ElevatorStates elevatorState) {
+        this.elevatorState = elevatorState;
         addRequirements(Robot.getAllSuperStructureSubsystems());
     }
 
     @Override
     public void initialize() {
         if (Robot.scoringRoller.hasPiece()) { 
-            Robot.elevator.setState(state);
-            Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
+            Robot.elevator.setState(elevatorState);
             Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
+            Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
+            Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
             System.out.println("scoreL234 start");
         } else if (Robot.coralRoller.hasPiece()) {
-            Robot.coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
             Robot.elevator.setState(ElevatorStates.STOW);
+            Robot.coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
             Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
+            Robot.scoringRoller.setState(RollerConstants.RollerStates.RUN);
         } else {
             this.cancel();
         }
@@ -39,15 +41,14 @@ public class ScoreL234 extends Command {
         if (Robot.coralArm.getState() == CoralConstants.ArmStates.HAND_OFF && Robot.coralArm.getIsStableState() 
                 && Robot.elevator.getState() == ElevatorStates.STOW && Robot.elevator.getIsStableState()) { 
             Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE); 
-            Robot.scoringRoller.setState(RollerConstants.RollerStates.RUN);
             handoffComplete = true;
         }
 
         if (handoffComplete && !Robot.coralRoller.hasPiece() && Robot.scoringRoller.hasPiece()) { 
             Robot.scoringRoller.setState(RollerStates.MAINTAIN);
-            Robot.elevator.setState(state);
+            Robot.elevator.setState(elevatorState);
         }
-        if (Robot.elevator.getState() == state && Robot.elevator.getIsStableState()) {
+        if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState()) {
             Robot.scoringRoller.setState(RollerConstants.RollerStates.SCORE);
         }
     }
