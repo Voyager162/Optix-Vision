@@ -130,7 +130,7 @@ public class ClimbArm extends SubsystemBase {
 	 *
 	 * @param state The new state for the arm.
 	 */
-	public void setState(Enum<?> state) {
+	public void setState(ClimbConstants.ArmStates state) {
 		this.state = (ClimbConstants.ArmStates) state;
 		switch (this.state) {
 			case STOPPED:
