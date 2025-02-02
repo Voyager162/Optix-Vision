@@ -27,15 +27,17 @@ public class PhotoelectricSim implements PhotoelectricIO {
     public void updateData(PhotoelectricData data) {
         if (Robot.scoringRoller.getCurrentCommand() != null) {
             System.out.println("getCurrentCommand is not null");
+            if (scoreTimer == 999999999) { // Initialize timer only once per command
+                System.out.println("get the scoreTimer AGAIN");
+                scoreTimer = -1;
+            }
+            
             if (scoreTimer < 0) {  // Initialize timer only once per command
                 System.out.println("get the scoreTimer");
                 scoreTimer = Timer.getFPGATimestamp();
             }
     
-            if (scoreTimer == 999999999) { // Initialize timer only once per command
-                System.out.println("get the scoreTimer AGAIN");
-                scoreTimer = -1;
-            }
+            
             switch (Robot.scoringRoller.getCurrentCommand().getName()) {
                 case "Handoff": 
                 case "IntakeFloor": 
@@ -45,6 +47,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
                     // sensing = false;
                     if (Timer.getFPGATimestamp() - scoreTimer > 2) {
                         sensing = true;
+                        System.out.println("scoreTimer" + scoreTimer);
                         if (scoreTimer != -1) {
                             scoreTimer = 999999999;
                             System.out.println("sensing set after score timer: " + sensing);
