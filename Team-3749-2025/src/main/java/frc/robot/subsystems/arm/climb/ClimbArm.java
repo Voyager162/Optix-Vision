@@ -43,17 +43,17 @@ public class ClimbArm extends SubsystemBase {
 	private ShuffleData<Double> positionUnitsLog = new ShuffleData<>(this.getName(), "position units", 0.0);
 	private ShuffleData<Double> velocityUnitsLog = new ShuffleData<>(this.getName(), "velocity units", 0.0);
 	private ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>(this.getName(), "input volts", 0.0);
-	private ShuffleData<Double> firstMotorAppliedVoltsLog = new ShuffleData<>(this.getName(),
+	private ShuffleData<Double> frontMotorAppliedVoltsLog = new ShuffleData<>(this.getName(),
 			"first motor applied volts", 0.0);
-	private ShuffleData<Double> secondMotorAppliedVoltsLog = new ShuffleData<>(this.getName(),
+	private ShuffleData<Double> backMotorAppliedVoltsLog = new ShuffleData<>(this.getName(),
 			"second motor applied volts", 0.0);
-	private ShuffleData<Double> firstMotorCurrentAmpsLog = new ShuffleData<>(this.getName(),
+	private ShuffleData<Double> frontMotorCurrentAmpsLog = new ShuffleData<>(this.getName(),
 			"first motor current amps", 0.0);
-	private ShuffleData<Double> secondMotorCurrentAmpsLog = new ShuffleData<>(this.getName(),
+	private ShuffleData<Double> backMotorCurrentAmpsLog = new ShuffleData<>(this.getName(),
 			"second motor current amps", 0.0);
-	private ShuffleData<Double> firstMotorTempCelciusLog = new ShuffleData<>(this.getName(),
+	private ShuffleData<Double> frontMotorTempCelciusLog = new ShuffleData<>(this.getName(),
 			"first motor temp celcius", 0.0);
-	private ShuffleData<Double> secondMotorTempCelciusLog = new ShuffleData<>(this.getName(),
+	private ShuffleData<Double> backMotorTempCelciusLog = new ShuffleData<>(this.getName(),
 			"second motor temp celcius", 0.0);
 	private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
@@ -72,7 +72,7 @@ public class ClimbArm extends SubsystemBase {
 			armIO = new ClimbArmSim();
 
 		} else {
-			armIO = new ClimbArmSparkMax(ClimbConstants.firstMotorId, ClimbConstants.secondMotorId);
+			armIO = new ClimbArmSparkMax(ClimbConstants.frontMotorId, ClimbConstants.backMotorId);
 		}
 		SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
 	}
@@ -212,12 +212,12 @@ public class ClimbArm extends SubsystemBase {
 		positionUnitsLog.set(data.positionUnits);
 		velocityUnitsLog.set(data.velocityUnits);
 		inputVoltsLog.set(data.inputVolts);
-		firstMotorAppliedVoltsLog.set(data.firstMotorAppliedVolts);
-		secondMotorAppliedVoltsLog.set(data.secondMotorAppliedVolts);
-		firstMotorCurrentAmpsLog.set(data.firstMotorCurrentAmps);
-		secondMotorCurrentAmpsLog.set(data.secondMotorCurrentAmps);
-		firstMotorTempCelciusLog.set(data.firstMotorTempCelcius);
-		secondMotorTempCelciusLog.set(data.secondMotorTempCelcius);
+		frontMotorAppliedVoltsLog.set(data.frontMotorAppliedVolts);
+		backMotorAppliedVoltsLog.set(data.backMotorAppliedVolts);
+		frontMotorCurrentAmpsLog.set(data.frontMotorCurrentAmps);
+		backMotorCurrentAmpsLog.set(data.backMotorCurrentAmps);
+		frontMotorTempCelciusLog.set(data.frontMotorTempCelcius);
+		backMotorTempCelciusLog.set(data.backMotorTempCelcius);
 
 		armLigament.setAngle(Math.toDegrees(data.positionUnits));
 

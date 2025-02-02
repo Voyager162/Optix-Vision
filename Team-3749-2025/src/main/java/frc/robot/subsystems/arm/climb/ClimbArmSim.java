@@ -60,14 +60,14 @@ public class ClimbArmSim implements ClimbArmIO {
 		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
 
 		data.inputVolts = inputVolts;
-		data.firstMotorAppliedVolts = inputVolts;
-		data.secondMotorAppliedVolts = inputVolts;
-		data.firstMotorCurrentAmps = armSim.getCurrentDrawAmps();
-		data.secondMotorCurrentAmps = data.firstMotorCurrentAmps;
+		data.frontMotorAppliedVolts = inputVolts;
+		data.backMotorAppliedVolts = inputVolts;
+		data.frontMotorCurrentAmps = armSim.getCurrentDrawAmps();
+		data.backMotorCurrentAmps = data.frontMotorCurrentAmps;
 
 		// Sim has no temp
-		data.firstMotorTempCelcius = 0;
-		data.secondMotorTempCelcius = 0;
+		data.frontMotorTempCelcius = 0;
+		data.backMotorTempCelcius = 0;
 	}
 
 	/**

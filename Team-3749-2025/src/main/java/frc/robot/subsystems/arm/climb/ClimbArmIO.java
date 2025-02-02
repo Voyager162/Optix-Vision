@@ -12,12 +12,12 @@ public interface ClimbArmIO {
 		public double velocityUnits = 0;
 		public double accelerationUnits = 0;
 		public double inputVolts = 0;
-		public double firstMotorCurrentAmps = 0;
-		public double secondMotorCurrentAmps = 0;
-		public double firstMotorAppliedVolts = 0;
-		public double secondMotorAppliedVolts = 0;
-		public double firstMotorTempCelcius = 0;
-		public double secondMotorTempCelcius = 0;
+		public double frontMotorCurrentAmps = 0;
+		public double backMotorCurrentAmps = 0;
+		public double frontMotorAppliedVolts = 0;
+		public double backMotorAppliedVolts = 0;
+		public double frontMotorTempCelcius = 0;
+		public double backMotorTempCelcius = 0;
 	}
 
 	/**
