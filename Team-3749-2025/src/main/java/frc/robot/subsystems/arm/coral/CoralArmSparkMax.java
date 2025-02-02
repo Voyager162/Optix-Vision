@@ -9,7 +9,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.arm.ArmConstants;
-import frc.robot.subsystems.arm.climb.ClimbArmIO;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
@@ -18,7 +17,7 @@ import frc.robot.utils.MiscConstants.SimConstants;
  * @author Elise Lin
  * @author Weston Gardner
  */
-public class CoralArmSparkMax implements ClimbArmIO {
+public class CoralArmSparkMax implements CoralArmIO {
 
 	private SparkMax motor;
 	private SparkMaxConfig motorConfig = new SparkMaxConfig();
@@ -72,10 +71,10 @@ public class CoralArmSparkMax implements ClimbArmIO {
 		data.positionUnits = motor.getEncoder().getPosition();
 		data.velocityUnits = velocity;
 		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
-		data.firstMotorCurrentAmps = motor.getOutputCurrent();
+		data.motorCurrentAmps = motor.getOutputCurrent();
 		data.inputVolts = inputVolts;
-		data.firstMotorAppliedVolts = motor.getBusVoltage() * motor.getAppliedOutput();
-		data.firstMotorTempCelcius = motor.getMotorTemperature();
+		data.motorAppliedVolts = motor.getBusVoltage() * motor.getAppliedOutput();
+		data.motorTempCelcius = motor.getMotorTemperature();
 	}
 
 	/**

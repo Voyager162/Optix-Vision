@@ -10,10 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.subsystems.arm.climb.ClimbArmIO;
-import frc.robot.subsystems.arm.climb.ClimbArmSim;
-import frc.robot.subsystems.arm.climb.ClimbArmSparkMax;
-import frc.robot.subsystems.arm.climb.ClimbArmIO.ArmData;
+import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 
@@ -41,7 +38,7 @@ public class CoralArm extends SubsystemBase{
 			CoralConstants.kA);
 
 	// The I/O interface for controlling the arm's motors (either real hardware or simulated).
-	private ClimbArmIO armIO;
+	private CoralArmIO armIO;
 	// Stores the arm's current data (e.g., position, velocity, etc.).
 	private ArmData data = new ArmData();
 	// The current state of the arm (e.g., stopped, stowed).
@@ -52,18 +49,12 @@ public class CoralArm extends SubsystemBase{
 	private ShuffleData<Double> positionUnitsLog = new ShuffleData<>(this.getName(), "position units", 0.0);
 	private ShuffleData<Double> velocityUnitsLog = new ShuffleData<>(this.getName(), "velocity units", 0.0);
 	private ShuffleData<Double> inputVoltsLog = new ShuffleData<>(this.getName(), "input volts", 0.0);
-	private ShuffleData<Double> firstMotorAppliedVoltsLog = new ShuffleData<>(this.getName(),
+	private ShuffleData<Double> motorAppliedVoltsLog = new ShuffleData<>(this.getName(),
 			"first motor applied volts", 0.0);
-	private ShuffleData<Double> secondMotorAppliedVoltsLog = new ShuffleData<>(this.getName(),
-			"second motor applied volts", 0.0);
-	private ShuffleData<Double> firstMotorCurrentAmpsLog = new ShuffleData<>(this.getName(),
+	private ShuffleData<Double> motorCurrentAmpsLog = new ShuffleData<>(this.getName(),
 			"first motor current amps", 0.0);
-	private ShuffleData<Double> secondMotorCurrentAmpsLog = new ShuffleData<>(this.getName(),
-			"second motor current amps", 0.0);
-	private ShuffleData<Double> firstMotorTempCelciusLog = new ShuffleData<>(this.getName(),
+	private ShuffleData<Double> motorTempCelciusLog = new ShuffleData<>(this.getName(),
 			"first motor temp celcius", 0.0);
-	private ShuffleData<Double> secondMotorTempCelciusLog = new ShuffleData<>(this.getName(),
-			"second motor temp celcius", 0.0);
 	private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
 	// For visualizing the arm mechanism in simulation using the SmartDashboard.
@@ -79,19 +70,11 @@ public class CoralArm extends SubsystemBase{
 
 		// If the robot is in simulation, use the simulated I/O for the arm.
 		if (Robot.isSimulation()) {
-			armIO = new ClimbArmSim(
-					CoralConstants.numMotors, // Number of motors
-					CoralConstants.armGearing, // Gear ratio
-					CoralConstants.momentOfInertia, // Arm's moment of inertia
-					CoralConstants.armLength_meters, // Length of the arm
-					CoralConstants.armMinAngle_degrees, // Min angle
-					CoralConstants.armMaxAngle_degrees, // Max angle
-					CoralConstants.simulateGravity, // Whether to simulate gravity
-					CoralConstants.armStartingAngle_degrees); // Starting angle
+			armIO = new CoralArmSim();
 
 		} else { 
 			// If running on real hardware, use SparkMax motors for the arm.
-			armIO = new ClimbArmSparkMax(CoralConstants.firstMotorID, CoralConstants.secondMotorID);
+			armIO = new CoralArmSparkMax(CoralConstants.motorID);
 		}
 		
 		// Add the arm visualization to the SmartDashboard
@@ -234,12 +217,9 @@ public class CoralArm extends SubsystemBase{
 		positionUnitsLog.set(data.positionUnits);
 		velocityUnitsLog.set(data.velocityUnits);
 		inputVoltsLog.set(data.inputVolts);
-		firstMotorAppliedVoltsLog.set(data.firstMotorAppliedVolts);
-		secondMotorAppliedVoltsLog.set(data.secondMotorAppliedVolts);
-		firstMotorCurrentAmpsLog.set(data.firstMotorCurrentAmps);
-		secondMotorCurrentAmpsLog.set(data.secondMotorCurrentAmps);
-		firstMotorTempCelciusLog.set(data.firstMotorTempCelcius);
-		secondMotorTempCelciusLog.set(data.secondMotorTempCelcius);
+		motorAppliedVoltsLog.set(data.motorAppliedVolts);
+		motorCurrentAmpsLog.set(data.motorCurrentAmps);
+		motorTempCelciusLog.set(data.motorTempCelcius);
 
 		// Update the visualization on the SmartDashboard with the arm's position
 		armLigament.setAngle(Math.toDegrees(data.positionUnits));

@@ -25,27 +25,19 @@ public class CoralArmSim implements CoralArmIO {
 	 * @param simulateGravity
 	 * @param startingAngle_Degrees
 	 */
-	public CoralArmSim(
-			int numMotors,
-			double gearing,
-			double momentOfInertia,
-			double length_meters,
-			double minAngle_degrees,
-			double maxAngle_degrees,
-			boolean simulateGravity,
-			double startingAngle_Degrees) {
+	public CoralArmSim() {
 
 		System.out.println("[Init] Creating ArmSim");
 
 		armSim = new SingleJointedArmSim(
-				DCMotor.getNEO(numMotors),
-				gearing,
-				momentOfInertia,
-				length_meters,
-				minAngle_degrees * Math.PI / 180,
-				maxAngle_degrees * Math.PI / 180,
-				simulateGravity,
-				startingAngle_Degrees * Math.PI / 180);
+				DCMotor.getNEO(CoralConstants.numMotors),
+				CoralConstants.armGearing,
+				CoralConstants.momentOfInertia,
+				CoralConstants.armLength_meters,
+				CoralConstants.armMinAngle_degrees * Math.PI / 180,
+				CoralConstants.armMaxAngle_degrees * Math.PI / 180,
+				CoralConstants.simulateGravity,
+				CoralConstants.armStartingAngle_degrees * Math.PI / 180);
 	}
 
 	private double inputVolts = 0;

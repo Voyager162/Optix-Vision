@@ -10,7 +10,7 @@ import edu.wpi.first.math.util.Units;
 public class CoralConstants {
 
 	// motor specifications
-	public static final int firstMotorID = 0;
+	public static final int motorID = 0;
 	public static final int secondMotorID = 0;
 	public static final int numMotors = 1;
 
