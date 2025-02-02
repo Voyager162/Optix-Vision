@@ -48,6 +48,7 @@ public class ClimbConstants {
 
 	// extra
 	public static final boolean simulateGravity = true;
+	public static final double stateMarginOfError = 0.01;
 
 	public enum ArmStates {
 		PREPARE_FOR_CLIMB,

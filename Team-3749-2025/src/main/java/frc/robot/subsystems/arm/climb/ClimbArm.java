@@ -100,14 +100,14 @@ public class ClimbArm extends SubsystemBase {
 
 		switch (state) {
 			case STOWED:
-				return UtilityFunctions.withinMargin(0.001, ClimbConstants.stowSetPoint_rad, data.positionUnits);
+				return UtilityFunctions.withinMargin(ClimbConstants.stateMarginOfError, ClimbConstants.stowSetPoint_rad, data.positionUnits);
 			case PREPARE_FOR_CLIMB:
-				return UtilityFunctions.withinMargin(0.001, ClimbConstants.PrepareForClimbSetPoint_rad,
+				return UtilityFunctions.withinMargin(ClimbConstants.stateMarginOfError, ClimbConstants.PrepareForClimbSetPoint_rad,
 						data.positionUnits);
 			case CLIMB:
-				return UtilityFunctions.withinMargin(0.001, ClimbConstants.climbSetPoint_rad, data.positionUnits);
+				return UtilityFunctions.withinMargin(ClimbConstants.stateMarginOfError, ClimbConstants.climbSetPoint_rad, data.positionUnits);
 			case STOPPED:
-				return UtilityFunctions.withinMargin(0.001, 0, data.velocityUnits);
+				return UtilityFunctions.withinMargin(ClimbConstants.stateMarginOfError, 0, data.velocityUnits);
 			default:
 				return false;
 		}
