@@ -13,12 +13,13 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import frc.robot.utils.Constants;
-import frc.robot.junction.networktables.LoggedNetworkNumber;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 /**
  * Class for a tunable number. Gets value from dashboard in tuning mode, returns default if not or
  * value not in dashboard.
  */
+@SuppressWarnings("unused")
 public class LoggedTunableNumber implements DoubleSupplier {
   private static final String tableKey = "/Tuning";
 

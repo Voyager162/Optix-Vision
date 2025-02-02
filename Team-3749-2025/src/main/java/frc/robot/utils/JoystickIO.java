@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot;
+import frc.robot.commands.arm.SetArmState;
 import frc.robot.commands.elevator.SetElevatorState;
 
 import frc.robot.commands.roller.MaintainCommand;
@@ -12,6 +13,7 @@ import frc.robot.commands.roller.RunCommand;
 import frc.robot.commands.roller.StopCommand;
 
 import frc.robot.commands.swerve.SwerveDefaultCommand;
+import frc.robot.subsystems.arm.coral.CoralConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 
 /**
@@ -20,6 +22,7 @@ import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
  * @author Rohin Sood
  * @author Noah Simon
  */
+@SuppressWarnings("unused")
 public class JoystickIO {
 
     private static final CommandXboxController pilot = new CommandXboxController(0);
@@ -33,6 +36,9 @@ public class JoystickIO {
     private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
     private static final SetElevatorState l3 = new SetElevatorState(ElevatorStates.L3);
     private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
+
+    private static SetArmState<CoralConstants.ArmStates> coralStow = new SetArmState<CoralConstants.ArmStates>(Robot.coralArm, CoralConstants.ArmStates.STOWED, CoralConstants.stowSetPoint_rad);
+    private static SetArmState<CoralConstants.ArmStates> coralPickUp = new SetArmState<CoralConstants.ArmStates>(Robot.coralArm, CoralConstants.ArmStates.CORAL_PICKUP, CoralConstants.coralPickUpSetPoint_rad);
 
     public JoystickIO() {
     }
@@ -72,8 +78,8 @@ public class JoystickIO {
         // Example binding 
         // operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        operator.a().onTrue(l1);
-        operator.b().onTrue(l2);
+        operator.a().onTrue(coralStow);
+        operator.b().onTrue(coralPickUp);
         operator.x().onTrue(l3);
         operator.y().onTrue(l4);
     }

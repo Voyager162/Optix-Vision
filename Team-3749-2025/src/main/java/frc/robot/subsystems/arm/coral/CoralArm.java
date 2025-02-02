@@ -4,6 +4,7 @@ import frc.robot.Robot;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.real.ArmSparkMax;
 import frc.robot.subsystems.arm.sim.ArmSim;
+import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 import edu.wpi.first.math.controller.PIDController;
@@ -32,6 +33,8 @@ public class CoralArm extends Arm {
     private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
     private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Coral Arm", 24, 0));
+    
+    private static final LoggedTunableNumber kPLog = new LoggedTunableNumber("kP", 2);
 
 
     /**
@@ -145,6 +148,8 @@ public class CoralArm extends Arm {
         armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
         stateLog.set(state.name());
+        CoralConstants.kP = kPLog.get();
+        controller = new PIDController(CoralConstants.kP, CoralConstants.kI, CoralConstants.kD);
     }
 
     private double calculateFeedForward() {
