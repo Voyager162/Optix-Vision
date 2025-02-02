@@ -60,7 +60,7 @@ public class CoralArm extends Arm {
 
         } else {
             armIO = new ArmSparkMax(CoralConstants.motorId);
-            this.photoelectricIO = new JTVisiSight();
+            // this.photoelectricIO = new JTVisiSight();
         }
         SmartDashboard.putData("Coral Arm Mechanism", mechanism2d);
     }
@@ -206,18 +206,19 @@ public class CoralArm extends Arm {
 
         // Ensure photoelectricData is updated
 
-        photoelectricIO.updateData(photoelectricData);
+        // photoelectricIO.updateData(photoelectricData);
 
-        if (Robot.isSimulation()) {
-            if (this.getCurrentCommand() != null) {
-                // photoelectricIO.setSensing(this.getCurrentCommand().getName());
-                // Update hasPiece based on sensing
-                // setHasPiece(photoelectricData.sensing);
 
-                // Debugging logs
-                // System.out.println("Command: " + this.getCurrentCommand().getName());
-                // System.out.println("Sensing: " + photoelectricData.sensing);
-            }
-        }
+        // if (Robot.isSimulation()) {
+        //     if (this.getCurrentCommand() != null) {
+        //         photoelectricIO.setSensing(this.getCurrentCommand().getName());
+        //         // Update hasPiece based on sensing
+        //         // setHasPiece(photoelectricData.sensing);
+
+        //         // Debugging logs
+        //         // System.out.println("Command: " + this.getCurrentCommand().getName());
+        //         // System.out.println("Sensing: " + photoelectricData.sensing);
+        //     }
+        // }
     }
 }

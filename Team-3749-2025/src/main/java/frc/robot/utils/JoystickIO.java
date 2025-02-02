@@ -93,7 +93,7 @@ public class JoystickIO {
         // Example binding 
         // operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        operator.a().onTrue(knockAlgaeLow);
+        operator.a().onTrue(handoff);
         operator.b().onTrue(outtakeCoral);
         operator.x().onTrue(intakeSource);
         operator.y().onTrue(scoreL4);

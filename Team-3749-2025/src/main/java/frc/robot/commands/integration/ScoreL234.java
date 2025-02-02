@@ -64,6 +64,7 @@ public class ScoreL234 extends Command {
 
     @Override
     public boolean isFinished() {
+        System.out.println("scoreL234 finishing: " + Robot.scoringRoller.hasPiece());
         return !Robot.scoringRoller.hasPiece();
     }
 }
