@@ -97,6 +97,42 @@ public class CoralArm extends SubsystemBase{
 		// Add the arm visualization to the SmartDashboard
 		SmartDashboard.putData("Coral Arm Mechanism", mechanism2d);
 	}
+    
+	// GET FUNCTIONS
+
+	/**
+	 * @return The current arm state (e.g., STOPPED, STOWED, etc.)
+	 */
+	public CoralConstants.ArmStates getState() {
+		return state;
+	}
+
+	/**
+	 * @return The current position of the arm in radians.
+	 */
+	public double getPositionRad() {
+		return data.positionUnits; // Return the arm's current position.
+	}
+
+	/**
+	 * @return Whether the arm is in a stable state. Checks if the arm is within a margin
+	 * of error for its set positions.
+	 */
+	public boolean getIsStableState() {
+
+		switch (state) {
+			case STOWED:
+				return UtilityFunctions.withinMargin(0.001, CoralConstants.stowSetPoint_rad, data.positionUnits);
+			case HAND_OFF:
+				return UtilityFunctions.withinMargin(0.001, CoralConstants.handOffSetPoint_rad, data.positionUnits);
+			case CORAL_PICKUP:
+				return UtilityFunctions.withinMargin(0.001, CoralConstants.coralPickUpSetPoint_rad, data.positionUnits);
+			case STOPPED:
+				return UtilityFunctions.withinMargin(0.001, 0, data.velocityUnits); // Ensure velocity is near zero when stopped.
+			default:
+				return false; // Return false if the state is unrecognized.
+		}
+	}
 
 
 	// SET FUNCTIONS
@@ -140,44 +176,6 @@ public class CoralArm extends SubsystemBase{
 	public void setGoal(double setPoint) {
 		controller.setGoal(setPoint); // Set the PID controller's goal.
 	}
-
-
-	// GET FUNCTIONS
-
-	/**
-	 * @return The current arm state (e.g., STOPPED, STOWED, etc.)
-	 */
-	public CoralConstants.ArmStates getState() {
-		return state;
-	}
-
-	/**
-	 * @return The current position of the arm in radians.
-	 */
-	public double getPositionRad() {
-		return data.positionUnits; // Return the arm's current position.
-	}
-
-	/**
-	 * @return Whether the arm is in a stable state. Checks if the arm is within a margin
-	 * of error for its set positions.
-	 */
-	public boolean getIsStableState() {
-
-		switch (state) {
-			case STOWED:
-				return UtilityFunctions.withinMargin(0.001, CoralConstants.stowSetPoint_rad, data.positionUnits);
-			case HAND_OFF:
-				return UtilityFunctions.withinMargin(0.001, CoralConstants.handOffSetPoint_rad, data.positionUnits);
-			case CORAL_PICKUP:
-				return UtilityFunctions.withinMargin(0.001, CoralConstants.coralPickUpSetPoint_rad, data.positionUnits);
-			case STOPPED:
-				return UtilityFunctions.withinMargin(0.001, 0, data.velocityUnits); // Ensure velocity is near zero when stopped.
-			default:
-				return false; // Return false if the state is unrecognized.
-		}
-	}
-
 
 	// UTILITY FUNCTIONS
 
