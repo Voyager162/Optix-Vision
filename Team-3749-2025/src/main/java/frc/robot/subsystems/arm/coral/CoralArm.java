@@ -7,7 +7,7 @@ import frc.robot.subsystems.arm.sim.ArmSim;
 import frc.robot.subsystems.roller.PhotoelectricIO;
 import frc.robot.subsystems.roller.PhotoelectricIO.PhotoelectricData;
 import frc.robot.subsystems.roller.real.JTVisiSight;
-import frc.robot.subsystems.roller.sim.PhotoelectricSim;
+// import frc.robot.subsystems.roller.sim.PhotoelectricSim;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 import edu.wpi.first.math.controller.PIDController;
@@ -56,7 +56,7 @@ public class CoralArm extends Arm {
                     CoralConstants.simulateGravity,
                     CoralConstants.armStartingAngle_degrees);
 
-            this.photoelectricIO = new PhotoelectricSim();
+            // this.photoelectricIO = new PhotoelectricSim();
 
         } else {
             armIO = new ArmSparkMax(CoralConstants.motorId);
@@ -210,7 +210,7 @@ public class CoralArm extends Arm {
 
         if (Robot.isSimulation()) {
             if (this.getCurrentCommand() != null) {
-                photoelectricIO.setSensing(this.getCurrentCommand().getName());
+                // photoelectricIO.setSensing(this.getCurrentCommand().getName());
                 // Update hasPiece based on sensing
                 // setHasPiece(photoelectricData.sensing);
 

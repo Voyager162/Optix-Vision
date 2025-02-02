@@ -11,7 +11,7 @@ import frc.robot.subsystems.roller.PhotoelectricIO.PhotoelectricData;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
 import frc.robot.subsystems.roller.RollerIO.RollerData;
 import frc.robot.subsystems.roller.real.JTVisiSight;
-import frc.robot.subsystems.roller.sim.PhotoelectricSim;
+// import frc.robot.subsystems.roller.sim.PhotoelectricSim;
 
 public class ScoringRoller extends Roller {
     private RollerData rollerData;
@@ -23,7 +23,7 @@ public class ScoringRoller extends Roller {
         super(Implementations.SCORING, velocityController(), FF(), positionController());
         this.rollerData = new RollerData();
         if (Robot.isSimulation()) {
-            this.photoelectricIO = new PhotoelectricSim();
+            // this.photoelectricIO = new PhotoelectricSim();
         } else {
             this.photoelectricIO = new JTVisiSight(); 
         }
