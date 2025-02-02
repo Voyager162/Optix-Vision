@@ -10,7 +10,6 @@ public class CoralConstants {
 
 	// motor specifications
 	public static final int motorID = 0;
-	public static final int secondMotorID = 0;
 	public static final int numMotors = 1;
 
 	// arm specifications
@@ -39,9 +38,9 @@ public class CoralConstants {
 	public static final double kV = 1.5;
 
 	// set points
-	public static final double stowSetPoint_rad = 70 * Math.PI / 180;
-	public static final double handOffSetPoint_rad = 40 * Math.PI / 180;
-	public static final double coralPickUpSetPoint_rad = 175 * Math.PI / 180;
+	public static final double stowSetPoint_rad = 45 * Math.PI / 180;
+	public static final double handOffSetPoint_rad = 45 * Math.PI / 180;
+	public static final double coralPickUpSetPoint_rad = 240 * Math.PI / 180;
 	
 	// extra
 	public static final boolean simulateGravity = true;
