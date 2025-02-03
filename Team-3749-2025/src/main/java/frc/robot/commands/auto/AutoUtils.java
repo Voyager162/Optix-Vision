@@ -198,7 +198,7 @@ public class AutoUtils {
         Command scoreL4 = new ScoreL234(ElevatorStates.L4);
 
 
-        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(intakeSource.andThen(scoreL4));
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue((intakeSource));
         return scoreL4;
 
     }
@@ -280,6 +280,8 @@ public class AutoUtils {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
         
+
+        
         curTrajectory.done().and(() -> ScoreL234.isFinished()).onTrue(nextTrajectory.cmd());
 
     }
@@ -302,6 +304,7 @@ public class AutoUtils {
         if (DriverStation.getAlliance().get() == Alliance.Red) {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
+        
 
         curTrajectory.done().and(() -> IntakeSource.isFinished()).onTrue(nextTrajectory.cmd());
 

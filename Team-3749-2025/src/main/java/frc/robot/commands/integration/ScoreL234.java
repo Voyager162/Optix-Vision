@@ -42,18 +42,15 @@ public class ScoreL234 extends Command {
             Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE); 
             Robot.scoringRoller.setState(RollerConstants.RollerStates.RUN);
             handoffComplete = true;
-            Robot.scoringRoller.setHasPiece(false);
         }
 
         if (handoffComplete && !Robot.coralRoller.hasPiece() && Robot.scoringRoller.hasPiece()) { 
             Robot.scoringRoller.setState(RollerStates.MAINTAIN);
             Robot.elevator.setState(state);
-            Robot.scoringRoller.setHasPiece(false);
         }
     
         if (Robot.elevator.getState() == state && Robot.elevator.getIsStableState()) {
             Robot.scoringRoller.setState(RollerConstants.RollerStates.SCORE);
-            Robot.scoringRoller.setHasPiece(false);
         }
     }
 

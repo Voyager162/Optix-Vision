@@ -1,11 +1,20 @@
 package frc.robot.subsystems.roller.sim;
 
 import javax.sound.sampled.SourceDataLine;
+
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Robot;
+import frc.robot.commands.integration.CoralIntakeSource;
+import frc.robot.commands.integration.Handoff;
+import frc.robot.commands.integration.IntakeFloor;
+import frc.robot.commands.integration.IntakeSource;
+import frc.robot.commands.integration.OuttakeCoral;
+import frc.robot.commands.integration.ScoreL1;
+import frc.robot.commands.integration.ScoreL234;
 import frc.robot.subsystems.roller.PhotoelectricIO;
 
 public class PhotoelectricSim implements PhotoelectricIO { 
@@ -20,73 +29,162 @@ public class PhotoelectricSim implements PhotoelectricIO {
         if (initialState) {
             sensing = true;
             System.out.println("Running InitalState");
-        } else {
-            sensing = false;
-            System.out.println("NOT Running InitalState");
         }
     }
 
+    /**
+     * Updates the photoelectric data with the current state of the roller.
+     * 
+     * @param data the data to be updated
+     */
     @Override
     public void updateData(PhotoelectricData data) {
         if (Robot.scoringRoller == null || Robot.scoringRoller.getCurrentCommand() == null) {
             System.out.println("getCurrentCommand is null");
             return;
         }
-
-        String currentCommandName = Robot.scoringRoller.getCurrentCommand().getName();
-        System.out.println("getCurrentCommand is not null: " + currentCommandName);
-
-        if (scoreTimer == 999999999) { // Initialize timer only once per command
-            System.out.println("get the scoreTimer AGAIN");
-            scoreTimer = -1;
+        // ...
+        Command currentCommand = Robot.scoringRoller.getCurrentCommand();
+        if (currentCommand instanceof Handoff) {
+            System.out.println("Handoff is running");
+            if (scoreTimer < 0) {  // Initialize timer only once per command
+                System.out.println("get the scoreTimer");
+                scoreTimer = Timer.getFPGATimestamp();
+                
+                data.sensing = true; // Set sensing to true immediately
+                Robot.scoringRoller.getCurrentCommand().andThen(new WaitCommand(2)).andThen(new InstantCommand(() -> data.sensing = false)).schedule(); // Wait for 2 seconds and then set sensing to false
+            }
+        } else if (currentCommand instanceof IntakeFloor) {
+            System.out.println("IntakeFloor is running");
+            if (scoreTimer < 0) {  // Initialize timer only once per command
+                System.out.println("get the scoreTimer");
+                scoreTimer = Timer.getFPGATimestamp();
+                
+                data.sensing = true; // Set sensing to true immediately
+                Robot.scoringRoller.getCurrentCommand().andThen(new WaitCommand(2)).andThen(new InstantCommand(() -> data.sensing = false)).schedule(); // Wait for 2 seconds and then set sensing to false
+            }
+        } else if (currentCommand instanceof IntakeSource) {
+            System.out.println("IntakeSource is running");
+            if (scoreTimer < 0) {  // Initialize timer only once per command
+                System.out.println("get the scoreTimer");
+                scoreTimer = Timer.getFPGATimestamp();
+                
+                data.sensing = true; // Set sensing to true immediately
+                Robot.scoringRoller.getCurrentCommand().andThen(new WaitCommand(2)).andThen(new InstantCommand(() -> data.sensing = false)).schedule(); // Wait for 2 seconds and then set sensing to false
+            }
+        } else if (currentCommand instanceof CoralIntakeSource) {
+            System.out.println("CoralIntakeSource is running");
+            if (scoreTimer < 0) {  // Initialize timer only once per command
+                System.out.println("get the scoreTimer");
+                scoreTimer = Timer.getFPGATimestamp();
+                
+                data.sensing = true; // Set sensing to true immediately
+                Robot.scoringRoller.getCurrentCommand().andThen(new WaitCommand(2)).andThen(new InstantCommand(() -> data.sensing = false)).schedule(); // Wait for 2 seconds and then set sensing to false
+            }
+        } else if (currentCommand instanceof ScoreL1) {
+            System.out.println("ScoreL1 is running");
+            if (scoreTimer < 0) {  // Initialize timer only once per command
+                System.out.println("get the scoreTimer");
+                scoreTimer = Timer.getFPGATimestamp();
+                
+                data.sensing = true; // Set sensing to true immediately
+                Robot.scoringRoller.getCurrentCommand().andThen(new WaitCommand(2)).andThen(new InstantCommand(() -> data.sensing = false)).schedule(); // Wait for 2 seconds and then set sensing to false
+            }
+        } else if (currentCommand instanceof OuttakeCoral) {
+            System.out.println("OuttakeCoral is running");
+            if (scoreTimer < 0) {  // Initialize timer only once per command
+                System.out.println("get the scoreTimer");
+                scoreTimer = Timer.getFPGATimestamp();
+                
+                data.sensing = true; // Set sensing to true immediately
+                Robot.scoringRoller.getCurrentCommand().andThen(new WaitCommand(2)).andThen(new InstantCommand(() -> data.sensing = false)).schedule(); // Wait for 2 seconds and then set sensing to false
+            }
+        } else if (currentCommand instanceof ScoreL234) {
+            System.out.println("THE CASE IS CALLED");
+            if (scoreTimer < 0) {  // Initialize timer only once per command
+                System.out.println("get the scoreTimer");
+                scoreTimer = Timer.getFPGATimestamp();
+                
+                data.sensing = true; // Set sensing to true immediately
+                Robot.scoringRoller.getCurrentCommand().andThen(new WaitCommand(2)).andThen(new InstantCommand(() -> data.sensing = false)).schedule(); // Wait for 2 seconds and then set sensing to false
+            }
         }
-        
-        if (scoreTimer < 0) {  // Initialize timer only once per command
-            System.out.println("get the scoreTimer");
-            scoreTimer = Timer.getFPGATimestamp();
-        }
-        
-        switch (currentCommandName) {
-            case "Handoff": 
-            case "IntakeFloor": 
-            case "IntakeSource":
-            case "CoralIntakeSource":
-                System.out.println("sensing before score timer" + sensing);
-                // sensing = false;
-                if (Timer.getFPGATimestamp() - scoreTimer > 2) {
-                    sensing = true;
-                    System.out.println("scoreTimer" + scoreTimer);
-                    if (scoreTimer != -1) {
-                        scoreTimer = 999999999;
-                        System.out.println("sensing set after score timer: " + sensing);
-                    } 
-                }
-                break;
-
-            case "ScoreL1": 
-            case "OuttakeCoral":
-                    // sensing = true; 
-                    if (Timer.getFPGATimestamp() - scoreTimer > 2) {
-                        sensing = false;
-                        if (scoreTimer != -1) {
-                            scoreTimer = 999999999; 
-                        }
-                    }
-                break;
-       case "ScoreL234": 
-           System.out.println("THE CASE IS CALLED");
-           if (scoreTimer < 0) {  // Initialize timer only once per command
-               System.out.println("get the scoreTimer");
-               scoreTimer = Timer.getFPGATimestamp();
-               
-               sensing = true; // Set sensing to true immediately
-               Robot.scoringRoller.getCurrentCommand().andThen(new WaitCommand(2)).andThen(new InstantCommand(() -> sensing = false)).schedule(); // Wait for 2 seconds and then set sensing to false
-           }
-           break;
-        
-        }
-        data.sensing = sensing;
     }
 }
+    
+
+//     @Override
+//     public void updateData(PhotoelectricData data) {
+//         if (Robot.scoringRoller == null || Robot.scoringRoller.getCurrentCommand() == null) {
+//             System.out.println("getCurrentCommand is null");
+//             return;
+//         }
+
+//         String currentCommandName = Robot.scoringRoller.getCurrentCommand().getName();
+//         System.out.println("getCurrentCommand is not null: " + currentCommandName);
+
+//         if (scoreTimer == 999999999) { // Initialize timer only once per command
+//             System.out.println("get the scoreTimer AGAIN");
+//             scoreTimer = -1;
+//         }
+        
+//         if (scoreTimer < 0) {  // Initialize timer only once per command
+//             System.out.println("get the scoreTimer");
+//             scoreTimer = Timer.getFPGATimestamp();
+//         }
+//         Command currentCommand = Robot.scoringRoller.getCurrentCommand();
+//         if (currentCommand instanceof ScoreL234) {
+//             System.out.println("THE CASE IS CALLED");
+//             if (scoreTimer < 0) {  // Initialize timer only once per command
+//                 System.out.println("get the scoreTimer");
+//                 scoreTimer = Timer.getFPGATimestamp();
+                
+//                 sensing = true; // Set sensing to true immediately
+//                 Robot.scoringRoller.getCurrentCommand().andThen(new WaitCommand(2)).andThen(new InstantCommand(() -> sensing = false)).schedule(); // Wait for 2 seconds and then set sensing to false
+//             }
+//         }   
+//         data.sensing = sensing;
+//     }
+// //             case "Handoff": 
+// //             case "IntakeFloor": 
+// //             case "IntakeSource":
+// //             case "CoralIntakeSource":
+// //                 System.out.println("sensing before score timer" + sensing);
+// //                 // sensing = false;
+// //                 if (Timer.getFPGATimestamp() - scoreTimer > 2) {
+//                     sensing = true;
+//                     System.out.println("scoreTimer" + scoreTimer);
+//                     if (scoreTimer != -1) {
+//                         scoreTimer = 999999999;
+//                         System.out.println("sensing set after score timer: " + sensing);
+//                     } 
+//                 }
+//                 break;
+
+//             case "ScoreL1": 
+//             case "OuttakeCoral":
+//                     // sensing = true; 
+//                     if (Timer.getFPGATimestamp() - scoreTimer > 2) {
+//                         sensing = false;
+//                         if (scoreTimer != -1) {
+//                             scoreTimer = 999999999; 
+//                         }
+//                     }
+//                 break;
+//        case "ScoreL234": 
+//            System.out.println("THE CASE IS CALLED");
+//            if (scoreTimer < 0) {  // Initialize timer only once per command
+//                System.out.println("get the scoreTimer");
+//                scoreTimer = Timer.getFPGATimestamp();
+               
+//                sensing = true; // Set sensing to true immediately
+//                Robot.scoringRoller.getCurrentCommand().andThen(new WaitCommand(2)).andThen(new InstantCommand(() -> sensing = false)).schedule(); // Wait for 2 seconds and then set sensing to false
+//            }
+//            break;
+        
+//         }
+//         data.sensing = sensing;
+//     }
+// }
 
 
