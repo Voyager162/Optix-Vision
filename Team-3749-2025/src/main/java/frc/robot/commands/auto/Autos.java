@@ -47,7 +47,7 @@ public class Autos {
         AutoTrajectory trajectory5 = routine.trajectory("Station-L3");
 
         Command score1 = AutoUtils.addScoreL4(trajectory1);
-        Command intake1 = AutoUtils.addIntake(trajectory2);
+        Command intake1 = AutoUtils.addScoreL4(trajectory2);
         Command score2 = AutoUtils.addScoreL4(trajectory3);
         Command intake2 = AutoUtils.addScoreL4(trajectory4);
         AutoUtils.addScoreL4(trajectory5); // third score is the end of the routine, so no need for reference
@@ -56,7 +56,7 @@ public class Autos {
         // reverse order here (ex. connect 3 to 2, THEN 2 to 1)
         AutoUtils.goNextAfterScored(trajectory4, trajectory5, intake2);
         AutoUtils.goNextAfterScored(trajectory3, trajectory4, score2);
-        AutoUtils.goNextAfterIntake(trajectory2, trajectory3, intake1);
+        AutoUtils.goNextAfterScored(trajectory2, trajectory3, intake1);
         AutoUtils.goNextAfterScored(trajectory1, trajectory2, score1);
 
         return Commands.print("3 piece auto!").andThen(
