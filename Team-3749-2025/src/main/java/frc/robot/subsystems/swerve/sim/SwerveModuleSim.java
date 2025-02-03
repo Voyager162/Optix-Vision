@@ -95,7 +95,7 @@ public class SwerveModuleSim implements SwerveModuleIO {
         data.driveCurrentAmps = Math.abs(driveSim.getCurrentDrawAmps());
         data.driveTempCelcius = 0;
 
-        data.turnAbsolutePositionRad = turnPositionRad;
+        data.turnPositionRad = turnPositionRad;
         data.turnVelocityRadPerSec = turnSim.getAngularVelocityRadPerSec();
         data.turnAppliedVolts = turnAppliedVolts;
         data.turnCurrentAmps = Math.abs(turnSim.getCurrentDrawAmps());
@@ -104,14 +104,14 @@ public class SwerveModuleSim implements SwerveModuleIO {
     }
 
     @Override
-    public void setDriveVelocityControl(double setpointVelocity, double feedforward) {
+    public void setDriveVelocity(double setpointVelocity, double feedforward) {
         double feedback = drivingPidController.calculate(getDriveVelocityMetersPerSec(), setpointVelocity);
         setDriveVoltage(feedback + feedforward);
 
     }
 
     @Override
-    public void setTurningPositionControl(double setpointPosition, double feedforward) {
+    public void setTurnPosition(double setpointPosition, double feedforward) {
         double feedback = turningPidController.calculate(turnPositionRad, setpointPosition);
         setTurnVoltage(feedback + feedforward);
 

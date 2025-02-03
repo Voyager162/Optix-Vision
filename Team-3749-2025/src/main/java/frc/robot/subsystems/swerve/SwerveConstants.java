@@ -70,23 +70,23 @@ public class SwerveConstants {
                                 new Translation2d(-wheelBase / 2, -trackWidth / 2)); // back right
 
                 // Module Settings: order is FL, FR, BL, BR
-                public static final int[] driveMotorPorts = { 3, 5, 7, 9 };
-                public static final int[] turningMotorPorts = { 4, 6, 8, 10 };
-                public static final int[] absoluteEncoderPorts = { 11, 12, 13, 14 };
+                public static final int[] driveMotorIds = { 3, 5, 7, 9 };
+                public static final int[] turnMotorIds = { 4, 6, 8, 10 };
+                public static final int[] absoluteEncoderIds = { 11, 12, 13, 14 };
 
-                public static final boolean[] driveMotorReversed = {
+                public static final boolean[] driveMotorInverted = {
                                 true,
                                 false,
                                 false,
                                 false
                 };
-                public static final boolean[] turningMotorReversed = {
+                public static final boolean[] turningMotorInverted = {
                                 false,
                                 false,
                                 false,
                                 false
                 };
-                public static final boolean[] driveAbsoluteEncoderReversed = {
+                public static final boolean[] driveAbsoluteEncoderInverted = {
                                 false,
                                 false,
                                 false,

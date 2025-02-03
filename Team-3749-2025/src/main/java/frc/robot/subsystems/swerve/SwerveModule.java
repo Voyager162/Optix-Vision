@@ -93,7 +93,7 @@ public class SwerveModule {
     public SwerveModuleState getState() {
         return new SwerveModuleState(
                 moduleData.driveVelocityMPerSec,
-                new Rotation2d(moduleData.turnAbsolutePositionRad));
+                new Rotation2d(moduleData.turnPositionRad));
     }
 
     /**
@@ -102,7 +102,7 @@ public class SwerveModule {
      * @return The position of the module as a SwerveModuleState object
      */
     public SwerveModulePosition getPosition() {
-        return new SwerveModulePosition(moduleData.drivePositionM, new Rotation2d(moduleData.turnAbsolutePositionRad));
+        return new SwerveModulePosition(moduleData.drivePositionM, new Rotation2d(moduleData.turnPositionRad));
     }
 
     /**
@@ -147,7 +147,7 @@ public class SwerveModule {
         double feedforward = drivingFeedFordward.calculate(speedMetersPerSecond, setpointAcceleration);
         
 
-        moduleIO.setDriveVelocityControl(speedMetersPerSecond, 0);
+        moduleIO.setDriveVelocity(speedMetersPerSecond, 0);
 
     }
 
@@ -156,7 +156,7 @@ public class SwerveModule {
      * @param positionRad - the angle setpoint (0-2pi) for the module
      */
     public void setTurnPosition(double positionRad) {
-        moduleIO.setTurningPositionControl(positionRad, 0);
+        moduleIO.setTurnPosition(positionRad, 0);
     }
 
     // public void setDriveVoltage(double volts) {
@@ -194,7 +194,7 @@ public class SwerveModule {
         driveCurrent.set(moduleData.driveCurrentAmps);
 
         turningSpeed.set(moduleData.turnVelocityRadPerSec);
-        turningPosition.set(moduleData.turnAbsolutePositionRad);
+        turningPosition.set(moduleData.turnPositionRad);
         turningTemp.set(moduleData.turnTempCelcius);
         turningVolts.set(moduleData.turnAppliedVolts);
         turningCurrent.set(moduleData.turnCurrentAmps);
