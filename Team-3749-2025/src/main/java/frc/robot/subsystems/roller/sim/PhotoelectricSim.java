@@ -53,6 +53,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
             sensing = false;  // Set sensing to false after 2 seconds
             scoreTimer = -1;  // Reset timer
             System.out.println("Sensing changed to false after 2 sec");
+            ScoreL234.activeScoreCommand = null
         }
     }
 
@@ -71,6 +72,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
             sensing = true;  // Set sensing to false after 2 seconds
             scoreTimer = -1;  // Reset timer
             System.out.println("Sensing changed to false after 2 sec");
+            IntakeSource.activeIntakeSourceCommand = null
         }
     }
     data.sensing = sensing;  // Update PhotoelectricData
