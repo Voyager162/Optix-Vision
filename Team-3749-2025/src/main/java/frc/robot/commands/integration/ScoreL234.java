@@ -12,6 +12,7 @@ import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 public class ScoreL234 extends Command {
     private final ElevatorStates state;
     private boolean handoffComplete = false;
+    public static Command activeScoreCommand = null;
 
     public ScoreL234(ElevatorStates state) {
         this.state = state;
@@ -20,6 +21,8 @@ public class ScoreL234 extends Command {
 
     @Override
     public void initialize() {
+        activeScoreCommand = this; // Store the command instance
+        System.out.println("ScoreL234 initialized!");
         if (Robot.scoringRoller.hasPiece()) { 
             Robot.elevator.setState(state);
             Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
@@ -56,6 +59,7 @@ public class ScoreL234 extends Command {
 
     @Override
     public void end(boolean interrupted) {
+        activeScoreCommand = null; // Clear it when finished
         Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);

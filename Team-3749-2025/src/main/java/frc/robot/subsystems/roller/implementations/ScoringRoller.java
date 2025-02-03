@@ -72,7 +72,7 @@ public class ScoringRoller extends Roller {
     public void periodic() {
         super.periodic();
         photoelectricIO.updateData(photoelectricData);
-        System.out.println("sensing" + photoelectricData.sensing);
+        // System.out.println("sensing" + photoelectricData.sensing);
         if (photoelectricData.sensing) {
             hasPiece = true;
         } else {
