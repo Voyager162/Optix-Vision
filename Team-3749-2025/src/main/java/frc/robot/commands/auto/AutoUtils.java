@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
@@ -269,17 +270,25 @@ public class AutoUtils {
      * @param nextTrajectory
      * @param ScoreL234
      */
+    
     public static void goNextAfterScored(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory,
-            Command ScoreL234) {
+    Command ScoreL234) {
         Pose2d endingPose2d = getFinalPose2d(curTrajectory);
-        // unflip the alliance so that atPose can flip it; it's a quirk of referencing
-        // the trajectory
+
+        // Unflip the alliance so that atPose can flip it; it's a quirk of referencing the trajectory
         if (DriverStation.getAlliance().get() == Alliance.Red) {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
-        System.out.println("AUTO DEBUG >>>> SCOREL234 IS FINISHED: " + ScoreL234.isFinished());
-        curTrajectory.done().and(() -> ScoreL234.isFinished()).onTrue(nextTrajectory.cmd());
 
+         System.out.println("AUTO DEBUG >>>> Waiting for ScoreL234 to finish...");
+
+        // Periodically check if ScoreL234 is finished
+        new RunCommand(() -> {
+        System.out.println("AUTO DEBUG >>>> SCOREL234 IS FINISHED: " + ScoreL234.isFinished());
+        if (ScoreL234.isFinished()) {
+            nextTrajectory.cmd().schedule();
+        }
+    }).until(ScoreL234::isFinished).schedule();
     }
 
     /**
