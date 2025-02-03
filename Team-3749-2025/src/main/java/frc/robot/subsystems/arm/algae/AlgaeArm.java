@@ -64,7 +64,7 @@ public class AlgaeArm extends Arm {
         }
         SmartDashboard.putData("Algae Arm Mechanism", mechanism2d);
         
-        sysIdTuner = new SysIdTuner("elevator", getConfig(), this, armIO::setVoltage, getMotorData());
+        sysIdTuner = new SysIdTuner("algae arm", getConfig(), this, armIO::setVoltage, getMotorData());
     }
 
     public SysIdTuner getSysIdTuner(){

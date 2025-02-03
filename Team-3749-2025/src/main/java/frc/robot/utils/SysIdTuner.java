@@ -6,12 +6,18 @@ import java.util.function.Consumer;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
-import static edu.wpi.first.units.Units.Volts;;
+import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.Units.Seconds;
+
 
 /**
  * SysId assisted control tuning
@@ -25,6 +31,33 @@ public class SysIdTuner {
 
     private VoltageDrive io;
     private Map<String, MotorData> motorData;
+
+    private SysIdRoutine.Config config = new SysIdRoutine.Config(
+            Volts.per(Seconds).of(1.2), // Voltage ramp rate
+            Volts.of(12), // Max voltage
+            Seconds.of(10) // Test duration
+    );
+
+    /**
+     * Setup SysId
+     * 
+     * @param name - name of the mechanism
+     * @param subsystem - Subsystem you are characterizing
+     * @param io - VoltageDriv
+     */
+    public SysIdTuner(String name, Subsystem subsystem, VoltageDrive io,
+            Map<String, MotorData> motorData) {
+
+        this.io = io;
+        this.motorData = motorData;
+
+        setVolts = (Voltage volts) -> setVoltage(volts);
+        setLog = (SysIdRoutineLog) -> setLog(SysIdRoutineLog);
+
+        sysIdRoutine = new SysIdRoutine(
+                config,
+                new SysIdRoutine.Mechanism(setVolts, setLog, subsystem, name));
+    }
 
     /**
      * Setup SysId
@@ -105,6 +138,13 @@ public class SysIdTuner {
      */
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.dynamic(direction);
+    }
+
+    public void runTests(){
+        sysIdRoutine.quasistatic(Direction.kForward);
+        sysIdRoutine.quasistatic(Direction.kReverse);
+        sysIdRoutine.dynamic(Direction.kForward);
+        sysIdRoutine.dynamic(Direction.kReverse);
     }
 }
 

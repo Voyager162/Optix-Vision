@@ -55,7 +55,7 @@ public class ClimbArm extends Arm {
         }
         SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
 
-        sysIdTuner = new SysIdTuner("elevator", getConfig(), this, armIO::setVoltage, getMotorData());
+        sysIdTuner = new SysIdTuner("climb arm", getConfig(), this, armIO::setVoltage, getMotorData());
     }
 
     public SysIdTuner getSysIdTuner(){

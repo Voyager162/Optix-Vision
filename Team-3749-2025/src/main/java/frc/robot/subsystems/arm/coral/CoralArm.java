@@ -58,7 +58,7 @@ public class CoralArm extends Arm {
         }
         SmartDashboard.putData("Coral Arm Mechanism", mechanism2d);
 
-        sysIdTuner = new SysIdTuner("elevator", getConfig(), this, armIO::setVoltage, getMotorData());
+        sysIdTuner = new SysIdTuner("coral arm", getConfig(), this, armIO::setVoltage, getMotorData());
     }
 
     public SysIdTuner getSysIdTuner(){
