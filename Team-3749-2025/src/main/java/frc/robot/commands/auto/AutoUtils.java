@@ -309,7 +309,14 @@ public class AutoUtils {
         if (DriverStation.getAlliance().get() == Alliance.Red) {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
-        curTrajectory.done().and(() -> IntakeSource.isFinished()).onTrue(nextTrajectory.cmd());
+
+        // Periodically check if ScoreL234 is finished
+        new RunCommand(() -> {
+        System.out.println("AUTO DEBUG >>>> IntakeSource IS FINISHED: " + IntakeSource.isFinished());
+        if (IntakeSource.isFinished()) {
+            nextTrajectory.cmd().schedule();
+        }
+        }).until(IntakeSource::isFinished).schedule();
 
     }
 

@@ -9,7 +9,7 @@ import frc.robot.subsystems.roller.RollerConstants;
  * IntakeSource command for intaking coral from source
  */
 public class IntakeSource extends Command {
-
+    public static Command activeIntakeSourceCommand = null;
     public IntakeSource() {
         addRequirements(Robot.getAllSuperStructureSubsystems());
     }

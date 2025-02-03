@@ -55,6 +55,24 @@ public class PhotoelectricSim implements PhotoelectricIO {
             System.out.println("Sensing changed to false after 2 sec");
         }
     }
+
+       // Check if IntakeSource is currently active
+       if (IntakeSource.activeIntakeSourceCommand != null) {
+        System.out.println("IntakeSource detected: " + IntakeSource.activeIntakeSourceCommand.getName());
+
+        if (scoreTimer < 0) {  // Start timer once when command starts
+            System.out.println("Starting IntakeSource timer");
+            scoreTimer = Timer.getFPGATimestamp();
+            sensing = false;
+        }
+
+        // After 2 seconds, sensing should change
+        if (Timer.getFPGATimestamp() - scoreTimer > 5) {
+            sensing = true;  // Set sensing to false after 2 seconds
+            scoreTimer = -1;  // Reset timer
+            System.out.println("Sensing changed to false after 2 sec");
+        }
+    }
     data.sensing = sensing;  // Update PhotoelectricData
     System.out.println("Updated sensing: " + sensing);
     }
