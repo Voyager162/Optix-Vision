@@ -175,20 +175,35 @@ public class ToPosConstants {
         public static Pose2d bSetpoint = reefTrig(reefClose, TrigDirection.RIGHT,false);
         public static Pose2d bRotatedSetpoint = reefTrig(reefClose, TrigDirection.RIGHT,true);
         
-        public static Pose2d cSetpoint = reefTrig(reefCloseRight, TrigDirection.LEFT);
-        public static Pose2d dSetpoint = reefTrig(reefCloseRight, TrigDirection.RIGHT);
+        public static Pose2d cSetpoint = reefTrig(reefCloseRight, TrigDirection.LEFT,false);
+        public static Pose2d cRotatedSetpoint = reefTrig(reefCloseRight, TrigDirection.LEFT,true);
 
-        public static Pose2d eSetpoint = reefTrig(reefFarRight, TrigDirection.LEFT);
-        public static Pose2d fSetpoint = reefTrig(reefFarRight, TrigDirection.RIGHT);
+        public static Pose2d dSetpoint = reefTrig(reefCloseRight, TrigDirection.RIGHT,false);
+        public static Pose2d dRotatedSetpoint = reefTrig(reefCloseRight, TrigDirection.RIGHT,true);
 
-        public static Pose2d gSetpoint = reefTrig(reefFar, TrigDirection.LEFT);
-        public static Pose2d hSetpoint = reefTrig(reefFar, TrigDirection.RIGHT);
+        public static Pose2d eSetpoint = reefTrig(reefFarRight, TrigDirection.LEFT,false);
+        public static Pose2d eRotatedSetpoint = reefTrig(reefFarRight, TrigDirection.LEFT,true);
 
-        public static Pose2d iSetpoint = reefTrig(reefFarLeft, TrigDirection.LEFT);
-        public static Pose2d jSetpoint = reefTrig(reefFarLeft, TrigDirection.RIGHT);
+        public static Pose2d fSetpoint = reefTrig(reefFarRight, TrigDirection.RIGHT,false);
+        public static Pose2d fRotatedSetpoint = reefTrig(reefFarRight, TrigDirection.RIGHT,true);
 
-        public static Pose2d kSetpoint = reefTrig(reefCloseLeft, TrigDirection.LEFT);
-        public static Pose2d lSetpoint = reefTrig(reefCloseLeft, TrigDirection.RIGHT);
+        public static Pose2d gSetpoint = reefTrig(reefFar, TrigDirection.LEFT,false);
+        public static Pose2d gRotatedSetpoint = reefTrig(reefFar, TrigDirection.LEFT,true);
+
+        public static Pose2d hSetpoint = reefTrig(reefFar, TrigDirection.RIGHT,false);
+        public static Pose2d hRotatedSetpoint = reefTrig(reefFar, TrigDirection.RIGHT,true);
+
+        public static Pose2d iSetpoint = reefTrig(reefFarLeft, TrigDirection.LEFT,false);
+        public static Pose2d iRotatedSetpoint = reefTrig(reefFarLeft, TrigDirection.LEFT,true);
+
+        public static Pose2d jSetpoint = reefTrig(reefFarLeft, TrigDirection.RIGHT,false);
+        public static Pose2d jRotatedSetpoint = reefTrig(reefFarLeft, TrigDirection.RIGHT,true);
+
+        public static Pose2d kSetpoint = reefTrig(reefCloseLeft, TrigDirection.LEFT,false);
+        public static Pose2d kRotatedSetpoint = reefTrig(reefCloseLeft, TrigDirection.LEFT,true);
+        
+        public static Pose2d lSetpoint = reefTrig(reefCloseLeft, TrigDirection.RIGHT,false);
+        public static Pose2d lRotatedSetpoint = reefTrig(reefCloseLeft, TrigDirection.RIGHT,true);
 
         public static Pose2d aApproach = createApproachPoint(aSetpoint);
         public static Pose2d bApproach = createApproachPoint(bSetpoint);
