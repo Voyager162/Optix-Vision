@@ -47,8 +47,8 @@ public class ScoreL234 extends Command {
     public void execute() {
         System.out.println("ScoreL234 execute: Running...");
 
-        if (Robot.coralArm.getState() == CoralConstants.ArmStates.HAND_OFF && Robot.coralArm.getIsStableState() &&
-            Robot.elevator.getState() == ElevatorStates.STOW && Robot.elevator.getIsStableState()) {
+        if ((Robot.coralArm.getState() == CoralConstants.ArmStates.HAND_OFF) && Robot.coralArm.getIsStableState() &&
+            (Robot.elevator.getState() == ElevatorStates.STOW) && Robot.elevator.getIsStableState()) {
             System.out.println("ScoreL234: Handoff conditions met, transferring coral.");
             Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE);
             Robot.scoringRoller.setState(RollerConstants.RollerStates.RUN);
