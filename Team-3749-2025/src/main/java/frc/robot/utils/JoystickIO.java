@@ -63,7 +63,7 @@ public class JoystickIO {
             Robot.swerve.isOTF = true;
         }));
 
-        new Trigger(() -> Robot.swerve.isOTF).whileTrue(onTheFly);
+        new Trigger(() -> Robot.swerve.isOTF).whileTrue(onTheFly.andThen(Robot.swerve::runSetpointReachedCommand));
 
         pilot.b().onTrue(Commands.runOnce(() -> {
             Robot.swerve.isOTF = false;
@@ -71,8 +71,9 @@ public class JoystickIO {
             Robot.swerve.showSetpointEndGoal();
         }));
 
-        new Trigger(() -> Robot.swerve.isOTF).and(() -> UtilityFunctions.withinMargin(0.5,
-                Robot.swerve.getPose().getTranslation(), Robot.swerve.getPPSetpoint().setpoint.getTranslation())).onTrue(Commands.print("SCORE"));
+        // new Trigger(() -> Robot.swerve.isOTF).and(() -> UtilityFunctions.withinMargin(0.5,
+        //         Robot.swerve.getPose().getTranslation(), Robot.swerve.getPPSetpoint().setpoint.getTranslation())
+        //         ).onTrue(Robot.swerve.getSetpointReachedCommand());
 
         // Example binding
         operator.a().whileTrue(new ExampleSubsystemCommand());

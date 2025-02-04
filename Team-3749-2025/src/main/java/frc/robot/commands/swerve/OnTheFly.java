@@ -93,6 +93,7 @@ public class OnTheFly extends Command {
         if (isFinished()) {
             this.end(true);
             Robot.swerve.isOTF = false;
+            // Commands.run(()->Robot.swerve.getSetpointReachedCommand());
         }
     }
 

@@ -352,6 +352,14 @@ public class Swerve extends SubsystemBase {
     return PPSetpoints.values()[currentPPSetpointIndex];
   }
 
+  public void runSetpointReachedCommand()
+  {
+    //if you must ask, for some reason
+    //whenever i try to write thsi as a get statement the command becomes a constant value ??
+    //so now i have to lambda call it and use this jank method i am only kind of sorry -jonathan liu 2/3/2025
+    CommandScheduler.getInstance().schedule(PPSetpoints.values()[currentPPSetpointIndex].onReachCommand);
+  }
+
   /**
    * Manually sets our odometry position
    * 

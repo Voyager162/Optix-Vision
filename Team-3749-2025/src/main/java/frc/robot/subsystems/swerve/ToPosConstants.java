@@ -288,6 +288,7 @@ public class ToPosConstants {
                 if (DriverStationSim.getAllianceStationId().equals(AllianceStationID.Red1)) {
                     this.setpoint = flipPose(setpoint);
                     this.approachPoint = flipPose(approachPoint);
+                    this.onReachCommand = onReachCommand;
                 }
             }
 
