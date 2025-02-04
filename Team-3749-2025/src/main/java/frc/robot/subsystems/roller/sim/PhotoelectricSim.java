@@ -41,7 +41,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
        if (ScoreL234.activeScoreCommand != null) {
         // System.out.println("ScoreL234 detected: " + ScoreL234.activeScoreCommand.getName());
 
-        if (scoreTimer < 0) {  // Start timer once when command starts
+        if (scoreTimer <= 0) {  // Start timer once when command starts
             // System.out.println("Starting ScoreL234 timer");
             scoreTimer = Timer.getFPGATimestamp();
         }
@@ -59,14 +59,14 @@ public class PhotoelectricSim implements PhotoelectricIO {
        if (IntakeSource.activeIntakeSourceCommand != null) {
         // System.out.println("IntakeSource detected: " + IntakeSource.activeIntakeSourceCommand.getName());
 
-        if (scoreTimer < 0) {  // Start timer once when command starts
+        if (scoreTimer <= 0) {  // Start timer once when command starts
             // System.out.println("Starting IntakeSource timer");
             scoreTimer = Timer.getFPGATimestamp();
             sensing = false;
         }
 
         // After 2 seconds, sensing should change
-        if (Timer.getFPGATimestamp() - scoreTimer > 5) {
+        if (Timer.getFPGATimestamp() - scoreTimer > 2) {
             sensing = true;  // Set sensing to false after 2 seconds
             scoreTimer = -1;  // Reset timer
             // System.out.println("Sensing changed to false after 2 sec");

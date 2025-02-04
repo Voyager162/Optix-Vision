@@ -14,12 +14,15 @@ import frc.robot.subsystems.roller.RollerIO.RollerData;
 import frc.robot.subsystems.roller.real.JTVisiSight;
 // import frc.robot.subsystems.roller.sim.PhotoelectricSim;
 import frc.robot.subsystems.roller.sim.PhotoelectricSim;
+import frc.robot.utils.ShuffleData;
 
 public class ScoringRoller extends Roller {
     private RollerData rollerData;
     private PhotoelectricData photoelectricData = new PhotoelectricData();
     private PhotoelectricIO photoelectricIO;
     private boolean hasPiece = true;
+
+    private ShuffleData<Boolean> hasPieceLog = new ShuffleData<Boolean>(this.getName(), "hasPiece", hasPiece);
 
     public ScoringRoller() {
         super(Implementations.SCORING, velocityController(), FF(), positionController());
@@ -88,11 +91,8 @@ public class ScoringRoller extends Roller {
     //     // Set the initial state only when a new command is detected
     //     photoelectricIO.setInitialState(true);
     // }
-        if (photoelectricData.sensing) {
-            hasPiece = true;
-        } else {
-            hasPiece = false;
-        }
+        hasPiece=photoelectricData.sensing;
+        hasPieceLog.set(hasPiece);
 
     }
 }

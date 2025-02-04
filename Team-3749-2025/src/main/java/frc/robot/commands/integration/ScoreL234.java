@@ -45,24 +45,20 @@ public class ScoreL234 extends Command {
 
     @Override
     public void execute() {
-        System.out.println("ScoreL234 execute: Running...");
 
         if ((Robot.coralArm.getState() == CoralConstants.ArmStates.HAND_OFF) && Robot.coralArm.getIsStableState() &&
             (Robot.elevator.getState() == ElevatorStates.STOW) && Robot.elevator.getIsStableState()) {
-            System.out.println("ScoreL234: Handoff conditions met, transferring coral.");
             Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE);
             Robot.scoringRoller.setState(RollerConstants.RollerStates.RUN);
             handoffComplete = true;
         }
 
         if (handoffComplete && !Robot.coralRoller.hasPiece() && Robot.scoringRoller.hasPiece()) {
-            System.out.println("ScoreL234: Handoff complete, maintaining scoring roller.");
             Robot.scoringRoller.setState(RollerStates.MAINTAIN);
             Robot.elevator.setState(state);
         }
 
         if (Robot.elevator.getState() == state && Robot.elevator.getIsStableState()) {
-            System.out.println("ScoreL234: Elevator reached scoring state, starting scoring roller.");
             Robot.scoringRoller.setState(RollerConstants.RollerStates.SCORE);
         }
     }
@@ -81,7 +77,6 @@ public class ScoreL234 extends Command {
     @Override
     public boolean isFinished() {
         boolean finished = !Robot.scoringRoller.hasPiece();
-        System.out.println("ScoreL234 isFinished: Checking if command is finished: " + finished);
         return finished;
     }
 }
