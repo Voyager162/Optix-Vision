@@ -281,7 +281,6 @@ public class AutoUtils {
      */
     public static void goNextAfterCommand(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory,
             Command command) {
-        
         new Trigger(() -> command.isFinished()).onTrue(Commands.print(command.getName()).andThen(nextTrajectory.cmd()));
 
     }

@@ -15,6 +15,8 @@ public class ScoreL234 extends Command {
     private boolean handoffComplete = false;
     public static Command activeScoreCommand = null;
 
+
+
     public ScoreL234(ElevatorStates state) {
         this.state = state;
         addRequirements(Robot.getAllSuperStructureSubsystems());
@@ -77,6 +79,7 @@ public class ScoreL234 extends Command {
     @Override
     public boolean isFinished() {
         boolean finished = !Robot.scoringRoller.hasPiece();
-        return finished;
+
+        return finished && this.isScheduled();
     }
 }
