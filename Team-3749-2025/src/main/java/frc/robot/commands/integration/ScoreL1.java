@@ -10,13 +10,16 @@ import frc.robot.subsystems.roller.RollerConstants.RollerStates;
  * ScoreL1 command for scoring coral on L1 using coral arm
  */
 public class ScoreL1 extends Command {
+    public static Command activeScore1Command = null;
 
     public ScoreL1() {
         addRequirements(Robot.getAllSuperStructureSubsystems());
+        
     }
 
     @Override
     public void initialize() {
+        activeScore1Command = this;
         Robot.elevator.setState(ElevatorConstants.ElevatorStates.STOW);
         Robot.coralArm.setState(CoralConstants.ArmStates.L1);
         Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
@@ -32,12 +35,13 @@ public class ScoreL1 extends Command {
 
     @Override
     public void end(boolean interrupted) {
+        activeScore1Command = null;
         Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
         Robot.coralRoller.setState(RollerStates.STOP);
     }
 
     @Override
     public boolean isFinished() {
-        return !Robot.coralRoller.hasPiece();
+        return !Robot.coralRoller.hasPiece() && this.isScheduled();
     }
 }

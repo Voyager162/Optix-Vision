@@ -178,12 +178,19 @@ public class Autos {
 
         // reverse order here (ex. connect 3 to 2, THEN 2 to 1)
         AutoUtils.goNextAfterCommand(trajectory8, trajectory9, score4);
+        System.out.println("7");
         AutoUtils.goNextAfterCommand(trajectory7, trajectory8, intake3);
+        System.out.println("6");
         AutoUtils.goNextAfterCommand(trajectory6, trajectory7, knockalgae1);
+        System.out.println("5");
         AutoUtils.goNextAfterCommand(trajectory5, trajectory6, score3);
+        System.out.println("4");
         AutoUtils.goNextAfterCommand(trajectory4, trajectory5, intake2);
+        System.out.println("3");
         AutoUtils.goNextAfterCommand(trajectory3, trajectory4, score2);
+        System.out.println("2");
         AutoUtils.goNextAfterCommand(trajectory2, trajectory3, intake1);
+        System.out.println("1");
         AutoUtils.goNextAfterCommand(trajectory1, trajectory2, score1);
 
         return Commands.print("3 Coral and 2 Algae").andThen(

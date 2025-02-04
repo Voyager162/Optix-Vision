@@ -11,6 +11,8 @@ import frc.robot.subsystems.roller.RollerConstants;
 public class KnockAlgae extends Command {
     private final ElevatorStates state;
 
+
+
     public KnockAlgae(ElevatorStates state) {
         this.state = state;
         addRequirements(Robot.getAllSuperStructureSubsystems());
@@ -36,6 +38,6 @@ public class KnockAlgae extends Command {
 
     @Override
     public boolean isFinished() {
-        return Robot.elevator.getIsStableState(); 
+        return Robot.elevator.getIsStableState() && this.isScheduled(); 
     }
 }

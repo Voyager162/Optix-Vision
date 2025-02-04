@@ -26,21 +26,16 @@ public class ScoreL234 extends Command {
     @Override
     public void initialize() {
         activeScoreCommand = this;
-        // System.out.println("ScoreL234 initialize: Command started!");
 
         if (Robot.scoringRoller.hasPiece()) {
-            // System.out.println("ScoreL234: Scoring roller has piece, setting elevator state to " + state);
             Robot.elevator.setState(state);
             Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
             Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
-            // System.out.println("ScoreL234: Entered scoring sequence.");
         } else if (Robot.coralRoller.hasPiece()) {
-            // System.out.println("ScoreL234: Coral roller has piece, initiating handoff.");
             Robot.coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
             Robot.elevator.setState(ElevatorStates.STOW);
             Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
         } else {
-            // System.out.println("ScoreL234: No piece detected, canceling command.");
             this.cancel();
         }
     }
@@ -67,13 +62,11 @@ public class ScoreL234 extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        // System.out.println("ScoreL234 end: Command ending. Interrupted? " + interrupted);
         activeScoreCommand = null;
         Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
-        // System.out.println("ScoreL234 end: Roller and elevator reset.");
     }
 
     @Override

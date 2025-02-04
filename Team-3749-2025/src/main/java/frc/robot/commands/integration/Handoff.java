@@ -46,6 +46,6 @@ public class Handoff extends Command {
     @Override
     public boolean isFinished() {
         System.out.println("handoff hasPiece: " + Robot.scoringRoller.hasPiece());
-        return Robot.scoringRoller.hasPiece();
+        return Robot.scoringRoller.hasPiece() && this.isScheduled();
     }
 }

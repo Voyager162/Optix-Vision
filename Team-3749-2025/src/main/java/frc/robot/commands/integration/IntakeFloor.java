@@ -10,6 +10,7 @@ import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
  * IntakeFloor command for intaking coral from floor
  */
 public class IntakeFloor extends Command {
+    public static Command activeIntakeFloorCommand = null; 
 
     public IntakeFloor() {
         addRequirements(Robot.getAllSuperStructureSubsystems());
@@ -17,6 +18,7 @@ public class IntakeFloor extends Command {
 
     @Override
     public void initialize() {
+        activeIntakeFloorCommand = this; 
         Robot.coralArm.setState(CoralConstants.ArmStates.CORAL_PICKUP);
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.coralRoller.setState(RollerConstants.RollerStates.RUN);
@@ -29,12 +31,13 @@ public class IntakeFloor extends Command {
 
     @Override
     public void end(boolean interrupted) {
+        activeIntakeFloorCommand = null; 
         Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
         Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
     }
 
     @Override
     public boolean isFinished() {
-        return Robot.coralRoller.hasPiece();
+        return Robot.coralRoller.hasPiece() && this.isScheduled();
     }
 }

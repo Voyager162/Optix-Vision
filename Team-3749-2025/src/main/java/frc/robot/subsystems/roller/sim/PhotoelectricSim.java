@@ -12,20 +12,19 @@ import frc.robot.commands.integration.CoralIntakeSource;
 import frc.robot.commands.integration.Handoff;
 import frc.robot.commands.integration.IntakeFloor;
 import frc.robot.commands.integration.IntakeSource;
+import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.OuttakeCoral;
 import frc.robot.commands.integration.ScoreL1;
 import frc.robot.commands.integration.ScoreL234;
 import frc.robot.subsystems.roller.PhotoelectricIO;
 
-public class PhotoelectricSim implements PhotoelectricIO {
-    private double scoreTimer = 0;
+public class PhotoelectricSim implements PhotoelectricIO { 
+    private double scoreTimer = -1;
     private boolean sensing;
-
     // private boolean changedSensing;
     /**
      * Should only be used for simulation implementation
-     * 
-     * @param initialState
+     * @param initialState 
      */
     @Override
     public void setInitialState(boolean initialState) {
@@ -39,49 +38,73 @@ public class PhotoelectricSim implements PhotoelectricIO {
      */
     @Override
     public void updateData(PhotoelectricData data) {
-        // Check if ScoreL234 is currently active
-        if (ScoreL234.activeScoreCommand != null) {
-            // System.out.println("ScoreL234 detected: " +
-            // ScoreL234.activeScoreCommand.getName());
+       // Check if ScoreL234 is currently active
+       if (ScoreL234.activeScoreCommand != null) {
+      
 
-            if (scoreTimer <= 0) { // Start timer once when command starts
-                // System.out.println("Starting ScoreL234 timer");
-                scoreTimer = Timer.getFPGATimestamp();
-            }
-
-            // After 2 seconds, sensing should change
-            if (Timer.getFPGATimestamp() - scoreTimer > 2) {
-                sensing = false; // Set sensing to false after 2 seconds
-                scoreTimer = -1; // Reset timer
-                // System.out.println("Sensing changed to false after 2 sec");
-                // changedSensing = true;
-            }
+        if (scoreTimer < 0) {  // Start timer once when command starts
+            scoreTimer = Timer.getFPGATimestamp();
         }
 
-        // Check if IntakeSource is currently active
-        if (IntakeSource.activeIntakeSourceCommand != null) {
-            // System.out.println("IntakeSource detected: " +
-            // IntakeSource.activeIntakeSourceCommand.getName());
-
-            if (scoreTimer <= 0) { // Start timer once when command starts
-                // System.out.println("Starting IntakeSource timer");
-                scoreTimer = Timer.getFPGATimestamp();
-                // sensing = false;
-            }
-
-            // After 2 seconds, sensing should change
-            if (Timer.getFPGATimestamp() - scoreTimer > 2) {
-                sensing = true; // Set sensing to false after 2 seconds
-                scoreTimer = -1; // Reset timer
-                // System.out.println("Sensing changed to false after 2 sec");
-            }
+        // After 2 seconds, sensing should change
+        if (Timer.getFPGATimestamp() - scoreTimer > 2) {
+            sensing = false;  // Set sensing to false after 2 seconds
+            scoreTimer = -1;  // Reset timer
         }
-        // data.changedSensing = changedSensing;
-        data.sensing = sensing;
-        // if (changedSensing) {
-        // sensing = changedSensing;
-        // } // Update PhotoelectricData
-        // System.out.println("Updated sensing: " + sensing);
-        // System.out.println(">>>>Updated CHANGED sensing: " + changedSensing);
+    }
+
+       // Check if IntakeSource is currently active
+       if (IntakeSource.activeIntakeSourceCommand != null) {
+
+        if (scoreTimer < 0) {  // Start timer once when command starts
+            scoreTimer = Timer.getFPGATimestamp();
+            sensing = false;
+        }
+
+        // After 2 seconds, sensing should change
+        if (Timer.getFPGATimestamp() - scoreTimer > 2) {
+            sensing = true;  // Set sensing to false after 2 seconds
+            scoreTimer = -1;  // Reset timer
+        
+        }
+    }
+
+        // Check if ScoreL1 is currently active
+        if (ScoreL1.activeScore1Command != null) {
+
+        if (scoreTimer < 0) {  // Start timer once when command starts
+            scoreTimer = Timer.getFPGATimestamp();
+            sensing = true;
+        }
+    
+        // After 2 seconds, sensing should change
+        if (Timer.getFPGATimestamp() - scoreTimer > 2) {
+            sensing = false;  // Set sensing to false after 2 seconds
+            scoreTimer = -1;  // Reset timer
+            
+        }
+    }
+    // Check if IntakeFloor is currently active
+    if (IntakeFloor.activeIntakeFloorCommand != null) {
+
+        if (scoreTimer < 0) {  // Start timer once when command starts
+            scoreTimer = Timer.getFPGATimestamp();
+            sensing = true;
+        }
+    
+        // After 2 seconds, sensing should change
+        if (Timer.getFPGATimestamp() - scoreTimer > 2) {
+            sensing = false;  // Set sensing to false after 2 seconds
+            scoreTimer = -1;  // Reset timer
+            
+        }
+    }
+
+    data.sensing = sensing;
+  
     }
 }
+    
+
+
+

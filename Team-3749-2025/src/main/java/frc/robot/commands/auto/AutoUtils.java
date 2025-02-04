@@ -271,13 +271,13 @@ public class AutoUtils {
  
     /**
      * This will begin "nextTrajectory" following the completion of "curTrajectory"
-     * and intaking. This should be used to link trajectories together, but only
-     * moving on to the next step in the path if the scoring aciton has been
+     * and a command. This should be used to link trajectories together, but only
+     * moving on to the next step in the path if the aciton has been
      * properly completed
      * 
      * @param curTrajectory
      * @param nextTrajectory
-     * @param IntakeSource
+     * @param Command
      */
     public static void goNextAfterCommand(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory,
             Command command) {
