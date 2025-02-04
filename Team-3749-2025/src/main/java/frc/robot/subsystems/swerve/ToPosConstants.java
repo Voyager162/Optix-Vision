@@ -172,40 +172,40 @@ public class ToPosConstants {
         // to see what each letter setpoint refers to
 
         public static Pose2d aSetpoint = reefTrig(reefClose, TrigDirection.LEFT);
-        public static Pose2d aRotatedSetpoint = rotatePose(aSetpoint, 90);
+        public static Pose2d aL1 = rotatePose(aSetpoint, 90);
 
         public static Pose2d bSetpoint = reefTrig(reefClose, TrigDirection.RIGHT);
-        public static Pose2d bRotatedSetpoint = rotatePose(bSetpoint, 90);
+        public static Pose2d bL1 = rotatePose(bSetpoint, 90);
 
         public static Pose2d cSetpoint = reefTrig(reefCloseRight, TrigDirection.LEFT);
-        public static Pose2d cRotatedSetpoint = rotatePose(cSetpoint, 90);
+        public static Pose2d cL1 = rotatePose(cSetpoint, 90);
 
         public static Pose2d dSetpoint = reefTrig(reefCloseRight, TrigDirection.RIGHT);
-        public static Pose2d dRotatedSetpoint = rotatePose(dSetpoint, 90);
+        public static Pose2d dL1 = rotatePose(dSetpoint, 90);
 
         public static Pose2d eSetpoint = reefTrig(reefFarRight, TrigDirection.LEFT);
-        public static Pose2d eRotatedSetpoint = rotatePose(eSetpoint, 90);
+        public static Pose2d eL1 = rotatePose(eSetpoint, 90);
 
         public static Pose2d fSetpoint = reefTrig(reefFarRight, TrigDirection.RIGHT);
-        public static Pose2d fRotatedSetpoint = rotatePose(fSetpoint, 90);
+        public static Pose2d fL1 = rotatePose(fSetpoint, 90);
 
         public static Pose2d gSetpoint = reefTrig(reefFar, TrigDirection.LEFT);
-        public static Pose2d gRotatedSetpoint = rotatePose(gSetpoint, 90);
+        public static Pose2d gL1 = rotatePose(gSetpoint, 90);
 
         public static Pose2d hSetpoint = reefTrig(reefFar, TrigDirection.RIGHT);
-        public static Pose2d hRotatedSetpoint = rotatePose(hSetpoint, 90);
+        public static Pose2d hL1 = rotatePose(hSetpoint, 90);
 
         public static Pose2d iSetpoint = reefTrig(reefFarLeft, TrigDirection.LEFT);
-        public static Pose2d iRotatedSetpoint = rotatePose(iSetpoint, 90);
+        public static Pose2d iL1 = rotatePose(iSetpoint, 90);
 
         public static Pose2d jSetpoint = reefTrig(reefFarLeft, TrigDirection.RIGHT);
-        public static Pose2d jRotatedSetpoint = rotatePose(jSetpoint, 90);
+        public static Pose2d jL1 = rotatePose(jSetpoint, 90);
 
         public static Pose2d kSetpoint = reefTrig(reefCloseLeft, TrigDirection.LEFT);
-        public static Pose2d kRotatedSetpoint = rotatePose(kSetpoint, 90);
+        public static Pose2d kL1 = rotatePose(kSetpoint, 90);
 
         public static Pose2d lSetpoint = reefTrig(reefCloseLeft, TrigDirection.RIGHT);
-        public static Pose2d lRotatedSetpoint = rotatePose(lSetpoint, 90);
+        public static Pose2d lL1 = rotatePose(lSetpoint, 90);
 
         public static Pose2d aApproach = createApproachPoint(aSetpoint);
         public static Pose2d bApproach = createApproachPoint(bSetpoint);
@@ -220,54 +220,46 @@ public class ToPosConstants {
         public static Pose2d kApproach = createApproachPoint(kSetpoint);
         public static Pose2d lApproach = createApproachPoint(lSetpoint);
 
-        // for(int i=0;i<PPSetpoints.values().length;i++)
-        // {
-        // Pose2d approachPoint = PPSetpoints.values()[i].approachPoint;
-        // Pose2d setpoint = PPSetpoints.values()[i].setpoint;
-        // PPSetpoints.values()[i].approachPoint = flipPose(approachPoint);
-        // PPSetpoints.values()[i].setpoint = flipPose(setpoint);
-        // }
-
         public enum PPSetpoints {
-
             CORALLEFT(coralLeft, coralLeft, new PrintCommand("coral left")),
             CORALRIGHT(coralRight, coralRight, new PrintCommand("coral right")),
-
+            
             A(aSetpoint, aApproach, new PrintCommand("a setpoint")),
-            AROTATE(aRotatedSetpoint, aApproach, new PrintCommand("a rotated setpoint")),
-
+            AL1(aL1, aApproach, new PrintCommand("a L1 setpoint")),
+            
             B(bSetpoint, bApproach, new PrintCommand("b setpoint")),
-            BROTATE(bRotatedSetpoint, bApproach, new PrintCommand("b rotated setpoint")),
-
+            BL1(bL1, bApproach, new PrintCommand("b L1 setpoint")),
+            
             C(cSetpoint, cApproach, new PrintCommand("c setpoint")),
-            CROTATE(cRotatedSetpoint, cApproach, new PrintCommand("c rotated setpoint")),
-
+            CL1(cL1, cApproach, new PrintCommand("c L1 setpoint")),
+            
             D(dSetpoint, dApproach, new PrintCommand("d setpoint")),
-            DROTATE(dRotatedSetpoint, dApproach, new PrintCommand("d rotated setpoint")),
-
+            DL1(dL1, dApproach, new PrintCommand("d L1 setpoint")),
+            
             E(eSetpoint, eApproach, new PrintCommand("e setpoint")),
-            EROTATE(eRotatedSetpoint, eApproach, new PrintCommand("e rotated setpoint")),
-
+            EL1(eL1, eApproach, new PrintCommand("e L1 setpoint")),
+            
             F(fSetpoint, fApproach, new PrintCommand("f setpoint")),
-            FROTATE(fRotatedSetpoint, fApproach, new PrintCommand("f rotated setpoint")),
-
+            FL1(fL1, fApproach, new PrintCommand("f L1 setpoint")),
+            
             G(gSetpoint, gApproach, new PrintCommand("g setpoint")),
-            GROTATE(gRotatedSetpoint, gApproach, new PrintCommand("g rotated setpoint")),
-
+            GL1(gL1, gApproach, new PrintCommand("g L1 setpoint")),
+            
             H(hSetpoint, hApproach, new PrintCommand("h setpoint")),
-            HROTATE(hRotatedSetpoint, hApproach, new PrintCommand("h rotated setpoint")),
-
+            HL1(hL1, hApproach, new PrintCommand("h L1 setpoint")),
+            
             I(iSetpoint, iApproach, new PrintCommand("i setpoint")),
-            IROTATE(iRotatedSetpoint, iApproach, new PrintCommand("i rotated setpoint")),
-
+            IL1(iL1, iApproach, new PrintCommand("i L1 setpoint")),
+            
             J(jSetpoint, jApproach, new PrintCommand("j setpoint")),
-            JROTATE(jRotatedSetpoint, jApproach, new PrintCommand("j rotated setpoint")),
-
+            JL1(jL1, jApproach, new PrintCommand("j L1 setpoint")),
+            
             K(kSetpoint, kApproach, new PrintCommand("k setpoint")),
-            KROTATE(kRotatedSetpoint, kApproach, new PrintCommand("k rotated setpoint")),
-
+            KL1(kL1, kApproach, new PrintCommand("k L1 setpoint")),
+            
             L(lSetpoint, lApproach, new PrintCommand("l setpoint")),
-            LROTATE(lRotatedSetpoint, lApproach, new PrintCommand("l rotated setpoint")),
+            LL1(lL1, lApproach, new PrintCommand("l L1 setpoint")),
+            
 
             REEFCLOSE(reefClose, createApproachPoint(reefClose), new PrintCommand("reef close")),
             REEFCLOSELEFT(reefCloseLeft, createApproachPoint(reefCloseLeft), new PrintCommand("reef close left")),
