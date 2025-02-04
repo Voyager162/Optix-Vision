@@ -17,6 +17,7 @@ package frc.robot.subsystems.roller;
 public interface PhotoelectricIO {
     public class PhotoelectricData {
         public boolean sensing;
+        public boolean changedSensing;
     }
 
     public default void updateData(PhotoelectricData data) {

@@ -71,12 +71,27 @@ public class ScoringRoller extends Roller {
     @Override
     public void periodic() {
         super.periodic();
+        if (photoelectricData.changedSensing) {
+            photoelectricIO.setInitialState(true);
+            // System.out.println("pleaseeeeeeeee work");
+            // System.out.println("*****SENSING AFTER SET*****: " + photoelectricData.sensing);
+        }
+        System.out.println("hasPiece: " + hasPiece);
         photoelectricIO.updateData(photoelectricData);
+        
         // System.out.println("sensing" + photoelectricData.sensing);
+        // Command currentCommand = this.getCurrentCommand();
+    // if (currentCommand != null) {
+    //     System.out.println("Running Command: " + currentCommand.getName());
+
+    //     // Set the initial state only when a new command is detected
+    //     photoelectricIO.setInitialState(true);
+    // }
         if (photoelectricData.sensing) {
             hasPiece = true;
         } else {
             hasPiece = false;
         }
+
     }
 }

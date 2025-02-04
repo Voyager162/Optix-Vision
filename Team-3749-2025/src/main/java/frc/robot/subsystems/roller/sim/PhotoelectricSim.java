@@ -20,16 +20,14 @@ import frc.robot.subsystems.roller.PhotoelectricIO;
 public class PhotoelectricSim implements PhotoelectricIO { 
     private double scoreTimer = -1;
     private boolean sensing;
+    private boolean changedSensing;
     /**
      * Should only be used for simulation implementation
      * @param initialState 
      */
     @Override
     public void setInitialState(boolean initialState) {
-        if (initialState) {
-            sensing = true;
-            System.out.println("Running InitalState");
-        }
+        sensing = initialState;
     }
 
     /**
@@ -41,10 +39,10 @@ public class PhotoelectricSim implements PhotoelectricIO {
     public void updateData(PhotoelectricData data) {
        // Check if ScoreL234 is currently active
        if (ScoreL234.activeScoreCommand != null) {
-        System.out.println("ScoreL234 detected: " + ScoreL234.activeScoreCommand.getName());
+        // System.out.println("ScoreL234 detected: " + ScoreL234.activeScoreCommand.getName());
 
         if (scoreTimer < 0) {  // Start timer once when command starts
-            System.out.println("Starting ScoreL234 timer");
+            // System.out.println("Starting ScoreL234 timer");
             scoreTimer = Timer.getFPGATimestamp();
         }
 
@@ -52,8 +50,8 @@ public class PhotoelectricSim implements PhotoelectricIO {
         if (Timer.getFPGATimestamp() - scoreTimer > 2) {
             sensing = false;  // Set sensing to false after 2 seconds
             scoreTimer = -1;  // Reset timer
-            System.out.println("Sensing changed to false after 2 sec");
-
+            // System.out.println("Sensing changed to false after 2 sec");
+            changedSensing = true;
         }
     }
 
@@ -62,7 +60,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
         System.out.println("IntakeSource detected: " + IntakeSource.activeIntakeSourceCommand.getName());
 
         if (scoreTimer < 0) {  // Start timer once when command starts
-            System.out.println("Starting IntakeSource timer");
+            // System.out.println("Starting IntakeSource timer");
             scoreTimer = Timer.getFPGATimestamp();
             sensing = false;
         }
@@ -71,11 +69,16 @@ public class PhotoelectricSim implements PhotoelectricIO {
         if (Timer.getFPGATimestamp() - scoreTimer > 5) {
             sensing = true;  // Set sensing to false after 2 seconds
             scoreTimer = -1;  // Reset timer
-            System.out.println("Sensing changed to false after 2 sec");
+            // System.out.println("Sensing changed to false after 2 sec");
         }
     }
-    data.sensing = sensing;  // Update PhotoelectricData
+    data.changedSensing = changedSensing;
+    data.sensing = sensing;
+    if (changedSensing) {
+        sensing = changedSensing;
+    }  // Update PhotoelectricData
     System.out.println("Updated sensing: " + sensing);
+    // System.out.println(">>>>Updated CHANGED sensing: " + changedSensing);
     }
 }
     
