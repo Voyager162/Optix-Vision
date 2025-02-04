@@ -10,6 +10,9 @@ import frc.robot.commands.example.ExampleSubsystemCommand;
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.OnTheFly;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
+import frc.robot.subsystems.swerve.ToPosConstants;
+import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
+import frc.robot.utils.ButtonBoard.ScoringLocation;
 
 /**
  * Util class for button bindings
@@ -25,6 +28,7 @@ public class JoystickIO {
     // getting on my nerves seeing the warning
     private static final Command driveStraight = new DriveStraight();
     private static final Command onTheFly = new OnTheFly();
+    private static final ButtonBoard buttonBoard = new ButtonBoard();
 
     public JoystickIO() {
     }
@@ -70,13 +74,38 @@ public class JoystickIO {
             Robot.swerve.cyclePPSetpoint();
             Robot.swerve.showSetpointEndGoal();
         }));
-
-        new Trigger(() -> Robot.swerve.isOTF).and(() -> UtilityFunctions.withinMargin(0.5,
-                Robot.swerve.getPose().getTranslation(), Robot.swerve.getPPSetpoint().setpoint.getTranslation())).onTrue(Commands.print("SCORE"));
+        createOTFTriggers();
 
         // Example binding
         operator.a().whileTrue(new ExampleSubsystemCommand());
 
+    }
+
+    public static void createOTFTriggers() {
+        Trigger coralStation = new Trigger(() -> Robot.swerve.isOTF).and(() -> {
+            Boolean withinMargin = OTFWithinMargin();
+            Boolean isCoralStation = Robot.swerve.getPPSetpoint() == PPSetpoints.CORALLEFT
+                    || Robot.swerve.getPPSetpoint() == PPSetpoints.CORALRIGHT;
+            return withinMargin && isCoralStation;
+        });
+        coralStation.onTrue(Commands.print("coral station intake"));
+
+        
+        Trigger coralReefL1 = new Trigger(() -> Robot.swerve.isOTF).and(() -> {
+            Boolean withinMargin = OTFWithinMargin();
+            Boolean isCoralReef = Robot.swerve.getPPSetpoint() == PPSetpoints.A
+                    || Robot.swerve.getPPSetpoint() == PPSetpoints.B; // put all reef locaitons here w boolean supplier
+            Boolean isL1 = buttonBoard.getScoringLocation() == ScoringLocation.L1;
+            return withinMargin && isCoralReef && isL1;
+        });
+        coralStation.onTrue(Commands.print("Score L1"));
+
+    }
+
+    public static boolean OTFWithinMargin() {
+        return UtilityFunctions.withinMargin(ToPosConstants.Setpoints.approachPointDistance,
+                Robot.swerve.getPose().getTranslation(),
+                Robot.swerve.getPPSetpoint().setpoint.getTranslation());
     }
 
     public static void pilotBindings() {
