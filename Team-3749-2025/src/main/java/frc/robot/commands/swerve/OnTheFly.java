@@ -1,14 +1,11 @@
 package frc.robot.commands.swerve;
 
 import java.io.IOException;
-
 import org.json.simple.parser.ParseException;
-
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
@@ -18,11 +15,12 @@ import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.ToPos;
 
 public class OnTheFly extends Command {
-
     private PathPlannerTrajectory trajectory;
     private final Timer timer = new Timer();
-    private static double positionTolerance = 0.003; // meters
-    private static double rotationTolerance = 2.0; // degrees
+    private static final double positionTolerance = .5; // meters
+    private static final double rotationTolerance = 10; // degrees
+    private PathPlannerTrajectoryState secondToLastWaypoint = null;
+    private boolean hasTriggeredSecondLastAction = false;
 
     public OnTheFly() {
     }
@@ -31,10 +29,10 @@ public class OnTheFly extends Command {
     public void initialize() {
         timer.reset();
         timer.start();
-        ToPos toPos = new ToPos();
-        PathPlannerPath path;
+        hasTriggeredSecondLastAction = false; // Reset flag for each execution
 
-        path = toPos.generateDynamicPath(
+        ToPos toPos = new ToPos();
+        PathPlannerPath path = toPos.generateDynamicPath(
                 Robot.swerve.getPose(),
                 Robot.swerve.getPPSetpoint().approachPoint,
                 Robot.swerve.getPPSetpoint().setpoint,
@@ -55,6 +53,11 @@ public class OnTheFly extends Command {
                     Robot.swerve.getChassisSpeeds(),
                     Robot.swerve.getRotation2d(),
                     RobotConfig.fromGUISettings());
+
+            var states = trajectory.getStates();
+            if (states.size() >= 2) {
+                secondToLastWaypoint = states.get(states.size() - 2);
+            }
         } catch (IOException | ParseException e) {
             e.printStackTrace();
             Robot.swerve.isOTF = false;
@@ -78,12 +81,18 @@ public class OnTheFly extends Command {
                         goalState.fieldSpeeds.vyMetersPerSecond,
                         new Rotation2d(goalState.fieldSpeeds.omegaRadiansPerSecond)));
 
+        if (secondToLastWaypoint != null && !hasTriggeredSecondLastAction) {
+            System.out.println("Checking second-to-last waypoint...");
+            if (withinSetpointTolerance(secondToLastWaypoint.pose)) {
+                System.out.println("Triggering custom action at second-to-last waypoint!");
+                hasTriggeredSecondLastAction = true;
+                triggerCustomAction();
+            }
+        }
 
         if (isFinished()) {
             this.end(true);
             Robot.swerve.isOTF = false;
-
-            // Optional: Add LEDs or any visual cue for completion here.
         }
     }
 
@@ -97,30 +106,23 @@ public class OnTheFly extends Command {
         if (trajectory == null) {
             return true;
         }
-
-        // Check if the timer has exceeded the trajectory duration
         boolean trajectoryComplete = timer.get() >= trajectory.getTotalTimeSeconds();
-
         if (trajectoryComplete) {
             return withinSetpointTolerance(trajectory.getEndState().pose);
         }
-
         return false;
     }
 
-
-
-    /**
-     * Checks if the robot's current pose is within tolerance of a given setpoint.
-     *
-     * @param setpoint The target pose to check against.
-     * @return True if the robot is within the setpoint tolerance, false otherwise.
-     */
     private boolean withinSetpointTolerance(Pose2d setpoint) {
         double xError = Math.abs(setpoint.relativeTo(Robot.swerve.getPose()).getX());
         double yError = Math.abs(setpoint.relativeTo(Robot.swerve.getPose()).getY());
         double thetaError = setpoint.relativeTo(Robot.swerve.getPose()).getRotation().getDegrees();
 
         return xError < positionTolerance && yError < positionTolerance && thetaError < rotationTolerance;
+    }
+
+    private void triggerCustomAction() {
+        System.out.println("Reached second-to-last waypoint! Running custom action...");
+     
     }
 }
