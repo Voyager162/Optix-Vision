@@ -194,6 +194,7 @@ public class ToPosConstants {
         public static Pose2d kApproach = createApproachPoint(kSetpoint);
         public static Pose2d lApproach = createApproachPoint(lSetpoint);
 
+
         // for(int i=0;i<PPSetpoints.values().length;i++)
         // {
         // Pose2d approachPoint = PPSetpoints.values()[i].approachPoint;
@@ -217,7 +218,13 @@ public class ToPosConstants {
             I(iSetpoint, iApproach),
             J(jSetpoint, jApproach),
             K(kSetpoint, kApproach),
-            L(lSetpoint, lApproach);
+            L(lSetpoint, lApproach),
+            REEFCLOSE(reefClose,createApproachPoint(reefClose)),
+            REEFClOSELEFT(reefCloseLeft,createApproachPoint(reefCloseLeft)),
+            REEFCLOSERIGHT(reefCloseRight,createApproachPoint(reefCloseRight)),
+            REEFFAR(reefFar,createApproachPoint(reefFar)),
+            REEFFARleft(reefFarLeft,createApproachPoint(reefFarLeft)),
+            REEFFARRIGHT(reefFarRight,createApproachPoint(reefFarRight));
 
             public Pose2d setpoint;
             public Pose2d approachPoint;
