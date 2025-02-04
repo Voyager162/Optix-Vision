@@ -20,7 +20,7 @@ import frc.robot.subsystems.roller.PhotoelectricIO;
 public class PhotoelectricSim implements PhotoelectricIO { 
     private double scoreTimer = -1;
     private boolean sensing;
-    private boolean changedSensing;
+    // private boolean changedSensing;
     /**
      * Should only be used for simulation implementation
      * @param initialState 
@@ -51,13 +51,13 @@ public class PhotoelectricSim implements PhotoelectricIO {
             sensing = false;  // Set sensing to false after 2 seconds
             scoreTimer = -1;  // Reset timer
             // System.out.println("Sensing changed to false after 2 sec");
-            changedSensing = true;
+            // changedSensing = true;
         }
     }
 
        // Check if IntakeSource is currently active
        if (IntakeSource.activeIntakeSourceCommand != null) {
-        System.out.println("IntakeSource detected: " + IntakeSource.activeIntakeSourceCommand.getName());
+        // System.out.println("IntakeSource detected: " + IntakeSource.activeIntakeSourceCommand.getName());
 
         if (scoreTimer < 0) {  // Start timer once when command starts
             // System.out.println("Starting IntakeSource timer");
@@ -72,11 +72,11 @@ public class PhotoelectricSim implements PhotoelectricIO {
             // System.out.println("Sensing changed to false after 2 sec");
         }
     }
-    data.changedSensing = changedSensing;
+    // data.changedSensing = changedSensing;
     data.sensing = sensing;
-    if (changedSensing) {
-        sensing = changedSensing;
-    }  // Update PhotoelectricData
+    // if (changedSensing) {
+    //     sensing = changedSensing;
+    // }  // Update PhotoelectricData
     System.out.println("Updated sensing: " + sensing);
     // System.out.println(">>>>Updated CHANGED sensing: " + changedSensing);
     }

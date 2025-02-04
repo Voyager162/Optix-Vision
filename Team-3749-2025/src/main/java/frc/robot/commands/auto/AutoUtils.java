@@ -16,13 +16,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.commands.integration.IntakeSource;
 import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.ScoreL234;
-
 
 /**
  * All setup and helper methods for auto routines, including the
@@ -83,7 +83,6 @@ public class AutoUtils {
 
         // will now take a reset odometry
 
-        
         factory = new AutoFactory(() -> Robot.swerve.getPose(),
                 (Pose2d startingPose) -> Robot.swerve
                         .setOdometry(startingPose),
@@ -122,14 +121,13 @@ public class AutoUtils {
         chooser.addCmd("4-Piece", () -> Autos.get4Piece());
         chooser.addCmd("3 Coral and 2 Algae", () -> Autos.get3CoralAnd2Algae());
 
-
         chooser.select("4-Piece");
         SmartDashboard.putData("Auto: Auto Chooser", chooser);
 
     }
 
-     /**
-     * This just sets up AutoChooser in Robot Sim 
+    /**
+     * This just sets up AutoChooser in Robot Sim
      */
 
     private static void setupFlipChooser() {
@@ -258,7 +256,6 @@ public class AutoUtils {
         return KnockAlgae;
 
     }
-    
 
     /**
      * This will begin "nextTrajectory" following the completion of "curTrajectory"
@@ -270,25 +267,21 @@ public class AutoUtils {
      * @param nextTrajectory
      * @param ScoreL234
      */
-    
+
     public static void goNextAfterScored(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory,
-    Command ScoreL234) {
-        Pose2d endingPose2d = getFinalPose2d(curTrajectory);
-
-        // Unflip the alliance so that atPose can flip it; it's a quirk of referencing the trajectory
-        if (DriverStation.getAlliance().get() == Alliance.Red) {
-            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
-        }
-
-         System.out.println("AUTO DEBUG >>>> Waiting for ScoreL234 to finish...");
+            Command scoreL234) {
 
         // Periodically check if ScoreL234 is finished
-        new RunCommand(() -> {
-        System.out.println("AUTO DEBUG >>>> SCOREL234 IS FINISHED: " + ScoreL234.isFinished());
-        if (ScoreL234.isFinished()) {
-            nextTrajectory.cmd().schedule();
-        }
-    }).until(ScoreL234::isFinished).schedule();
+        // new RunCommand(() -> {
+        // System.out.println("AUTO DEBUG >>>> SCOREL234 IS FINISHED: " +
+        // ScoreL234.isFinished());
+        // if (ScoreL234.isFinished()) {
+        // nextTrajectory.cmd().schedule();
+        // }
+        // }).until(ScoreL234::isFinished).schedule();
+
+        curTrajectory.done().and(()->scoreL234.isFinished()).onTrue(nextTrajectory.cmd());
+        System.out.println("****CURTRAJ**** " + curTrajectory.done());
     }
 
     /**
@@ -302,25 +295,12 @@ public class AutoUtils {
      * @param IntakeSource
      */
     public static void goNextAfterIntake(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory,
-            Command IntakeSource) {
-        Pose2d endingPose2d = getFinalPose2d(curTrajectory);
-        // unflip the alliance so that atPose can flip it; it's a quirk of referencing
-        // the trajectory
-        if (DriverStation.getAlliance().get() == Alliance.Red) {
-            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
-        }
-
-        // Periodically check if ScoreL234 is finished
-        new RunCommand(() -> {
-        System.out.println("AUTO DEBUG >>>> IntakeSource IS FINISHED: " + IntakeSource.isFinished());
-        if (IntakeSource.isFinished()) {
-            nextTrajectory.cmd().schedule();
-        }
-        }).until(IntakeSource::isFinished).schedule();
+            Command intakeSource) {
+        curTrajectory.active().and(() -> intakeSource.isFinished()).onTrue(nextTrajectory.cmd());
 
     }
 
-     /**
+    /**
      * This will begin "nextTrajectory" following the completion of "curTrajectory"
      * and intaking. This should be used to link trajectories together, but only
      * moving on to the next step in the path if the scoring aciton has been
@@ -331,7 +311,8 @@ public class AutoUtils {
      * @param KnockAlgae
      */
 
-    public static void goNextAfterKnockAlgae(AutoTrajectory curTrajectory, AutoTrajectory nexTrajectory, Command KnockAlgae){
+    public static void goNextAfterKnockAlgae(AutoTrajectory curTrajectory, AutoTrajectory nexTrajectory,
+            Command KnockAlgae) {
         Pose2d endingPose2d = getFinalPose2d(curTrajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
@@ -346,6 +327,7 @@ public class AutoUtils {
 
     /**
      * This will flip a given pose across the x-axis of the field
+     * 
      * @param pos the position to be flipped
      * @return the flipped position
      */
@@ -357,11 +339,14 @@ public class AutoUtils {
 
         return new Pose2d(translation, rotation);
     }
-/**
- * returns the final position of the trajectory given, vertically flipped according to the flipped chooser
- * @param trajectory 
- * @return
- */
+
+    /**
+     * returns the final position of the trajectory given, vertically flipped
+     * according to the flipped chooser
+     * 
+     * @param trajectory
+     * @return
+     */
     public static Pose2d getFinalPose2d(AutoTrajectory trajectory) {
         if (flippedChooser.getSelected()) {
             System.out.println("Flipped Pose:" + getFlippedPose(trajectory.getFinalPose().get()));

@@ -2,6 +2,7 @@ package frc.robot.subsystems.roller.implementations;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.roller.PhotoelectricIO;
@@ -71,12 +72,12 @@ public class ScoringRoller extends Roller {
     @Override
     public void periodic() {
         super.periodic();
-        if (photoelectricData.changedSensing) {
-            photoelectricIO.setInitialState(true);
-            // System.out.println("pleaseeeeeeeee work");
-            // System.out.println("*****SENSING AFTER SET*****: " + photoelectricData.sensing);
-        }
-        System.out.println("hasPiece: " + hasPiece);
+        // if (photoelectricData.changedSensing) {
+        //     photoelectricIO.setInitialState(true);
+        //     // System.out.println("pleaseeeeeeeee work");
+        //     // System.out.println("*****SENSING AFTER SET*****: " + photoelectricData.sensing);
+        // }
+        // System.out.println("hasPiece: " + hasPiece);
         photoelectricIO.updateData(photoelectricData);
         
         // System.out.println("sensing" + photoelectricData.sensing);
