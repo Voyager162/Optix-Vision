@@ -77,7 +77,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
     // if (changedSensing) {
     //     sensing = changedSensing;
     // }  // Update PhotoelectricData
-    System.out.println("Updated sensing: " + sensing);
+    //System.out.println("Updated sensing: " + sensing);
     // System.out.println(">>>>Updated CHANGED sensing: " + changedSensing);
     }
 }

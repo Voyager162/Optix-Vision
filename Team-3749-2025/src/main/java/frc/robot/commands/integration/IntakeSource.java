@@ -39,7 +39,7 @@ public class IntakeSource extends Command {
 
     @Override
     public boolean isFinished() {
-        System.out.println("intake source is finishing" + Robot.scoringRoller.hasPiece());
+       // System.out.println("intake source is finishing" + Robot.scoringRoller.hasPiece());
         
         return Robot.scoringRoller.hasPiece();
     }
