@@ -113,6 +113,13 @@ public class OnTheFly extends Command {
         return false;
     }
 
+    private boolean withinSetpointTolerance(Pose2d setpoint) {
+        double xError = Math.abs(setpoint.relativeTo(Robot.swerve.getPose()).getX());
+        double yError = Math.abs(setpoint.relativeTo(Robot.swerve.getPose()).getY());
+        double thetaError = setpoint.relativeTo(Robot.swerve.getPose()).getRotation().getDegrees();
+
+        return xError < positionTolerance && yError < positionTolerance && thetaError < rotationTolerance;
+    }
 
     private void triggerCustomAction() {
         System.out.println("Reached second-to-last waypoint! Running custom action...");
