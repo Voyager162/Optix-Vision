@@ -69,7 +69,8 @@ public class ToPosConstants {
         public static enum TrigDirection {
             LEFT,
             RIGHT,
-            FORWARD
+            FORWARD,
+
         }
 
         // public static Pose2d buttonBoardSetpointMap(int index) {
@@ -80,7 +81,7 @@ public class ToPosConstants {
         // return ppApproachSetpoints[index];
         // }
 
-        public static Pose2d reefTrig(Pose2d reefPose, TrigDirection direction) {
+        public static Pose2d reefTrig(Pose2d reefPose, TrigDirection direction, boolean shouldRotateLeft) {
             double offsetMultiplier = 1;
             double forwardMagnitudeMultiplier = 1;
             double angleOffset = 90; // 90 for perpindicular
@@ -109,7 +110,12 @@ public class ToPosConstants {
             double yOffset = Math
                     .sin(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))
                     / (4 * forwardMagnitudeMultiplier);
-            return new Pose2d(reefPose.getX() + xOffset, reefPose.getY() + yOffset, reefPose.getRotation());
+            Rotation2d finalRotation = reefPose.getRotation();
+            if(shouldRotateLeft)
+            {
+                finalRotation = new Rotation2d(finalRotation.getDegrees()+90);
+            }
+            return new Pose2d(reefPose.getX() + xOffset, reefPose.getY() + yOffset, finalRotation);
         };
 
         // Helper method to adjust Pose2d
@@ -163,9 +169,12 @@ public class ToPosConstants {
         // https://firstfrc.blob.core.windows.net/frc2025/Manual/Sections/2025GameManual-05ARENA.pdf
         // to see what each letter setpoint refers to
 
-        public static Pose2d aSetpoint = reefTrig(reefClose, TrigDirection.LEFT);
-        public static Pose2d bSetpoint = reefTrig(reefClose, TrigDirection.RIGHT);
+        public static Pose2d aSetpoint = reefTrig(reefClose, TrigDirection.LEFT,false);
+        public static Pose2d aRotatedSetpoint = reefTrig(reefClose, TrigDirection.LEFT,true);
 
+        public static Pose2d bSetpoint = reefTrig(reefClose, TrigDirection.RIGHT,false);
+        public static Pose2d bRotatedSetpoint = reefTrig(reefClose, TrigDirection.RIGHT,true);
+        
         public static Pose2d cSetpoint = reefTrig(reefCloseRight, TrigDirection.LEFT);
         public static Pose2d dSetpoint = reefTrig(reefCloseRight, TrigDirection.RIGHT);
 
@@ -207,7 +216,8 @@ public class ToPosConstants {
 
             CORALLEFT(coralLeft, coralLeft),
             CORALRIGHT(coralRight, coralRight),
-            A(aSetpoint, aApproach),
+            A(aSetpoint, aApproach, commandl1234),
+
             B(bSetpoint, bApproach),
             C(cSetpoint, cApproach),
             D(dSetpoint, dApproach),
