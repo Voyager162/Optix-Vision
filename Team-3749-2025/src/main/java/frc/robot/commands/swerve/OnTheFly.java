@@ -81,14 +81,14 @@ public class OnTheFly extends Command {
                         goalState.fieldSpeeds.vyMetersPerSecond,
                         new Rotation2d(goalState.fieldSpeeds.omegaRadiansPerSecond)));
 
-        if (secondToLastWaypoint != null && !hasTriggeredSecondLastAction) {
-            System.out.println("Checking second-to-last waypoint...");
-            if (withinSetpointTolerance(secondToLastWaypoint.pose)) {
-                System.out.println("Triggering custom action at second-to-last waypoint!");
-                hasTriggeredSecondLastAction = true;
-                triggerCustomAction();
-            }
-        }
+        // if (secondToLastWaypoint != null && !hasTriggeredSecondLastAction) {
+        //     System.out.println("Checking second-to-last waypoint...");
+        //     if (withinSetpointTolerance(secondToLastWaypoint.pose)) {
+        //         System.out.println("Triggering custom action at second-to-last waypoint!");
+        //         hasTriggeredSecondLastAction = true;
+        //         triggerCustomAction();
+        //     }
+        // }
 
         if (isFinished()) {
             this.end(true);
@@ -113,13 +113,6 @@ public class OnTheFly extends Command {
         return false;
     }
 
-    private boolean withinSetpointTolerance(Pose2d setpoint) {
-        double xError = Math.abs(setpoint.relativeTo(Robot.swerve.getPose()).getX());
-        double yError = Math.abs(setpoint.relativeTo(Robot.swerve.getPose()).getY());
-        double thetaError = setpoint.relativeTo(Robot.swerve.getPose()).getRotation().getDegrees();
-
-        return xError < positionTolerance && yError < positionTolerance && thetaError < rotationTolerance;
-    }
 
     private void triggerCustomAction() {
         System.out.println("Reached second-to-last waypoint! Running custom action...");

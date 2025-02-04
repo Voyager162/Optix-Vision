@@ -1,6 +1,8 @@
 package frc.robot.utils;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
@@ -37,6 +39,17 @@ public class UtilityFunctions {
         // return false;
 
         return (a + margin >= b && a - margin <= b);
+    }
+
+
+    public static boolean withinMargin(double translationMargin, Translation2d translationA, Translation2d translationB){
+            // double xError = Math.abs(setpoint.relativeTo(Robot.swerve.getPose()).getX());
+            // double yError = Math.abs(setpoint.relativeTo(Robot.swerve.getPose()).getY());
+            // double thetaError = setpoint.relativeTo(Robot.swerve.getPose()).getRotation().getDegrees();
+    
+            // return xError < positionTolerance && yError < positionTolerance && thetaError < rotationTolerance;
+        
+        return true;
     }
 
     /**
