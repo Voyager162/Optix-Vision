@@ -47,17 +47,17 @@ public class Autos {
         AutoTrajectory trajectory5 = routine.trajectory("Station-L3");
 
         Command score1 = AutoUtils.addScoreL4(trajectory1);
-        Command intake1 = AutoUtils.addScoreL4(trajectory2);
+        Command intake1 = AutoUtils.addIntake(trajectory2);
         Command score2 = AutoUtils.addScoreL4(trajectory3);
-        Command intake2 = AutoUtils.addScoreL4(trajectory4);
+        Command intake2 = AutoUtils.addIntake(trajectory4);
         AutoUtils.addScoreL4(trajectory5); // third score is the end of the routine, so no need for reference
 
         
         // reverse order here (ex. connect 3 to 2, THEN 2 to 1)
-        AutoUtils.goNextAfterScored(trajectory4, trajectory5, intake2);
-        AutoUtils.goNextAfterScored(trajectory3, trajectory4, score2);
-        AutoUtils.goNextAfterScored(trajectory2, trajectory3, intake1);
-        AutoUtils.goNextAfterScored(trajectory1, trajectory2, score1);
+        AutoUtils.goNextAfterCommand(trajectory4, trajectory5, intake2);
+        AutoUtils.goNextAfterCommand(trajectory3, trajectory4, score2);
+        AutoUtils.goNextAfterCommand(trajectory2, trajectory3, intake1);
+        AutoUtils.goNextAfterCommand(trajectory1, trajectory2, score1);
 
         return Commands.print("3 piece auto!").andThen(
                 AutoUtils.startRoutine(routine, "Start-L5", trajectory1));
@@ -135,12 +135,12 @@ public class Autos {
         AutoUtils.addScoreL4(trajectory7); // fourth score is the end of the routine, so no need for reference
 
         // reverse order here (ex. connect 3 to 2, THEN 2 to 1)
-        AutoUtils.goNextAfterIntake(trajectory6, trajectory7, intake3);
-        AutoUtils.goNextAfterScored(trajectory5, trajectory6, score3);
-        AutoUtils.goNextAfterIntake(trajectory4, trajectory5, intake2);
-        AutoUtils.goNextAfterScored(trajectory3, trajectory4, score2);
-        AutoUtils.goNextAfterIntake(trajectory2, trajectory3, intake1);
-        AutoUtils.goNextAfterScored(trajectory1, trajectory2, score1);
+        AutoUtils.goNextAfterCommand(trajectory6, trajectory7, intake3);
+        AutoUtils.goNextAfterCommand(trajectory5, trajectory6, score3);
+        AutoUtils.goNextAfterCommand(trajectory4, trajectory5, intake2);
+        AutoUtils.goNextAfterCommand(trajectory3, trajectory4, score2);
+        AutoUtils.goNextAfterCommand(trajectory2, trajectory3, intake1);
+        AutoUtils.goNextAfterCommand(trajectory1, trajectory2, score1);
 
         return Commands.print("4 piece auto!").andThen(
                 AutoUtils.startRoutine(routine, "Start-L5", trajectory1));
@@ -177,14 +177,14 @@ public class Autos {
         AutoUtils.addKnockAlgae(trajectory9); // final score is the end of the routine, so no need for reference
 
         // reverse order here (ex. connect 3 to 2, THEN 2 to 1)
-        AutoUtils.goNextAfterIntake(trajectory8, trajectory9, score4);
-        AutoUtils.goNextAfterIntake(trajectory7, trajectory8, intake3);
-        AutoUtils.goNextAfterKnockAlgae(trajectory6, trajectory7, knockalgae1);
-        AutoUtils.goNextAfterIntake(trajectory5, trajectory6, score3);
-        AutoUtils.goNextAfterIntake(trajectory4, trajectory5, intake2);
-        AutoUtils.goNextAfterScored(trajectory3, trajectory4, score2);
-        AutoUtils.goNextAfterIntake(trajectory2, trajectory3, intake1);
-        AutoUtils.goNextAfterScored(trajectory1, trajectory2, score1);
+        AutoUtils.goNextAfterCommand(trajectory8, trajectory9, score4);
+        AutoUtils.goNextAfterCommand(trajectory7, trajectory8, intake3);
+        AutoUtils.goNextAfterCommand(trajectory6, trajectory7, knockalgae1);
+        AutoUtils.goNextAfterCommand(trajectory5, trajectory6, score3);
+        AutoUtils.goNextAfterCommand(trajectory4, trajectory5, intake2);
+        AutoUtils.goNextAfterCommand(trajectory3, trajectory4, score2);
+        AutoUtils.goNextAfterCommand(trajectory2, trajectory3, intake1);
+        AutoUtils.goNextAfterCommand(trajectory1, trajectory2, score1);
 
         return Commands.print("3 Coral and 2 Algae").andThen(
                 AutoUtils.startRoutine(routine, "Start-L5", trajectory1));

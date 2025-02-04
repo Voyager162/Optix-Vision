@@ -268,22 +268,7 @@ public class AutoUtils {
      * @param ScoreL234
      */
 
-    public static void goNextAfterScored(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory,
-            Command scoreL234) {
-
-        // Periodically check if ScoreL234 is finished
-        // new RunCommand(() -> {
-        // System.out.println("AUTO DEBUG >>>> SCOREL234 IS FINISHED: " +
-        // ScoreL234.isFinished());
-        // if (ScoreL234.isFinished()) {
-        // nextTrajectory.cmd().schedule();
-        // }
-        // }).until(ScoreL234::isFinished).schedule();
-
-        curTrajectory.done().and(()->scoreL234.isFinished()).onTrue(nextTrajectory.cmd());
-        System.out.println("****CURTRAJ**** " + curTrajectory.done());
-    }
-
+ 
     /**
      * This will begin "nextTrajectory" following the completion of "curTrajectory"
      * and intaking. This should be used to link trajectories together, but only
@@ -294,36 +279,14 @@ public class AutoUtils {
      * @param nextTrajectory
      * @param IntakeSource
      */
-    public static void goNextAfterIntake(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory,
-            Command intakeSource) {
-        curTrajectory.active().and(() -> intakeSource.isFinished()).onTrue(nextTrajectory.cmd());
+    public static void goNextAfterCommand(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory,
+            Command command) {
+        
+        new Trigger(() -> command.isFinished()).onTrue(Commands.print(command.getName()).andThen(nextTrajectory.cmd()));
 
     }
 
-    /**
-     * This will begin "nextTrajectory" following the completion of "curTrajectory"
-     * and intaking. This should be used to link trajectories together, but only
-     * moving on to the next step in the path if the scoring aciton has been
-     * properly completed
-     * 
-     * @param curTrajectory
-     * @param nextTrajectory
-     * @param KnockAlgae
-     */
 
-    public static void goNextAfterKnockAlgae(AutoTrajectory curTrajectory, AutoTrajectory nexTrajectory,
-            Command KnockAlgae) {
-        Pose2d endingPose2d = getFinalPose2d(curTrajectory);
-        // unflip the alliance so that atPose can flip it; it's a quirk of referencing
-        // the trajectory
-        if (DriverStation.getAlliance().get() == Alliance.Red) {
-            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
-        }
-
-        curTrajectory.done().and(() -> KnockAlgae.isFinished()).onTrue(nexTrajectory.cmd());
-        System.out.println("Done with Knock");
-
-    }
 
     /**
      * This will flip a given pose across the x-axis of the field

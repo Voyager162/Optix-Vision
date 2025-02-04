@@ -17,13 +17,15 @@ import frc.robot.commands.integration.ScoreL1;
 import frc.robot.commands.integration.ScoreL234;
 import frc.robot.subsystems.roller.PhotoelectricIO;
 
-public class PhotoelectricSim implements PhotoelectricIO { 
+public class PhotoelectricSim implements PhotoelectricIO {
     private double scoreTimer = 0;
     private boolean sensing;
+
     // private boolean changedSensing;
     /**
      * Should only be used for simulation implementation
-     * @param initialState 
+     * 
+     * @param initialState
      */
     @Override
     public void setInitialState(boolean initialState) {
@@ -37,51 +39,49 @@ public class PhotoelectricSim implements PhotoelectricIO {
      */
     @Override
     public void updateData(PhotoelectricData data) {
-       // Check if ScoreL234 is currently active
-       if (ScoreL234.activeScoreCommand != null) {
-        // System.out.println("ScoreL234 detected: " + ScoreL234.activeScoreCommand.getName());
+        // Check if ScoreL234 is currently active
+        if (ScoreL234.activeScoreCommand != null) {
+            // System.out.println("ScoreL234 detected: " +
+            // ScoreL234.activeScoreCommand.getName());
 
-        if (scoreTimer <= 0) {  // Start timer once when command starts
-            // System.out.println("Starting ScoreL234 timer");
-            scoreTimer = Timer.getFPGATimestamp();
+            if (scoreTimer <= 0) { // Start timer once when command starts
+                // System.out.println("Starting ScoreL234 timer");
+                scoreTimer = Timer.getFPGATimestamp();
+            }
+
+            // After 2 seconds, sensing should change
+            if (Timer.getFPGATimestamp() - scoreTimer > 2) {
+                sensing = false; // Set sensing to false after 2 seconds
+                scoreTimer = -1; // Reset timer
+                // System.out.println("Sensing changed to false after 2 sec");
+                // changedSensing = true;
+            }
         }
 
-        // After 2 seconds, sensing should change
-        if (Timer.getFPGATimestamp() - scoreTimer > 2) {
-            sensing = false;  // Set sensing to false after 2 seconds
-            scoreTimer = -1;  // Reset timer
-            // System.out.println("Sensing changed to false after 2 sec");
-            // changedSensing = true;
-        }
-    }
+        // Check if IntakeSource is currently active
+        if (IntakeSource.activeIntakeSourceCommand != null) {
+            // System.out.println("IntakeSource detected: " +
+            // IntakeSource.activeIntakeSourceCommand.getName());
 
-       // Check if IntakeSource is currently active
-       if (IntakeSource.activeIntakeSourceCommand != null) {
-        // System.out.println("IntakeSource detected: " + IntakeSource.activeIntakeSourceCommand.getName());
+            if (scoreTimer <= 0) { // Start timer once when command starts
+                // System.out.println("Starting IntakeSource timer");
+                scoreTimer = Timer.getFPGATimestamp();
+                // sensing = false;
+            }
 
-        if (scoreTimer <= 0) {  // Start timer once when command starts
-            // System.out.println("Starting IntakeSource timer");
-            scoreTimer = Timer.getFPGATimestamp();
-            sensing = false;
+            // After 2 seconds, sensing should change
+            if (Timer.getFPGATimestamp() - scoreTimer > 2) {
+                sensing = true; // Set sensing to false after 2 seconds
+                scoreTimer = -1; // Reset timer
+                // System.out.println("Sensing changed to false after 2 sec");
+            }
         }
-
-        // After 2 seconds, sensing should change
-        if (Timer.getFPGATimestamp() - scoreTimer > 2) {
-            sensing = true;  // Set sensing to false after 2 seconds
-            scoreTimer = -1;  // Reset timer
-            // System.out.println("Sensing changed to false after 2 sec");
-        }
-    }
-    // data.changedSensing = changedSensing;
-    data.sensing = sensing;
-    // if (changedSensing) {
-    //     sensing = changedSensing;
-    // }  // Update PhotoelectricData
-    //System.out.println("Updated sensing: " + sensing);
-    // System.out.println(">>>>Updated CHANGED sensing: " + changedSensing);
+        // data.changedSensing = changedSensing;
+        data.sensing = sensing;
+        // if (changedSensing) {
+        // sensing = changedSensing;
+        // } // Update PhotoelectricData
+        // System.out.println("Updated sensing: " + sensing);
+        // System.out.println(">>>>Updated CHANGED sensing: " + changedSensing);
     }
 }
-    
-
-
-
