@@ -16,6 +16,7 @@ public class IntakeSource extends Command {
 
     @Override
     public void initialize() {
+        activeIntakeSourceCommand = this;
         if (Robot.scoringRoller.hasPiece()) {
             this.cancel();
         }
@@ -35,6 +36,7 @@ public class IntakeSource extends Command {
     public void end(boolean interrupted) {
         Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
         System.out.println("intake source end");
+        activeIntakeSourceCommand = null;
     }
 
     @Override
