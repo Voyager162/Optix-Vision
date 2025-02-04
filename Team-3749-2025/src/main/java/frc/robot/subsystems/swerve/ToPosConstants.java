@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 
 public class ToPosConstants {
 
@@ -81,7 +83,7 @@ public class ToPosConstants {
         // return ppApproachSetpoints[index];
         // }
 
-        public static Pose2d reefTrig(Pose2d reefPose, TrigDirection direction, boolean shouldRotateLeft) {
+        public static Pose2d reefTrig(Pose2d reefPose, TrigDirection direction) {
             double offsetMultiplier = 1;
             double forwardMagnitudeMultiplier = 1;
             double angleOffset = 90; // 90 for perpindicular
@@ -110,12 +112,7 @@ public class ToPosConstants {
             double yOffset = Math
                     .sin(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))
                     / (4 * forwardMagnitudeMultiplier);
-            Rotation2d finalRotation = reefPose.getRotation();
-            if(shouldRotateLeft)
-            {
-                finalRotation = new Rotation2d(finalRotation.getDegrees()+90);
-            }
-            return new Pose2d(reefPose.getX() + xOffset, reefPose.getY() + yOffset, finalRotation);
+            return new Pose2d(reefPose.getX() + xOffset, reefPose.getY() + yOffset, reefPose.getRotation());
         };
 
         // Helper method to adjust Pose2d
@@ -150,6 +147,11 @@ public class ToPosConstants {
             return new Pose2d(position.plus(offset), heading);
         }
 
+        private static Pose2d rotatePose(Pose2d pose, double degrees) {
+            return new Pose2d(pose.getX(), pose.getY(),
+                    new Rotation2d(Math.toRadians(pose.getRotation().getDegrees() + degrees)));
+        }
+
         public static final double ROBOT_LENGTH = Units.inchesToMeters(37); // Length of the robot in meters
         public static final double ROBOT_WIDTH = Units.inchesToMeters(31); // Width of the robot in meters
 
@@ -169,41 +171,41 @@ public class ToPosConstants {
         // https://firstfrc.blob.core.windows.net/frc2025/Manual/Sections/2025GameManual-05ARENA.pdf
         // to see what each letter setpoint refers to
 
-        public static Pose2d aSetpoint = reefTrig(reefClose, TrigDirection.LEFT,false);
-        public static Pose2d aRotatedSetpoint = reefTrig(reefClose, TrigDirection.LEFT,true);
+        public static Pose2d aSetpoint = reefTrig(reefClose, TrigDirection.LEFT);
+        public static Pose2d aRotatedSetpoint = rotatePose(aSetpoint, 90);
 
-        public static Pose2d bSetpoint = reefTrig(reefClose, TrigDirection.RIGHT,false);
-        public static Pose2d bRotatedSetpoint = reefTrig(reefClose, TrigDirection.RIGHT,true);
-        
-        public static Pose2d cSetpoint = reefTrig(reefCloseRight, TrigDirection.LEFT,false);
-        public static Pose2d cRotatedSetpoint = reefTrig(reefCloseRight, TrigDirection.LEFT,true);
+        public static Pose2d bSetpoint = reefTrig(reefClose, TrigDirection.RIGHT);
+        public static Pose2d bRotatedSetpoint = rotatePose(bSetpoint, 90);
 
-        public static Pose2d dSetpoint = reefTrig(reefCloseRight, TrigDirection.RIGHT,false);
-        public static Pose2d dRotatedSetpoint = reefTrig(reefCloseRight, TrigDirection.RIGHT,true);
+        public static Pose2d cSetpoint = reefTrig(reefCloseRight, TrigDirection.LEFT);
+        public static Pose2d cRotatedSetpoint = rotatePose(cSetpoint, 90);
 
-        public static Pose2d eSetpoint = reefTrig(reefFarRight, TrigDirection.LEFT,false);
-        public static Pose2d eRotatedSetpoint = reefTrig(reefFarRight, TrigDirection.LEFT,true);
+        public static Pose2d dSetpoint = reefTrig(reefCloseRight, TrigDirection.RIGHT);
+        public static Pose2d dRotatedSetpoint = rotatePose(dSetpoint, 90);
 
-        public static Pose2d fSetpoint = reefTrig(reefFarRight, TrigDirection.RIGHT,false);
-        public static Pose2d fRotatedSetpoint = reefTrig(reefFarRight, TrigDirection.RIGHT,true);
+        public static Pose2d eSetpoint = reefTrig(reefFarRight, TrigDirection.LEFT);
+        public static Pose2d eRotatedSetpoint = rotatePose(eSetpoint, 90);
 
-        public static Pose2d gSetpoint = reefTrig(reefFar, TrigDirection.LEFT,false);
-        public static Pose2d gRotatedSetpoint = reefTrig(reefFar, TrigDirection.LEFT,true);
+        public static Pose2d fSetpoint = reefTrig(reefFarRight, TrigDirection.RIGHT);
+        public static Pose2d fRotatedSetpoint = rotatePose(fSetpoint, 90);
 
-        public static Pose2d hSetpoint = reefTrig(reefFar, TrigDirection.RIGHT,false);
-        public static Pose2d hRotatedSetpoint = reefTrig(reefFar, TrigDirection.RIGHT,true);
+        public static Pose2d gSetpoint = reefTrig(reefFar, TrigDirection.LEFT);
+        public static Pose2d gRotatedSetpoint = rotatePose(gSetpoint, 90);
 
-        public static Pose2d iSetpoint = reefTrig(reefFarLeft, TrigDirection.LEFT,false);
-        public static Pose2d iRotatedSetpoint = reefTrig(reefFarLeft, TrigDirection.LEFT,true);
+        public static Pose2d hSetpoint = reefTrig(reefFar, TrigDirection.RIGHT);
+        public static Pose2d hRotatedSetpoint = rotatePose(hSetpoint, 90);
 
-        public static Pose2d jSetpoint = reefTrig(reefFarLeft, TrigDirection.RIGHT,false);
-        public static Pose2d jRotatedSetpoint = reefTrig(reefFarLeft, TrigDirection.RIGHT,true);
+        public static Pose2d iSetpoint = reefTrig(reefFarLeft, TrigDirection.LEFT);
+        public static Pose2d iRotatedSetpoint = rotatePose(iSetpoint, 90);
 
-        public static Pose2d kSetpoint = reefTrig(reefCloseLeft, TrigDirection.LEFT,false);
-        public static Pose2d kRotatedSetpoint = reefTrig(reefCloseLeft, TrigDirection.LEFT,true);
-        
-        public static Pose2d lSetpoint = reefTrig(reefCloseLeft, TrigDirection.RIGHT,false);
-        public static Pose2d lRotatedSetpoint = reefTrig(reefCloseLeft, TrigDirection.RIGHT,true);
+        public static Pose2d jSetpoint = reefTrig(reefFarLeft, TrigDirection.RIGHT);
+        public static Pose2d jRotatedSetpoint = rotatePose(jSetpoint, 90);
+
+        public static Pose2d kSetpoint = reefTrig(reefCloseLeft, TrigDirection.LEFT);
+        public static Pose2d kRotatedSetpoint = rotatePose(kSetpoint, 90);
+
+        public static Pose2d lSetpoint = reefTrig(reefCloseLeft, TrigDirection.RIGHT);
+        public static Pose2d lRotatedSetpoint = rotatePose(lSetpoint, 90);
 
         public static Pose2d aApproach = createApproachPoint(aSetpoint);
         public static Pose2d bApproach = createApproachPoint(bSetpoint);
@@ -218,7 +220,6 @@ public class ToPosConstants {
         public static Pose2d kApproach = createApproachPoint(kSetpoint);
         public static Pose2d lApproach = createApproachPoint(lSetpoint);
 
-
         // for(int i=0;i<PPSetpoints.values().length;i++)
         // {
         // Pose2d approachPoint = PPSetpoints.values()[i].approachPoint;
@@ -229,34 +230,61 @@ public class ToPosConstants {
 
         public enum PPSetpoints {
 
-            CORALLEFT(coralLeft, coralLeft),
-            CORALRIGHT(coralRight, coralRight),
-            A(aSetpoint, aApproach, commandl1234),
+            CORALLEFT(coralLeft, coralLeft, new PrintCommand("coral left")),
+            CORALRIGHT(coralRight, coralRight, new PrintCommand("coral right")),
 
-            B(bSetpoint, bApproach),
-            C(cSetpoint, cApproach),
-            D(dSetpoint, dApproach),
-            E(eSetpoint, eApproach),
-            F(fSetpoint, fApproach),
-            G(gSetpoint, gApproach),
-            H(hSetpoint, hApproach),
-            I(iSetpoint, iApproach),
-            J(jSetpoint, jApproach),
-            K(kSetpoint, kApproach),
-            L(lSetpoint, lApproach),
-            REEFCLOSE(reefClose,createApproachPoint(reefClose)),
-            REEFClOSELEFT(reefCloseLeft,createApproachPoint(reefCloseLeft)),
-            REEFCLOSERIGHT(reefCloseRight,createApproachPoint(reefCloseRight)),
-            REEFFAR(reefFar,createApproachPoint(reefFar)),
-            REEFFARleft(reefFarLeft,createApproachPoint(reefFarLeft)),
-            REEFFARRIGHT(reefFarRight,createApproachPoint(reefFarRight));
+            A(aSetpoint, aApproach, new PrintCommand("a setpoint")),
+            AROTATE(aRotatedSetpoint, aApproach, new PrintCommand("a rotated setpoint")),
+
+            B(bSetpoint, bApproach, new PrintCommand("b setpoint")),
+            BROTATE(bRotatedSetpoint, bApproach, new PrintCommand("b rotated setpoint")),
+
+            C(cSetpoint, cApproach, new PrintCommand("c setpoint")),
+            CROTATE(cRotatedSetpoint, cApproach, new PrintCommand("c rotated setpoint")),
+
+            D(dSetpoint, dApproach, new PrintCommand("d setpoint")),
+            DROTATE(dRotatedSetpoint, dApproach, new PrintCommand("d rotated setpoint")),
+
+            E(eSetpoint, eApproach, new PrintCommand("e setpoint")),
+            EROTATE(eRotatedSetpoint, eApproach, new PrintCommand("e rotated setpoint")),
+
+            F(fSetpoint, fApproach, new PrintCommand("f setpoint")),
+            FROTATE(fRotatedSetpoint, fApproach, new PrintCommand("f rotated setpoint")),
+
+            G(gSetpoint, gApproach, new PrintCommand("g setpoint")),
+            GROTATE(gRotatedSetpoint, gApproach, new PrintCommand("g rotated setpoint")),
+
+            H(hSetpoint, hApproach, new PrintCommand("h setpoint")),
+            HROTATE(hRotatedSetpoint, hApproach, new PrintCommand("h rotated setpoint")),
+
+            I(iSetpoint, iApproach, new PrintCommand("i setpoint")),
+            IROTATE(iRotatedSetpoint, iApproach, new PrintCommand("i rotated setpoint")),
+
+            J(jSetpoint, jApproach, new PrintCommand("j setpoint")),
+            JROTATE(jRotatedSetpoint, jApproach, new PrintCommand("j rotated setpoint")),
+
+            K(kSetpoint, kApproach, new PrintCommand("k setpoint")),
+            KROTATE(kRotatedSetpoint, kApproach, new PrintCommand("k rotated setpoint")),
+
+            L(lSetpoint, lApproach, new PrintCommand("l setpoint")),
+            LROTATE(lRotatedSetpoint, lApproach, new PrintCommand("l rotated setpoint")),
+
+            REEFCLOSE(reefClose, createApproachPoint(reefClose), new PrintCommand("reef close")),
+            REEFCLOSELEFT(reefCloseLeft, createApproachPoint(reefCloseLeft), new PrintCommand("reef close left")),
+            REEFCLOSERIGHT(reefCloseRight, createApproachPoint(reefCloseRight), new PrintCommand("reef close right")),
+
+            REEFFAR(reefFar, createApproachPoint(reefFar), new PrintCommand("reef far")),
+            REEFFARLEFT(reefFarLeft, createApproachPoint(reefFarLeft), new PrintCommand("reef far left")),
+            REEFFARRIGHT(reefFarRight, createApproachPoint(reefFarRight), new PrintCommand("reef far right"));
 
             public Pose2d setpoint;
             public Pose2d approachPoint;
+            public Command onReachCommand;
 
-            private PPSetpoints(Pose2d setpoint, Pose2d approachPoint) {
+            private PPSetpoints(Pose2d setpoint, Pose2d approachPoint, Command onReachCommand) {
                 this.setpoint = setpoint;
                 this.approachPoint = approachPoint;
+                this.onReachCommand = onReachCommand;
                 if (DriverStationSim.getAllianceStationId().equals(AllianceStationID.Red1)) {
                     this.setpoint = flipPose(setpoint);
                     this.approachPoint = flipPose(approachPoint);
