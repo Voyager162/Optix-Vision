@@ -352,6 +352,12 @@ public class Swerve extends SubsystemBase {
     return PPSetpoints.values()[currentPPSetpointIndex];
   }
 
+  public void startOnTheFly(int setpointIndex)
+  {
+    currentPPSetpointIndex = setpointIndex;
+    isOTF = true;
+  }
+
   public void runSetpointReachedCommand()
   {
     //if you must ask, for some reason
