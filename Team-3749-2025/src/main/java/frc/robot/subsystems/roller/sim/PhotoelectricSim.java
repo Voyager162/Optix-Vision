@@ -18,7 +18,7 @@ import frc.robot.commands.integration.ScoreL234;
 import frc.robot.subsystems.roller.PhotoelectricIO;
 
 public class PhotoelectricSim implements PhotoelectricIO { 
-    private double scoreTimer = -1;
+    private double scoreTimer = 0;
     private boolean sensing;
     // private boolean changedSensing;
     /**
