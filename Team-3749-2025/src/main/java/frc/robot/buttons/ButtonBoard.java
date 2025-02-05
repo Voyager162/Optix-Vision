@@ -8,6 +8,11 @@ public class ButtonBoard {
         return scoringLocation;
     }
 
+    public void setScoringLocation(ScoringLocation location)
+    {
+      this.scoringLocation = location;
+    }
+
     public enum ScoringLocation {
       L1,
       L2,
