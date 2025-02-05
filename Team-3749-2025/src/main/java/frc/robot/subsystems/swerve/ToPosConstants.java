@@ -1,5 +1,6 @@
 package frc.robot.subsystems.swerve;
 
+import java.util.HashMap;
 import java.util.List;
 
 import choreo.util.ChoreoAllianceFlipUtil;
@@ -73,14 +74,6 @@ public class ToPosConstants {
             FORWARD,
 
         }
-
-        // public static Pose2d buttonBoardSetpointMap(int index) {
-        // return ppSetpoints[index];
-        // }
-
-        // public static Pose2d buttonBoardApproachSetpointMap(int index) {
-        // return ppApproachSetpoints[index];
-        // }
 
         public static Pose2d reefTrig(Pose2d reefPose, TrigDirection direction) {
             double offsetMultiplier = 1;
@@ -165,15 +158,7 @@ public class ToPosConstants {
         public static Pose2d reefFar = adjustPose(5.35, 4, Math.toRadians(180), false);
         public static Pose2d reefFarLeft = adjustPose(4.94, 4.74, Math.toRadians(-120), false);
         public static Pose2d reefCloseLeft = adjustPose(4.07, 4.74, Math.toRadians(-60), false);
-
-        public Pose2d[] reefSides = {
-            reefClose,
-            reefCloseRight,
-            reefCloseLeft,
-            reefFar,
-            reefFarLeft,
-            reefFarRight
-        };
+        //im a programmer not a naming expert
 
         // Please refer to:
         // https://firstfrc.blob.core.windows.net/frc2025/Manual/Sections/2025GameManual-05ARENA.pdf
@@ -214,6 +199,24 @@ public class ToPosConstants {
 
         public static Pose2d lSetpoint = reefTrig(reefCloseLeft, TrigDirection.RIGHT);
         public static Pose2d lL1 = rotatePose(lSetpoint, 90);
+
+        public static List<Pose2d> reefSides = List.of(
+            reefClose,
+            reefCloseRight,
+            reefCloseLeft,
+            reefFar,
+            reefFarLeft,
+            reefFarRight);
+
+        public static HashMap<Pose2d,int[]> driveRelativeBranches = new HashMap<Pose2d,int[]>() 
+        {{
+            put(reefClose,new int[]{2,4}); //L R
+            put(reefCloseLeft,new int[]{22,24});
+            put(reefCloseRight,new int[]{7,8});
+            put(reefFarRight,new int[]{12,10});
+            put(reefFar,new int[]{16,14});
+            put(reefFarLeft, new int[]{20,18});
+        }}; 
 
         public static Pose2d aApproach = createApproachPoint(aSetpoint);
         public static Pose2d bApproach = createApproachPoint(bSetpoint);

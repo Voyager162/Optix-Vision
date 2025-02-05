@@ -13,6 +13,7 @@ import frc.robot.commands.example.ExampleSubsystemCommand;
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.OnTheFly;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
+import frc.robot.subsystems.swerve.ToPos;
 
 /**
  * Util class for button bindings
@@ -125,6 +126,9 @@ public class JoystickIO {
         pilot.a().whileTrue(driveStraight);
 
         pilot.x().onTrue(Commands.runOnce(()->{Robot.swerve.isOTF=true;}));
+
+        pilot.leftBumper().onTrue(Commands.runOnce(()-> {ToPos.setSetpointByClosestReefBranch(true);Robot.swerve.isOTF=true;}));
+        pilot.rightBumper().onTrue(Commands.runOnce(()-> {ToPos.setSetpointByClosestReefBranch(false);Robot.swerve.isOTF=true;}));
 
         new Trigger(() -> Robot.swerve.isOTF).whileTrue(onTheFly.andThen(Robot.swerve::runSetpointReachedCommand));
 
