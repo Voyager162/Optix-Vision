@@ -38,18 +38,18 @@ public class SwerveModuleSpark implements SwerveModuleIO {
         turn.setPositionWrapping(0, 2 * Math.PI);
 
         for (int i = 0; i < 4; i++) {
-            turn.setPIDF(
+            turn.setPID(
                     ModuleConstants.turnPID[i][0],
                     ModuleConstants.turnPID[i][1],
                     ModuleConstants.turnPID[i][2],
-                    0,
+
                     MotorControllerConstants.slots[i]);
 
-            drive.setPIDF(
+            drive.setPID(
                     ModuleConstants.drivePID[i][0],
                     ModuleConstants.drivePID[i][1],
                     ModuleConstants.drivePID[i][2],
-                    0,
+
                     MotorControllerConstants.slots[i]);
         }
 

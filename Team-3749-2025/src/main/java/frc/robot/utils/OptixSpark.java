@@ -184,8 +184,8 @@ public class OptixSpark {
      * @param slot Note: slot 3 should always have values of 0, wich is also the
      *             default
      */
-    public void setPIDF(double p, double i, double d, double f, ClosedLoopSlot slot) {
-        controllerConfig.pidf(p, i, d, f, slot);
+    public void setPID(double p, double i, double d, ClosedLoopSlot slot) {
+        controllerConfig.pid(p, i, d, slot);
         motorConfig.apply(controllerConfig);
         motor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 

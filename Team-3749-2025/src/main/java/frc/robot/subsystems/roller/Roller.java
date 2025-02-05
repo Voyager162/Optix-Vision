@@ -15,8 +15,6 @@ public abstract class Roller extends SubsystemBase {
     private RollerIO rollerIO;
     private RollerData rollerData;
     private RollerStates rollerState;
-    private PIDController positionController;
-    private PIDController velocityController;
     private SimpleMotorFeedforward rollerFF;
     private double lastKnownPosition = 0.0;
 
@@ -27,8 +25,7 @@ public abstract class Roller extends SubsystemBase {
     private ShuffleData<Double> rollerPositionLog;
     private ShuffleData<Double> rollerLastKnownPositionLog;
 
-    public Roller(Implementations implementation, PIDController velocityController, SimpleMotorFeedforward rollerFF,
-            PIDController positionController) {
+    public Roller(Implementations implementation, SimpleMotorFeedforward rollerFF) {
         switch (implementation) {
             case ALGAE:
                 rollerIO = Robot.isSimulation() ? new RollerSim(implementation)
@@ -48,9 +45,7 @@ public abstract class Roller extends SubsystemBase {
         }
 
         String name = implementation.name();
-        this.velocityController = velocityController;
         this.rollerFF = rollerFF;
-        this.positionController = positionController;
         this.rollerState = RollerConstants.RollerStates.STOP;
         rollerData = new RollerData();
 
@@ -71,12 +66,7 @@ public abstract class Roller extends SubsystemBase {
     }
 
     public void setVelocity(double velocityRadPerSec) {
-        double voltage = velocityController.calculate(
-                rollerData.rollerVelocityRadPerSec,
-                velocityRadPerSec) +
-                rollerFF.calculate(velocityRadPerSec);
-
-        setVoltage(voltage);
+        rollerIO.setVelocity(velocityRadPerSec, rollerFF.calculate(velocityRadPerSec));
     }
 
     public RollerStates getState() {
@@ -107,10 +97,9 @@ public abstract class Roller extends SubsystemBase {
     public abstract void run();
 
     public void maintain() {
-        double holdVoltage = positionController.calculate(
-                rollerData.rollerPositionRotations,
-                lastKnownPosition);
-        setVoltage(holdVoltage);
+
+        rollerIO.setPosition(rollerData.rollerPositionRotations, lastKnownPosition);
+ 
     }
 
     public void stop() {

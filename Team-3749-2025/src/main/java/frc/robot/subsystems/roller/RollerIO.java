@@ -22,5 +22,12 @@ public interface RollerIO {
     public default void setBrakeMode(boolean enable) {
 
     }
+    
+    public default void setVelocity(double setpointVelocity, double feedforward) {
+    }
+
+    
+    public default void setPosition(double setpointVelocity, double feedforward) {
+    }
 
 }
