@@ -132,17 +132,19 @@ public class Swerve extends SubsystemBase {
         "setpoint end goal",
         new Double[] { 0.0, 0.0, 0.0 });
 
-  private ShuffleData<Double> setpointVelocityLog = new ShuffleData<Double>(
-      this.getName(),
-      "setpoint velocity",
-      0.0);
+        private ShuffleData<Double[]> setpointVelocityLog = new ShuffleData<Double[]>(
+          this.getName(),
+          "setpoint velocity",
+          new Double[] { 0.0, 0.0, 0.0 });
+    
+      private ShuffleData<Double[]> setpointAccelerationLog = new ShuffleData<Double[]>(
+          this.getName(),
+          "setpoint acceleration",
+          new Double[] { 0.0, 0.0, 0.0 });
+    
   private ShuffleData<Double> setpointRotationalVelocityLog = new ShuffleData<Double>(
       this.getName(),
       "setpoint rotational velocity",
-      0.0);
-  private ShuffleData<Double> setpointAccelerationLog = new ShuffleData<Double>(
-      this.getName(),
-      "setpoint acceleration",
       0.0);
 
   private ShuffleData<Double> setpointRotationalAccelerationLog = new ShuffleData<Double>(
@@ -321,6 +323,7 @@ public class Swerve extends SubsystemBase {
             turnController.calculate(getPose().getRotation().getRadians(), positions.getRotation().getRadians())
                 + velocities.getRotation().getRadians()),
         getPose().getRotation());
+        logSetpoints(positions, velocities);
 
     Robot.swerve.setChassisSpeeds(speeds);
   }
@@ -477,6 +480,18 @@ public class Swerve extends SubsystemBase {
     }
   }
 
+  public void logSetpoints(Pose2d position, Pose2d velocity) {
+    // setpoint logging for automated driving
+    Double[] positions = new Double[] { position.getX(), position.getY(), position.getRotation().getRadians() };
+    setpointPositionLog.set(positions);
+
+    Double[] velocities = new Double[] { velocity.getX(), velocity.getY(), velocity.getRotation().getRadians() };
+    setpointVelocityLog.set(velocities);
+    setpointAccelerationLog.set(new Double[] { 0.0, 0.0, 0.0 });
+
+  }
+
+
   /**
    * logs all setpoints for the swerve subsystem in autonomous functions
    * 
@@ -494,7 +509,7 @@ public class Swerve extends SubsystemBase {
       velocity += Math.pow(velocities[i], 2);
     }
     velocity = Math.sqrt(velocity);
-    setpointVelocityLog.set(velocity);
+    // setpointVelocityLog.set(velocity);
     setpointRotationalVelocityLog.set(velocities[2]);
 
     Double[] accelerations = new Double[] { accX, accY, alpha };
@@ -503,7 +518,7 @@ public class Swerve extends SubsystemBase {
       acceleration += Math.pow(accelerations[i], 2);
     }
     acceleration = Math.sqrt(acceleration);
-    setpointAccelerationLog.set(acceleration);
+    // setpointAccelerationLog.set(acceleration);
     setpointRotationalAccelerationLog.set(accelerations[2]);
 
   }
