@@ -18,6 +18,7 @@ import frc.robot.commands.auto.AutoConstants;
 import frc.robot.commands.auto.AutoUtils;
 import frc.robot.subsystems.swerve.GyroIO.GyroData;
 import frc.robot.subsystems.swerve.SwerveConstants.DriveConstants;
+import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 import frc.robot.subsystems.swerve.real.*;
 import frc.robot.subsystems.swerve.sim.*;
 import frc.robot.utils.*;
@@ -142,6 +143,12 @@ public class Swerve extends SubsystemBase {
       this.getName(),
       "setpoint rotational acceleration",
       0.0);
+
+  public int currentPPSetpointIndex = 0;
+  public int currentPPApproachSetpointIndex = 0;
+
+  public boolean isOTF = false;
+
 
   public Swerve() {
 
@@ -350,6 +357,32 @@ public class Swerve extends SubsystemBase {
     utilizeVision = utilize;
   }
 
+  public void cyclePPSetpoint() {
+    currentPPSetpointIndex++;
+
+    if (currentPPSetpointIndex >= ToPosConstants.Setpoints.PPSetpoints.values().length) {
+      currentPPSetpointIndex = 0;
+    }
+  }
+
+  public PPSetpoints getPPSetpoint() {
+    return PPSetpoints.values()[currentPPSetpointIndex];
+  }
+
+  public void startOnTheFly(int setpointIndex)
+  {
+    currentPPSetpointIndex = setpointIndex;
+    isOTF = true;
+  }
+
+  public void runSetpointReachedCommand()
+  {
+    //if you must ask, for some reason
+    //whenever i try to write thsi as a get statement the command becomes a constant value ??
+    //so now i have to lambda call it and use this jank method i am only kind of sorry -jonathan liu 2/3/2025
+    CommandScheduler.getInstance().schedule(PPSetpoints.values()[currentPPSetpointIndex].onReachCommand);
+  }
+  
   /**
    * Manually sets our odometry position
    * 
