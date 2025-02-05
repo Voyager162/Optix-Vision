@@ -21,8 +21,10 @@ import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.commands.integration.CoralIntakeSource;
+import frc.robot.commands.integration.CoralIntakeSource;
 import frc.robot.commands.integration.IntakeSource;
 import frc.robot.commands.integration.KnockAlgae;
+import frc.robot.commands.integration.ScoreL1;
 import frc.robot.commands.integration.ScoreL234;
 
 /**
@@ -122,6 +124,7 @@ public class AutoUtils {
         chooser.addCmd("4-Piece", () -> Autos.get4Piece());
         chooser.addCmd("3 Coral and 2 Algae", () -> Autos.get3CoralAnd2Algae());
         chooser.addCmd("Coral Intake", () -> Autos.getCoralIntake());
+        chooser.addCmd("3 Coral Score L1", () -> Autos.get3CoralScoreL1());
 
         chooser.select("4-Piece");
         SmartDashboard.putData("Auto: Auto Chooser", chooser);
@@ -223,6 +226,19 @@ public class AutoUtils {
 
     }
 
+    public static Command addScoreL1(AutoTrajectory trajectory) {
+        Pose2d endingPose2d = getFinalPose2d(trajectory);
+        // unflip the alliance so that atPose can flip it; it's a quirk of referencing
+        // the trajectory
+        if (DriverStation.getAlliance().get() == Alliance.Red) {
+            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
+        }
+        Command scoreL1 = new ScoreL1();
+
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(scoreL1);
+        return scoreL1;
+    }
+
     /**
      * A command to intake from station when the robot is approaching the end of the
      * given trajectory
@@ -242,6 +258,18 @@ public class AutoUtils {
         trajectory.atPose(endingPose2d, 1, 1.57).onTrue(intake);
         return intake;
 
+    }
+
+    public static Command addIntakeCoralArm(AutoTrajectory trajectory) {
+        Pose2d endingPose2d = getFinalPose2d(trajectory);
+
+        if (DriverStation.getAlliance().get() == Alliance.Red) {
+            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
+        }
+        Command intakeCoralArm = new CoralIntakeSource();
+
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(intakeCoralArm);
+        return intakeCoralArm;
     }
 
     public static Command addKnockAlgae(AutoTrajectory trajectory) {
