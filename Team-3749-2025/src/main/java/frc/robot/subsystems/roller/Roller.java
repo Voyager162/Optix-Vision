@@ -61,7 +61,7 @@ public abstract class Roller extends SubsystemBase {
     public void setState(RollerStates rollerState) {
         this.rollerState = rollerState;
         if (rollerState == RollerConstants.RollerStates.MAINTAIN) {
-            lastKnownPosition = rollerData.rollerPositionRotations;
+            lastKnownPosition = rollerData.rollerPositionRad;
         }
     }
 
@@ -83,7 +83,7 @@ public abstract class Roller extends SubsystemBase {
 
     public void maintain() {
 
-        rollerIO.setPosition(rollerData.rollerPositionRotations, lastKnownPosition);
+        rollerIO.setPosition(rollerData.rollerPositionRad, lastKnownPosition);
 
     }
 
@@ -99,7 +99,7 @@ public abstract class Roller extends SubsystemBase {
         rollerVelocityLog.set(rollerData.rollerVelocityRadPerSec);
         rollerVoltageLog.set(rollerData.rollerAppliedVolts);
         rollerCurrentLog.set(rollerData.currentAmps);
-        rollerPositionLog.set(rollerData.rollerPositionRotations);
+        rollerPositionLog.set(rollerData.rollerPositionRad);
         rollerLastKnownPositionLog.set(lastKnownPosition);
         stateLog.set(rollerState.name());
     }
