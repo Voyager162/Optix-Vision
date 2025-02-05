@@ -78,7 +78,7 @@ public class RollerSparkMax implements RollerIO {
     }
 
     @Override
-    public void setPosition(double setpointVelocity, double feedforward) {
-        rollerMotor.setVelocityControl(setpointVelocity, feedforward);
+    public void setPosition(double setpointPosition, double feedforward) {
+        rollerMotor.setPositionControl(setpointPosition, feedforward);
     }
 }
