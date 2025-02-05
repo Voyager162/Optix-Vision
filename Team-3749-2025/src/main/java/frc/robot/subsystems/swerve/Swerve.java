@@ -60,7 +60,7 @@ public class Swerve extends SubsystemBase {
   private ShuffleData<Double[]> odometryLog = new ShuffleData<Double[]>(
       this.getName(),
       "odometry",
-      new Double[] { 0.0, 0.0, 0.0});
+      new Double[] { 0.0, 0.0, 0.0 });
 
   private ShuffleData<Double[]> realStatesLog = new ShuffleData<Double[]>(
       this.getName(),
@@ -288,6 +288,18 @@ public class Swerve extends SubsystemBase {
    * @note verticle flipping relies on choreo detecting rotational symetry on the
    *       field
    */
+  public void followSample(Pose2d positions, Pose2d velocities) {
+    logSetpoints(positions, velocities);
+    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+        new ChassisSpeeds(
+            xController.calculate(getPose().getX(), positions.getX()) + velocities.getX(),
+            yController.calculate(getPose().getY(), positions.getY()) + velocities.getY(),
+            turnController.calculate(getPose().getRotation().getRadians(), positions.getRotation().getRadians())
+                + velocities.getRotation().getRadians()),
+        getPose().getRotation());
+
+    Robot.swerve.setChassisSpeeds(speeds);
+  }
 
   public void followSample(SwerveSample sample, boolean isFlipped) {
 
