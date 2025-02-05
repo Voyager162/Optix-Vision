@@ -221,66 +221,64 @@ public class ToPosConstants {
         public static Pose2d lApproach = createApproachPoint(lSetpoint);
 
         public enum PPSetpoints {
-            CORALLEFT(coralLeft, coralLeft, new PrintCommand("coral left")),
-            CORALRIGHT(coralRight, coralRight, new PrintCommand("coral right")),
+            CORALLEFT(coralLeft, coralLeft),
+            CORALRIGHT(coralRight, coralRight),
             
-            A(aSetpoint, aApproach, new PrintCommand("a setpoint")),
-            AL1(aL1, aApproach, new PrintCommand("a L1 setpoint")),
+            A(aSetpoint, aApproach),
+            AL1(aL1, aApproach),
             
-            B(bSetpoint, bApproach, new PrintCommand("b setpoint")),
-            BL1(bL1, bApproach, new PrintCommand("b L1 setpoint")),
+            B(bSetpoint, bApproach),
+            BL1(bL1, bApproach),
             
-            C(cSetpoint, cApproach, new PrintCommand("c setpoint")),
-            CL1(cL1, cApproach, new PrintCommand("c L1 setpoint")),
+            C(cSetpoint, cApproach),
+            CL1(cL1, cApproach),
             
-            D(dSetpoint, dApproach, new PrintCommand("d setpoint")),
-            DL1(dL1, dApproach, new PrintCommand("d L1 setpoint")),
+            D(dSetpoint, dApproach),
+            DL1(dL1, dApproach),
             
-            E(eSetpoint, eApproach, new PrintCommand("e setpoint")),
-            EL1(eL1, eApproach, new PrintCommand("e L1 setpoint")),
+            E(eSetpoint, eApproach),
+            EL1(eL1, eApproach),
             
-            F(fSetpoint, fApproach, new PrintCommand("f setpoint")),
-            FL1(fL1, fApproach, new PrintCommand("f L1 setpoint")),
+            F(fSetpoint, fApproach),
+            FL1(fL1, fApproach),
             
-            G(gSetpoint, gApproach, new PrintCommand("g setpoint")),
-            GL1(gL1, gApproach, new PrintCommand("g L1 setpoint")),
+            G(gSetpoint, gApproach),
+            GL1(gL1, gApproach),
             
-            H(hSetpoint, hApproach, new PrintCommand("h setpoint")),
-            HL1(hL1, hApproach, new PrintCommand("h L1 setpoint")),
+            H(hSetpoint, hApproach),
+            HL1(hL1, hApproach),
             
-            I(iSetpoint, iApproach, new PrintCommand("i setpoint")),
-            IL1(iL1, iApproach, new PrintCommand("i L1 setpoint")),
+            I(iSetpoint, iApproach),
+            IL1(iL1, iApproach),
             
-            J(jSetpoint, jApproach, new PrintCommand("j setpoint")),
-            JL1(jL1, jApproach, new PrintCommand("j L1 setpoint")),
+            J(jSetpoint, jApproach),
+            JL1(jL1, jApproach),
             
-            K(kSetpoint, kApproach, new PrintCommand("k setpoint")),
-            KL1(kL1, kApproach, new PrintCommand("k L1 setpoint")),
+            K(kSetpoint, kApproach),
+            KL1(kL1, kApproach),
             
-            L(lSetpoint, lApproach, new PrintCommand("l setpoint")),
-            LL1(lL1, lApproach, new PrintCommand("l L1 setpoint")),
+            L(lSetpoint, lApproach),
+            LL1(lL1, lApproach),
             
 
-            REEFCLOSE(reefClose, createApproachPoint(reefClose), new PrintCommand("reef close")),
-            REEFCLOSELEFT(reefCloseLeft, createApproachPoint(reefCloseLeft), new PrintCommand("reef close left")),
-            REEFCLOSERIGHT(reefCloseRight, createApproachPoint(reefCloseRight), new PrintCommand("reef close right")),
+            REEFCLOSE(reefClose, createApproachPoint(reefClose)),
+            REEFCLOSELEFT(reefCloseLeft, createApproachPoint(reefCloseLeft)),
+            REEFCLOSERIGHT(reefCloseRight, createApproachPoint(reefCloseRight)),
 
-            REEFFAR(reefFar, createApproachPoint(reefFar), new PrintCommand("reef far")),
-            REEFFARLEFT(reefFarLeft, createApproachPoint(reefFarLeft), new PrintCommand("reef far left")),
-            REEFFARRIGHT(reefFarRight, createApproachPoint(reefFarRight), new PrintCommand("reef far right"));
+            REEFFAR(reefFar, createApproachPoint(reefFar)),
+            REEFFARLEFT(reefFarLeft, createApproachPoint(reefFarLeft)),
+            REEFFARRIGHT(reefFarRight, createApproachPoint(reefFarRight));
 
             public Pose2d setpoint;
             public Pose2d approachPoint;
             public Command onReachCommand;
 
-            private PPSetpoints(Pose2d setpoint, Pose2d approachPoint, Command onReachCommand) {
+            private PPSetpoints(Pose2d setpoint, Pose2d approachPoint) {
                 this.setpoint = setpoint;
                 this.approachPoint = approachPoint;
-                this.onReachCommand = onReachCommand;
                 if (DriverStationSim.getAllianceStationId().equals(AllianceStationID.Red1)) {
                     this.setpoint = flipPose(setpoint);
                     this.approachPoint = flipPose(approachPoint);
-                    this.onReachCommand = onReachCommand;
                 }
             }
 
