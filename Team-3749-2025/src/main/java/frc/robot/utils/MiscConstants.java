@@ -2,8 +2,6 @@ package frc.robot.utils;
 
 import com.revrobotics.spark.ClosedLoopSlot;
 
-import frc.robot.Robot;
-
 /**
  * Constants not specific to any given subsystem or commadn
  * 

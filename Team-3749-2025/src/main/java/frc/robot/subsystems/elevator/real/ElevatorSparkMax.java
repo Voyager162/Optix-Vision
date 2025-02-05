@@ -1,20 +1,8 @@
 package frc.robot.subsystems.elevator.real;
 
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkAbsoluteEncoder;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.EncoderConfig;
-import com.revrobotics.spark.config.EncoderConfigAccessor;
-import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO;
-import frc.robot.utils.MiscConstants;
 import frc.robot.utils.OptixSpark;
 import frc.robot.utils.MiscConstants.MotorControllerConstants;
 import frc.robot.utils.MiscConstants.SimConstants;

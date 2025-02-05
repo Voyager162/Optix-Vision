@@ -1,16 +1,11 @@
 package frc.robot.subsystems.arm.coral.real;
 
 import com.revrobotics.spark.SparkAbsoluteEncoder;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.arm.coral.CoralArmIO;
-import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
+import frc.robot.subsystems.arm.coral.CoralConstants;
+import frc.robot.utils.OptixSpark;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
@@ -21,43 +16,39 @@ import frc.robot.utils.MiscConstants.SimConstants;
  */
 public class CoralArmSparkMax implements CoralArmIO {
 
-	private SparkMax motor;
-	private SparkMaxConfig motorConfig = new SparkMaxConfig();
+	private OptixSpark motor;
 
 	private SparkAbsoluteEncoder absoluteEncoder;
 	private double absolutePos;
 
-	private double inputVolts = 0;
 	private double previousVelocity = 0;
-	private double velocity = 0;
 
 	/**
 	 * creates an io implementation of a single real spark max motor
+	 * 
 	 * @param motorId
 	 */
-	public CoralArmSparkMax(int motorId) {
+	public CoralArmSparkMax() {
 
-		motor = new SparkMax(motorId, MotorType.kBrushless);
+		motor = new OptixSpark(CoralConstants.motorID, OptixSpark.Type.SPARKMAX);
 
-		motorConfig.smartCurrentLimit(ArmConstants.NEOStallLimit, ArmConstants.NEOFreeLimit);
-		motorConfig.encoder.inverted(false);
-		motorConfig.inverted(false);
-		motorConfig.idleMode(IdleMode.kBrake);
-		motorConfig.encoder.positionConversionFactor(2 * Math.PI);
-		motorConfig.encoder.velocityConversionFactor(2 * Math.PI / 60.0);
-
-		motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+		motor.setCurrentLimit(ArmConstants.NEOStallLimit, ArmConstants.NEOFreeLimit);
+		motor.setInverted(false);
+		motor.setBrakeMode(true);
+		motor.setPositionConversionFactor(1 / CoralConstants.armGearing * 2 * Math.PI);
+		motor.setVelocityConversionFactor(1 / CoralConstants.armGearing * 2 * Math.PI / 60.0);
 
 		absoluteEncoder = motor.getAbsoluteEncoder();
 		absolutePos = absoluteEncoder.getPosition();
 
-		motor.getEncoder().setPosition(absolutePos);
+		motor.setPosition(absolutePos);
 	}
 
-	public void setIdleMode(IdleMode idleMode) {
-		motorConfig.idleMode(idleMode);
-		motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-	}
+	@Override
+    public void setBrakeMode(boolean enabled) {
+        motor.setBrakeMode(enabled);
+    }
+
 
 	/**
 	 * Takes in the data from ArmData and uses it to update the data on the position
@@ -68,24 +59,23 @@ public class CoralArmSparkMax implements CoralArmIO {
 	 */
 	@Override
 	public void updateData(ArmData data) {
-		previousVelocity = velocity;
-		velocity = motor.getEncoder().getVelocity();
-		data.positionUnits = motor.getEncoder().getPosition();
+		double velocity = motor.getVelocity();
+		data.positionUnits = motor.getPosition();
 		data.velocityUnits = velocity;
 		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
-		data.motorCurrentAmps = motor.getOutputCurrent();
-		data.inputVolts = inputVolts;
-		data.motorAppliedVolts = motor.getBusVoltage() * motor.getAppliedOutput();
-		data.motorTempCelcius = motor.getMotorTemperature();
+		data.motorCurrentAmps = motor.getCurrent();
+		data.motorAppliedVolts = motor.getAppliedVolts();
+		data.motorTempCelcius = motor.getTemperature();
 	}
 
 	/**
 	 * Sets the voltage of the motor
+	 * 
 	 * @param volts
 	 */
 	@Override
 	public void setVoltage(double volts) {
-		inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
+		double inputVolts = MathUtil.applyDeadband(volts, 0.05);
 		inputVolts = MathUtil.clamp(volts, -12, 12);
 		motor.setVoltage(inputVolts);
 	}

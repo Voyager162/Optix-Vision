@@ -5,7 +5,6 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.subsystems.arm.coral.CoralArmIO;
 import frc.robot.subsystems.arm.coral.CoralConstants;
-import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**

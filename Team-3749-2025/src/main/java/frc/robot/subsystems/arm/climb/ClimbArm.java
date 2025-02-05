@@ -74,7 +74,7 @@ public class ClimbArm extends SubsystemBase {
 			armIO = new ClimbArmSim();
 
 		} else {
-			armIO = new ClimbArmSparkMax(ClimbConstants.frontMotorId, ClimbConstants.backMotorId);
+			armIO = new ClimbArmSparkMax();
 		}
 		SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
 	}

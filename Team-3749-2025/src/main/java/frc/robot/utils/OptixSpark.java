@@ -4,6 +4,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
@@ -73,16 +74,24 @@ public class OptixSpark {
         return controller;
     }
 
+    public SparkAbsoluteEncoder getAbsoluteEncoder(){
+        return motor.getAbsoluteEncoder();
+    }
+
+    public void setPosition(double position){
+        motor.getEncoder().setPosition(position);
+    }
+
     public void setVoltage(double volts) {
         motor.setVoltage(volts);
     }
 
-    public void setVelocity(double setpointVelocity, double feedforward) {
+    public void setVelocityControl(double setpointVelocity, double feedforward) {
         controller.setReference(setpointVelocity, ControlType.kVelocity, ClosedLoopSlot.kSlot0, feedforward);
 
     }
 
-    public void setVelocity(double setpointVelocity, double feedforward, ClosedLoopSlot slot) {
+    public void setVelocityControl(double setpointVelocity, double feedforward, ClosedLoopSlot slot) {
         controller.setReference(setpointVelocity, ControlType.kVelocity, slot, feedforward);
 
     }
@@ -95,7 +104,7 @@ public class OptixSpark {
      * @param feedforward
      */
 
-    public void setPosition(double positionSetpoint, double feedforward) {
+    public void setPositionControl(double positionSetpoint, double feedforward) {
         if (deadband.apply(getPosition(), wrapping.apply(positionSetpoint))) {
             controller.setReference(positionSetpoint, ControlType.kPosition, ClosedLoopSlot.kSlot3, feedforward);
         } else {
@@ -114,7 +123,7 @@ public class OptixSpark {
      * @param slot
      */
 
-    public void setPosition(double positionSetpoint, double feedforward, ClosedLoopSlot slot) {
+    public void setPositionControl(double positionSetpoint, double feedforward, ClosedLoopSlot slot) {
         if (deadband.apply(getPosition(), wrapping.apply(positionSetpoint))) {
             controller.setReference(positionSetpoint, ControlType.kPosition, slot, feedforward);
         } else {

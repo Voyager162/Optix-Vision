@@ -106,10 +106,7 @@ public class Swerve extends SubsystemBase {
       "gyro connected",
 
       false);
-  private ShuffleData<Boolean> gyroCalibratingLog = new ShuffleData<Boolean>(
-      this.getName(),
-      "gyro calibrating",
-      false);
+
 
   private ShuffleData<Double> headingLog = new ShuffleData<Double>(
       this.getName(),

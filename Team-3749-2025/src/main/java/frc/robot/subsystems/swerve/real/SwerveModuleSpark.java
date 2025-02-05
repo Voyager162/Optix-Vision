@@ -55,7 +55,7 @@ public class SwerveModuleSpark implements SwerveModuleIO {
 
         absoluteEncoder = new CANcoder(DriveConstants.absoluteEncoderIds[index]);
         absoluteEncoderOffsetRad = Units.degreesToRadians(DriveConstants.absoluteEncoderOffsetDeg[index]);
-
+        turn.setPosition(absoluteEncoder.getPosition().getValueAsDouble() * 2 * Math.PI - absoluteEncoderOffsetRad);
     }
 
     @Override
@@ -76,12 +76,12 @@ public class SwerveModuleSpark implements SwerveModuleIO {
 
     @Override
     public void setDriveVelocity(double setpointVelocity, double feedforward) {
-        drive.setVelocity(setpointVelocity, feedforward);
+        drive.setVelocityControl(setpointVelocity, feedforward);
     }
 
     @Override
     public void setTurnPosition(double setpointVelocity, double feedforward) {
-        drive.setVelocity(setpointVelocity, feedforward);
+        drive.setVelocityControl(setpointVelocity, feedforward);
     }
 
     /** Run the drive motor at the specified voltage. */

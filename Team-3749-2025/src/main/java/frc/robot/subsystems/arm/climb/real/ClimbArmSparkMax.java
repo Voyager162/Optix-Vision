@@ -1,16 +1,11 @@
 package frc.robot.subsystems.arm.climb.real;
 
 import com.revrobotics.spark.SparkAbsoluteEncoder;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.arm.climb.ClimbArmIO;
-import frc.robot.subsystems.arm.climb.ClimbArmIO.ArmData;
+import frc.robot.subsystems.arm.climb.ClimbConstants;
+import frc.robot.utils.OptixSpark;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
@@ -20,10 +15,8 @@ import frc.robot.utils.MiscConstants.SimConstants;
  */
 public class ClimbArmSparkMax implements ClimbArmIO {
 
-	private SparkMax frontMotor;
-	private SparkMax backMotor;
-	private SparkMaxConfig frontMotorConfig = new SparkMaxConfig();
-	private SparkMaxConfig backMotorConfig = new SparkMaxConfig();
+	private OptixSpark frontMotor;
+	private OptixSpark backMotor;
 
 	private SparkAbsoluteEncoder absoluteEncoder;
 	private double absolutePos;
@@ -39,39 +32,33 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 	 * @param frontMotorId
 	 * @param backMotorId
 	 */
-	public ClimbArmSparkMax(int frontMotorId, int backMotorId) {
+	public ClimbArmSparkMax() {
+		frontMotor = new OptixSpark(ClimbConstants.frontMotorId, OptixSpark.Type.SPARKMAX);
+		backMotor = new OptixSpark(ClimbConstants.backMotorId, OptixSpark.Type.SPARKMAX);
 
-		frontMotor = new SparkMax(frontMotorId, MotorType.kBrushless);
-		backMotor = new SparkMax(backMotorId, MotorType.kBrushless);
+		frontMotor.setCurrentLimit(ArmConstants.NEOStallLimit, ArmConstants.NEOFreeLimit);
+		frontMotor.setInverted(false);
+		frontMotor.setBrakeMode(true);
+		frontMotor.setPositionConversionFactor(1 / ClimbConstants.armGearing * 2 * Math.PI);
+		frontMotor.setVelocityConversionFactor(1 / ClimbConstants.armGearing * 2 * Math.PI / 60.0);
 
-		frontMotorConfig.smartCurrentLimit(ArmConstants.NEOStallLimit, ArmConstants.NEOFreeLimit);
-		frontMotorConfig.encoder.inverted(false);
-		frontMotorConfig.inverted(false);
-		frontMotorConfig.idleMode(IdleMode.kBrake);
-		frontMotorConfig.encoder.positionConversionFactor(2 * Math.PI);
-		frontMotorConfig.encoder.velocityConversionFactor(2 * Math.PI / 60.0);
 
-		frontMotor.configure(frontMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+		backMotor.applyConfig(frontMotor.getConfig());
+		backMotor.setInverted(true);
 
-		backMotorConfig.apply(frontMotorConfig);
-		backMotorConfig.encoder.inverted(true);
-		backMotorConfig.inverted(true);
-
-		backMotor.configure(backMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 		absoluteEncoder = frontMotor.getAbsoluteEncoder();
 		absolutePos = absoluteEncoder.getPosition();
 
-		frontMotor.getEncoder().setPosition(absolutePos);
-		backMotor.getEncoder().setPosition(absolutePos);
+		frontMotor.setPosition(absolutePos);
+		backMotor.setPosition(absolutePos);
 	}
 
-	public void setIdleMode(IdleMode idleMode) {
-		frontMotorConfig.idleMode(idleMode);
-		backMotorConfig.idleMode(idleMode);
-		frontMotor.configure(frontMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-		backMotor.configure(backMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-	}
+	@Override
+    public void setBrakeMode(boolean enabled) {
+        frontMotor.setBrakeMode(enabled);
+        backMotor.setBrakeMode(enabled);
+    }
 
 	/**
 	 * Takes in the data from ArmData and uses it to update the data on the position
@@ -83,19 +70,19 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 	@Override
 	public void updateData(ArmData data) {
 		previousVelocity = velocity;
-		velocity = (frontMotor.getEncoder().getVelocity() + backMotor.getEncoder().getVelocity()) / 2;
-		data.positionUnits = (frontMotor.getEncoder().getPosition() + backMotor.getEncoder().getVelocity()) / 2;
+		velocity = (frontMotor.getVelocity() + backMotor.getVelocity()) / 2;
+		data.positionUnits = (frontMotor.getPosition() + backMotor.getVelocity()) / 2;
 		data.velocityUnits = velocity;
 		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
-		data.frontMotorCurrentAmps = frontMotor.getOutputCurrent();
-		data.backMotorCurrentAmps = backMotor.getOutputCurrent();
+		data.frontMotorCurrentAmps = frontMotor.getCurrent();
+		data.backMotorCurrentAmps = backMotor.getCurrent();
 		data.inputVolts = inputVolts;
-		data.frontMotorAppliedVolts = frontMotor.getBusVoltage() * frontMotor.getAppliedOutput();
-		data.backMotorAppliedVolts = backMotor.getBusVoltage() * backMotor.getAppliedOutput();
-		data.frontMotorTempCelcius = frontMotor.getMotorTemperature();
-		data.backMotorTempCelcius = backMotor.getMotorTemperature();
+		data.frontMotorAppliedVolts = frontMotor.getAppliedVolts();
+		data.backMotorAppliedVolts = backMotor.getAppliedVolts();
+		data.frontMotorTempCelcius = frontMotor.getTemperature();
+		data.backMotorTempCelcius = backMotor.getTemperature();
 	}
-
+ 
 	/**
 	 * sets the voltage of the motor
 	 * 

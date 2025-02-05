@@ -76,7 +76,7 @@ public class CoralArm extends SubsystemBase{
 
 		} else { 
 			// If running on real hardware, use SparkMax motors for the arm.
-			armIO = new CoralArmSparkMax(CoralConstants.motorID);
+			armIO = new CoralArmSparkMax();
 		}
 		
 		// Add the arm visualization to the SmartDashboard
