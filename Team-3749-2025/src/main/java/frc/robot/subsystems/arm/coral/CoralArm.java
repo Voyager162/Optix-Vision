@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
+import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 
@@ -46,15 +47,15 @@ public class CoralArm extends SubsystemBase{
 
 	// Shuffleboard data for logging and displaying real-time data in the dashboard.
 	private ShuffleData<String> currentCommandLog = new ShuffleData<>(this.getName(), "current command", "None");
-	private ShuffleData<Double> positionUnitsLog = new ShuffleData<>(this.getName(), "position units", 0.0);
-	private ShuffleData<Double> velocityUnitsLog = new ShuffleData<>(this.getName(), "velocity units", 0.0);
-	private ShuffleData<Double> inputVoltsLog = new ShuffleData<>(this.getName(), "input volts", 0.0);
-	private ShuffleData<Double> motorAppliedVoltsLog = new ShuffleData<>(this.getName(),
-			"first motor applied volts", 0.0);
-	private ShuffleData<Double> motorCurrentAmpsLog = new ShuffleData<>(this.getName(),
-			"first motor current amps", 0.0);
-	private ShuffleData<Double> motorTempCelciusLog = new ShuffleData<>(this.getName(),
-			"first motor temp celcius", 0.0);
+	private LoggedTunableNumber positionUnitsLog = new LoggedTunableNumber(this.getName() + "/position units", 0.0);
+	private LoggedTunableNumber velocityUnitsLog = new LoggedTunableNumber(this.getName() + "/velocity units", 0.0);
+	private LoggedTunableNumber inputVoltsLog = new LoggedTunableNumber(this.getName() + "/input volts", 0.0);
+	private LoggedTunableNumber motorAppliedVoltsLog = new LoggedTunableNumber(this.getName() +
+			"/first motor applied volts", 0.0);
+	private LoggedTunableNumber motorCurrentAmpsLog = new LoggedTunableNumber(this.getName() +
+			"/first motor current amps", 0.0);
+	private LoggedTunableNumber motorTempCelciusLog = new LoggedTunableNumber(this.getName() +
+			"/first motor temp celcius", 0.0);
 	private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
 	// For visualizing the arm mechanism in simulation using the SmartDashboard.

@@ -35,9 +35,6 @@ public class JoystickIO {
     private static final Command climb = new SetClimbArmState(Robot.climbArm, ClimbConstants.ArmStates.CLIMB,
             ClimbConstants.climbSetPoint_rad);
 
-    private static SetArmState<CoralConstants.ArmStates> coralStow = new SetArmState<CoralConstants.ArmStates>(Robot.coralArm, CoralConstants.ArmStates.STOWED, CoralConstants.stowSetPoint_rad);
-    private static SetArmState<CoralConstants.ArmStates> coralPickUp = new SetArmState<CoralConstants.ArmStates>(Robot.coralArm, CoralConstants.ArmStates.CORAL_PICKUP, CoralConstants.coralPickUpSetPoint_rad);
-
     public JoystickIO() {
     }
 
@@ -81,8 +78,6 @@ public class JoystickIO {
         // operator.x().onTrue(l3);
         // operator.y().onTrue(l4);
 
-        operator.a().onTrue(coralStow);
-        operator.b().onTrue(coralPickUp);
         operator.x().onTrue(climbStow);
         operator.y().onTrue(climb);
 
