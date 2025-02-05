@@ -14,12 +14,8 @@ import frc.robot.subsystems.elevator.Elevator;
 
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
-<<<<<<< HEAD
 import frc.robot.subsystems.elevator.Elevator;
 
-=======
-import frc.robot.subsystems.example.ExampleSubsystem;
->>>>>>> origin/main
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.implementations.AlgaeRoller;
 import frc.robot.subsystems.roller.implementations.CoralRoller;
@@ -37,13 +33,10 @@ public class Robot extends TimedRobot {
   
   // public static Elevator elevator = new Elevator();
 
-<<<<<<< HEAD
   // public static CoralArm coralArm = new CoralArm();
   // public static ClimbArm climbArm = new ClimbArm();
-=======
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
->>>>>>> origin/main
 
   // private ShuffleData<Double> batteryVoltageLog = new ShuffleData<Double>("DS", "battery voltage", 0.0);
   // private ShuffleData<Boolean> isBrownedOutLog = new ShuffleData<Boolean>("DS", "brownout", false);
