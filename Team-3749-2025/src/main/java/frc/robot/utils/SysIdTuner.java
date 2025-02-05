@@ -33,9 +33,9 @@ public class SysIdTuner {
     private Map<String, MotorData> motorData;
 
     private SysIdRoutine.Config config = new SysIdRoutine.Config(
-            Volts.per(Seconds).of(1.2), // Voltage ramp rate
-            Volts.of(12), // Max voltage
-            Seconds.of(10) // Test duration
+            Volts.per(Seconds).of(1), // Voltage ramp rate
+            Volts.of(7), // Max voltage
+            Seconds.of(4) // Test duration
     );
 
     /**
