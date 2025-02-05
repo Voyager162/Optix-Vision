@@ -189,11 +189,6 @@ public class CoralArm extends SubsystemBase{
 		armIO.setVoltage(pidVoltage + ffVoltage);
 	}
 
-        stateLog.set(state.name());
-        CoralConstants.kP = kPLog.get();
-        controller = new PIDController(CoralConstants.kP, CoralConstants.kI, CoralConstants.kD);
-    }
-
 
 	// PERIODIC FUNCTIONS
 
