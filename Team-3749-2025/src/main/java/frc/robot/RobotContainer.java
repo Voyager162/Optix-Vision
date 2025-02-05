@@ -12,7 +12,8 @@ import frc.robot.buttons.JoystickIO;
 import frc.robot.commands.auto.*;
 
 public class RobotContainer {
-
+  
+  // private final setstate stop = new setstate(ElevatorStates.STOP);
   public RobotContainer() {
     DriverStation.silenceJoystickConnectionWarning(true);
     DriverStation.removeRefreshedDataEventHandle(44000);
@@ -28,10 +29,10 @@ public class RobotContainer {
     // robot setup
     JoystickIO.getButtonBindings();
     AutoUtils.initAuto();
+    
   }
 
   public Command getAutonomousCommand() {
-    // return new DriveStraight();
-    return Autos.getChairGame();
+    return Autos.getSelectedCommand();
   }
 }

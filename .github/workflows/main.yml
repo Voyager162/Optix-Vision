@@ -1,4 +1,4 @@
-name: CI
+name: Build Check
 
 on:
   push:
@@ -8,8 +8,10 @@ on:
 
 jobs:
   build:
+    name: Build Check
+  
     runs-on: ubuntu-latest
-    container: wpilib/roborio-cross-ubuntu:2024-22.04
+    container: wpilib/roborio-cross-ubuntu:2025-24.04
 
     steps:
     - uses: actions/checkout@v4
@@ -22,10 +24,10 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +777 ./gradlew
       # CHANGE THIS TO DIRECTORY PATH
-      working-directory: ./Template
+      working-directory: ./Team-3749-2025
 
     # Runs a single command using the runners shell
     - name: Compile and run tests on robot code
       run: ./gradlew build
       # CHANGE THIS TO DIRECTORY PATH
-      working-directory: ./Template
+      working-directory: ./Team-3749-2025
