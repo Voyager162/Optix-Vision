@@ -13,31 +13,32 @@ import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerIO;
+import frc.robot.utils.OptixSpark;
 import frc.robot.utils.MiscConstants.MotorControllerConstants;
 
 public class RollerSparkMax implements RollerIO {
-    private SparkMax rollerMotor;
-    private SparkMaxConfig motorConfig = new SparkMaxConfig();
-    private EncoderConfig encoderConfig = new EncoderConfig();
+    private OptixSpark rollerMotor;
 
     public RollerSparkMax(int motorID, double positionConversionFactor, boolean isInverted) {
-        rollerMotor = new SparkMax(motorID, MotorType.kBrushless);
-        motorConfig.smartCurrentLimit(MotorControllerConstants.relaxedStallLimit,
+        rollerMotor = new OptixSpark(motorID, OptixSpark.Type.SPARKMAX);
+        rollerMotor.setCurrentLimit(MotorControllerConstants.relaxedStallLimit,
                 MotorControllerConstants.relaxedFreeLimit);
-        motorConfig.inverted(isInverted);
-        motorConfig.idleMode(IdleMode.kBrake);
-        encoderConfig.positionConversionFactor(positionConversionFactor);
-        encoderConfig.velocityConversionFactor(positionConversionFactor / 60.0);
-        motorConfig.encoder.apply(encoderConfig);
-        rollerMotor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        rollerMotor.setInverted(isInverted);
+        rollerMotor.setBrakeMode(true);
+        rollerMotor.setPositionConversionFactor(positionConversionFactor);
+        rollerMotor.setVelocityConversionFactor(positionConversionFactor / 60.0);
 
+    }
+    @Override
+    public void setBrakeMode(boolean enabled){
+        rollerMotor.setBrakeMode(enabled);
     }
 
     @Override
     public void updateData(RollerData data) {
-        data.rollerAppliedVolts = rollerMotor.getBusVoltage() * rollerMotor.getAppliedOutput();
-        data.rollerVelocityRadPerSec = rollerMotor.getEncoder().getVelocity();
-        data.rollerTempCelcius = rollerMotor.getMotorTemperature();
+        data.rollerAppliedVolts = rollerMotor.getAppliedVolts();
+        data.rollerVelocityRadPerSec = rollerMotor.getVelocity();
+        data.rollerTempCelcius = rollerMotor.getTemperature();
     }
 
     @Override

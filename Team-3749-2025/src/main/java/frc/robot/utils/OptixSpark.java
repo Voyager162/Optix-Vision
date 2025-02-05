@@ -13,6 +13,7 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.EncoderConfig;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -138,7 +139,7 @@ public class OptixSpark {
      * 
      * @param factor
      */
-    public void setPositionConverstionFactor(double factor) {
+    public void setPositionConversionFactor(double factor) {
         encoderConfig.positionConversionFactor(factor);
 
         motorConfig.apply(encoderConfig);
@@ -151,7 +152,7 @@ public class OptixSpark {
      * 
      * @param factor
      */
-    public void setVelocityConverstionFactor(double factor) {
+    public void setVelocityConversionFactor(double factor) {
         encoderConfig.positionConversionFactor(factor);
 
         motorConfig.apply(encoderConfig);
@@ -227,6 +228,10 @@ public class OptixSpark {
         }
         motor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
+    }
+
+    public void applyConfig(SparkBaseConfig config){
+        motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     public static enum Type {

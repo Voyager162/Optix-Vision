@@ -19,9 +19,9 @@ public class SwerveModuleSpark implements SwerveModuleIO {
 
     public SwerveModuleSpark(int index) {
         drive = new OptixSpark(DriveConstants.driveMotorIds[index], OptixSpark.Type.SPARKFLEX);
-        drive.setPositionConverstionFactor(
+        drive.setPositionConversionFactor(
                 1 / ModuleConstants.driveMotorGearRatio * Math.PI * ModuleConstants.wheelDiameterMeters);
-        drive.setVelocityConverstionFactor(
+        drive.setVelocityConversionFactor(
                 1 / ModuleConstants.driveMotorGearRatio * Math.PI * ModuleConstants.wheelDiameterMeters * (1 / 60.0));
         drive.setInverted(DriveConstants.driveMotorInverted[index]);
         drive.setCurrentLimit(MotorControllerConstants.standardStallLimit,
@@ -29,8 +29,8 @@ public class SwerveModuleSpark implements SwerveModuleIO {
         drive.setBrakeMode(true);
 
         turn = new OptixSpark(DriveConstants.turnMotorIds[index], OptixSpark.Type.SPARKMAX);
-        turn.setPositionConverstionFactor(1 / ModuleConstants.turnMotorGearRatio * Math.PI * 2);
-        turn.setVelocityConverstionFactor(1 / ModuleConstants.turnMotorGearRatio * Math.PI * 2 * (1 / 60.0));
+        turn.setPositionConversionFactor(1 / ModuleConstants.turnMotorGearRatio * Math.PI * 2);
+        turn.setVelocityConversionFactor(1 / ModuleConstants.turnMotorGearRatio * Math.PI * 2 * (1 / 60.0));
         turn.setInverted(DriveConstants.turningMotorInverted[index]);
         turn.setCurrentLimit(MotorControllerConstants.standardStallLimit,
                 MotorControllerConstants.standardFreeLimit);
