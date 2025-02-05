@@ -122,10 +122,16 @@ public class Swerve extends SubsystemBase {
       "utilize vision",
       true);
 
-  private ShuffleData<Double[]> setpointPositionLog = new ShuffleData<Double[]>(
-      this.getName(),
-      "setpoint position",
-      new Double[] { 0.0, 0.0, 0.0 });
+      private ShuffleData<Double[]> setpointPositionLog = new ShuffleData<Double[]>(
+        this.getName(),
+        "setpoint position",
+        new Double[] { 0.0, 0.0, 0.0 });
+  
+    private ShuffleData<Double[]> setpointGoalStateLog = new ShuffleData<Double[]>(
+        this.getName(),
+        "setpoint end goal",
+        new Double[] { 0.0, 0.0, 0.0 });
+
   private ShuffleData<Double> setpointVelocityLog = new ShuffleData<Double>(
       this.getName(),
       "setpoint velocity",
@@ -148,7 +154,6 @@ public class Swerve extends SubsystemBase {
   public int currentPPApproachSetpointIndex = 0;
 
   public boolean isOTF = false;
-
 
   public Swerve() {
 
@@ -283,6 +288,18 @@ public class Swerve extends SubsystemBase {
 
   }
 
+  public void showSetpointEndGoal() {
+    setpointGoalStateLog.set(
+        new Double[] { getPPSetpoint().setpoint.getX(), getPPSetpoint().setpoint.getY(),
+            getPPSetpoint().setpoint.getRotation().getRadians() });
+  }
+
+  public void showApproachSetpointEndGoal() {
+    setpointGoalStateLog.set(
+        new Double[] { getPPSetpoint().approachPoint.getX(), getPPSetpoint().approachPoint.getY(),
+            getPPSetpoint().approachPoint.getRotation().getRadians() });
+  }
+
   /**
    * 
    * @param curPose the current pose of the robot in meters, used for measuring
@@ -295,8 +312,8 @@ public class Swerve extends SubsystemBase {
    * @note verticle flipping relies on choreo detecting rotational symetry on the
    *       field
    */
+
   public void followSample(Pose2d positions, Pose2d velocities) {
-    logSetpoints(positions, velocities);
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         new ChassisSpeeds(
             xController.calculate(getPose().getX(), positions.getX()) + velocities.getX(),
@@ -369,20 +386,20 @@ public class Swerve extends SubsystemBase {
     return PPSetpoints.values()[currentPPSetpointIndex];
   }
 
-  public void startOnTheFly(int setpointIndex)
-  {
+  public void startOnTheFly(int setpointIndex) {
     currentPPSetpointIndex = setpointIndex;
     isOTF = true;
   }
 
-  public void runSetpointReachedCommand()
-  {
-    //if you must ask, for some reason
-    //whenever i try to write thsi as a get statement the command becomes a constant value ??
-    //so now i have to lambda call it and use this jank method i am only kind of sorry -jonathan liu 2/3/2025
+  public void runSetpointReachedCommand() {
+    // if you must ask, for some reason
+    // whenever i try to write thsi as a get statement the command becomes a
+    // constant value ??
+    // so now i have to lambda call it and use this jank method i am only kind of
+    // sorry -jonathan liu 2/3/2025
     CommandScheduler.getInstance().schedule(PPSetpoints.values()[currentPPSetpointIndex].onReachCommand);
   }
-  
+
   /**
    * Manually sets our odometry position
    * 
