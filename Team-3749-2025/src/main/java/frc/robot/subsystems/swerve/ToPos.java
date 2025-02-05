@@ -3,6 +3,7 @@ package frc.robot.subsystems.swerve;
 import java.util.*;
 import com.pathplanner.lib.path.*;
 import edu.wpi.first.math.geometry.*;
+import frc.robot.subsystems.swerve.ToPosConstants.ReefVerticies;
 
 /**
  * This class generates dynamic paths for a robot to move from one pose to
@@ -378,6 +379,14 @@ public class ToPos {
         if (endingAlignment < 0) {
 
             waypoints.remove(waypoints.size() - 2);
+        }
+    }
+
+    public void getClosestReefSide()
+    {
+        for(int i=0;i<6;i++)
+        {
+            
         }
     }
 

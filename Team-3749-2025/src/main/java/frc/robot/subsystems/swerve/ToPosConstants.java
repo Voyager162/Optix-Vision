@@ -166,6 +166,15 @@ public class ToPosConstants {
         public static Pose2d reefFarLeft = adjustPose(4.94, 4.74, Math.toRadians(-120), false);
         public static Pose2d reefCloseLeft = adjustPose(4.07, 4.74, Math.toRadians(-60), false);
 
+        public Pose2d[] reefSides = {
+            reefClose,
+            reefCloseRight,
+            reefCloseLeft,
+            reefFar,
+            reefFarLeft,
+            reefFarRight
+        };
+
         // Please refer to:
         // https://firstfrc.blob.core.windows.net/frc2025/Manual/Sections/2025GameManual-05ARENA.pdf
         // to see what each letter setpoint refers to

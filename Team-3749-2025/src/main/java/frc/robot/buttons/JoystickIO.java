@@ -65,7 +65,7 @@ public class JoystickIO {
     private final static JoystickButton buttonAlgaeKnockoff = new JoystickButton(buttonBoardPlayer1, 19);
     private final static JoystickButton buttonUtilityA = new JoystickButton(buttonBoardPlayer1, 20);
     private final static JoystickButton buttonUtilityB = new JoystickButton(buttonBoardPlayer1, 21);
-    //now this is just TOO much trolling who put this buttonUtilityA here 
+    //now this is just TOO much trolling who put this buttonUtilityA here
 
     public JoystickIO() {
     }
@@ -134,6 +134,8 @@ public class JoystickIO {
             Robot.swerve.showSetpointEndGoal();
         }));
 
+
+
         bindButtonBoard();
         ToPosTriggers.createOTFTriggers();
 
@@ -152,6 +154,9 @@ public class JoystickIO {
 
         // Example binding
         operator.a().whileTrue(new ExampleSubsystemCommand());
+
+        pilot.y().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L2)));
+
 
     }
 
