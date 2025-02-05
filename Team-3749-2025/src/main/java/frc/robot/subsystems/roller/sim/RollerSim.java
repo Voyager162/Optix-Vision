@@ -37,6 +37,7 @@ public class RollerSim implements RollerIO {
         DCMotor motor = DCMotor.getNEO(1);
         // calculates how angular velocity changes over time with applied voltage
         LinearSystem<N1, N1, N1> flyWheelSystem = LinearSystemId.createFlywheelSystem(motor, momentOfInertia, gearRatio);
+        
         rollerMotor = new FlywheelSim(flyWheelSystem, motor, measurementNoise);
     }
     

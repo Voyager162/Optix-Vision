@@ -15,36 +15,42 @@ import frc.robot.utils.MiscConstants.MotorControllerConstants;
 public class RollerSparkMax implements RollerIO {
     private OptixSpark rollerMotor;
 
-    public RollerSparkMax(Implementations implementation, int motorID, double positionConversionFactor,
-            boolean isInverted) {
-        rollerMotor = new OptixSpark(motorID, OptixSpark.Type.SPARKMAX);
-        rollerMotor.setCurrentLimit(MotorControllerConstants.relaxedStallLimit,
-                MotorControllerConstants.relaxedFreeLimit);
-        rollerMotor.setInverted(isInverted);
-        rollerMotor.setBrakeMode(true);
-        rollerMotor.setPositionConversionFactor(positionConversionFactor);
-        rollerMotor.setVelocityConversionFactor(positionConversionFactor / 60.0);
+    public RollerSparkMax(Implementations implementation) {
 
         switch (implementation) {
             case ALGAE:
+                rollerMotor = new OptixSpark(Algae.motorId, OptixSpark.Type.SPARKMAX);
+                rollerMotor.setPositionConversionFactor(2 * Math.PI / Algae.gearRatio);
+                rollerMotor.setVelocityConversionFactor((2 * Math.PI / Algae.gearRatio) / 60.0);
+                rollerMotor.setInverted(Algae.inverted);
                 rollerMotor.setPID(Algae.kPPosition, Algae.kIPosition, Algae.kDPosition, ClosedLoopSlot.kSlot0);
                 rollerMotor.setPID(Algae.kPVelocity, Algae.kIVelocity, Algae.kDVelocity, ClosedLoopSlot.kSlot1);
-
                 break;
             case SCORING:
+                rollerMotor = new OptixSpark(Scoring.motorId, OptixSpark.Type.SPARKMAX);
+                rollerMotor.setPositionConversionFactor(2 * Math.PI / Scoring.gearRatio);
+                rollerMotor.setVelocityConversionFactor((2 * Math.PI / Scoring.gearRatio) / 60.0);
+                rollerMotor.setInverted(Scoring.inverted);
                 rollerMotor.setPID(Scoring.kPPosition, Scoring.kIPosition, Scoring.kDPosition, ClosedLoopSlot.kSlot0);
                 rollerMotor.setPID(Scoring.kPVelocity, Scoring.kIVelocity, Scoring.kDVelocity, ClosedLoopSlot.kSlot1);
 
                 break;
             case CORAL:
+                rollerMotor = new OptixSpark(Coral.motorId, OptixSpark.Type.SPARKMAX);
+                rollerMotor.setPositionConversionFactor(2 * Math.PI / Coral.gearRatio);
+                rollerMotor.setVelocityConversionFactor((2 * Math.PI / Coral.gearRatio) / 60.0);
+                rollerMotor.setInverted(Coral.inverted);
                 rollerMotor.setPID(Coral.kPPosition, Coral.kIPosition, Coral.kDPosition, ClosedLoopSlot.kSlot0);
                 rollerMotor.setPID(Coral.kPVelocity, Coral.kIVelocity, Coral.kDVelocity, ClosedLoopSlot.kSlot1);
-
                 break;
 
             default:
-                break;
+                rollerMotor = new OptixSpark(0, OptixSpark.Type.SPARKMAX);
+
         }
+        rollerMotor.setCurrentLimit(MotorControllerConstants.relaxedStallLimit,
+                MotorControllerConstants.relaxedFreeLimit);
+        rollerMotor.setBrakeMode(true);
 
     }
 

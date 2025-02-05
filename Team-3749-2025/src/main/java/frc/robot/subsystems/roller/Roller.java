@@ -26,23 +26,8 @@ public abstract class Roller extends SubsystemBase {
     private ShuffleData<Double> rollerLastKnownPositionLog;
 
     public Roller(Implementations implementation, SimpleMotorFeedforward rollerFF) {
-        switch (implementation) {
-            case ALGAE:
-                rollerIO = Robot.isSimulation() ? new RollerSim(implementation)
-                        : new RollerSparkMax(RollerConstants.Algae.motorId,
-                                2 * Math.PI / RollerConstants.Algae.gearRatio, RollerConstants.Algae.inverted);
-                break;
-            case CORAL:
-                rollerIO = Robot.isSimulation() ? new RollerSim(implementation)
-                        : new RollerSparkMax(RollerConstants.Coral.motorId,
-                                2 * Math.PI / RollerConstants.Coral.gearRatio, RollerConstants.Coral.inverted);
-                break;
-            case SCORING:
-                rollerIO = Robot.isSimulation() ? new RollerSim(implementation)
-                        : new RollerSparkMax(RollerConstants.Scoring.motorId,
-                                2 * Math.PI / RollerConstants.Scoring.gearRatio, RollerConstants.Scoring.inverted);
-                break;
-        }
+        rollerIO = Robot.isSimulation() ? new RollerSim(implementation)
+                : new RollerSparkMax(implementation);
 
         String name = implementation.name();
         this.rollerFF = rollerFF;
@@ -99,7 +84,7 @@ public abstract class Roller extends SubsystemBase {
     public void maintain() {
 
         rollerIO.setPosition(rollerData.rollerPositionRotations, lastKnownPosition);
- 
+
     }
 
     public void stop() {
