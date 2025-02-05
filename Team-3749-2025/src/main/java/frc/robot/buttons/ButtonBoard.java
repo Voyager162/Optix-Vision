@@ -10,10 +10,10 @@ public class ButtonBoard {
     public GenericHID buttonBoardPlayer3 = new GenericHID(3);
 
     // coral elevator positions
-    public JoystickButton buttonl1 = new JoystickButton(buttonBoardPlayer1, 5);
-    public JoystickButton buttonl2 = new JoystickButton(buttonBoardPlayer1, 6);
-    public JoystickButton buttonl3 = new JoystickButton(buttonBoardPlayer3, 1);
-    public JoystickButton buttonl4 = new JoystickButton(buttonBoardPlayer3, 2);
+    public JoystickButton buttonl1 = new JoystickButton(buttonBoardPlayer3, 2);
+    public JoystickButton buttonl2 = new JoystickButton(buttonBoardPlayer3, 1);
+    public JoystickButton buttonl3 = new JoystickButton(buttonBoardPlayer1, 6);
+    public JoystickButton buttonl4 = new JoystickButton(buttonBoardPlayer1, 5);
 
     // source buttons
     public JoystickButton buttonRightSource = new JoystickButton(buttonBoardPlayer1, 4);
