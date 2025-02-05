@@ -1,7 +1,5 @@
 package frc.robot.subsystems.roller.sim;
 
-import javax.sound.sampled.SourceDataLine;
-
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Robot;
 import frc.robot.subsystems.roller.PhotoelectricIO;

@@ -6,8 +6,6 @@ import frc.robot.subsystems.arm.real.ArmSparkMax;
 import frc.robot.subsystems.arm.sim.ArmSim;
 import frc.robot.subsystems.roller.PhotoelectricIO;
 import frc.robot.subsystems.roller.PhotoelectricIO.PhotoelectricData;
-import frc.robot.subsystems.roller.real.JTVisiSight;
-import frc.robot.subsystems.roller.sim.PhotoelectricSim;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 import edu.wpi.first.math.controller.PIDController;
