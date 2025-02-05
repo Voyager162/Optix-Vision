@@ -2,14 +2,24 @@ package frc.robot.subsystems.arm.climb;
 
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.coral.CoralConstants;
 import frc.robot.subsystems.arm.sim.ArmSim;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import static edu.wpi.first.units.Units.*;
 
 /**
  * Subsystem class for the arm
@@ -22,10 +32,9 @@ public class ClimbArm extends Arm {
     private ClimbConstants.ArmStates state = ClimbConstants.ArmStates.STOPPED;
 
     private PIDController controller = new PIDController(
-        ClimbConstants.kP, 
-        ClimbConstants.kI, 
-        ClimbConstants.kD
-    );
+            ClimbConstants.kP,
+            ClimbConstants.kI,
+            ClimbConstants.kD);
 
     private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
@@ -33,27 +42,27 @@ public class ClimbArm extends Arm {
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
     private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Climb Arm", 24, 0));
 
+    StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
+            .getStructTopic("ClimbArm Pose", Pose3d.struct).publish();
 
     public ClimbArm() {
         if (Robot.isSimulation()) {
-            
+
             armIO = new ArmSim(
-                ClimbConstants.numMotors, 
-                ClimbConstants.armGearing, 
-                ClimbConstants.momentOfInertia, 
-                ClimbConstants.armLength_meters, 
-                ClimbConstants.armMinAngle_degrees, 
-                ClimbConstants.armMaxAngle_degrees, 
-                ClimbConstants.simulateGravity, 
-                ClimbConstants.armStartingAngle_degrees
-            );
+                    ClimbConstants.numMotors,
+                    ClimbConstants.armGearing,
+                    ClimbConstants.momentOfInertia,
+                    ClimbConstants.armLength_meters,
+                    ClimbConstants.armMinAngle_degrees,
+                    ClimbConstants.armMaxAngle_degrees,
+                    ClimbConstants.simulateGravity,
+                    ClimbConstants.armStartingAngle_degrees);
 
         } else {
             armIO = new ClimbSparkMax(ClimbConstants.firstMotorId, ClimbConstants.secondMotorId);
         }
         SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
     }
-
 
     /**
      * @return the current arm state.
@@ -106,13 +115,16 @@ public class ClimbArm extends Arm {
     private void runState() {
         switch (state) {
             case STOWED:
-                setVoltage(controller.calculate(data.positionUnits, ClimbConstants.stowSetPoint_rad) + calculateFeedForward());
+                setVoltage(controller.calculate(data.positionUnits, ClimbConstants.stowSetPoint_rad)
+                        + calculateFeedForward());
                 break;
             case PREPARE_FOR_CLIMB:
-                setVoltage(controller.calculate(data.positionUnits, ClimbConstants.PrepareForClimbSetPoint_rad) + calculateFeedForward());
+                setVoltage(controller.calculate(data.positionUnits, ClimbConstants.PrepareForClimbSetPoint_rad)
+                        + calculateFeedForward());
                 break;
             case CLIMB:
-                setVoltage(controller.calculate(data.positionUnits, ClimbConstants.climbSetPoint_rad) + calculateFeedForward());
+                setVoltage(controller.calculate(data.positionUnits, ClimbConstants.climbSetPoint_rad)
+                        + calculateFeedForward());
                 break;
             case STOPPED:
                 setVoltage(0 + calculateFeedForward());
@@ -143,6 +155,20 @@ public class ClimbArm extends Arm {
         armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
         stateLog.set(state.name());
+
+        publisher.set(new Pose3d(getTransform3d().getTranslation(), getTransform3d().getRotation()));
+    }
+
+    private Angle getPitch() {
+        System.out.println(data.positionUnits);
+        return Angle.ofBaseUnits(data.positionUnits + Units.degreesToRadians(0), Radians); // remove offset once climb
+                                                                                           // arm code is fixed
+    }
+
+    private Transform3d getTransform3d() {
+        Transform3d transform = new Transform3d(0.19, -0.3, 0.165,
+                new Rotation3d(Angle.ofBaseUnits(0, Radians), getPitch(), Angle.ofBaseUnits(0, Radians)));
+        return transform;
     }
 
     private double calculateFeedForward() {

@@ -14,6 +14,7 @@ import frc.robot.commands.roller.StopCommand;
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
 import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.climb.ClimbConstants;
 import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.subsystems.arm.coral.CoralConstants;
 import frc.robot.subsystems.arm.coral.CoralConstants.ArmStates;
@@ -47,9 +48,9 @@ public class JoystickIO {
     private static final SetArmState<CoralConstants.ArmStates> pickup = new SetArmState<CoralConstants.ArmStates>(
         Robot.coralArm,
         CoralConstants.ArmStates.CORAL_PICKUP);
-    private static final SetArmState<CoralConstants.ArmStates> l1coral = new SetArmState<CoralConstants.ArmStates>(
-        Robot.coralArm,
-        CoralConstants.ArmStates.L1);
+    private static final SetArmState<ClimbConstants.ArmStates> l1Climb = new SetArmState<ClimbConstants.ArmStates>(
+        Robot.climbArm,
+        ClimbConstants.ArmStates.PREPARE_FOR_CLIMB);
     // private static final SetArmState boom = new SetArmState(Robot.coralArm, CoralConstants.ArmStates.HAND_OFF);
 
 
@@ -91,7 +92,7 @@ public class JoystickIO {
         // Example binding 
         // operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        operator.a().onTrue(l1coral);
+        operator.a().onTrue(l1Climb);
         operator.b().onTrue(l2);
         operator.x().onTrue(l3);
         operator.y().onTrue(l4);
