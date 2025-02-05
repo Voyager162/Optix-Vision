@@ -78,6 +78,23 @@ public class Autos {
                 AutoUtils.startRoutine(routine, "Start-L5", trajectory1));
     }
 
+    public static Command getCoralIntake(){
+        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("Start-Source");
+
+        // loop.trajectory, or the new name
+        AutoTrajectory trajectory1 = routine.trajectory("Start-Source");
+        AutoTrajectory trajectory2 = routine.trajectory("Station-L3");
+       
+        Command intake1 = AutoUtils.addCoralIntakeSource(trajectory1);
+        AutoUtils.addScoreL4(trajectory2);
+        
+          AutoUtils.goNextAfterCommand(trajectory1, trajectory2, intake1);
+
+
+        return Commands.print("Coral Intake").andThen(
+                AutoUtils.startRoutine(routine, "Start-Source", trajectory1));
+    }
+
       /**
      * 
      * @return a command that Taxi's your teammate

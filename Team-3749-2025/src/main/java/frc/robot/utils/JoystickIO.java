@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot;
+import frc.robot.commands.arm.SetArmState;
 import frc.robot.commands.elevator.SetElevatorState;
 
 import frc.robot.commands.integration.CoralIntakeSource;
@@ -54,6 +55,8 @@ public class JoystickIO {
     private static final OuttakeCoral outtakeCoral = new OuttakeCoral();
     private static final ScoreL1 scoreL1 = new ScoreL1();
     private static final ScoreL234 scoreL4 = new ScoreL234(ElevatorStates.L4);
+
+    // private static final SetArmState climbArm = new Set
 
     public JoystickIO() {
     }

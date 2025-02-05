@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
+import frc.robot.commands.integration.CoralIntakeSource;
 import frc.robot.commands.integration.IntakeSource;
 import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.ScoreL234;
@@ -120,6 +121,7 @@ public class AutoUtils {
         chooser.addCmd("One Piece Center", () -> Autos.getOnePieceCenter());
         chooser.addCmd("4-Piece", () -> Autos.get4Piece());
         chooser.addCmd("3 Coral and 2 Algae", () -> Autos.get3CoralAnd2Algae());
+        chooser.addCmd("Coral Intake", () -> Autos.getCoralIntake());
 
         chooser.select("4-Piece");
         SmartDashboard.putData("Auto: Auto Chooser", chooser);
@@ -255,6 +257,19 @@ public class AutoUtils {
         trajectory.atPose(endingPose2d, 1, 1.57).onTrue(KnockAlgae);
         return KnockAlgae;
 
+    }
+
+    public static Command addCoralIntakeSource(AutoTrajectory trajectory) {
+        Pose2d endingPose2d = getFinalPose2d(trajectory);
+        // unflip the alliance so that atPose can flip it; it's a quirk of referencing
+        // the trajectory
+        if (DriverStation.getAlliance().get() == Alliance.Red) {
+            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
+        }
+        Command Coralintake = new CoralIntakeSource();
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(Coralintake);
+        return Coralintake;
+        
     }
 
     /**
