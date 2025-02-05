@@ -25,4 +25,7 @@ public interface ElevatorIO {
 
     public default void setVoltage(double volts) {
     };
+
+    public default void getMotor(){
+    }
 }

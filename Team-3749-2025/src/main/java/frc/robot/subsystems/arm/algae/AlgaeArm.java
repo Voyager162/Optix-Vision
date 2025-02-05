@@ -1,4 +1,4 @@
-package frc.robot.subsystems.arm.coral;
+package frc.robot.subsystems.arm.algae;
 
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.Arm;
@@ -14,67 +14,74 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
- * Subsystem class for the arm
+ * Subsystem class for the arm.
+ * Handles control, logging, and state transitions for the Algae Arm subsystem.
  * 
  * @author Weston Gardner
  */
 
-public class CoralArm extends Arm {
+public class AlgaeArm extends Arm {
 
-    private CoralConstants.ArmStates state = CoralConstants.ArmStates.STOPPED;
+    // Arm I/O and state management
 
-    private PIDController controller = new PIDController(
-            CoralConstants.kP,
-            CoralConstants.kI,
-            CoralConstants.kD);
+    private AlgaeConstants.ArmStates state = AlgaeConstants.ArmStates.STOPPED;
+
+    private PIDController controller = new PIDController
+    (
+        AlgaeConstants.kP,
+        AlgaeConstants.kI,
+        AlgaeConstants.kD
+    );
 
     private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
     private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
-    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Coral Arm", 24, 0));
+    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Algae Arm", 17, 0));
 
     private SysIdTuner sysIdTuner;
 
     /**
-     * Constructor for the CoralArm subsystem.
+     * Constructor for the AlgaeArm subsystem.
      * Determines if simulation or real hardware is used.
      */
-    public CoralArm() {
+    public AlgaeArm() {
         if (Robot.isSimulation()) {
 
             armIO = new ArmSim(
-                CoralConstants.numMotors,
-                CoralConstants.armGearing,
-                CoralConstants.momentOfInertia,
-                CoralConstants.armLength_meters,
-                CoralConstants.armMinAngle_degrees,
-                CoralConstants.armMaxAngle_degrees,
-                CoralConstants.simulateGravity,
-                CoralConstants.armStartingAngle_degrees);
+                AlgaeConstants.numMotors,
+                AlgaeConstants.armGearing,
+                AlgaeConstants.momentOfInertia,
+                AlgaeConstants.armLength_meters,
+                AlgaeConstants.armMinAngle_degrees,
+                AlgaeConstants.armMaxAngle_degrees,
+                AlgaeConstants.simulateGravity,
+                AlgaeConstants.armStartingAngle_degrees
+            );
 
         } else {
-            armIO = new ArmSparkMax(CoralConstants.motorId);
+            armIO = new ArmSparkMax(AlgaeConstants.motorId);
         }
-        SmartDashboard.putData("Coral Arm Mechanism", mechanism2d);
-
-        sysIdTuner = new SysIdTuner("coral arm", getConfig(), this, armIO::setVoltage, getMotorData());
+        SmartDashboard.putData("Algae Arm Mechanism", mechanism2d);
+        
+        sysIdTuner = new SysIdTuner("algae arm", getConfig(), this, armIO::setVoltage, getMotorData());
     }
 
     public SysIdTuner getSysIdTuner(){
+        System.out.println(sysIdTuner);
         return sysIdTuner;
     }
 
     /**
      * @return the current arm state.
      */
-    public CoralConstants.ArmStates getState() {
+    public AlgaeConstants.ArmStates getState() {
         return state;
     }
 
     @Override
     public void stop() {
-        setState(CoralConstants.ArmStates.STOPPED);
+        setState(AlgaeConstants.ArmStates.STOPPED);
     }
 
     /**
@@ -84,11 +91,11 @@ public class CoralArm extends Arm {
 
         switch (state) {
             case STOWED:
-                return data.positionUnits == CoralConstants.stowSetPoint_rad;
-            case HAND_OFF:
-                return data.positionUnits == CoralConstants.handOffSetPoint_rad;
-            case CORAL_PICKUP:
-                return data.positionUnits == CoralConstants.coralPickUpSetPoint_rad;
+                return data.positionUnits == AlgaeConstants.stowSetPoint_rad;
+            case PROCESSOR:
+                return data.positionUnits == AlgaeConstants.processorSetPoint_rad;
+            case ALGAE_PICKUP:
+                return data.positionUnits == AlgaeConstants.algaePickUpSetPoint_rad;
             case MOVING_DOWN:
                 return data.velocityUnits < 0;
             case MOVING_UP:
@@ -107,7 +114,7 @@ public class CoralArm extends Arm {
      */
     @Override
     public void setState(Enum<?> state) {
-        this.state = (CoralConstants.ArmStates) state;
+        this.state = (AlgaeConstants.ArmStates) state;
     }
 
     /**
@@ -116,13 +123,13 @@ public class CoralArm extends Arm {
     private void runState() {
         switch (state) {
             case STOWED:
-                setVoltage(controller.calculate(data.positionUnits, CoralConstants.stowSetPoint_rad) + calculateFeedForward());
+                setVoltage(controller.calculate(data.positionUnits, AlgaeConstants.stowSetPoint_rad) + calculateFeedForward());
                 break;
-            case HAND_OFF:
-                setVoltage(controller.calculate(data.positionUnits, CoralConstants.handOffSetPoint_rad) + calculateFeedForward());
+            case PROCESSOR:
+                setVoltage(controller.calculate(data.positionUnits, AlgaeConstants.processorSetPoint_rad) + calculateFeedForward());
                 break;
-            case CORAL_PICKUP:
-                setVoltage(controller.calculate(data.positionUnits, CoralConstants.coralPickUpSetPoint_rad) + calculateFeedForward());
+            case ALGAE_PICKUP:
+                setVoltage(controller.calculate(data.positionUnits, AlgaeConstants.algaePickUpSetPoint_rad) + calculateFeedForward());
                 break;
             case STOPPED:
                 setVoltage(0 + calculateFeedForward());
@@ -137,10 +144,10 @@ public class CoralArm extends Arm {
                 break;
         }
     }
-
     /**
      * Logs data to Shuffleboard.
      */
+
     private void logData() {
         currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
         positionUnitsLog.set(data.positionUnits);
@@ -156,7 +163,7 @@ public class CoralArm extends Arm {
     }
 
     private double calculateFeedForward() {
-        double feedForward = CoralConstants.kG * Math.cos(data.positionUnits);
+        double feedForward = AlgaeConstants.kG * Math.cos(data.positionUnits);
         return feedForward;
     }
 
@@ -165,15 +172,12 @@ public class CoralArm extends Arm {
      */
     @Override
     public void periodic() {
+
         armIO.updateData(data);
 
         logData();
-        runState();
 
-        getMotorData().get("arm_motor").position = data.positionUnits;
-        getMotorData().get("arm_motor").acceleration = data.accelerationUnits;
-        getMotorData().get("arm_motor").velocity = data.velocityUnits;
-        getMotorData().get("arm_motor").appliedVolts = data.appliedVolts;
+        runState();
     }
 
 }

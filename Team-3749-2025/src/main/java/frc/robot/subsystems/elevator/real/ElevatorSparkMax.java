@@ -3,6 +3,7 @@ package frc.robot.subsystems.elevator.real;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -54,8 +55,72 @@ public class ElevatorSparkMax implements ElevatorIO {
 
         leftMotor.getEncoder().setPosition(absolutePos);
         rightMotor.getEncoder().setPosition(absolutePos);
-    }
 
+        // Voltage volts = Voltage.ofRelativeUnits(12.0, VoltageUnit.class);
+        // ; // applied volts
+        // Distance distance; // position meters
+        // LinearVelocity velocity2; // velocity
+
+        // double velocity = (leftMotor.getEncoder().getVelocity() + rightMotor.getEncoder().getVelocity()) / 2;
+        // Consumer<SysIdRoutineLog> m_log = (SysIdRoutineLog log) -> {
+        //     new SysIdRoutine.Mechanism(
+        //         this::identificationDriveConsumer,
+        //             // Record a frame for the left motors. Since these share an encoder, we consider
+        //             // the entire group to be one motor.
+        //         log -> {
+        //             SmartDashboard.putNumber(
+        //             "motorAppliedVolts",
+        //             identificationVoltageMeasure
+        //                 .mut_replace(modules[0].getModuleData().driveAppliedVolts, Volts)
+        //                 .magnitude()
+        //             );
+        //             SmartDashboard.putNumber(
+        //             "motorSpeed",
+        //             identificaitonVelocityMeasure
+        //                 .mut_replace(
+        //                 modules[0].getModuleData().driveVelocityMPerSec,
+        //                 MetersPerSecond
+        //                 )
+        //                 .magnitude()
+        //             );
+
+        //             log
+        //             .motor("front-left")
+        //             .voltage(
+        //                 identificationVoltageMeasure.mut_replace(
+        //                 modules[0].getModuleData().driveAppliedVolts,
+        //                 Volts
+        //                 )
+        //             )
+        //             .linearPosition(
+        //                 identificationDistanceMeasure.mut_replace(
+        //                 modules[0].getModuleData().drivePositionM,
+        //                 Meters
+        //                 )
+        //             )
+        //             .linearVelocity(
+        //                 identificaitonVelocityMeasure.mut_replace(
+        //                 modules[0].getModuleData().driveVelocityMPerSec,
+        //                 MetersPerSecond
+        //                 )
+        //             );
+        //     log.motor("elevator-left")
+        //         .voltage(volts)
+        //         .linearPosition(distance)
+        //         .linearVelocity(velocity2);
+        //     // Record a frame for the right motors.  Since these share an encoder, we consider
+        //     // the entire group to be one motor.
+        //     log.motor("elevator-right")
+        //         .voltage(
+        //             m_appliedVoltage.mut_replace(
+        //                 m_rightMotor.get() * RobotController.getBatteryVoltage(), Volts))
+        //         .linearPosition(m_distance.mut_replace(m_rightEncoder.getDistance(), Meters))
+        //         .linearVelocity(
+        //             m_velocity.mut_replace(m_rightEncoder.getRate(), MetersPerSecond));
+        };
+    
+    
+        
     public void setIdleMode(IdleMode idleMode) {
         leftConfig.idleMode(idleMode);
         rightConfig.idleMode(idleMode);
