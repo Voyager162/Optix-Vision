@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -17,7 +18,6 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.units.Units.Seconds;
-
 
 /**
  * SysId assisted control tuning
@@ -41,9 +41,9 @@ public class SysIdTuner {
     /**
      * Setup SysId
      * 
-     * @param name - name of the mechanism
+     * @param name      - name of the mechanism
      * @param subsystem - Subsystem you are characterizing
-     * @param io - VoltageDriv
+     * @param io        - VoltageDriv
      */
     public SysIdTuner(String name, Subsystem subsystem, VoltageDrive io,
             Map<String, MotorData> motorData) {
@@ -62,10 +62,10 @@ public class SysIdTuner {
     /**
      * Setup SysId
      * 
-     * @param name - name of the mechanism
-     * @param config - SysIdRoutine.Config object
+     * @param name      - name of the mechanism
+     * @param config    - SysIdRoutine.Config object
      * @param subsystem - Subsystem you are characterizing
-     * @param io - VoltageDriv
+     * @param io        - VoltageDriv
      */
     public SysIdTuner(String name, SysIdRoutine.Config config, Subsystem subsystem, VoltageDrive io,
             Map<String, MotorData> motorData) {
@@ -82,7 +82,9 @@ public class SysIdTuner {
     }
 
     /**
-     * Update logs with voltage, linearPosition, linearVelocity, and linearAcceleration
+     * Update logs with voltage, linearPosition, linearVelocity, and
+     * linearAcceleration
+     * 
      * @param log - SysIdRoutineLog object
      */
     private void setLog(SysIdRoutineLog log) {
@@ -126,6 +128,7 @@ public class SysIdTuner {
 
     /**
      * Command for Quasistatic test
+     * 
      * @return command and direction for Quasistatic test
      */
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
@@ -134,39 +137,43 @@ public class SysIdTuner {
 
     /**
      * Command for Dynamic test
+     * 
      * @return command and direction for Dynamic test
      */
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
         return sysIdRoutine.dynamic(direction);
     }
 
-    public void runTests(){
-        sysIdRoutine.quasistatic(Direction.kForward);
-        sysIdRoutine.quasistatic(Direction.kReverse);
-        sysIdRoutine.dynamic(Direction.kForward);
-        sysIdRoutine.dynamic(Direction.kReverse);
+    /**
+     * Command for running all tests
+     * 
+     * @return commands for SysId characterization
+     */
+    public Command runTests() {
+        // need to set burnout timer to lower values
+        return sysIdRoutine.quasistatic(Direction.kForward).andThen(sysIdRoutine.quasistatic(Direction.kReverse)
+                .andThen(sysIdRoutine.dynamic(Direction.kForward).andThen(sysIdRoutine.dynamic(Direction.kReverse))));
     }
 }
 
-
 /*
- *  // Motor data obj
-        Map<String, MotorData> motorData = Map.of(
-            "motor", new MotorData(
-                0.0, // initial appliedVolts
-                0.0, // initial position
-                0.0, // initial velocity
-                0.0  // initial acceleration
-            )
-        );
-
-    // Configuration, here are previously tested values
-    SysIdRoutine.Config config = new SysIdRoutine.Config(
-        Volts.per(Seconds).of(1.2), // Voltage ramp rate
-        Volts.of(12),              // Max voltage
-        Seconds.of(10)             // Test duration
-    );
-
-    // Instantiate SysIdTuner
-    sysIdTuner = new SysIdTuner(config, this, motorController, motorData);
+ * // Motor data obj
+ * Map<String, MotorData> motorData = Map.of(
+ * "motor", new MotorData(
+ * 0.0, // initial appliedVolts
+ * 0.0, // initial position
+ * 0.0, // initial velocity
+ * 0.0 // initial acceleration
+ * )
+ * );
+ * 
+ * // Configuration, here are previously tested values
+ * SysIdRoutine.Config config = new SysIdRoutine.Config(
+ * Volts.per(Seconds).of(1.2), // Voltage ramp rate
+ * Volts.of(12), // Max voltage
+ * Seconds.of(10) // Test duration
+ * );
+ * 
+ * // Instantiate SysIdTuner
+ * sysIdTuner = new SysIdTuner(config, this, motorController, motorData);
  */

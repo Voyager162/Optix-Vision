@@ -72,7 +72,7 @@ public class JoystickIO {
         // Example binding
         operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        operator.a().onTrue(rotate1);
+        operator.a().onTrue(Robot.elevator.getSysIdTuner().runTests());
         operator.b().onTrue(rotate2);
         operator.x().onTrue(rotate3);
         operator.y().onTrue(rotate4);

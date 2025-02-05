@@ -97,11 +97,11 @@ public class Elevator extends SubsystemBase {
                     data.velocityMetersPerSecond,
                     data.accelerationUnits));
 
-    SysIdRoutine.Config config = new SysIdRoutine.Config(
-            Volts.per(Seconds).of(1.2), // Voltage ramp rate
-            Volts.of(12), // Max voltage
-            Seconds.of(10) // Test duration
-    );
+    // SysIdRoutine.Config config = new SysIdRoutine.Config(
+    //         Volts.per(Seconds).of(1.2), // Voltage ramp rate
+    //         Volts.of(12), // Max voltage
+    //         Seconds.of(10) // Test duration
+    // );
 
     private SysIdTuner sysIdTuner;
 
@@ -111,7 +111,7 @@ public class Elevator extends SubsystemBase {
         } else {
             elevatorio = new ElevatorSparkMax();
         }
-        sysIdTuner = new SysIdTuner("elevator", config, this, elevatorio::setVoltage, motorData);
+        sysIdTuner = new SysIdTuner("elevator", this, elevatorio::setVoltage, motorData);
     }
 
     public SysIdTuner getSysIdTuner(){
