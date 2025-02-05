@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
+import frc.robot.buttons.ButtonBoard.ScoringLocation;
 import frc.robot.commands.example.ExampleSubsystemCommand;
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.OnTheFly;
@@ -64,6 +65,7 @@ public class JoystickIO {
     private final static JoystickButton buttonAlgaeKnockoff = new JoystickButton(buttonBoardPlayer1, 19);
     private final static JoystickButton buttonUtilityA = new JoystickButton(buttonBoardPlayer1, 20);
     private final static JoystickButton buttonUtilityB = new JoystickButton(buttonBoardPlayer1, 21);
+    //now this is just TOO much trolling who put this buttonUtilityA here 
 
     public JoystickIO() {
     }
@@ -106,6 +108,12 @@ public class JoystickIO {
         buttonReefZoneJ.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(20)));
         buttonReefZoneK.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(22)));
         buttonReefZoneL.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(24)));
+        buttonl1.onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L1)));
+        buttonl2.onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L2)));
+        buttonl3.onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L3)));
+        buttonl4.onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L4)));
+        buttonAlgaeKnockoff.onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.ALGAE)));
+
     }
 
     /**
