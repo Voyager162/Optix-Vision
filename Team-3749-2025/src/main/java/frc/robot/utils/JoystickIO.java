@@ -8,8 +8,14 @@ import frc.robot.Robot;
 
 
 import frc.robot.commands.swerve.DriveStraight;
+import frc.robot.commands.arm.SetClimbArmState;
+import frc.robot.commands.arm.SetCoralArmState;
+import frc.robot.commands.roller.MaintainCommand;
+import frc.robot.commands.roller.RunCommand;
+import frc.robot.commands.roller.StopCommand;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
-import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
+import frc.robot.subsystems.arm.coral.CoralConstants;
+import frc.robot.subsystems.arm.climb.ClimbConstants;
 
 /**
  * Util class for button bindings
