@@ -1,4 +1,4 @@
-package frc.robot.utils;
+package frc.robot.buttons;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -12,9 +12,6 @@ import frc.robot.commands.example.ExampleSubsystemCommand;
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.OnTheFly;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
-import frc.robot.subsystems.swerve.ToPosConstants;
-import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
-import frc.robot.utils.ButtonBoard.ScoringLocation;
 
 /**
  * Util class for button bindings
@@ -26,7 +23,7 @@ public class JoystickIO {
 
     private static final CommandXboxController pilot = new CommandXboxController(0);
     private static final CommandXboxController operator = new CommandXboxController(1);
-    private static final ButtonBoard buttonBoard = new ButtonBoard();
+    public static final ButtonBoard buttonBoard = new ButtonBoard();
     //private static final Command sample = new ExampleSubsystemCommand(); it was getting on my nerves seeing the warning
     private static final Command driveStraight = new DriveStraight();
     private static final Command onTheFly = new OnTheFly();
@@ -130,6 +127,7 @@ public class JoystickIO {
         }));
 
         bindButtonBoard();
+        ToPosTriggers.createOTFTriggers();
 
         // new Trigger(() -> Robot.swerve.isOTF).and(() -> UtilityFunctions.withinMargin(0.5,
         //         Robot.swerve.getPose().getTranslation(), Robot.swerve.getPPSetpoint().setpoint.getTranslation())
@@ -141,40 +139,14 @@ public class JoystickIO {
             Robot.swerve.showSetpointEndGoal();
         }));
 
-        new Trigger(() -> Robot.swerve.isOTF).and(() -> UtilityFunctions.withinMargin(0.5,
-                Robot.swerve.getPose().getTranslation(), Robot.swerve.getPPSetpoint().setpoint.getTranslation())).onTrue(Commands.print("SCORE"));
+        // new Trigger(() -> Robot.swerve.isOTF).and(() -> UtilityFunctions.withinMargin(0.5,
+        //         Robot.swerve.getPose().getTranslation(), Robot.swerve.getPPSetpoint().setpoint.getTranslation())).onTrue(Commands.print("SCORE"));
 
         // Example binding
         operator.a().whileTrue(new ExampleSubsystemCommand());
 
     }
 
-    public static void createOTFTriggers() {
-        Trigger coralStation = new Trigger(() -> Robot.swerve.isOTF).and(() -> {
-            Boolean withinMargin = OTFWithinMargin();
-            Boolean isCoralStation = Robot.swerve.getPPSetpoint() == PPSetpoints.CORALLEFT
-                    || Robot.swerve.getPPSetpoint() == PPSetpoints.CORALRIGHT;
-            return withinMargin && isCoralStation;
-        });
-        coralStation.onTrue(Commands.print("coral station intake"));
-
-        
-        Trigger coralReefL1 = new Trigger(() -> Robot.swerve.isOTF).and(() -> {
-            Boolean withinMargin = OTFWithinMargin();
-            Boolean isCoralReef = Robot.swerve.getPPSetpoint() == PPSetpoints.A
-                    || Robot.swerve.getPPSetpoint() == PPSetpoints.B; // put all reef locaitons here w boolean supplier
-            Boolean isL1 = buttonBoard.getScoringLocation() == ScoringLocation.L1;
-            return withinMargin && isCoralReef && isL1;
-        });
-        coralStation.onTrue(Commands.print("Score L1"));
-
-    }
-
-    public static boolean OTFWithinMargin() {
-        return UtilityFunctions.withinMargin(ToPosConstants.Setpoints.approachPointDistance,
-                Robot.swerve.getPose().getTranslation(),
-                Robot.swerve.getPPSetpoint().setpoint.getTranslation());
-    }
 
     public static void pilotBindings() {
         // gyro reset
