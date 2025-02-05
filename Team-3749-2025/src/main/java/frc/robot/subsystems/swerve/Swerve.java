@@ -72,33 +72,33 @@ public class Swerve extends SubsystemBase {
       "desired states",
       new Double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
 
-  private ShuffleData<Double> velocityLog = new ShuffleData<Double>(
-      this.getName(),
-      "velocity",
+  private LoggedTunableNumber velocityLog = new LoggedTunableNumber(
+      this.getName() +
+      "/velocity",
       0.0);
-  private ShuffleData<Double> accelerationLog = new ShuffleData<Double>(
-      this.getName(),
-      "acceleration",
-      0.0);
-
-  private ShuffleData<Double> yawLog = new ShuffleData<Double>(
-      this.getName(),
-      "yaw",
+  private LoggedTunableNumber accelerationLog = new LoggedTunableNumber(
+      this.getName() +
+      "/acceleration",
       0.0);
 
-  private ShuffleData<Double> pitchLog = new ShuffleData<Double>(
-      this.getName(),
-      "pitch",
+  private LoggedTunableNumber yawLog = new LoggedTunableNumber(
+      this.getName() +
+      "/yaw",
       0.0);
 
-  private ShuffleData<Double> rollLog = new ShuffleData<Double>(
-      this.getName(),
-      "roll",
+  private LoggedTunableNumber pitchLog = new LoggedTunableNumber(
+      this.getName() +
+      "/pitch",
       0.0);
 
-  private ShuffleData<Double> rotationalVelocityLog = new ShuffleData<Double>(
-      this.getName(),
-      "rotational velocity",
+  private LoggedTunableNumber rollLog = new LoggedTunableNumber(
+      this.getName() +
+      "/roll",
+      0.0);
+
+  private LoggedTunableNumber rotationalVelocityLog = new LoggedTunableNumber(
+      this.getName() +
+      "/rotational velocity",
       0.0);
 
   private ShuffleData<Boolean> gyroConnectedLog = new ShuffleData<Boolean>(
@@ -111,9 +111,9 @@ public class Swerve extends SubsystemBase {
       "gyro calibrating",
       false);
 
-  private ShuffleData<Double> headingLog = new ShuffleData<Double>(
-      this.getName(),
-      "heading",
+  private LoggedTunableNumber headingLog = new LoggedTunableNumber(
+      this.getName() +
+      "/heading",
       0.0);
 
   private ShuffleData<Boolean> utilizeVisionLog = new ShuffleData<Boolean>(
@@ -125,22 +125,22 @@ public class Swerve extends SubsystemBase {
       this.getName(),
       "setpoint position",
       new Double[] { 0.0, 0.0, 0.0 });
-  private ShuffleData<Double> setpointVelocityLog = new ShuffleData<Double>(
-      this.getName(),
-      "setpoint velocity",
+  private LoggedTunableNumber setpointVelocityLog = new LoggedTunableNumber(
+      this.getName() +
+      "/setpoint velocity",
       0.0);
-  private ShuffleData<Double> setpointRotationalVelocityLog = new ShuffleData<Double>(
-      this.getName(),
-      "setpoint rotational velocity",
+  private LoggedTunableNumber setpointRotationalVelocityLog = new LoggedTunableNumber(
+      this.getName() +
+      "/setpoint rotational velocity",
       0.0);
-  private ShuffleData<Double> setpointAccelerationLog = new ShuffleData<Double>(
-      this.getName(),
-      "setpoint acceleration",
+  private LoggedTunableNumber setpointAccelerationLog = new LoggedTunableNumber(
+      this.getName() +
+      "/setpoint acceleration",
       0.0);
 
-  private ShuffleData<Double> setpointRotationalAccelerationLog = new ShuffleData<Double>(
-      this.getName(),
-      "setpoint rotational acceleration",
+  private LoggedTunableNumber setpointRotationalAccelerationLog = new LoggedTunableNumber(
+      this.getName() +
+      "/setpoint rotational acceleration",
       0.0);
 
   public Swerve() {

@@ -14,6 +14,7 @@ import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorData;
 import frc.robot.subsystems.elevator.real.ElevatorSparkMax;
 import frc.robot.subsystems.elevator.sim.ElevatorSimulation;
+import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 
@@ -43,17 +44,17 @@ public class Elevator extends SubsystemBase {
             ElevatorConstants.ElevatorControl.kASim);
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
-    private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position", 0.0);
-    private ShuffleData<Double> velocityMetersPerSecLog = new ShuffleData<Double>("Elevator", "velocity", 0.0);
-    private ShuffleData<Double> accelerationMetersPerSecSquaredLog = new ShuffleData<Double>("Elevator", "acceleration", 0.0);
+    private LoggedTunableNumber positionMetersLog = new LoggedTunableNumber("Elevator//position", 0.0);
+    private LoggedTunableNumber velocityMetersPerSecLog = new LoggedTunableNumber("Elevator/velocity", 0.0);
+    private LoggedTunableNumber accelerationMetersPerSecSquaredLog = new LoggedTunableNumber("Elevator/acceleration", 0.0);
 
-    private ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Elevator", "input volts", 0.0);
-    private ShuffleData<Double> leftAppliedVoltsLog = new ShuffleData<Double>("Elevator", "left applied volts", 0.0);
-    private ShuffleData<Double> rightAppliedVoltsLog = new ShuffleData<Double>("Elevator", "right applied volts", 0.0);
-    private ShuffleData<Double> leftCurrentAmpsLog = new ShuffleData<Double>("Elevator", "left current amps", 0.0);
-    private ShuffleData<Double> rightCurrentAmpsLog = new ShuffleData<Double>("Elevator", "right current amps", 0.0);
-    private ShuffleData<Double> leftTempCelciusLog = new ShuffleData<Double>("Elevator", "left temp celcius", 0.0);
-    private ShuffleData<Double> rightTempCelciusLog = new ShuffleData<Double>("Elevator", "right temp celcius", 0.0);
+    private LoggedTunableNumber inputVoltsLog = new LoggedTunableNumber("Elevator/input volts", 0.0);
+    private LoggedTunableNumber leftAppliedVoltsLog = new LoggedTunableNumber("Elevator/left applied volts", 0.0);
+    private LoggedTunableNumber rightAppliedVoltsLog = new LoggedTunableNumber("Elevator/right applied volts", 0.0);
+    private LoggedTunableNumber leftCurrentAmpsLog = new LoggedTunableNumber("Elevator/left current amps", 0.0);
+    private LoggedTunableNumber rightCurrentAmpsLog = new LoggedTunableNumber("Elevator/right current amps", 0.0);
+    private LoggedTunableNumber leftTempCelciusLog = new LoggedTunableNumber("Elevator/left temp celcius", 0.0);
+    private LoggedTunableNumber rightTempCelciusLog = new LoggedTunableNumber("Elevator/right temp celcius", 0.0);
 
     // For tuning on real
     // private ShuffleData<Double> kPData = new ShuffleData<Double>("Elevator",
