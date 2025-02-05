@@ -69,6 +69,21 @@ public class PhotoelectricSim implements PhotoelectricIO {
         }
     }
 
+    if (CoralIntakeSource.activeCoralIntakeSourceCommand != null) {
+
+        if (scoreTimer < 0) {  // Start timer once when command starts
+            scoreTimer = Timer.getFPGATimestamp();
+            sensing = false;
+        }
+
+        // After 2 seconds, sensing should change
+        if (Timer.getFPGATimestamp() - scoreTimer > 2) {
+            sensing = true;  // Set sensing to false after 2 seconds
+            scoreTimer = -1;  // Reset timer
+        
+        }
+    }
+
         // Check if ScoreL1 is currently active
         if (ScoreL1.activeScore1Command != null) {
 
