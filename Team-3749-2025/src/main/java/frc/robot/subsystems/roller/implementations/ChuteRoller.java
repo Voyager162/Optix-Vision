@@ -12,13 +12,13 @@ import frc.robot.subsystems.roller.RollerIO.RollerData;
 import frc.robot.subsystems.roller.real.JTVisiSight;
 import frc.robot.subsystems.roller.sim.PhotoelectricSim;
 
-public class ScoringRoller extends Roller {
+public class ChuteRoller extends Roller {
     private RollerData rollerData;
     private PhotoelectricData photoelectricData = new PhotoelectricData();
     private PhotoelectricIO photoelectricIO;
     private boolean hasPiece = true;
 
-    public ScoringRoller() {
+    public ChuteRoller() {
         super(Implementations.SCORING, velocityController(), FF(), positionController());
         this.rollerData = new RollerData();
         if (Robot.isSimulation()) {
@@ -45,7 +45,7 @@ public class ScoringRoller extends Roller {
     }
 
     @Override
-    public void run() {
+    public void intake() {
         if (!rollerData.sensorTripped) {
             setVelocity(RollerConstants.Scoring.velocity);
         } else {
@@ -65,13 +65,6 @@ public class ScoringRoller extends Roller {
     public void setHasPiece(boolean hasPiece) {
         this.hasPiece = hasPiece;
     }
-
-    // public Command getCurrentCommand(){
-    //     if (this.getCurrentCommand() != null) {
-    //         return this.getCurrentCommand();
-    //     }
-    //     return null;
-    // }
 
     @Override
     public void periodic() {

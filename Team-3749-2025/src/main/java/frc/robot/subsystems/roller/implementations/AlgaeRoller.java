@@ -24,11 +24,10 @@ public class AlgaeRoller extends Roller {
     }
 
     @Override
-    public void run() {
+    public void intake() {
         setVelocity(RollerConstants.Algae.velocity);
     }
 
-    // does not score
     @Override
     public void score() {
     }
