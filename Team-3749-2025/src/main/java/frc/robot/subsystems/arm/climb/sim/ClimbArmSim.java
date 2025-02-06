@@ -1,10 +1,12 @@
 package frc.robot.subsystems.arm.climb.sim;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.subsystems.arm.climb.ClimbArmIO;
-import frc.robot.subsystems.arm.climb.ClimbConstants;
+import frc.robot.subsystems.arm.coral.CoralArmConstants;
+import frc.robot.subsystems.arm.climb.ClimbArmConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
@@ -15,6 +17,12 @@ import frc.robot.utils.MiscConstants.SimConstants;
 public class ClimbArmSim implements ClimbArmIO {
 
 	private SingleJointedArmSim armSim;
+	private PIDController controller = new PIDController(ClimbArmConstants.kP, ClimbArmConstants.kI,
+			ClimbArmConstants.kD);
+
+	private double inputVolts = 0;
+	private double previousVelocity = 0;
+	private double velocity = 0;
 
 	/**
 	 * creates a new arm simulation motor form the single jointed arm class
@@ -33,19 +41,15 @@ public class ClimbArmSim implements ClimbArmIO {
 		System.out.println("[Init] Creating ArmSim");
 
 		armSim = new SingleJointedArmSim(
-				DCMotor.getNEO(ClimbConstants.numMotors),
-				ClimbConstants.armGearing,
-				ClimbConstants.momentOfInertia,
-				ClimbConstants.armLength_meters,
-				ClimbConstants.armMinAngle_degrees * Math.PI / 180,
-				ClimbConstants.armMaxAngle_degrees * Math.PI / 180,
-				ClimbConstants.simulateGravity,
-				ClimbConstants.armStartingAngle_degrees * Math.PI / 180);
+				DCMotor.getNEO(ClimbArmConstants.numMotors),
+				ClimbArmConstants.armGearing,
+				ClimbArmConstants.momentOfInertia,
+				ClimbArmConstants.armLength_meters,
+				ClimbArmConstants.armMinAngle_degrees * Math.PI / 180,
+				ClimbArmConstants.armMaxAngle_degrees * Math.PI / 180,
+				ClimbArmConstants.simulateGravity,
+				ClimbArmConstants.armStartingAngle_degrees * Math.PI / 180);
 	}
-
-	private double inputVolts = 0;
-	private double previousVelocity = 0;
-	private double velocity = 0;
 
 	/**
 	 * Updates the set of loggable inputs for the sim.
@@ -82,5 +86,10 @@ public class ClimbArmSim implements ClimbArmIO {
 		inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
 		inputVolts = MathUtil.clamp(volts, -12, 12);
 		armSim.setInputVoltage(inputVolts);
+	}
+
+	@Override
+	public void setPosition(double setpointPositionRad, double feedforward) {
+		setVoltage(controller.calculate(armSim.getAngleRads(), setpointPositionRad) + feedforward);
 	}
 }

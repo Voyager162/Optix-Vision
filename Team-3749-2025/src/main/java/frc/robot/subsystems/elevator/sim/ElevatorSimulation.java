@@ -1,10 +1,12 @@
 package frc.robot.subsystems.elevator.sim;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorControl;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
@@ -17,6 +19,7 @@ public class ElevatorSimulation implements ElevatorIO {
     private double inputVolts = 0;
     private double previousVelocity = 0;
     private double velocity = 0;
+    private PIDController controller = new PIDController(ElevatorControl.kP, ElevatorControl.kI, ElevatorControl.kD);
 
     private final ElevatorSim elevatorSimSystem = new ElevatorSim(
             DCMotor.getNEO(2),
@@ -40,8 +43,7 @@ public class ElevatorSimulation implements ElevatorIO {
         data.positionMeters = elevatorSimSystem.getPositionMeters();
         data.velocityMetersPerSecond = velocity;
         data.accelerationMetersPerSecondSquared = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
-        
-        data.inputVolts = inputVolts;
+
         data.leftAppliedVolts = inputVolts;
         data.rightAppliedVolts = inputVolts;
         data.leftCurrentAmps = elevatorSimSystem.getCurrentDrawAmps();
@@ -58,4 +60,10 @@ public class ElevatorSimulation implements ElevatorIO {
         inputVolts = MathUtil.clamp(volts, -12, 12);
         elevatorSimSystem.setInputVoltage(inputVolts);
     }
+
+    @Override
+    public void setPosition(double setpointPosition, double feedforward) {
+        setVoltage(controller.calculate(elevatorSimSystem.getPositionMeters(), setpointPosition) + feedforward);
+    }
+
 }

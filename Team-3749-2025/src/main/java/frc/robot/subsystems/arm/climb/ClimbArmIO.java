@@ -21,7 +21,8 @@ public interface ClimbArmIO {
 	}
 
 	/**
-	 * Updates the set of loggable inputs. 
+	 * Updates the set of loggable inputs.
+	 * 
 	 * @param data
 	 */
 	public default void updateData(ArmData data) {
@@ -29,6 +30,7 @@ public interface ClimbArmIO {
 
 	/**
 	 * Run the motor at the specified voltage.
+	 * 
 	 * @param volts
 	 */
 	public default void setVoltage(double volts) {
@@ -36,8 +38,13 @@ public interface ClimbArmIO {
 
 	/**
 	 * Enable or disable brake mode on the motor.
+	 * 
 	 * @param enable
 	 */
 	public default void setBrakeMode(boolean enable) {
 	};
+
+	public default void setPosition(double setpointPositionRad, double feedforward) {
+	}
+
 }

@@ -1,10 +1,11 @@
 package frc.robot.subsystems.arm.climb.real;
 
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.arm.climb.ClimbArmIO;
-import frc.robot.subsystems.arm.climb.ClimbConstants;
+import frc.robot.subsystems.arm.climb.ClimbArmConstants;
 import frc.robot.utils.OptixSpark;
 import frc.robot.utils.MiscConstants.SimConstants;
 
@@ -15,8 +16,8 @@ import frc.robot.utils.MiscConstants.SimConstants;
  */
 public class ClimbArmSparkMax implements ClimbArmIO {
 
-	private OptixSpark frontMotor;
-	private OptixSpark backMotor;
+	private OptixSpark frontMotorLead;
+	private OptixSpark backMotorFollower;
 
 	private SparkAbsoluteEncoder absoluteEncoder;
 	private double absolutePos;
@@ -33,32 +34,34 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 	 * @param backMotorId
 	 */
 	public ClimbArmSparkMax() {
-		frontMotor = new OptixSpark(ClimbConstants.frontMotorId, OptixSpark.Type.SPARKMAX);
-		backMotor = new OptixSpark(ClimbConstants.backMotorId, OptixSpark.Type.SPARKMAX);
+		frontMotorLead = new OptixSpark(ClimbArmConstants.frontMotorId, OptixSpark.Type.SPARKMAX);
+		backMotorFollower = new OptixSpark(ClimbArmConstants.backMotorId, OptixSpark.Type.SPARKMAX);
 
-		frontMotor.setCurrentLimit(ArmConstants.NEOStallLimit, ArmConstants.NEOFreeLimit);
-		frontMotor.setInverted(false);
-		frontMotor.setBrakeMode(true);
-		frontMotor.setPositionConversionFactor(1 / ClimbConstants.armGearing * 2 * Math.PI);
-		frontMotor.setVelocityConversionFactor(1 / ClimbConstants.armGearing * 2 * Math.PI / 60.0);
+		frontMotorLead.setCurrentLimit(ArmConstants.NEOStallLimit, ArmConstants.NEOFreeLimit);
+		frontMotorLead.setInverted(false);
+		frontMotorLead.setBrakeMode(true);
+		frontMotorLead.setPositionConversionFactor(1 / ClimbArmConstants.armGearing * 2 * Math.PI);
+		frontMotorLead.setVelocityConversionFactor(1 / ClimbArmConstants.armGearing * 2 * Math.PI / 60.0);
+		frontMotorLead.setPID(ClimbArmConstants.kP, ClimbArmConstants.kI, ClimbArmConstants.kD, ClosedLoopSlot.kSlot0);
 
+		backMotorFollower.applyConfig(frontMotorLead.getConfig());
+		backMotorFollower.setInverted(true);
 
-		backMotor.applyConfig(frontMotor.getConfig());
-		backMotor.setInverted(true);
-
-
-		absoluteEncoder = frontMotor.getAbsoluteEncoder();
+		absoluteEncoder = frontMotorLead.getAbsoluteEncoder();
 		absolutePos = absoluteEncoder.getPosition();
 
-		frontMotor.setPosition(absolutePos);
-		backMotor.setPosition(absolutePos);
+		frontMotorLead.setPosition(absolutePos);
+		backMotorFollower.setPosition(absolutePos);
+		backMotorFollower.setFollow(frontMotorLead);
+
+
 	}
 
 	@Override
-    public void setBrakeMode(boolean enabled) {
-        frontMotor.setBrakeMode(enabled);
-        backMotor.setBrakeMode(enabled);
-    }
+	public void setBrakeMode(boolean enabled) {
+		frontMotorLead.setBrakeMode(enabled);
+		backMotorFollower.setBrakeMode(enabled);
+	}
 
 	/**
 	 * Takes in the data from ArmData and uses it to update the data on the position
@@ -70,19 +73,19 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 	@Override
 	public void updateData(ArmData data) {
 		previousVelocity = velocity;
-		velocity = (frontMotor.getVelocity() + backMotor.getVelocity()) / 2;
-		data.positionUnits = (frontMotor.getPosition() + backMotor.getVelocity()) / 2;
+		velocity = (frontMotorLead.getVelocity() + backMotorFollower.getVelocity()) / 2;
+		data.positionUnits = (frontMotorLead.getPosition() + backMotorFollower.getVelocity()) / 2;
 		data.velocityUnits = velocity;
 		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
-		data.frontMotorCurrentAmps = frontMotor.getCurrent();
-		data.backMotorCurrentAmps = backMotor.getCurrent();
+		data.frontMotorCurrentAmps = frontMotorLead.getCurrent();
+		data.backMotorCurrentAmps = backMotorFollower.getCurrent();
 		data.inputVolts = inputVolts;
-		data.frontMotorAppliedVolts = frontMotor.getAppliedVolts();
-		data.backMotorAppliedVolts = backMotor.getAppliedVolts();
-		data.frontMotorTempCelcius = frontMotor.getTemperature();
-		data.backMotorTempCelcius = backMotor.getTemperature();
+		data.frontMotorAppliedVolts = frontMotorLead.getAppliedVolts();
+		data.backMotorAppliedVolts = backMotorFollower.getAppliedVolts();
+		data.frontMotorTempCelcius = frontMotorLead.getTemperature();
+		data.backMotorTempCelcius = backMotorFollower.getTemperature();
 	}
- 
+
 	/**
 	 * sets the voltage of the motor
 	 * 
@@ -92,7 +95,11 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 	public void setVoltage(double volts) {
 		inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
 		inputVolts = MathUtil.clamp(volts, -12, 12);
-		frontMotor.setVoltage(inputVolts);
-		backMotor.setVoltage(inputVolts);
+		frontMotorLead.setVoltage(inputVolts);
+	}
+
+	@Override
+	public void setPosition(double setpointPositionRad, double feedforward) {
+		frontMotorLead.setPositionControl(setpointPositionRad, feedforward);
 	}
 }

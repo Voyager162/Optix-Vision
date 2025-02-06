@@ -1,10 +1,11 @@
 package frc.robot.subsystems.arm.coral.real;
 
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.arm.coral.CoralArmIO;
-import frc.robot.subsystems.arm.coral.CoralConstants;
+import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.utils.OptixSpark;
 import frc.robot.utils.MiscConstants.SimConstants;
 
@@ -30,18 +31,20 @@ public class CoralArmSparkMax implements CoralArmIO {
 	 */
 	public CoralArmSparkMax() {
 
-		motor = new OptixSpark(CoralConstants.motorID, OptixSpark.Type.SPARKMAX);
+		motor = new OptixSpark(CoralArmConstants.motorID, OptixSpark.Type.SPARKMAX);
 
 		motor.setCurrentLimit(ArmConstants.NEOStallLimit, ArmConstants.NEOFreeLimit);
 		motor.setInverted(false);
 		motor.setBrakeMode(true);
-		motor.setPositionConversionFactor(1 / CoralConstants.armGearing * 2 * Math.PI);
-		motor.setVelocityConversionFactor(1 / CoralConstants.armGearing * 2 * Math.PI / 60.0);
+		motor.setPositionConversionFactor(1 / CoralArmConstants.armGearing * 2 * Math.PI);
+		motor.setVelocityConversionFactor(1 / CoralArmConstants.armGearing * 2 * Math.PI / 60.0);
 
 		absoluteEncoder = motor.getAbsoluteEncoder();
 		absolutePos = absoluteEncoder.getPosition();
 
 		motor.setPosition(absolutePos);
+
+		motor.setPID(CoralArmConstants.kP, CoralArmConstants.kI, CoralArmConstants.kD, ClosedLoopSlot.kSlot0);
 	}
 
 	@Override
@@ -79,4 +82,11 @@ public class CoralArmSparkMax implements CoralArmIO {
 		inputVolts = MathUtil.clamp(volts, -12, 12);
 		motor.setVoltage(inputVolts);
 	}
+
+	
+    @Override
+    public void setPosition(double setpointPositionRad, double feedforward) {
+        motor.setPositionControl(setpointPositionRad, feedforward);
+    }
+
 }

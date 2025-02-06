@@ -30,12 +30,13 @@ public class ElevatorConstants {
     }
 
     public static class ElevatorControl {
-        public static final double kPSim = 0.02;
-        public static final double kDSim = 0;
-        public static final double kSSim = 0;
-        public static final double kGSim = 2.2977;
-        public static final double kVSim = 2.35; // 12 - 2.3 / 4.139
-        public static final double kASim = 0;
+        public static final double kP = 0.02;
+        public static final double kI = 0.0;
+        public static final double kD = 0;
+        public static final double kS = 0;
+        public static final double kG = 2.2977;
+        public static final double kV = 2.35; // 12 - 2.3 / 4.139
+        public static final double kA = 0;
         public static final double maxV = 4.139;
         public static final double maxA = 3.988; // change in velocity / seconds
     }

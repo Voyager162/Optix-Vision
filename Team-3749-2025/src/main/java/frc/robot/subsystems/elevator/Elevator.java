@@ -29,23 +29,24 @@ public class Elevator extends SubsystemBase {
     private ElevatorData data = new ElevatorData();
     private ElevatorStates state = ElevatorStates.STOP;
 
-    private ProfiledPIDController pidController = new ProfiledPIDController(
-            ElevatorConstants.ElevatorControl.kPSim,
+    private ProfiledPIDController profile = new ProfiledPIDController(
             0,
-            ElevatorConstants.ElevatorControl.kDSim,
+            0,
+            0,
             new TrapezoidProfile.Constraints(ElevatorConstants.ElevatorControl.maxV,
                     ElevatorConstants.ElevatorControl.maxA));
 
     private ElevatorFeedforward feedforward = new ElevatorFeedforward(
-            ElevatorConstants.ElevatorControl.kSSim,
-            ElevatorConstants.ElevatorControl.kGSim,
-            ElevatorConstants.ElevatorControl.kVSim,
-            ElevatorConstants.ElevatorControl.kASim);
+            ElevatorConstants.ElevatorControl.kS,
+            ElevatorConstants.ElevatorControl.kG,
+            ElevatorConstants.ElevatorControl.kV,
+            ElevatorConstants.ElevatorControl.kA);
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
     private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position", 0.0);
     private ShuffleData<Double> velocityMetersPerSecLog = new ShuffleData<Double>("Elevator", "velocity", 0.0);
-    private ShuffleData<Double> accelerationMetersPerSecSquaredLog = new ShuffleData<Double>("Elevator", "acceleration", 0.0);
+    private ShuffleData<Double> accelerationMetersPerSecSquaredLog = new ShuffleData<Double>("Elevator", "acceleration",
+            0.0);
 
     private ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Elevator", "input volts", 0.0);
     private ShuffleData<Double> leftAppliedVoltsLog = new ShuffleData<Double>("Elevator", "left applied volts", 0.0);
@@ -145,7 +146,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void setGoal(double height) {
-        pidController.setGoal(height);
+        profile.setGoal(height);
     }
 
     private void runState() {
@@ -160,13 +161,13 @@ public class Elevator extends SubsystemBase {
     }
 
     private void moveToGoal() {
-        State firstState = pidController.getSetpoint();
-        double pidVoltage = pidController.calculate(getPositionMeters());
+        State firstState = profile.getSetpoint();
+        profile.calculate(getPositionMeters());
 
-        State nextState = pidController.getSetpoint();
+        State nextState = profile.getSetpoint();
         double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
 
-        elevatorio.setVoltage(ffVoltage + pidVoltage);
+        elevatorio.setPosition(firstState.position, ffVoltage);
     }
 
     private void runStateStop() {
@@ -183,7 +184,6 @@ public class Elevator extends SubsystemBase {
         velocityMetersPerSecLog.set(data.velocityMetersPerSecond);
         accelerationMetersPerSecSquaredLog.set(data.accelerationMetersPerSecondSquared);
 
-        inputVoltsLog.set(data.inputVolts);
         leftAppliedVoltsLog.set(data.leftAppliedVolts);
         rightAppliedVoltsLog.set(data.rightAppliedVolts);
         leftCurrentAmpsLog.set(data.leftCurrentAmps);
