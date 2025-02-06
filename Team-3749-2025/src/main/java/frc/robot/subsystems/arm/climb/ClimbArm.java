@@ -11,10 +11,16 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
+import frc.robot.subsystems.arm.ClimbArmIO;
+import frc.robot.subsystems.arm.ClimbArmIO.ArmData;
+import frc.robot.utils.ShuffleData;
+import frc.robot.utils.UtilityFunctions;
 
 /**
- * Subsystem class for the arm
- * 
+ * Subsystem class for the climb arm
+ *
  * @author Weston Gardner
  */
 
@@ -30,9 +36,9 @@ public class ClimbArm extends Arm {
 
     private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
-    private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
-    private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
-    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Climb Arm", 24, 0));
+	private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
+	private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
+	private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Climb Arm", 24, 0));
 
     private SysIdTuner sysIdTuner;
 
@@ -63,111 +69,115 @@ public class ClimbArm extends Arm {
         return sysIdTuner;
     }
 
-    /**
-     * @return the current arm state.
-     */
-    public ClimbConstants.ArmStates getState() {
-        return state;
-    }
+	/**
+	 * @return the current arm state.
+	 */
+	public ClimbConstants.ArmStates getState() {
+		return state;
+	}
 
-    @Override
-    public void stop() {
-        setState(ClimbConstants.ArmStates.STOPPED);
-    }
 
-    /**
-     * @return whether the arm is in a stable state.
-     */
-    public boolean getIsStableState() {
+	/**
+	 * @return the current arm position.
+	 */
+	public double getPositionRad() {
+		return data.positionUnits;
+	}
 
-        switch (state) {
-            case STOWED:
-                return data.positionUnits == ClimbConstants.stowSetPoint_rad;
-            case PREPARE_FOR_CLIMB:
-                return data.positionUnits == ClimbConstants.PrepareForClimbSetPoint_rad;
-            case CLIMB:
-                return data.positionUnits == ClimbConstants.climbSetPoint_rad;
-            case MOVING_DOWN:
-                return data.velocityUnits < 0;
-            case MOVING_UP:
-                return data.velocityUnits > 0;
-            case STOPPED:
-                return UtilityFunctions.withinMargin(0.001, 0, data.velocityUnits);
-            default:
-                return false;
-        }
-    }
+	/**
+	 * @return whether the arm is in a stable state.
+	 */
+	public boolean getIsStableState() {
 
-    /**
-     * Sets the current state of the arm.
-     * 
-     * @param state The new state for the arm.
-     */
-    @Override
-    public void setState(Enum<?> state) {
-        this.state = (ClimbConstants.ArmStates) state;
-    }
+		switch (state) {
+			case STOWED:
+				return UtilityFunctions.withinMargin(0.001, ClimbConstants.stowSetPoint_rad, data.positionUnits);
+			case PREPARE_FOR_CLIMB:
+				return UtilityFunctions.withinMargin(0.001, ClimbConstants.PrepareForClimbSetPoint_rad, data.positionUnits);
+			case CLIMB:
+				return UtilityFunctions.withinMargin(0.001, ClimbConstants.climbSetPoint_rad, data.positionUnits);
+			case STOPPED:
+				return UtilityFunctions.withinMargin(0.001, 0, data.velocityUnits);
+			default:
+				return false;
+		}
+	}
 
-    /**
-     * Runs the logic for the current arm state.
-     */
-    private void runState() {
-        switch (state) {
-            case STOWED:
-                setVoltage(controller.calculate(data.positionUnits, ClimbConstants.stowSetPoint_rad) + calculateFeedForward());
-                break;
-            case PREPARE_FOR_CLIMB:
-                setVoltage(controller.calculate(data.positionUnits, ClimbConstants.PrepareForClimbSetPoint_rad) + calculateFeedForward());
-                break;
-            case CLIMB:
-                setVoltage(controller.calculate(data.positionUnits, ClimbConstants.climbSetPoint_rad) + calculateFeedForward());
-                break;
-            case STOPPED:
-                setVoltage(0 + calculateFeedForward());
-                break;
-            case MOVING_DOWN:
-                setVoltage(-1 + calculateFeedForward());
-                break;
-            case MOVING_UP:
-                setVoltage(1 + calculateFeedForward());
-                break;
-            default:
-                break;
-        }
-    }
 
-    /**
-     * Logs data to Shuffleboard.
-     */
-    private void logData() {
-        currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-        positionUnitsLog.set(data.positionUnits);
-        velocityUnitsLog.set(data.velocityUnits);
-        inputVoltsLog.set(data.inputVolts);
-        appliedVoltsLog.set(data.appliedVolts);
-        currentAmpsLog.set(data.currentAmps);
-        tempCelciusLog.set(data.tempCelcius);
+	// UTILITY FUNCTIONS
 
-        armLigament.setAngle(Math.toDegrees(data.positionUnits));
+	/**
+	 * stops the arm completely, for use in emergencies or on startup
+	 */
+	public void stop() {
+		setVoltage(0);
+	}
 
-        stateLog.set(state.name());
-    }
+	/**
+	 * Move the arm to the setpoint using the PID controller and feedforward.
+	 * combines PID control and feedforward to move the arm to desired position.
+	 */
+	private void moveToGoal() {
+		// Get setpoint from the PID controller
+		State firstState = controller.getSetpoint();
 
-    private double calculateFeedForward() {
-        double feedForward = ClimbConstants.kG * Math.cos(data.positionUnits);
-        return feedForward;
-    }
+		// Calculate PID voltage based on the current position
+		double pidVoltage = controller.calculate(getPositionRad());
 
-    /**
-     * Periodic method for updating arm behavior.
-     */
-    @Override
-    public void periodic() {
+		State nextState = controller.getSetpoint();
 
-        armIO.updateData(data);
+		// Calculate feedforward voltage
+		double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
 
-        logData();
+		// Set the voltage for the arm motor (combine PID and feedforward)
+		armIO.setVoltage(pidVoltage + ffVoltage);
+	}
 
-        runState();
-    }
+
+
+	// PERIODIC FUNCTIONS
+
+
+
+	/** Runs the logic for the current arm state. */
+	private void runState() {
+		switch (state) {
+			case STOPPED:
+				stop();
+				break;
+			default:
+				moveToGoal();
+				break;
+		}
+	}
+
+	/** Logs data to Shuffleboard. */
+	private void logData() {
+		currentCommandLog.set(
+				this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
+		positionUnitsLog.set(data.positionUnits);
+		velocityUnitsLog.set(data.velocityUnits);
+		inputVoltsLog.set(data.inputVolts);
+		firstMotorAppliedVoltsLog.set(data.firstMotorAppliedVolts);
+		secondMotorAppliedVoltsLog.set(data.secondMotorAppliedVolts);
+		firstMotorCurrentAmpsLog.set(data.firstMotorCurrentAmps);
+		secondMotorCurrentAmpsLog.set(data.secondMotorCurrentAmps);
+		firstMotorTempCelciusLog.set(data.firstMotorTempCelcius);
+		secondMotorTempCelciusLog.set(data.secondMotorTempCelcius);
+
+		armLigament.setAngle(Math.toDegrees(data.positionUnits));
+
+		stateLog.set(state.name());
+	}
+
+	/** Periodic method for updating arm behavior. */
+	@Override
+	public void periodic() {
+
+		armIO.updateData(data);
+
+		runState();
+
+		logData();
+	}
 }
