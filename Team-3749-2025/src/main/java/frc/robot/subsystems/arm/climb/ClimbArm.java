@@ -5,7 +5,6 @@ import frc.robot.utils.ShuffleData;
 import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
@@ -15,13 +14,9 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Robot;
 import frc.robot.subsystems.arm.climb.ClimbArmIO.ArmData;
 import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.MotorData;
-import frc.robot.utils.ShuffleData;
-import frc.robot.utils.UtilityFunctions;
-
 import static edu.wpi.first.units.Units.*;
 
 import java.util.Map;
@@ -157,6 +152,39 @@ public class ClimbArm extends SubsystemBase {
 	public void setVoltage(double volts) {
         armIO.setVoltage(volts);
     }
+
+	/**
+	 * Sets the current state of the arm.
+	 *
+	 * @param state The new state for the arm.
+	 */
+	public void setState(ClimbConstants.ArmStates state) {
+		this.state = (ClimbConstants.ArmStates) state;
+		switch (this.state) {
+			case STOPPED:
+				stop();
+				break;
+			case STOWED:
+				setGoal(ClimbConstants.stowSetPoint_rad);
+				break;
+			case PREPARE_FOR_CLIMB:
+				setGoal(ClimbConstants.PrepareForClimbSetPoint_rad);
+			case CLIMB:
+				setGoal(ClimbConstants.climbSetPoint_rad);
+			default:
+				stop();
+				break;
+		}
+	}
+
+	/**
+	 * method to set the goal of the controller
+	 * 
+	 * @param setPoint
+	 */
+	public void setGoal(double setPoint) {
+		controller.setGoal(setPoint);
+	}
 
 	/**
 	 * stops the arm completely, for use in emergencies or on startup

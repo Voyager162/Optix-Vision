@@ -9,11 +9,6 @@ import static edu.wpi.first.units.Units.Volts;
 
 import java.util.Map;
 
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
-
-import java.util.Map;
-
 import choreo.util.ChoreoAllianceFlipUtil.Flipper;
 import choreo.trajectory.SwerveSample;
 import edu.wpi.first.math.VecBuilder;
@@ -254,26 +249,6 @@ public class Swerve extends SubsystemBase {
     resetGyro();
     setOdometry(new Pose2d(1.33, 5.53, new Rotation2d(0)));
     logSetpoints(1.33, 0, 0, 5.53, 0, 0, 0, 0, 0);
-
-  }
-
-  public SysIdTuner getDriveSysIdTuner() {
-    return driveSysIdTuner;
-  }
-
-  public SysIdTuner getTurningSysIdTuner() {
-    return turningSysIdTuner;
-  }
-
-  public SysIdTuner getRotationalSysIdTuner(){
-    return rotationalSysIdTuner;
-  }
-
-  public boolean getRotated(){
-    return UtilityFunctions.withinMargin(0.01, modules[0].getModuleData().turnAbsolutePositionRad, Rotation2d.fromDegrees(45).getRadians())
-    &&  UtilityFunctions.withinMargin(0.01, modules[1].getModuleData().turnAbsolutePositionRad, Rotation2d.fromDegrees(135).getRadians())
-    &&  UtilityFunctions.withinMargin(0.01, modules[2].getModuleData().turnAbsolutePositionRad, Rotation2d.fromDegrees(225).getRadians())
-    &&  UtilityFunctions.withinMargin(0.01, modules[3].getModuleData().turnAbsolutePositionRad, Rotation2d.fromDegrees(315).getRadians());
 
   }
 

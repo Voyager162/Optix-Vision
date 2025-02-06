@@ -33,6 +33,7 @@ public class SwerveModule {
 
     private LoggedTunableNumber driveSpeed;
     private LoggedTunableNumber drivePosition;
+    private LoggedTunableNumber driveAcceleration;
     private LoggedTunableNumber driveTemp;
     private LoggedTunableNumber driveVolts;
     private LoggedTunableNumber driveCurrent;
@@ -66,6 +67,8 @@ public class SwerveModule {
         driveSpeed = new LoggedTunableNumber("Swerve/" + name + "/drive speed",
                 moduleData.driveVelocityMPerSec);
         drivePosition = new LoggedTunableNumber("Swerve/" + name + "/drive position",
+                moduleData.driveVelocityMPerSec);
+        driveAcceleration = new LoggedTunableNumber("Swerve/" + name + "/drive position",
                 moduleData.driveVelocityMPerSec);
         driveTemp = new LoggedTunableNumber("Swerve/" + name + "/drive temp",
                 moduleData.driveVelocityMPerSec);
