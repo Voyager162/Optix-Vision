@@ -5,22 +5,18 @@ import frc.robot.utils.ShuffleData;
 import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
 import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.MotorData;
-import frc.robot.utils.ShuffleData;
-import frc.robot.utils.UtilityFunctions;
-
 import static edu.wpi.first.units.Units.*;
 
 import java.util.Map;
@@ -55,11 +51,11 @@ public class CoralArm extends SubsystemBase {
 	private LoggedTunableNumber velocityUnitsLog = new LoggedTunableNumber(this.getName() + "/velocity units", 0.0);
 	private LoggedTunableNumber inputVoltsLog = new LoggedTunableNumber(this.getName() + "/input volts", 0.0);
 	private LoggedTunableNumber motorAppliedVoltsLog = new LoggedTunableNumber(this.getName() +
-			"/first motor applied volts", 0.0);
+			"/motor applied volts", 0.0);
 	private LoggedTunableNumber motorCurrentAmpsLog = new LoggedTunableNumber(this.getName() +
-			"/first motor current amps", 0.0);
+			"/motor current amps", 0.0);
 	private LoggedTunableNumber motorTempCelciusLog = new LoggedTunableNumber(this.getName() +
-			"/first motor temp celcius", 0.0);
+			"/motor temp celcius", 0.0);
 	private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
 	private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
@@ -106,8 +102,8 @@ public class CoralArm extends SubsystemBase {
 		return config;
 	}
 
-	public getMotorData(){
-		return
+	public Map<String, MotorData> getMotorData(){
+		return motorData;
 	}
 
     public SysIdTuner getSysIdTuner(){
@@ -154,21 +150,19 @@ public class CoralArm extends SubsystemBase {
 
 	// GET FUNCTIONS
 
-    /**
-     * Periodic method for updating arm behavior.
-     */
-    @Override
-    public void periodic() {
-        armIO.updateData(data);
+	/**
+	 * @return The current arm state (e.g., STOPPED, STOWED, etc.)
+	 */
+	public CoralConstants.ArmStates getState() {
+		return state;
+	}
 
-        logData();
-        runState();
-
-        getMotorData().get("arm_motor").position = data.positionUnits;
-        getMotorData().get("arm_motor").acceleration = data.accelerationUnits;
-        getMotorData().get("arm_motor").velocity = data.velocityUnits;
-        getMotorData().get("arm_motor").appliedVolts = data.appliedVolts;
-    }
+	/**
+	 * @return The current position of the arm in radians.
+	 */
+	public double getPositionRad() {
+		return data.positionUnits; // Return the arm's current position.
+	}
 
 	/**
 	 * @return whether the arm is in a stable state.
@@ -243,12 +237,9 @@ public class CoralArm extends SubsystemBase {
 		positionUnitsLog.set(data.positionUnits);
 		velocityUnitsLog.set(data.velocityUnits);
 		inputVoltsLog.set(data.inputVolts);
-		firstMotorAppliedVoltsLog.set(data.firstMotorAppliedVolts);
-		secondMotorAppliedVoltsLog.set(data.secondMotorAppliedVolts);
-		firstMotorCurrentAmpsLog.set(data.firstMotorCurrentAmps);
-		secondMotorCurrentAmpsLog.set(data.secondMotorCurrentAmps);
-		firstMotorTempCelciusLog.set(data.firstMotorTempCelcius);
-		secondMotorTempCelciusLog.set(data.secondMotorTempCelcius);
+		motorAppliedVoltsLog.set(data.motorAppliedVolts);
+		motorCurrentAmpsLog.set(data.motorCurrentAmps);
+		motorTempCelciusLog.set(data.motorTempCelcius);
 
 		armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
@@ -264,5 +255,10 @@ public class CoralArm extends SubsystemBase {
 		runState();
 
 		logData();
+
+        getMotorData().get("arm_motor").position = data.positionUnits;
+        getMotorData().get("arm_motor").acceleration = data.accelerationUnits;
+        getMotorData().get("arm_motor").velocity = data.velocityUnits;
+        getMotorData().get("arm_motor").appliedVolts = data.appliedVolts;
 	}
 }

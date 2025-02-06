@@ -8,8 +8,7 @@ import edu.wpi.first.math.util.Units;
  * @author Weston Gardner
  */
 public class CoralConstants {
-	public static final int firstMotorID = 0;
-	public static final int secondMotorID = 0;
+	public static final int motorID = 0;
 	public static final int numMotors = 1;
 
 	public static final double armLength_inches = 17.796; // from cad max length of arm
