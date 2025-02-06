@@ -69,7 +69,6 @@ public class CoralArm extends Arm {
             armIO = new ArmSparkMax(CoralConstants.motorId);
         }
         SmartDashboard.putData("Coral Arm Mechanism", mechanism2d);
-        System.out.println(data.positionUnits);
     }
 
     /**
@@ -184,7 +183,6 @@ public class CoralArm extends Arm {
     }
 
     private Angle getPitch() {
-        System.out.println("Coral Arm: " + data.positionUnits);
         return Angle.ofBaseUnits(data.positionUnits + Units.degreesToRadians(-55), Radians); // remove offset once coral
                                                                                              // arm code is fixed
     }

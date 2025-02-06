@@ -160,7 +160,6 @@ public class ClimbArm extends Arm {
     }
 
     private Angle getPitch() {
-        System.out.println("Climb Arm: " + data.positionUnits);
         return Angle.ofBaseUnits(-data.positionUnits + Units.degreesToRadians(0), Radians); // remove offset once climb
                                                                                            // arm code is fixed
     }
