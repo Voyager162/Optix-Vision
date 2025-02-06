@@ -85,8 +85,8 @@ public abstract class Roller extends SubsystemBase {
 
     public void runRollerStates() {        
         switch(rollerState) {
-            case RUN:
-                run();
+            case INTAKE:
+                intake();
                 break;
             case MAINTAIN:
                 maintain();
@@ -94,10 +94,13 @@ public abstract class Roller extends SubsystemBase {
             case STOP:
                 stop();
                 break;
+            case SCORE:
+                score();
+                break;
         }
     }
 
-    public abstract void run();
+    public abstract void intake();
 
     public void maintain() {
         double holdVoltage = positionController.calculate(
@@ -111,6 +114,8 @@ public abstract class Roller extends SubsystemBase {
         rollerIO.setVoltage(0.0);
     }
 
+    public abstract void score();
+    
     @Override
     public void periodic() {
         rollerIO.updateData(rollerData);

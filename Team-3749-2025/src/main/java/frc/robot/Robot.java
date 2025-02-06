@@ -6,7 +6,6 @@ package frc.robot;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,16 +18,16 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.elevator.Elevator;
 
 import frc.robot.subsystems.arm.algae.AlgaeArm;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.subsystems.example.ExampleSubsystem;
-import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.implementations.AlgaeRoller;
 import frc.robot.subsystems.roller.implementations.CoralRoller;
-import frc.robot.subsystems.roller.implementations.ScoringRoller;
+import frc.robot.subsystems.roller.implementations.ChuteRoller;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.ToPosConstants;
 import frc.robot.utils.ShuffleData;
@@ -38,10 +37,10 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   public static Swerve swerve = new Swerve();
-  public static Roller algaeRoller = new AlgaeRoller();
-  public static Roller coralRoller = new CoralRoller();
-  public static Roller scoringRoller = new ScoringRoller();
-  
+  public static AlgaeRoller algaeRoller = new AlgaeRoller();
+  public static CoralRoller coralRoller = new CoralRoller();
+  public static ChuteRoller chuteRoller = new ChuteRoller();
+
   public static ExampleSubsystem subsystem = new ExampleSubsystem();
   public static Elevator elevator = new Elevator();
 
@@ -58,10 +57,14 @@ public class Robot extends TimedRobot {
   private ShuffleData<Boolean> FMSLog = new ShuffleData<Boolean>("DS", "FMS connected", false);
   private RobotContainer m_robotContainer;
 
+  public static Subsystem[] getAllSuperStructureSubsystems() {
+    return new Subsystem[] {algaeRoller, coralRoller, chuteRoller, elevator, algaeArm, coralArm, climbArm};
+  }
+
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-    
+
   }
 
   @Override
@@ -125,7 +128,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    
+
   }
 
   @Override

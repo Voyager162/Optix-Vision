@@ -4,6 +4,8 @@ import frc.robot.Robot;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.real.ArmSparkMax;
 import frc.robot.subsystems.arm.sim.ArmSim;
+import frc.robot.subsystems.roller.PhotoelectricIO;
+import frc.robot.subsystems.roller.PhotoelectricIO.PhotoelectricData;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 import edu.wpi.first.math.controller.PIDController;
@@ -30,7 +32,9 @@ import static edu.wpi.first.units.Units.*;
 public class CoralArm extends Arm {
 
     private CoralConstants.ArmStates state = CoralConstants.ArmStates.STOPPED;
-
+    // private boolean hasPiece;
+    private PhotoelectricData photoelectricData = new PhotoelectricData();
+    private PhotoelectricIO photoelectricIO;
     private PIDController controller = new PIDController(
             CoralConstants.kP,
             CoralConstants.kI,
@@ -66,6 +70,7 @@ public class CoralArm extends Arm {
 
         } else {
             armIO = new ArmSparkMax(CoralConstants.motorId);
+            // this.photoelectricIO = new JTVisiSight();
         }
         SmartDashboard.putData("Coral Arm Mechanism", mechanism2d);
         // System.out.println(data.positionUnits);
@@ -90,11 +95,20 @@ public class CoralArm extends Arm {
 
         switch (state) {
             case STOWED:
-                return data.positionUnits == CoralConstants.stowSetPoint_rad;
+                return UtilityFunctions.withinMargin(0.01, CoralConstants.stowSetPoint_rad,
+                        data.positionUnits);
             case HAND_OFF:
-                return data.positionUnits == CoralConstants.handOffSetPoint_rad;
+                return UtilityFunctions.withinMargin(0.01, CoralConstants.handOffSetPoint_rad,
+                        data.positionUnits);
             case CORAL_PICKUP:
-                return data.positionUnits == CoralConstants.coralPickUpSetPoint_rad;
+                return UtilityFunctions.withinMargin(0.01, CoralConstants.coralPickUpSetPoint_rad,
+                        data.positionUnits);
+            case L1:
+                return UtilityFunctions.withinMargin(0.01, CoralConstants.L1SetPoint_rad,
+                        data.positionUnits);
+            case SOURCE:
+                return UtilityFunctions.withinMargin(0.01, CoralConstants.sourceSetPoint_rad,
+                        data.positionUnits);
             case MOVING_DOWN:
                 return data.velocityUnits < 0;
             case MOVING_UP:
@@ -102,7 +116,7 @@ public class CoralArm extends Arm {
             case L1:
                 return data.positionUnits == CoralConstants.scoreL1_rad;
             case STOPPED:
-                return UtilityFunctions.withinMargin(0.001, 0, data.velocityUnits);
+                return UtilityFunctions.withinMargin(0.01, 0, data.velocityUnits);
             default:
                 return false;
         }
@@ -133,6 +147,15 @@ public class CoralArm extends Arm {
                 break;
             case CORAL_PICKUP:
                 setVoltage(controller.calculate(data.positionUnits, CoralConstants.coralPickUpSetPoint_rad)
+                        + calculateFeedForward());
+
+                break;
+            case L1:
+                setVoltage(controller.calculate(data.positionUnits, CoralConstants.L1SetPoint_rad)
+                        + calculateFeedForward());
+                break;
+            case SOURCE:
+                setVoltage(controller.calculate(data.positionUnits, CoralConstants.sourceSetPoint_rad)
                         + calculateFeedForward());
                 break;
             case L1:
@@ -199,16 +222,44 @@ public class CoralArm extends Arm {
         return feedForward;
     }
 
+    // public boolean hasPiece() {
+    //     return photoelectricData.sensing;
+    //     // return hasPiece;
+    // }
+
+    // public void setHasPiece(boolean hasPiece) {
+    //     this.hasPiece = hasPiece;
+    // }
+
+    public PhotoelectricIO getPhotoElectricIO() {
+        return photoelectricIO;
+    }
+
     /**
      * Periodic method for updating arm behavior.
      */
     @Override
     public void periodic() {
+        super.periodic();
         armIO.updateData(data);
 
         logData();
-
         runState();
-    }
 
+        // Ensure photoelectricData is updated
+
+        // photoelectricIO.updateData(photoelectricData);
+
+        // if (Robot.isSimulation()) {
+        //     if (this.getCurrentCommand() != null) {
+        //         photoelectricIO.setSensing(this.getCurrentCommand().getName());
+        //         // Update hasPiece based on sensing
+        //         // setHasPiece(photoelectricData.sensing);
+
+        //         // Debugging logs
+        //         // System.out.println("Command: " + this.getCurrentCommand().getName());
+        //         // System.out.println("Sensing: " + photoelectricData.sensing);
+        //     }
+        // }
+    }
 }
