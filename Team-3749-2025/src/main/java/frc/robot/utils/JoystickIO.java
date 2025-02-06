@@ -9,12 +9,14 @@ import frc.robot.Robot;
 
 import frc.robot.commands.arm.SetClimbArmState;
 import frc.robot.commands.arm.SetCoralArmState;
+import frc.robot.commands.elevator.SetElevatorState;
 import frc.robot.commands.roller.MaintainCommand;
 import frc.robot.commands.roller.RunCommand;
 import frc.robot.commands.roller.StopCommand;
 import frc.robot.commands.swerve.RotationialSysId;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
 import frc.robot.subsystems.arm.coral.CoralConstants;
+import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.arm.climb.ClimbConstants;
 
 /**
@@ -36,12 +38,20 @@ public class JoystickIO {
             ClimbConstants.stowSetPoint_rad);
     private static final Command climb = new SetClimbArmState(Robot.climbArm, ClimbConstants.ArmStates.CLIMB,
             ClimbConstants.climbSetPoint_rad);
+    private static final Command coralHandOff = new SetCoralArmState(Robot.coralArm, CoralConstants.ArmStates.HAND_OFF,
+        CoralConstants.handOffSetPoint_rad);
+    private static final Command coralPickUp = new SetCoralArmState(Robot.coralArm, CoralConstants.ArmStates.CORAL_PICKUP,
+        CoralConstants.coralPickUpSetPoint_rad);
+
     private static final RotationialSysId rotate1 = new RotationialSysId(Robot.swerve.getDriveSysIdTuner().sysIdQuasistatic(Direction.kForward), Robot.swerve);
     private static final RotationialSysId rotate2 = new RotationialSysId(Robot.swerve.getDriveSysIdTuner().sysIdQuasistatic(Direction.kReverse), Robot.swerve);
     private static final RotationialSysId rotate3 = new RotationialSysId(Robot.swerve.getDriveSysIdTuner().sysIdDynamic(Direction.kForward), Robot.swerve);
     private static final RotationialSysId rotate4 = new RotationialSysId(Robot.swerve.getDriveSysIdTuner().sysIdDynamic(Direction.kReverse), Robot.swerve);
 
-
+    private static final SetElevatorState l1 = new SetElevatorState(ElevatorStates.L1);
+    private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
+    private static final SetElevatorState l3 = new SetElevatorState(ElevatorStates.L3);
+    private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
 
     public JoystickIO() {
     }
@@ -86,8 +96,10 @@ public class JoystickIO {
         // operator.x().onTrue(l3);
         // operator.y().onTrue(l4);
 
-        operator.x().onTrue(climbStow);
-        operator.y().onTrue(climb);
+        operator.a().onTrue(l1);
+        operator.b().onTrue(climbStow);
+        operator.x().onTrue(coralHandOff);
+        operator.y().onTrue(Robot.elevator.getSysIdTuner().runTests());
 
     }
 
