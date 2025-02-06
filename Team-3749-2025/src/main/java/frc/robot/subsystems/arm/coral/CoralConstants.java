@@ -52,7 +52,6 @@ public class CoralConstants {
         L1,
         SOURCE,
         HAND_OFF,
-        L1,
         STOWED,
         STOPPED
     }
