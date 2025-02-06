@@ -38,18 +38,25 @@ public class CoralArmConstants {
 	public static final double kV = 1.5;
 
 	// set points
-	public static final double stowSetPoint_rad = 45 * Math.PI / 180;
-	public static final double handOffSetPoint_rad = 45 * Math.PI / 180;
-	public static final double coralPickUpSetPoint_rad = 240 * Math.PI / 180;
+    public static final double stowSetPoint_rad = 70 * Math.PI / 180; // 70, 1.2217304764
+    public static final double handOffSetPoint_rad = 40 * Math.PI / 180; // 40
+    public static final double coralPickUpSetPoint_rad = 175 * Math.PI / 180; // 175, 3.05432619099
+    public static final double L1SetPoint_rad = 180 * Math.PI / 180; // placeholder
+    public static final double sourceSetPoint_rad = 90 * Math.PI/ 180; // placeholder
+
 	
 	// extra
 	public static final boolean simulateGravity = true;
 	public static final double stateMarginOfError = 0.01;
 
-	public enum ArmStates {
-		CORAL_PICKUP,
-		HAND_OFF,
-		STOWED,
-		STOPPED
-	}
+    public enum ArmStates {
+        MOVING_DOWN,
+        MOVING_UP,
+        CORAL_PICKUP,
+        L1,
+        SOURCE,
+        HAND_OFF,
+        STOWED,
+        STOPPED
+    }
 }

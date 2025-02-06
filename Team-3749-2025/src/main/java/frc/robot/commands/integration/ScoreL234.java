@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
-import frc.robot.subsystems.arm.coral.CoralConstants;
+import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 
 /*
@@ -30,9 +30,9 @@ public class ScoreL234 extends Command {
         if (Robot.scoringRoller.hasPiece()) {
             Robot.elevator.setState(state);
             Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
-            Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
+            Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
         } else if (Robot.coralRoller.hasPiece()) {
-            Robot.coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
+            Robot.coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
             Robot.elevator.setState(ElevatorStates.STOW);
             Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
         } else {
@@ -43,7 +43,7 @@ public class ScoreL234 extends Command {
     @Override
     public void execute() {
 
-        if ((Robot.coralArm.getState() == CoralConstants.ArmStates.HAND_OFF) && Robot.coralArm.getIsStableState() &&
+        if ((Robot.coralArm.getState() == CoralArmConstants.ArmStates.HAND_OFF) && Robot.coralArm.getIsStableState() &&
             (Robot.elevator.getState() == ElevatorStates.STOW) && Robot.elevator.getIsStableState()) {
             Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE);
             Robot.scoringRoller.setState(RollerConstants.RollerStates.RUN);
@@ -63,7 +63,7 @@ public class ScoreL234 extends Command {
     @Override
     public void end(boolean interrupted) {
         activeScoreCommand = null;
-        Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
+        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
