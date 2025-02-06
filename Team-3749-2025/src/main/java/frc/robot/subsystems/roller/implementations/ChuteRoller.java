@@ -71,12 +71,13 @@ public class ChuteRoller extends Roller {
         super.periodic();
         photoelectricIO.updateData(photoelectricData);
 
-        System.out.println("sensing" + photoelectricData.sensing);
-        if (photoelectricData.sensing) {
-            hasPiece = true;
-        } else {
+        // System.out.println("sensing" + photoelectricData.sensing);
+        // if (photoelectricData.sensing) {
+        //     hasPiece = true;
+        // } else {
         
-            hasPiece = false;
-        }
+        //     hasPiece = false;
+        // }
+        hasPiece = photoelectricData.sensing; //srsly
     }
 }
