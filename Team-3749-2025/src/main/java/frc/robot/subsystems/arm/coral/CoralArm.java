@@ -40,7 +40,8 @@ public class CoralArm extends Arm {
 
     private Mechanism2d mechanism2d = new Mechanism2d(3, 3);
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 1.8, .4);
-    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Coral Arm", CoralConstants.armLength_meters, 0));
+    private MechanismLigament2d armLigament = armRoot
+            .append(new MechanismLigament2d("Coral Arm", CoralConstants.armLength_meters, 0));
     // private Pose3d zeroedComponentPose = new Pose3d(0, 0, 0, new Rotation3d(roll,
     // pitch, yaw));
 
@@ -137,8 +138,8 @@ public class CoralArm extends Arm {
                 break;
             case L1:
                 setVoltage(controller.calculate(data.positionUnits, CoralConstants.scoreL1_rad)
-                + calculateFeedForward());
-                    break;
+                        + calculateFeedForward());
+                break;
             case STOPPED:
                 setVoltage(0 + calculateFeedForward());
                 break;
@@ -183,14 +184,15 @@ public class CoralArm extends Arm {
     }
 
     private Angle getPitch() {
-        System.out.println("Coral Arm: " +data.positionUnits);
+        System.out.println("Coral Arm: " + data.positionUnits);
         return Angle.ofBaseUnits(data.positionUnits + Units.degreesToRadians(-55), Radians); // remove offset once coral
                                                                                              // arm code is fixed
     }
 
     private Transform3d getTransform3d() {
-        Transform3d transform = new Transform3d(0.285, 0.01, 0.4,
-                new Rotation3d(Angle.ofBaseUnits(0, Radians), getPitch(), Angle.ofBaseUnits(0, Radians)));
+        Transform3d transform = new Transform3d(0, 0.35, 0.4,
+                new Rotation3d(Angle.ofBaseUnits(0, Radians), getPitch(),
+                        Angle.ofBaseUnits(Units.degreesToRadians(90), Radians)));
         return transform;
     }
 
