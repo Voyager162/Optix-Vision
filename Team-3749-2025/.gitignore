@@ -60,6 +60,9 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
+# Ignore build constants file
+/src/main/java/frc/robot/BuildConstants.java
+
 ### Linux ###
 *~
 
@@ -185,4 +188,3 @@ compile_commands.json
 
 # Eclipse generated file for annotation processors
 .factorypath
-src\main\java\frc\robot\BuildConstants.java
