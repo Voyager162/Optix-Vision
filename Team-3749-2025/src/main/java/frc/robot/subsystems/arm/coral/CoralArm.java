@@ -1,7 +1,6 @@
 package frc.robot.subsystems.arm.coral;
 
 import frc.robot.Robot;
-import frc.robot.subsystems.arm.CoralArmIO;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
@@ -14,11 +13,17 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
 import frc.robot.utils.LoggedTunableNumber;
+import frc.robot.utils.MotorData;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
+
+import static edu.wpi.first.units.Units.*;
+
+import java.util.Map;
 
 /**
  * Subsystem class for the coral arm
@@ -57,11 +62,24 @@ public class CoralArm extends SubsystemBase {
 			"/first motor temp celcius", 0.0);
 	private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
-    private SysIdTuner sysIdTuner;
-
 	private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
 	private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
 	private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Coral Arm", 24, 0));
+
+    private SysIdTuner sysIdTuner;
+
+	Map<String, MotorData> motorData = Map.of(
+            "arm_motor", new MotorData(
+                    data.appliedVolts,
+                    data.positionUnits,
+                    data.velocityUnits,
+                    data.accelerationUnits));
+
+	SysIdRoutine.Config config = new SysIdRoutine.Config(
+            Volts.per(Seconds).of(1), // Voltage ramp rate
+            Volts.of(4), // Max voltage
+            Seconds.of(4) // Test duration
+    );
 
 	/**
 	 * Constructor for the CoralArm subsystem. Determines if simulation or real
@@ -83,6 +101,14 @@ public class CoralArm extends SubsystemBase {
 
         sysIdTuner = new SysIdTuner("coral arm", getConfig(), this, armIO::setVoltage, getMotorData());
     }
+
+	public SysIdRoutine.Config getConfig(){
+		return config;
+	}
+
+	public getMotorData(){
+		return
+	}
 
     public SysIdTuner getSysIdTuner(){
         return sysIdTuner;

@@ -8,6 +8,7 @@ package frc.robot.subsystems.arm.coral;
 public interface CoralArmIO {
 
 	public static class ArmData {
+		public double appliedVolts = 0;
 		public double positionUnits = 0;
 		public double velocityUnits = 0;
 		public double accelerationUnits = 0;

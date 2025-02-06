@@ -1,8 +1,6 @@
 package frc.robot.subsystems.arm.climb;
 
 import frc.robot.Robot;
-import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.sim.ArmSim;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
@@ -10,16 +8,24 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.climb.ClimbArmIO.ArmData;
 import frc.robot.utils.LoggedTunableNumber;
+import frc.robot.utils.MotorData;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
+
+import static edu.wpi.first.units.Units.*;
+
+import java.util.Map;
+
 
 /**
  * Subsystem class for the climb arm
@@ -47,7 +53,6 @@ public class ClimbArm extends SubsystemBase {
 
 	private ClimbArmIO armIO;
 	private ArmData data = new ArmData();
-	private ClimbConstants.ArmStates state = ClimbConstants.ArmStates.STOPPED;
 
 	private ShuffleData<String> currentCommandLog = new ShuffleData<>(this.getName(), "current command", "None");
 	private LoggedTunableNumber positionUnitsLog = new LoggedTunableNumber(this.getName() + "/position units", 0.0);
@@ -73,27 +78,39 @@ public class ClimbArm extends SubsystemBase {
 
     private SysIdTuner sysIdTuner;
 
+	SysIdRoutine.Config config = new SysIdRoutine.Config(
+            Volts.per(Seconds).of(1), // Voltage ramp rate
+            Volts.of(4), // Max voltage
+            Seconds.of(4) // Test duration
+    );
+
+	Map<String, MotorData> motorData = Map.of(
+            "arm_motor", new MotorData(
+                    data.appliedVolts,
+                    data.positionUnits,
+                    data.velocityUnits,
+                    data.accelerationUnits));
+
     public ClimbArm() {
         if (Robot.isSimulation()) {
             
-            armIO = new ArmSim(
-                ClimbConstants.numMotors, 
-                ClimbConstants.armGearing, 
-                ClimbConstants.momentOfInertia, 
-                ClimbConstants.armLength_meters, 
-                ClimbConstants.armMinAngle_degrees, 
-                ClimbConstants.armMaxAngle_degrees, 
-                ClimbConstants.simulateGravity, 
-                ClimbConstants.armStartingAngle_degrees
-            );
+            armIO = new ClimbArmSim();
 
         } else {
-            armIO = new ClimbSparkMax(ClimbConstants.firstMotorId, ClimbConstants.secondMotorId);
+            armIO = new ClimbArmSparkMax(ClimbConstants.frontMotorId, ClimbConstants.backMotorId);
         }
         SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
 
         sysIdTuner = new SysIdTuner("climb arm", getConfig(), this, armIO::setVoltage, getMotorData());
     }
+
+	public Map<String, MotorData> getMotorData(){
+		return motorData;
+	}
+
+	public SysIdRoutine.Config getConfig(){
+		return config;
+	}
 
     public SysIdTuner getSysIdTuner(){
         System.out.println(sysIdTuner);
@@ -136,6 +153,10 @@ public class ClimbArm extends SubsystemBase {
 
 
 	// UTILITY FUNCTIONS
+
+	public void setVoltage(double volts) {
+        armIO.setVoltage(volts);
+    }
 
 	/**
 	 * stops the arm completely, for use in emergencies or on startup
@@ -189,12 +210,12 @@ public class ClimbArm extends SubsystemBase {
 		positionUnitsLog.set(data.positionUnits);
 		velocityUnitsLog.set(data.velocityUnits);
 		inputVoltsLog.set(data.inputVolts);
-		firstMotorAppliedVoltsLog.set(data.firstMotorAppliedVolts);
-		secondMotorAppliedVoltsLog.set(data.secondMotorAppliedVolts);
-		firstMotorCurrentAmpsLog.set(data.firstMotorCurrentAmps);
-		secondMotorCurrentAmpsLog.set(data.secondMotorCurrentAmps);
-		firstMotorTempCelciusLog.set(data.firstMotorTempCelcius);
-		secondMotorTempCelciusLog.set(data.secondMotorTempCelcius);
+		frontMotorAppliedVoltsLog.set(data.frontMotorAppliedVolts);
+		backMotorAppliedVoltsLog.set(data.backMotorAppliedVolts);
+		frontMotorCurrentAmpsLog.set(data.frontMotorCurrentAmps);
+		backMotorCurrentAmpsLog.set(data.backMotorCurrentAmps);
+		frontMotorTempCelciusLog.set(data.frontMotorTempCelcius);
+		backMotorTempCelciusLog.set(data.backMotorTempCelcius);
 
 		armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
