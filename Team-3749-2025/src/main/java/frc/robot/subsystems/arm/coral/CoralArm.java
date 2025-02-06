@@ -75,7 +75,16 @@ public class CoralArm extends SubsystemBase{
 	 * hardware is used.
 	 */
 	public CoralArm() {
-
+		if (Robot.isSimulation()) {
+			armIO = new ClimbArmSim(
+					CoralConstants.numMotors,
+					CoralConstants.armGearing,
+					CoralConstants.momentOfInertia,
+					CoralConstants.armLength_meters,
+					CoralConstants.armMinAngle_degrees,
+					CoralConstants.armMaxAngle_degrees,
+					CoralConstants.simulateGravity,
+					CoralConstants.armStartingAngle_degrees);
         } else {
             armIO = new ArmSparkMax(CoralConstants.motorId);
         }
@@ -87,22 +96,6 @@ public class CoralArm extends SubsystemBase{
     public SysIdTuner getSysIdTuner(){
         return sysIdTuner;
     }
-
-			armIO = new ClimbArmSim(
-					CoralConstants.numMotors,
-					CoralConstants.armGearing,
-					CoralConstants.momentOfInertia,
-					CoralConstants.armLength_meters,
-					CoralConstants.armMinAngle_degrees,
-					CoralConstants.armMaxAngle_degrees,
-					CoralConstants.simulateGravity,
-					CoralConstants.armStartingAngle_degrees);
-
-		} else {
-			armIO = new ClimbArmSparkMax(CoralConstants.firstMotorID, CoralConstants.secondMotorID);
-		}
-		SmartDashboard.putData("Coral Arm Mechanism", mechanism2d);
-	}
 
 
 	// SET FUNCTIONS
