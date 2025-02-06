@@ -87,5 +87,10 @@ public class ScoringRoller extends Roller {
 
         }
 
+        }
+
+    public boolean isCurrentCommand(String commandName) {
+        Command currentCommand = getCurrentCommand();
+        return currentCommand != null && currentCommand.getName().equals(commandName); 
     }
 }
