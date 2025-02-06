@@ -147,7 +147,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationInit() {
-    DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
+    DriverStationSim.setAllianceStationId(AllianceStationID.Red1);
     //only use red1 and blue1 for nwo
     //at the end of the day all we really care about given this is a sim is that you can do red and blue
     //on real hardware this doesn't change a whole lot anyways if you're on red3 or red1

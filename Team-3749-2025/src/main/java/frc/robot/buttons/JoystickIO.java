@@ -147,11 +147,6 @@ public class JoystickIO {
         //         Robot.swerve.getPose().getTranslation(), Robot.swerve.getPPSetpoint().setpoint.getTranslation())
         //         ).onTrue(Robot.swerve.getSetpointReachedCommand());
 
-        pilot.b().onTrue(Commands.runOnce(() -> {
-            Robot.swerve.isOTF = false;
-            Robot.swerve.cyclePPSetpoint();
-            Robot.swerve.showSetpointEndGoal();
-        }));
 
         // new Trigger(() -> Robot.swerve.isOTF).and(() -> UtilityFunctions.withinMargin(0.5,
         //         Robot.swerve.getPose().getTranslation(), Robot.swerve.getPPSetpoint().setpoint.getTranslation())).onTrue(Commands.print("SCORE"));
@@ -159,9 +154,10 @@ public class JoystickIO {
         // Example binding
         operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        pilot.y().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L2)));
-
-
+        pilot.povLeft().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L1)));
+        pilot.povUp().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L2)));
+        pilot.povRight().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L3)));
+        pilot.povDown().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L4)));
     }
 
 
