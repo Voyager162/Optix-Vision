@@ -25,7 +25,7 @@ public class ScoringRoller extends Roller {
     private ShuffleData<Boolean> hasPieceLog = new ShuffleData<Boolean>(this.getName(), "hasPiece", hasPiece);
 
     public ScoringRoller() {
-        super(Implementations.SCORING, velocityController(), FF(), positionController());
+        super(Implementations.SCORING, FF());
         this.rollerData = new RollerData();
         if (Robot.isSimulation()) {
             this.photoelectricIO = new PhotoelectricSim();

@@ -25,9 +25,7 @@ public class CoralRoller extends Roller {
 
     
     public CoralRoller() {
-        super(Implementations.CORAL, velocityController(), FF(), positionController());
-        this.photoelectricIO = new PhotoelectricSim();
-        photoelectricIO.setInitialState(true);
+        super(Implementations.CORAL, FF());
     }
 
     public static PIDController velocityController() {

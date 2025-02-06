@@ -15,8 +15,6 @@ public abstract class Roller extends SubsystemBase {
     private RollerIO rollerIO;
     private RollerData rollerData;
     private RollerStates rollerState;
-    private PIDController positionController;
-    private PIDController velocityController;
     private SimpleMotorFeedforward rollerFF;
     private double lastKnownPosition = 0.0;
 
@@ -27,23 +25,12 @@ public abstract class Roller extends SubsystemBase {
     private ShuffleData<Double> rollerPositionLog;
     private ShuffleData<Double> rollerLastKnownPositionLog;
 
-    public Roller(Implementations implementation, PIDController velocityController, SimpleMotorFeedforward rollerFF, PIDController positionController) {
-        switch(implementation) {
-            case ALGAE:
-                rollerIO = Robot.isSimulation() ? new RollerSim(implementation) : new RollerSparkMax(RollerConstants.Algae.motorId);
-                break;
-            case CORAL:
-                rollerIO = Robot.isSimulation() ? new RollerSim(implementation) : new RollerSparkMax(RollerConstants.Coral.motorId);
-                break;
-            case SCORING:
-                rollerIO = Robot.isSimulation() ? new RollerSim(implementation) : new RollerSparkMax(RollerConstants.Scoring.motorId);
-                break;
-        }
-        
+    public Roller(Implementations implementation, SimpleMotorFeedforward rollerFF) {
+        rollerIO = Robot.isSimulation() ? new RollerSim(implementation)
+                : new RollerSparkMax(implementation);
+
         String name = implementation.name();
-        this.velocityController = velocityController;
         this.rollerFF = rollerFF;
-        this.positionController = positionController;
         this.rollerState = RollerConstants.RollerStates.STOP;
         rollerData = new RollerData();
 
@@ -54,7 +41,7 @@ public abstract class Roller extends SubsystemBase {
         rollerPositionLog = new ShuffleData<>(getName(), "Position", 0.0);
         rollerLastKnownPositionLog = new ShuffleData<>(getName(), "Last Known Position", 0.0);
     }
-    
+
     public RollerIO getRollerIO() {
         return rollerIO;
     }
@@ -64,12 +51,7 @@ public abstract class Roller extends SubsystemBase {
     }
 
     public void setVelocity(double velocityRadPerSec) {
-        double voltage = velocityController.calculate(
-            rollerData.rollerVelocityRadPerSec, 
-            velocityRadPerSec) +
-            rollerFF.calculate(velocityRadPerSec);
-
-        setVoltage(voltage);
+        rollerIO.setVelocity(velocityRadPerSec, rollerFF.calculate(velocityRadPerSec));
     }
     
     // will add functionality later
@@ -84,12 +66,12 @@ public abstract class Roller extends SubsystemBase {
     public void setState(RollerStates rollerState) {
         this.rollerState = rollerState;
         if (rollerState == RollerConstants.RollerStates.MAINTAIN) {
-            lastKnownPosition = rollerData.rollerPositionRotations; 
+            lastKnownPosition = rollerData.rollerPositionRad;
         }
     }
 
-    public void runRollerStates() {        
-        switch(rollerState) {
+    public void runRollerStates() {
+        switch (rollerState) {
             case RUN:
                 run();
                 break;
@@ -108,11 +90,9 @@ public abstract class Roller extends SubsystemBase {
     public abstract void run();
 
     public void maintain() {
-        double holdVoltage = positionController.calculate(
-            rollerData.rollerPositionRotations, 
-            lastKnownPosition
-        );
-        setVoltage(holdVoltage);
+
+        rollerIO.setPosition(rollerData.rollerPositionRad, lastKnownPosition);
+
     }
 
     public void stop() {
@@ -129,7 +109,7 @@ public abstract class Roller extends SubsystemBase {
         rollerVelocityLog.set(rollerData.rollerVelocityRadPerSec);
         rollerVoltageLog.set(rollerData.rollerAppliedVolts);
         rollerCurrentLog.set(rollerData.currentAmps);
-        rollerPositionLog.set(rollerData.rollerPositionRotations);
+        rollerPositionLog.set(rollerData.rollerPositionRad);
         rollerLastKnownPositionLog.set(lastKnownPosition);
         stateLog.set(rollerState.name());
     }
