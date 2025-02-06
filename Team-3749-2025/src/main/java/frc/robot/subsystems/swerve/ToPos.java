@@ -289,28 +289,35 @@ public class ToPos {
      * @param fianlPose  The list of waypoints to be cleaned.
      */
 
-    private void removeRedundantWaypoints(List<Waypoint> waypoints, Pose2d initialPose, Pose2d finalPose) {
+     private void removeRedundantWaypoints(List<Waypoint> waypoints, Pose2d initialPose, Pose2d finalPose) {
         Translation2d initialTranslation = initialPose.getTranslation();
         Translation2d finalTranslation = finalPose.getTranslation();
         double distance = initialTranslation.getDistance(finalTranslation);
         double headingInit = initialPose.getRotation().getDegrees();
         double headingFinal = finalPose.getRotation().getDegrees();
-        System.out.println("all of the things for removing the points");
-        System.out.println(distance);
-        System.out.println(headingFinal - headingInit);
-        // Compute the smallest difference between angles, considering wrap-around at
-        // 360 degrees
-        double headingDifference = Math.abs((headingFinal - headingInit + 180) % 360 - 180);
-
-        // Check if the heading difference is within ±10 degrees
-        if (distance < 1.0 && headingDifference <= 10) {
+    
+        System.out.println("All values for removing waypoints:");
+        System.out.println("Distance: " + distance);
+        System.out.println("Heading Initial: " + headingInit);
+        System.out.println("Heading Final: " + headingFinal);
+    
+        // Fix floating-point precision issue in heading difference
+        double headingDifference = Math.abs((headingFinal - headingInit) % 360);
+        if (headingDifference > 180) {
+            headingDifference = 360 - headingDifference;
+        }
+    
+        System.out.println("Computed Heading Difference: " + headingDifference);
+    
+        // Check if the heading difference is within ±20 degrees
+        if (distance < 1.0 && headingDifference <= 20) {
             System.out.println("called");
             if (waypoints.size() > 2) {
                 waypoints.subList(1, waypoints.size() - 1).clear();
             }
         }
-
-        double threshold = 0.05; // Minimum distance between waypoints to consider them unique (5 cm).
+    
+        double threshold = 0.05; // Minimum distance between waypoints (5 cm).
         for (int i = 1; i < waypoints.size(); i++) {
             Translation2d current = waypoints.get(i).anchor();
             Translation2d previous = waypoints.get(i - 1).anchor();
@@ -319,8 +326,8 @@ public class ToPos {
                 i--; // Adjust index after removal.
             }
         }
-
     }
+    
 
     /**
      * Removes overshooting wrong start hexagon vertex
