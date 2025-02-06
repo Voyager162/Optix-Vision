@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.roller.RollerIO.RollerData;
 import frc.robot.subsystems.roller.real.RollerSparkMax;
 import frc.robot.subsystems.roller.sim.RollerSim;
+import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.ShuffleData;
 import frc.robot.Robot;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
@@ -20,12 +21,12 @@ public abstract class Roller extends SubsystemBase {
     private SimpleMotorFeedforward rollerFF;
     private double lastKnownPosition = 0.0;
 
-    private ShuffleData<Double> rollerVelocityLog;
-    private ShuffleData<Double> rollerVoltageLog;
-    private ShuffleData<Double> rollerCurrentLog;
+    private LoggedTunableNumber rollerVelocityLog;
+    private LoggedTunableNumber rollerVoltageLog;
+    private LoggedTunableNumber rollerCurrentLog;
     private ShuffleData<String> stateLog;
-    private ShuffleData<Double> rollerPositionLog;
-    private ShuffleData<Double> rollerLastKnownPositionLog;
+    private LoggedTunableNumber rollerPositionLog;
+    private LoggedTunableNumber rollerLastKnownPositionLog;
 
     public Roller(Implementations implementation, PIDController velocityController, SimpleMotorFeedforward rollerFF, PIDController positionController) {
         switch(implementation) {
@@ -47,12 +48,12 @@ public abstract class Roller extends SubsystemBase {
         this.rollerState = RollerConstants.RollerStates.STOP;
         rollerData = new RollerData();
 
-        rollerVelocityLog = new ShuffleData<>(getName(), name + " Velocity", 0.0);
-        rollerVoltageLog = new ShuffleData<>(getName(), name + " Voltage", 0.0);
-        rollerCurrentLog = new ShuffleData<>(getName(), name + " Current", 0.0);
+        rollerVelocityLog = new LoggedTunableNumber(getName() + "/" + name + " Velocity", 0.0);
+        rollerVoltageLog = new LoggedTunableNumber(getName() + "/" + name + " Voltage", 0.0);
+        rollerCurrentLog = new LoggedTunableNumber(getName() + "/" + name + " Current", 0.0);
         stateLog = new ShuffleData<>(getName(), "State", RollerStates.STOP.name());
-        rollerPositionLog = new ShuffleData<>(getName(), "Position", 0.0);
-        rollerLastKnownPositionLog = new ShuffleData<>(getName(), "Last Known Position", 0.0);
+        rollerPositionLog = new LoggedTunableNumber(getName() + "/" + name + " Position", 0.0);
+        rollerLastKnownPositionLog = new LoggedTunableNumber(getName() + "/" + name + " Last Known Position", 0.0);
     }
     
     public RollerIO getRollerIO() {

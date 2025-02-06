@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.subsystems.arm.ClimbArmIO;
-import frc.robot.subsystems.arm.ClimbArmIO.ArmData;
+import frc.robot.subsystems.arm.climb.ClimbArmIO.ArmData;
+import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 
@@ -28,13 +28,41 @@ public class ClimbArm extends Arm {
 
     private ClimbConstants.ArmStates state = ClimbConstants.ArmStates.STOPPED;
 
-    private PIDController controller = new PIDController(
-        ClimbConstants.kP, 
-        ClimbConstants.kI, 
-        ClimbConstants.kD
-    );
+	private ProfiledPIDController controller = new ProfiledPIDController(
+			ClimbConstants.kP,
+			ClimbConstants.kI,
+			ClimbConstants.kD,
+			new TrapezoidProfile.Constraints(
+					ClimbConstants.maxVelocity,
+					ClimbConstants.maxAcceleration));
 
-    private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
+	private ArmFeedforward feedforward = new ArmFeedforward(
+			ClimbConstants.kS,
+			ClimbConstants.kG,
+			ClimbConstants.kV,
+			ClimbConstants.kA);
+
+	private ClimbArmIO armIO;
+	private ArmData data = new ArmData();
+	private ClimbConstants.ArmStates state = ClimbConstants.ArmStates.STOPPED;
+
+	private ShuffleData<String> currentCommandLog = new ShuffleData<>(this.getName(), "current command", "None");
+	private LoggedTunableNumber positionUnitsLog = new LoggedTunableNumber(this.getName() + "/position units", 0.0);
+	private LoggedTunableNumber velocityUnitsLog = new LoggedTunableNumber(this.getName() + "/velocity units", 0.0);
+	private LoggedTunableNumber inputVoltsLog = new LoggedTunableNumber(this.getName() + "/input volts", 0.0);
+	private LoggedTunableNumber frontMotorAppliedVoltsLog = new LoggedTunableNumber(this.getName() +
+			"/first motor applied volts", 0.0);
+	private LoggedTunableNumber backMotorAppliedVoltsLog = new LoggedTunableNumber(this.getName() +
+			"/second motor applied volts", 0.0);
+	private LoggedTunableNumber frontMotorCurrentAmpsLog = new LoggedTunableNumber(this.getName() +
+			"/first motor current amps", 0.0);
+	private LoggedTunableNumber backMotorCurrentAmpsLog = new LoggedTunableNumber(this.getName() +
+			"/second motor current amps", 0.0);
+	private LoggedTunableNumber frontMotorTempCelciusLog = new LoggedTunableNumber(this.getName() +
+			"/first motor temp celcius", 0.0);
+	private LoggedTunableNumber backMotorTempCelciusLog = new LoggedTunableNumber(this.getName() +
+			"/second motor temp celcius", 0.0);
+	private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
 	private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
 	private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);

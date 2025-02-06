@@ -6,7 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
 import frc.robot.subsystems.swerve.SwerveConstants.ModuleConstants;
 import frc.robot.subsystems.swerve.SwerveModuleIO.ModuleData;
-import frc.robot.utils.ShuffleData;
+import frc.robot.utils.LoggedTunableNumber;
 
 /**
  * General class for swerve modules that interacts with the
@@ -31,18 +31,17 @@ public class SwerveModule {
 
     // private double previousSetpointVelocity = 0;
 
-    private ShuffleData<Double> driveSpeed;
-    private ShuffleData<Double> drivePosition;
-    private ShuffleData<Double> driveTemp;
-    private ShuffleData<Double> driveVolts;
-    private ShuffleData<Double> driveCurrent;
-    private ShuffleData<Double> driveAcceleration;
+    private LoggedTunableNumber driveSpeed;
+    private LoggedTunableNumber drivePosition;
+    private LoggedTunableNumber driveTemp;
+    private LoggedTunableNumber driveVolts;
+    private LoggedTunableNumber driveCurrent;
 
-    private ShuffleData<Double> turningSpeed;
-    private ShuffleData<Double> turningPosition;
-    private ShuffleData<Double> turningTemp;
-    private ShuffleData<Double> turningVolts;
-    private ShuffleData<Double> turningCurrent;
+    private LoggedTunableNumber turningSpeed;
+    private LoggedTunableNumber turningPosition;
+    private LoggedTunableNumber turningTemp;
+    private LoggedTunableNumber turningVolts;
+    private LoggedTunableNumber turningCurrent;
 
     public SwerveModule(int index, SwerveModuleIO SwerveModule) {
 
@@ -64,28 +63,26 @@ public class SwerveModule {
             name = "BR module";
         }
         // Tab, name, data
-        driveSpeed = new ShuffleData<>("Swerve/" + name, "drive speed",
+        driveSpeed = new LoggedTunableNumber("Swerve/" + name + "/drive speed",
                 moduleData.driveVelocityMPerSec);
-        drivePosition = new ShuffleData<>("Swerve/" + name, " drive position",
-                moduleData.drivePositionM);
-        driveAcceleration = new ShuffleData<>("Swerve/" + name, "drive acceleration",
-                moduleData.driveAccelerationMPerSecSquared);
-        driveTemp = new ShuffleData<>("Swerve/" + name, "drive temp",
-                moduleData.driveTempCelcius);
-        driveVolts = new ShuffleData<>("Swerve/" + name, "drive volts",
-                moduleData.driveAppliedVolts);
-        driveCurrent = new ShuffleData<>("Swerve/" + name, "drive current",
-                moduleData.driveCurrentAmps);
+        drivePosition = new LoggedTunableNumber("Swerve/" + name + "/drive position",
+                moduleData.driveVelocityMPerSec);
+        driveTemp = new LoggedTunableNumber("Swerve/" + name + "/drive temp",
+                moduleData.driveVelocityMPerSec);
+        driveVolts = new LoggedTunableNumber("Swerve/" + name + "/drive volts",
+                moduleData.driveVelocityMPerSec);
+        driveCurrent = new LoggedTunableNumber("Swerve/" + name + "/drive current",
+                moduleData.driveVelocityMPerSec);
 
-        turningSpeed = new ShuffleData<>("Swerve/" + name, "turning speed",
-                moduleData.turnVelocityRadPerSec);
-        turningPosition = new ShuffleData<>("Swerve/" + name, "turning position",
-                moduleData.turnAbsolutePositionRad);
-        turningTemp = new ShuffleData<>("Swerve/" + name, "turning temp",
-                moduleData.turnTempCelcius);
-        turningVolts = new ShuffleData<>("Swerve/" + name, "turning volts",
-                moduleData.turnAppliedVolts);
-        turningCurrent = new ShuffleData<>("Swerve/" + name, "turning current",
+        turningSpeed = new LoggedTunableNumber("Swerve/" + name + "/turning speed",
+                moduleData.driveVelocityMPerSec);
+        turningPosition = new LoggedTunableNumber("Swerve/" + name + "/turning position",
+                moduleData.driveVelocityMPerSec);
+        turningTemp = new LoggedTunableNumber("Swerve/" + name + "/turning temp",
+                moduleData.driveVelocityMPerSec);
+        turningVolts = new LoggedTunableNumber("Swerve/" + name + "/turning volts",
+                moduleData.driveVelocityMPerSec);
+        turningCurrent = new LoggedTunableNumber("Swerve/" + name + "/turning current",
                 moduleData.turnCurrentAmps);
     }
 

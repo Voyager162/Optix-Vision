@@ -22,6 +22,7 @@ import frc.robot.subsystems.roller.implementations.AlgaeRoller;
 import frc.robot.subsystems.roller.implementations.CoralRoller;
 import frc.robot.subsystems.roller.implementations.ScoringRoller;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.ShuffleData;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -44,10 +45,10 @@ public class Robot extends LoggedRobot {
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
 
-  private ShuffleData<Double> batteryVoltageLog = new ShuffleData<Double>("DS", "battery voltage", 0.0);
+  private LoggedTunableNumber batteryVoltageLog = new LoggedTunableNumber("/DS/battery voltage", 0.0);
   private ShuffleData<Boolean> isBrownedOutLog = new ShuffleData<Boolean>("DS", "brownout", false);
-  private ShuffleData<Double> cpuTempLog = new ShuffleData<Double>("DS", "cpu temp", 0.0);
-  private ShuffleData<Double> CANUtilizationLog = new ShuffleData<Double>("DS", "CAN utilizaition", 0.0);
+  private LoggedTunableNumber cpuTempLog = new LoggedTunableNumber("/DS/cpu temp", 0.0);
+  private LoggedTunableNumber CANUtilizationLog = new LoggedTunableNumber("DS/CAN utilizaition", 0.0);
   private ShuffleData<String> radioStatusLog = new ShuffleData<String>("DS", "radio status", "kOff");
   private ShuffleData<String> allianceLog = new ShuffleData<String>("DS", "alliance", "Red");
   private ShuffleData<Boolean> FMSLog = new ShuffleData<Boolean>("DS", "FMS connected", false);
