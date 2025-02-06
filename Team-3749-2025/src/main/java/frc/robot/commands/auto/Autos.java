@@ -213,33 +213,4 @@ public class Autos {
         return Commands.print("3 Coral and 2 Algae").andThen(
                 AutoUtils.startRoutine(routine, "Start-L5", trajectory1));
     }
-
-    public static Command get3CoralScoreL1() {
-        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("3 Coral Score L1");
-
-        AutoTrajectory trajectory1 = routine.trajectory("Start-L5");
-        AutoTrajectory trajectory2 = routine.trajectory("L5-Station");
-        AutoTrajectory trajectory3 = routine.trajectory("Station-L4");
-        AutoTrajectory trajectory4 = routine.trajectory("L4-Station");
-        AutoTrajectory trajectory5 = routine.trajectory("Station-L3");
-        AutoTrajectory trajectory6 = routine.trajectory("L3-KnockAlgae2");
-        AutoTrajectory trajectory7 = routine.trajectory("KnockAlgae2-Station");
-
-        Command score1 = AutoUtils.addScoreL1(trajectory1);
-        Command intake1 = AutoUtils.addIntakeCoralArm(trajectory2);
-        Command score2 = AutoUtils.addScoreL1(trajectory3);
-        Command intake2 = AutoUtils.addIntakeCoralArm(trajectory4);
-        Command score3 = AutoUtils.addScoreL1(trajectory5); 
-        Command intake3 = AutoUtils.addIntakeCoralArm(trajectory7);
-
-        AutoUtils.goNextAfterCommand(trajectory6, trajectory7, intake3);
-        AutoUtils.goNextAfterCommand(trajectory5, trajectory6, score3);
-        AutoUtils.goNextAfterCommand(trajectory4, trajectory5, intake2);
-        AutoUtils.goNextAfterCommand(trajectory3, trajectory4, score2);
-        AutoUtils.goNextAfterCommand(trajectory2, trajectory3, intake1);
-        AutoUtils.goNextAfterCommand(trajectory1, trajectory2, score1);
-
-        return Commands.print("3 Coral Score L1").andThen(
-            AutoUtils.startRoutine(routine, "Start-L5", trajectory1));
-    }
 }

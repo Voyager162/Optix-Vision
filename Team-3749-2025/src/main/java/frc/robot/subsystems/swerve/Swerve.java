@@ -61,6 +61,62 @@ public class Swerve extends SubsystemBase {
       "odometry",
       new Double[] { 0.0, 0.0, 0.0 });
 
+  private ShuffleData<Double[]> realStatesLog = new ShuffleData<Double[]>(
+      this.getName(),
+      "real states",
+      new Double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
+
+  private ShuffleData<Double[]> desiredStatesLog = new ShuffleData<Double[]>(
+      this.getName(),
+      "desired states",
+      new Double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
+
+  private ShuffleData<Double> velocityLog = new ShuffleData<Double>(
+      this.getName(),
+      "velocity",
+      0.0);
+  private ShuffleData<Double> accelerationLog = new ShuffleData<Double>(
+      this.getName(),
+      "acceleration",
+      0.0);
+
+  private ShuffleData<Double> yawLog = new ShuffleData<Double>(
+      this.getName(),
+      "yaw",
+      0.0);
+
+  private ShuffleData<Double> pitchLog = new ShuffleData<Double>(
+      this.getName(),
+      "pitch",
+      0.0);
+
+  private ShuffleData<Double> rollLog = new ShuffleData<Double>(
+      this.getName(),
+      "roll",
+      0.0);
+
+  private ShuffleData<Double> rotationalVelocityLog = new ShuffleData<Double>(
+      this.getName(),
+      "rotational velocity",
+      0.0);
+
+  private ShuffleData<Boolean> gyroConnectedLog = new ShuffleData<Boolean>(
+      this.getName(),
+      "gyro connected",
+
+      false);
+
+
+  private ShuffleData<Double> headingLog = new ShuffleData<Double>(
+      this.getName(),
+      "heading",
+      0.0);
+
+  private ShuffleData<Boolean> utilizeVisionLog = new ShuffleData<Boolean>(
+      this.getName(),
+      "utilize vision",
+      true);
+
   private ShuffleData<Double[]> setpointPositionLog = new ShuffleData<Double[]>(
       this.getName(),
       "setpoint position",
@@ -89,7 +145,7 @@ public class Swerve extends SubsystemBase {
     if (Robot.isSimulation()) {
       gyro = new GyroSim();
       for (int i = 0; i < 4; i++) {
-        modules[i] = new SwerveModule(i, new SwerveModuleSim());
+        modules[i] = new SwerveModule(i, new SwerveModuleSim(i));
       }
     }
     // if real
@@ -97,7 +153,8 @@ public class Swerve extends SubsystemBase {
       // gyro = new NavX2Gyro();
       gyro = new PigeonGyro();
       for (int i = 0; i < 4; i++) {
-        modules[i] = new SwerveModule(i, new SwerveModuleSparkMax(i));
+        
+        modules[i] = new SwerveModule(i, new SwerveModuleSpark(i));
       }
     }
     // pose estimator
@@ -424,14 +481,13 @@ public class Swerve extends SubsystemBase {
         });
     // utilizeVisionLog.set(utilizeVision);
 
-    // // gyro logging
-    // rotationalVelocityLog.set((gyroData.yawDeg - yawLog.get()) / 0.02);
-    // yawLog.set(gyroData.yawDeg);
-    // pitchLog.set(gyroData.pitchDeg);
-    // rollLog.set(gyroData.rollDeg);
-    // gyroConnectedLog.set(gyroData.isConnected);
-    // gyroCalibratingLog.set(gyroData.isCalibrating);
-    // headingLog.set(getRotation2d().getDegrees());
+    // gyro logging
+    rotationalVelocityLog.set((gyroData.yawDeg - yawLog.get()) / 0.02);
+    yawLog.set(gyroData.yawDeg);
+    pitchLog.set(gyroData.pitchDeg);
+    rollLog.set(gyroData.rollDeg);
+    gyroConnectedLog.set(gyroData.isConnected);
+    headingLog.set(getRotation2d().getDegrees());
 
     // // velocity and acceleration logging
     // double robotVelocity = Math.hypot(getChassisSpeeds().vxMetersPerSecond,

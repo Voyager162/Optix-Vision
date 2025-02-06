@@ -124,8 +124,6 @@ public class AutoUtils {
         chooser.addCmd("4-Piece", () -> Autos.get4Piece());
         chooser.addCmd("3 Coral and 2 Algae", () -> Autos.get3CoralAnd2Algae());
         chooser.addCmd("Coral Intake", () -> Autos.getCoralIntake());
-        chooser.addCmd("3 Coral Score L1", () -> Autos.get3CoralScoreL1());
-
         chooser.select("4-Piece");
         SmartDashboard.putData("Auto: Auto Chooser", chooser);
 
