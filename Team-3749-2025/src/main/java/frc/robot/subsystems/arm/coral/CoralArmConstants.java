@@ -6,7 +6,7 @@ package frc.robot.subsystems.arm.coral;
  *
  * @author Weston Gardner
  */
-public class CoralConstants {
+public class CoralArmConstants {
 
 	// motor specifications
 	public static final int motorID = 0;

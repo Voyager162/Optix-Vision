@@ -7,7 +7,7 @@ import edu.wpi.first.math.util.Units;
  *
  * @author Weston Gardner
  */
-public class ClimbConstants {
+public class ClimbArmConstants {
 
 	// motors
 	public static final int frontMotorId = 0;
