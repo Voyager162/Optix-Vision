@@ -9,10 +9,19 @@ import frc.robot.subsystems.roller.PhotoelectricIO.PhotoelectricData;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import static edu.wpi.first.units.Units.*;
 
 /**
  * Subsystem class for the arm
@@ -33,9 +42,14 @@ public class CoralArm extends Arm {
 
     private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
-    private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
-    private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
-    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Coral Arm", 24, 0));
+    private Mechanism2d mechanism2d = new Mechanism2d(3, 3);
+    private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 1.8, .4);
+    private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Coral Arm", CoralConstants.armLength_meters, 0));
+    // private Pose3d zeroedComponentPose = new Pose3d(0, 0, 0, new Rotation3d(roll,
+    // pitch, yaw));
+
+    StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
+            .getStructTopic("CoralArm Pose", Pose3d.struct).publish();
 
     /**
      * Constructor for the CoralArm subsystem.
@@ -54,13 +68,12 @@ public class CoralArm extends Arm {
                     CoralConstants.simulateGravity,
                     CoralConstants.armStartingAngle_degrees);
 
-            // this.photoelectricIO = new PhotoelectricSim();
-
         } else {
             armIO = new ArmSparkMax(CoralConstants.motorId);
             // this.photoelectricIO = new JTVisiSight();
         }
         SmartDashboard.putData("Coral Arm Mechanism", mechanism2d);
+        // System.out.println(data.positionUnits);
     }
 
     /**
@@ -100,6 +113,8 @@ public class CoralArm extends Arm {
                 return data.velocityUnits < 0;
             case MOVING_UP:
                 return data.velocityUnits > 0;
+            case L1:
+                return data.positionUnits == CoralConstants.scoreL1_rad;
             case STOPPED:
                 return UtilityFunctions.withinMargin(0.01, 0, data.velocityUnits);
             default:
@@ -133,6 +148,7 @@ public class CoralArm extends Arm {
             case CORAL_PICKUP:
                 setVoltage(controller.calculate(data.positionUnits, CoralConstants.coralPickUpSetPoint_rad)
                         + calculateFeedForward());
+
                 break;
             case L1:
                 setVoltage(controller.calculate(data.positionUnits, CoralConstants.L1SetPoint_rad)
@@ -142,6 +158,10 @@ public class CoralArm extends Arm {
                 setVoltage(controller.calculate(data.positionUnits, CoralConstants.sourceSetPoint_rad)
                         + calculateFeedForward());
                 break;
+            case L1:
+                setVoltage(controller.calculate(data.positionUnits, CoralConstants.scoreL1_rad)
+                + calculateFeedForward());
+                    break;
             case STOPPED:
                 setVoltage(0 + calculateFeedForward());
                 break;
@@ -171,6 +191,30 @@ public class CoralArm extends Arm {
         armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
         stateLog.set(state.name());
+
+        // Logger.recordOutput("zeropose", zeroedComponentPose);
+
+        publisher.set(new Pose3d(getTransform3d().getTranslation(), getTransform3d().getRotation()));
+        // elevatorPose3dLog.set(
+        // new Double[] {
+        // getTransform3d().getTranslation().getX(),
+        // getTransform3d().getTranslation().getY(),
+        // getTransform3d().getTranslation().getZ(),
+        // getTransform3d().getRotation().getAngle()
+        // }
+        // )
+    }
+
+    private Angle getPitch() {
+        // System.out.println(data.positionUnits);
+        return Angle.ofBaseUnits(data.positionUnits + Units.degreesToRadians(-55), Radians); // remove offset once coral
+                                                                                             // arm code is fixed
+    }
+
+    private Transform3d getTransform3d() {
+        Transform3d transform = new Transform3d(0.285, 0.01, 0.4,
+                new Rotation3d(Angle.ofBaseUnits(0, Radians), getPitch(), Angle.ofBaseUnits(0, Radians)));
+        return transform;
     }
 
     private double calculateFeedForward() {

@@ -14,7 +14,7 @@ public class ElevatorConstants {
         public static final double gearing = 6.0;
         public static final double carriageMassKg = 12;
         public static final double drumRadiusMeters = Units.inchesToMeters(2);
-        public static final double minHeightMeters = 0;
+        public static final double minHeightMeters = Units.inchesToMeters(0);
         public static final double maxHeightMeters = Units.feetToMeters(6); // remeasure maxV and A
         // public static final boolean simulateGravity = true;
         public static final double startingHeightMeters = 0;
@@ -61,5 +61,6 @@ public class ElevatorConstants {
         public static final double algaeHighHeight = Units.inchesToMeters(47.625);
         public static final double sourceHeight = Units.inchesToMeters(ElevatorSpecs.baseHeight);
         public static final double stowHeight = Units.inchesToMeters(5.0); // placedholder
+
     }
 }

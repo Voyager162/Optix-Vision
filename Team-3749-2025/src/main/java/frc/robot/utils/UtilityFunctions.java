@@ -1,5 +1,7 @@
 package frc.robot.utils;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
@@ -30,10 +32,23 @@ public class UtilityFunctions {
      * @return true if it is within the margin, false if not
      */
     public static boolean withinMargin(double margin, double a, double b) {
-        if (a + margin >= b && a - margin <= b) {
-            return true;
-        }
-        return false;
+        // if (a + margin >= b && a - margin <= b) {
+        // return true;
+        // }
+        // return false;
+
+        return (a + margin >= b && a - margin <= b);
+    }
+
+
+    public static boolean withinMargin(double translationMargin, Translation2d translationA, Translation2d translationB){
+            // double xError = Math.abs(setpoint.relativeTo(Robot.swerve.getPose()).getX());
+            // double yError = Math.abs(setpoint.relativeTo(Robot.swerve.getPose()).getY());
+            // double thetaError = setpoint.relativeTo(Robot.swerve.getPose()).getRotation().getDegrees();
+    
+            // return xError < positionTolerance && yError < positionTolerance && thetaError < rotationTolerance;
+        
+        return true;
     }
 
     /**
@@ -55,4 +70,31 @@ public class UtilityFunctions {
         return withinMargin(minSpeed, velocity, 0);
     }
 
+    /**
+     * Ensures safe initialization of Rotation2d. Falls back to a default rotation
+     * if invalid.
+     *
+     * @param rotation The rotation to validate.
+     * @return A valid Rotation2d object.
+     */
+    public static Rotation2d safeRotation(double rads) {
+        if (Math.abs(Math.cos(rads)) < 1e-6 && Math.abs(Math.sin(rads)) < 1e-6) {
+            System.out.println("Warning: Invalid Rotation2d detected. Falling back to neutral rotation.");
+            return new Rotation2d(0); // Neutral rotation
+        }
+        return new Rotation2d(rads);
+    }
+
+    public static Rotation2d safeRotation(double x, double y) {
+        double rads = Math.atan(y / x);
+        if (x == 0) {
+            rads = Math.copySign(Math.PI / 2, y);
+        }
+        
+        if (Math.abs(Math.cos(rads)) < 1e-6 && Math.abs(Math.sin(rads)) < 1e-6) {
+            System.out.println("Warning: Invalid Rotation2d detected. Falling back to neutral rotation.");
+            return new Rotation2d(0); // Neutral rotation
+        }
+        return new Rotation2d(rads);
+    }
 }

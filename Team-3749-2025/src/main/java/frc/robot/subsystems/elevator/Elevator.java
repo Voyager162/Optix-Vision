@@ -1,9 +1,21 @@
 package frc.robot.subsystems.elevator;
 
+import static edu.wpi.first.units.Units.Radians;
+
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -70,9 +82,12 @@ public class Elevator extends SubsystemBase {
     // "kAData", ElevatorConstants.ElevatorControl.kASim);
 
     private Mechanism2d mech = new Mechanism2d(3, 3);
-    private MechanismRoot2d root = mech.getRoot("elevator", 2, 0);
+    private MechanismRoot2d root = mech.getRoot("elevator", 1, 0);
     private MechanismLigament2d elevatorMech = root
             .append(new MechanismLigament2d("elevator", ElevatorConstants.ElevatorSpecs.baseHeight, 90));
+
+    private double elevatorInnerStagePos;
+    private double elevatorMiddleStagePos;
 
     public Elevator() {
         if (Robot.isSimulation()) {
@@ -219,7 +234,28 @@ public class Elevator extends SubsystemBase {
 
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
         SmartDashboard.putData("elevator mechanism", mech);
+
+
+        elevatorInnerStagePos = data.positionMeters / 2;
+        elevatorMiddleStagePos = data.positionMeters - Units.inchesToMeters(1);
+        elevatorInnerStage.set(new Pose3d(getTransform3d(elevatorInnerStagePos).getTranslation(),
+        getTransform3d(elevatorInnerStagePos).getRotation()));
+        elevatorMiddleStage.set(new Pose3d(getTransform3d(elevatorMiddleStagePos).getTranslation(),
+                getTransform3d(elevatorMiddleStagePos).getRotation()));
     }
+
+    
+
+    private Transform3d getTransform3d(double pos) {
+        Transform3d transform = new Transform3d(0, 0, pos, new Rotation3d(Angle.ofBaseUnits(0, Radians),
+                Angle.ofBaseUnits(0, Radians), Angle.ofBaseUnits(0, Radians)));
+        return transform;
+    }
+
+    StructPublisher<Pose3d> elevatorInnerStage = NetworkTableInstance.getDefault()
+            .getStructTopic("Elevator Inner Stage", Pose3d.struct).publish();
+    StructPublisher<Pose3d> elevatorMiddleStage = NetworkTableInstance.getDefault()
+            .getStructTopic("Elevator Middle Stage", Pose3d.struct).publish();
 
     @Override
     public void periodic() {
