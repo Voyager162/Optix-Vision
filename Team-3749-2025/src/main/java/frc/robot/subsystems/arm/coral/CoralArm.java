@@ -1,13 +1,14 @@
 package frc.robot.subsystems.arm.coral;
 
 import frc.robot.Robot;
-import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.real.ArmSparkMax;
-import frc.robot.subsystems.arm.sim.ArmSim;
+import frc.robot.subsystems.arm.CoralArmIO;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -24,7 +25,7 @@ import frc.robot.utils.UtilityFunctions;
  *
  * @author Weston Gardner
  */
-public class CoralArm extends SubsystemBase{
+public class CoralArm extends SubsystemBase {
 
 	private ProfiledPIDController controller = new ProfiledPIDController(
 			CoralConstants.kP,
@@ -40,7 +41,7 @@ public class CoralArm extends SubsystemBase{
 			CoralConstants.kV,
 			CoralConstants.kA);
 
-	private ClimbArmIO armIO;
+	private CoralArmIO armIO;
 	private ArmData data = new ArmData();
 	private CoralConstants.ArmStates state = CoralConstants.ArmStates.STOPPED;
 
@@ -67,20 +68,18 @@ public class CoralArm extends SubsystemBase{
 	 * hardware is used.
 	 */
 	public CoralArm() {
+
+		// If the robot is in simulation, use the simulated I/O for the arm.
 		if (Robot.isSimulation()) {
-			armIO = new ClimbArmSim(
-					CoralConstants.numMotors,
-					CoralConstants.armGearing,
-					CoralConstants.momentOfInertia,
-					CoralConstants.armLength_meters,
-					CoralConstants.armMinAngle_degrees,
-					CoralConstants.armMaxAngle_degrees,
-					CoralConstants.simulateGravity,
-					CoralConstants.armStartingAngle_degrees);
-        } else {
-            armIO = new ArmSparkMax(CoralConstants.motorId);
-        }
-        SmartDashboard.putData("Coral Arm Mechanism", mechanism2d);
+			armIO = new CoralArmSim();
+
+		} else { 
+			// If running on real hardware, use SparkMax motors for the arm.
+			armIO = new CoralArmSparkMax(CoralConstants.motorID);
+		}
+		
+		// Add the arm visualization to the SmartDashboard
+		SmartDashboard.putData("Coral Arm Mechanism", mechanism2d);
 
         sysIdTuner = new SysIdTuner("coral arm", getConfig(), this, armIO::setVoltage, getMotorData());
     }

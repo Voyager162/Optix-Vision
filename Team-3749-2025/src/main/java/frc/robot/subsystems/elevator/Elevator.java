@@ -57,7 +57,7 @@ public class Elevator extends SubsystemBase {
             ElevatorConstants.ElevatorControl.kASim);
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
-    private LoggedTunableNumber positionMetersLog = new LoggedTunableNumber("Elevator//position", 0.0);
+    private LoggedTunableNumber positionMetersLog = new LoggedTunableNumber("Elevator/position", 0.0);
     private LoggedTunableNumber velocityMetersPerSecLog = new LoggedTunableNumber("Elevator/velocity", 0.0);
     private LoggedTunableNumber accelerationMetersPerSecSquaredLog = new LoggedTunableNumber("Elevator/acceleration", 0.0);
 
@@ -68,6 +68,9 @@ public class Elevator extends SubsystemBase {
     private LoggedTunableNumber rightCurrentAmpsLog = new LoggedTunableNumber("Elevator/right current amps", 0.0);
     private LoggedTunableNumber leftTempCelciusLog = new LoggedTunableNumber("Elevator/left temp celcius", 0.0);
     private LoggedTunableNumber rightTempCelciusLog = new LoggedTunableNumber("Elevator/right temp celcius", 0.0);
+
+    private LoggedTunableNumber setpointVelocityLog = new LoggedTunableNumber("Elevator/setpoint velocity", 0.0);
+    private LoggedTunableNumber setpointPositionLog = new LoggedTunableNumber("Elevator/setpoint position", 0.0);
 
     // For tuning on real
     // private ShuffleData<Double> kPData = new ShuffleData<Double>("Elevator",
@@ -92,7 +95,7 @@ public class Elevator extends SubsystemBase {
                     (data.leftAppliedVolts + data.rightAppliedVolts) / 2.0,
                     data.positionMeters,
                     data.velocityMetersPerSecond,
-                    data.accelerationUnits));
+                    data.accelerationMetersPerSecondSquared));
 
     private SysIdRoutine.Config config = new SysIdRoutine.Config(
         Volts.per(Seconds).of(1), // Voltage ramp rate
@@ -216,7 +219,7 @@ public class Elevator extends SubsystemBase {
         currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
         positionMetersLog.set(data.positionMeters);
         velocityMetersPerSecLog.set(data.velocityMetersPerSecond);
-        accelerationMetersPerSecLog.set(data.accelerationUnits);
+        accelerationMetersPerSecSquaredLog.set(data.accelerationMetersPerSecondSquared);
         inputVoltsLog.set(data.inputVolts);
         leftAppliedVoltsLog.set(data.leftAppliedVolts);
         rightAppliedVoltsLog.set(data.rightAppliedVolts);
@@ -240,7 +243,7 @@ public class Elevator extends SubsystemBase {
         logData();
 
         motorData.get("elevator_motor").position = data.positionMeters;
-        motorData.get("elevator_motor").acceleration = data.accelerationUnits;
+        motorData.get("elevator_motor").acceleration = data.accelerationMetersPerSecondSquared;
         motorData.get("elevator_motor").velocity = data.velocityMetersPerSecond;
         motorData.get("elevator_motor").appliedVolts = (data.leftAppliedVolts + data.rightAppliedVolts) / 2.0;
 

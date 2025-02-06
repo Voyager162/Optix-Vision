@@ -6,7 +6,10 @@ import frc.robot.subsystems.arm.sim.ArmSim;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -24,7 +27,7 @@ import frc.robot.utils.UtilityFunctions;
  * @author Weston Gardner
  */
 
-public class ClimbArm extends Arm {
+public class ClimbArm extends SubsystemBase {
 
     private ClimbConstants.ArmStates state = ClimbConstants.ArmStates.STOPPED;
 
