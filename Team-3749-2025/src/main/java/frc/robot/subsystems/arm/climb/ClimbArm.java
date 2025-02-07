@@ -167,7 +167,7 @@ public class ClimbArm extends Arm {
 
     private Transform3d getTransform3d() {
         // 
-        Transform3d transform = new Transform3d(0, 0.18, 0.165,
+        Transform3d transform = new Transform3d(-0.33, 0.18, 0.165,
                 new Rotation3d(getPitch(), Angle.ofBaseUnits(0, Radians), Angle.ofBaseUnits(0, Radians)));
         return transform;
     }
