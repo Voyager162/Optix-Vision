@@ -14,6 +14,8 @@ import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.Robot;
+import frc.robot.buttons.JoystickIO;
+import frc.robot.buttons.ButtonBoard.ScoringLocation;
 import frc.robot.commands.auto.AutoConstants;
 import frc.robot.commands.auto.AutoUtils;
 import frc.robot.subsystems.swerve.GyroIO.GyroData;
@@ -192,7 +194,7 @@ public class Swerve extends SubsystemBase {
 
     // put us on the field with a default orientation
     resetGyro();
-    setOdometry(new Pose2d(1.33, 5.53, new Rotation2d(0)));
+    setOdometry(new Pose2d(0,0, new Rotation2d(0)));
     logSetpoints(1.33, 0, 0, 5.53, 0, 0, 0, 0, 0);
 
   }
@@ -379,6 +381,16 @@ public class Swerve extends SubsystemBase {
 
   public void cyclePPSetpoint() {
     currentPPSetpointIndex++;
+    if(JoystickIO.buttonBoard.getScoringLocation()==ScoringLocation.L1 && 
+    currentPPSetpointIndex>=2&&currentPPSetpointIndex<=24 && currentPPSetpointIndex%2==0)
+    {
+      currentPPSetpointIndex++;
+    }
+    if(JoystickIO.buttonBoard.getScoringLocation()!=ScoringLocation.L1 && 
+    currentPPSetpointIndex>=3&&currentPPSetpointIndex<=25 && currentPPSetpointIndex%2!=0)
+    {
+      currentPPSetpointIndex++;
+    }
 
     if (currentPPSetpointIndex >= ToPosConstants.Setpoints.PPSetpoints.values().length) {
       currentPPSetpointIndex = 0;
@@ -391,6 +403,16 @@ public class Swerve extends SubsystemBase {
 
   public void startOnTheFly(int setpointIndex) {
     currentPPSetpointIndex = setpointIndex;
+    if(JoystickIO.buttonBoard.getScoringLocation()==ScoringLocation.L1 && 
+    currentPPSetpointIndex>=2&&currentPPSetpointIndex<=24 && currentPPSetpointIndex%2==0)
+    {
+      currentPPSetpointIndex++;
+    }
+    if(JoystickIO.buttonBoard.getScoringLocation()!=ScoringLocation.L1 && 
+    currentPPSetpointIndex>=3&&currentPPSetpointIndex<=25 && currentPPSetpointIndex%2!=0)
+    {
+      currentPPSetpointIndex++;
+    }
     isOTF = true;
   }
 

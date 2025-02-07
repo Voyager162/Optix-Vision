@@ -30,7 +30,7 @@ import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
  * @author Rohin Sood
  * @author Noah Simon
  */
-public class JoystickIO {
+public class JoystickIOold {
 
     private static final CommandXboxController pilot = new CommandXboxController(0);
     private static final CommandXboxController operator = new CommandXboxController(1);
@@ -56,7 +56,7 @@ public class JoystickIO {
     private static final ScoreL1 scoreL1 = new ScoreL1();
     private static final ScoreL234 scoreL4 = new ScoreL234(ElevatorStates.L4);
 
-    public JoystickIO() {
+    public JoystickIOold() {
     }
 
     /**

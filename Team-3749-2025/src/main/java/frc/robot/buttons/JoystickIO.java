@@ -9,11 +9,22 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.buttons.ButtonBoard.ScoringLocation;
+import frc.robot.commands.arm.SetClimbArmState;
 import frc.robot.commands.elevator.SetElevatorState;
 import frc.robot.commands.example.ExampleSubsystemCommand;
+import frc.robot.commands.integration.CoralIntakeSource;
+import frc.robot.commands.integration.Handoff;
+import frc.robot.commands.integration.IntakeFloor;
+import frc.robot.commands.integration.IntakeSource;
+import frc.robot.commands.integration.KnockAlgae;
+import frc.robot.commands.integration.OuttakeCoral;
+import frc.robot.commands.integration.ScoreL1;
+import frc.robot.commands.integration.ScoreL234;
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.OnTheFly;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
+import frc.robot.subsystems.arm.climb.ClimbArm;
+import frc.robot.subsystems.arm.climb.ClimbConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.swerve.ToPos;
 
@@ -69,6 +80,27 @@ public class JoystickIO {
     private final static JoystickButton buttonUtilityA = new JoystickButton(buttonBoardPlayer1, 20);
     private final static JoystickButton buttonUtilityB = new JoystickButton(buttonBoardPlayer1, 21);
     //now this is just TOO much trolling who put this buttonUtilityA here
+
+    private static final SetElevatorState l1 = new SetElevatorState(ElevatorStates.L1);
+    private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
+    private static final SetElevatorState l3 = new SetElevatorState(ElevatorStates.L3);
+    private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
+    private static final SetElevatorState stow = new SetElevatorState(ElevatorStates.STOW);
+
+    private static final KnockAlgae knockAlgaeLow = new KnockAlgae(ElevatorStates.ALGAE_LOW);
+    private static final KnockAlgae knockAlgaeHigh = new KnockAlgae(ElevatorStates.ALGAE_HIGH);
+    private static final Handoff handoff = new Handoff();
+    private static final IntakeFloor intakeFloor = new IntakeFloor();
+    private static final IntakeSource intakeSource = new IntakeSource();
+    private static final CoralIntakeSource coralIntakeSource = new CoralIntakeSource();
+    private static final OuttakeCoral outtakeCoral = new OuttakeCoral();
+    private static final ScoreL1 scoreL1 = new ScoreL1();
+    private static final ScoreL234 scoreL4 = new ScoreL234(ElevatorStates.L4);
+
+    private static final Command climbStow = new SetClimbArmState(Robot.climbArm, ClimbConstants.ArmStates.STOWED,
+            ClimbConstants.stowSetPoint_rad);
+    private static final Command climb = new SetClimbArmState(Robot.climbArm, ClimbConstants.ArmStates.CLIMB,
+            ClimbConstants.climbSetPoint_rad);
 
     public JoystickIO() {
     }
@@ -154,12 +186,16 @@ public class JoystickIO {
         //         Robot.swerve.getPose().getTranslation(), Robot.swerve.getPPSetpoint().setpoint.getTranslation())).onTrue(Commands.print("SCORE"));
 
         // Example binding
-        operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        pilot.povLeft().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L1)).andThen(new SetElevatorState(ElevatorStates.L1)));
-        pilot.povUp().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L2)).andThen(new SetElevatorState(ElevatorStates.L2)));
-        pilot.povRight().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L3)).andThen(new SetElevatorState(ElevatorStates.L3)));
-        pilot.povDown().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L4)).andThen(new SetElevatorState(ElevatorStates.L4)));
+        operator.a().onTrue(l1);
+        operator.b().onTrue(intakeSource);
+        operator.x().onTrue(climb);
+        operator.y().onTrue(climbStow);
+
+        pilot.povLeft().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L1)));
+        pilot.povUp().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L2)));
+        pilot.povRight().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L3)));
+        pilot.povDown().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L4)));
     }
 
 

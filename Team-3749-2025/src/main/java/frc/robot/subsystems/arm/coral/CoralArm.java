@@ -184,13 +184,13 @@ public class CoralArm extends Arm {
     }
 
     private Angle getPitch() {
-        System.out.println("Coral Arm: " + data.positionUnits);
+        // System.out.println("Coral Arm: " + data.positionUnits);
         return Angle.ofBaseUnits(data.positionUnits + Units.degreesToRadians(-55), Radians); // remove offset once coral
                                                                                              // arm code is fixed
     }
 
     private Transform3d getTransform3d() {
-        Transform3d transform = new Transform3d(0, 0.35, 0.4,
+        Transform3d transform = new Transform3d(-0.33, 0.35, 0.4,
                 new Rotation3d(Angle.ofBaseUnits(0, Radians), getPitch(),
                         Angle.ofBaseUnits(Units.degreesToRadians(90), Radians)));
         return transform;
