@@ -5,20 +5,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Robot;
-import frc.robot.commands.arm.SetArmState;
-import frc.robot.commands.elevator.SetElevatorState;
 
-import frc.robot.commands.roller.MaintainCommand;
-import frc.robot.commands.roller.RunCommand;
-import frc.robot.commands.roller.StopCommand;
+
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
-import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.climb.ClimbConstants;
-import frc.robot.subsystems.arm.coral.CoralArm;
-import frc.robot.subsystems.arm.coral.CoralConstants;
-import frc.robot.subsystems.arm.coral.CoralConstants.ArmStates;
-import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 
 /**
  * Util class for button bindings
@@ -31,31 +21,6 @@ public class JoystickIO {
     private static final CommandXboxController pilot = new CommandXboxController(0);
     private static final CommandXboxController operator = new CommandXboxController(1);
     private static final Command DriveStraight = new DriveStraight();
-    private static final Command MaintainCommand = new MaintainCommand();
-    private static final Command RunCommand = new RunCommand();
-    private static final Command StopCommand = new StopCommand();
-
-
-    private static final SetArmState<CoralConstants.ArmStates> l1 = new SetArmState<CoralConstants.ArmStates>(
-			Robot.coralArm,
-			CoralConstants.ArmStates.L1);
-    private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
-    private static final SetElevatorState l3 = new SetElevatorState(ElevatorStates.L3);
-    private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
-    private static final SetArmState<CoralConstants.ArmStates> handoff = new SetArmState<CoralConstants.ArmStates>(
-			Robot.coralArm,
-			CoralConstants.ArmStates.HAND_OFF);
-    private static final SetArmState<CoralConstants.ArmStates> pickup = new SetArmState<CoralConstants.ArmStates>(
-        Robot.coralArm,
-        CoralConstants.ArmStates.CORAL_PICKUP);
-    private static final SetArmState<ClimbConstants.ArmStates> l1PrepClimb = new SetArmState<ClimbConstants.ArmStates>(
-        Robot.climbArm,
-        ClimbConstants.ArmStates.PREPARE_FOR_CLIMB);
-    private static final SetArmState<ClimbConstants.ArmStates> l1Climb = new SetArmState<ClimbConstants.ArmStates>(
-        Robot.climbArm,
-        ClimbConstants.ArmStates.CLIMB);
-    // private static final SetArmState boom = new SetArmState(Robot.coralArm, CoralConstants.ArmStates.HAND_OFF);
-
 
     public JoystickIO() {
     }
@@ -88,17 +53,7 @@ public class JoystickIO {
     public static void pilotAndOperatorBindings() {
         // gyro reset
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
-        pilot.a().whileTrue(RunCommand);
-        pilot.b().whileTrue(MaintainCommand);
-        pilot.x().whileTrue(StopCommand);
-
-        // Example binding 
-        // operator.a().whileTrue(new ExampleSubsystemCommand());
-
-        operator.a().onTrue(pickup);
-        operator.b().onTrue(handoff);
-        operator.x().onTrue(l1PrepClimb);
-        operator.y().onTrue(l1Climb);
+  
     }
 
     public static void pilotBindings() {
