@@ -65,11 +65,12 @@ public class ToPosTriggers {
             Boolean isL1 = JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L1;
             return withinMargin && isCoralReef && isL1;
         });
-        coralReefL1.onTrue(new PrintCommand("score l1")); 
+        coralReefL1.onTrue(new SetElevatorState(ElevatorStates.L1)); 
         //insert roller code here i dont want to 
 
         Trigger coralReefL2 = new Trigger(() -> Robot.swerve.isOTF).and(() -> {
             Boolean withinMargin = OTFWithinMargin();
+            System.out.println(withinMargin);
             Boolean isCoralReef = isReefSupplier.getAsBoolean();
             Boolean isL2 = JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L2;
             return withinMargin && isCoralReef && isL2;

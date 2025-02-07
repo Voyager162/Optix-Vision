@@ -42,13 +42,10 @@ public class UtilityFunctions {
 
 
     public static boolean withinMargin(double translationMargin, Translation2d translationA, Translation2d translationB){
-            // double xError = Math.abs(setpoint.relativeTo(Robot.swerve.getPose()).getX());
-            // double yError = Math.abs(setpoint.relativeTo(Robot.swerve.getPose()).getY());
-            // double thetaError = setpoint.relativeTo(Robot.swerve.getPose()).getRotation().getDegrees();
-    
-            // return xError < positionTolerance && yError < positionTolerance && thetaError < rotationTolerance;
         
-        return true;
+            double Dist = translationA.getDistance(translationB);
+    
+            return Dist < translationMargin ;
     }
 
     /**
