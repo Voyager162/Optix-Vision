@@ -38,7 +38,6 @@ public class Autos {
 
     public static Command get3Piece() {
         AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("3-Piece");
-
         // loop.trajectory, or the new name
         AutoTrajectory trajectory1 = routine.trajectory("Start-L5");
         AutoTrajectory trajectory2 = routine.trajectory("L5-Station");
@@ -86,7 +85,7 @@ public class Autos {
         AutoTrajectory trajectory2 = routine.trajectory("Station-L3");
        
         Command intake1 = AutoUtils.addCoralIntakeSource(trajectory1);
-        AutoUtils.addScoreL4(trajectory2);
+        AutoUtils.addScoreL1(trajectory2);
         
           AutoUtils.goNextAfterCommand(trajectory1, trajectory2, intake1);
 

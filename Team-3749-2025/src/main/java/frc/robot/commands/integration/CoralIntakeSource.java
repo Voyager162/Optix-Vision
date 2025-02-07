@@ -9,14 +9,14 @@ import frc.robot.subsystems.roller.RollerConstants.RollerStates;
  * CoralIntakeSource command for intaking coral from source
  */
 public class CoralIntakeSource extends Command {
-    public static Command activeCoralIntakeSourceCommand = null;
+
     public CoralIntakeSource() {
         addRequirements(Robot.getAllSuperStructureSubsystems());
     }
 
     @Override
     public void initialize() {
-        activeCoralIntakeSourceCommand = this;
+        // activeCoralIntakeSourceCommand = this;
         Robot.coralArm.setState(CoralArmConstants.ArmStates.SOURCE);
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.scoringRoller.setState(RollerStates.STOP);
@@ -29,7 +29,7 @@ public class CoralIntakeSource extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        activeCoralIntakeSourceCommand = null;
+        System.out.println("end");
         Robot.coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
         Robot.coralRoller.setState(RollerStates.MAINTAIN);
     }
