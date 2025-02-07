@@ -96,10 +96,15 @@ public class JoystickIO {
         // operator.x().onTrue(l3);
         // operator.y().onTrue(l4);
 
-        operator.a().onTrue(l1);
+        /*operator.a().onTrue(l1);
         operator.b().onTrue(climbStow);
         operator.x().onTrue(coralHandOff);
-        operator.y().onTrue(Robot.elevator.getSysIdTuner().runTests());
+        operator.y().onTrue(Robot.elevator.getSysIdTuner().runTests());*/
+
+        operator.a().onTrue(Robot.swerve.getRotationalSysIdTuner().sysIdQuasistatic(Direction.kForward));
+        operator.b().onTrue(Robot.swerve.getRotationalSysIdTuner().sysIdQuasistatic(Direction.kReverse));
+        operator.x().onTrue(Robot.swerve.getRotationalSysIdTuner().sysIdDynamic(Direction.kForward));
+        operator.y().onTrue(Robot.swerve.getRotationalSysIdTuner().sysIdDynamic(Direction.kReverse));
 
     }
 
