@@ -21,7 +21,6 @@ import static edu.wpi.first.units.Units.*;
 
 import java.util.Map;
 
-
 /**
  * Subsystem class for the climb arm
  *
@@ -30,7 +29,7 @@ import java.util.Map;
 
 public class ClimbArm extends SubsystemBase {
 
-    private ClimbConstants.ArmStates state = ClimbConstants.ArmStates.STOPPED;
+	private ClimbConstants.ArmStates state = ClimbConstants.ArmStates.STOPPED;
 
 	private ProfiledPIDController controller = new ProfiledPIDController(
 			ClimbConstants.kP,
@@ -71,46 +70,58 @@ public class ClimbArm extends SubsystemBase {
 	private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
 	private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Climb Arm", 24, 0));
 
-    private SysIdTuner sysIdTuner;
+	private LoggedTunableNumber kG = new LoggedTunableNumber(this.getName() + "/kG", ClimbConstants.kG);
+	private LoggedTunableNumber kP = new LoggedTunableNumber(this.getName() + "/kP", ClimbConstants.kP);
+	private LoggedTunableNumber kI = new LoggedTunableNumber(this.getName() + "/kI", ClimbConstants.kI);
+	private LoggedTunableNumber kD = new LoggedTunableNumber(this.getName() + "/kD", ClimbConstants.kD);
+	private LoggedTunableNumber kS = new LoggedTunableNumber(this.getName() + "/kS", ClimbConstants.kS);
+	private LoggedTunableNumber kV = new LoggedTunableNumber(this.getName() + "/kV", ClimbConstants.kV);
+	private LoggedTunableNumber kA = new LoggedTunableNumber(this.getName() + "/kA", ClimbConstants.kA);
+	private LoggedTunableNumber maxVelocity = new LoggedTunableNumber(this.getName() + "/max velocity",
+			ClimbConstants.maxVelocity);
+	private LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(this.getName() + "/max acceleration",
+			ClimbConstants.maxAcceleration);
+
+	private SysIdTuner sysIdTuner;
 
 	SysIdRoutine.Config config = new SysIdRoutine.Config(
-            Volts.per(Seconds).of(1), // Voltage ramp rate
-            Volts.of(4), // Max voltage
-            Seconds.of(4) // Test duration
-    );
+			Volts.per(Seconds).of(1), // Voltage ramp rate
+			Volts.of(4), // Max voltage
+			Seconds.of(4) // Test duration
+	);
 
 	Map<String, MotorData> motorData = Map.of(
-            "arm_motor", new MotorData(
-                    data.appliedVolts,
-                    data.positionUnits,
-                    data.velocityUnits,
-                    data.accelerationUnits));
+			"arm_motor", new MotorData(
+					data.appliedVolts,
+					data.positionUnits,
+					data.velocityUnits,
+					data.accelerationUnits));
 
-    public ClimbArm() {
-        if (Robot.isSimulation()) {
-            
-            armIO = new ClimbArmSim();
+	public ClimbArm() {
+		if (Robot.isSimulation()) {
 
-        } else {
-            armIO = new ClimbArmSparkMax(ClimbConstants.frontMotorId, ClimbConstants.backMotorId);
-        }
-        SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
+			armIO = new ClimbArmSim();
 
-        sysIdTuner = new SysIdTuner("climb arm", getConfig(), this, armIO::setVoltage, getMotorData());
-    }
+		} else {
+			armIO = new ClimbArmSparkMax(ClimbConstants.frontMotorId, ClimbConstants.backMotorId);
+		}
+		SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
 
-	public Map<String, MotorData> getMotorData(){
+		sysIdTuner = new SysIdTuner("climb arm", getConfig(), this, armIO::setVoltage, getMotorData());
+	}
+
+	public Map<String, MotorData> getMotorData() {
 		return motorData;
 	}
 
-	public SysIdRoutine.Config getConfig(){
+	public SysIdRoutine.Config getConfig() {
 		return config;
 	}
 
-    public SysIdTuner getSysIdTuner(){
-        System.out.println(sysIdTuner);
-        return sysIdTuner;
-    }
+	public SysIdTuner getSysIdTuner() {
+		System.out.println(sysIdTuner);
+		return sysIdTuner;
+	}
 
 	/**
 	 * @return the current arm state.
@@ -118,7 +129,6 @@ public class ClimbArm extends SubsystemBase {
 	public ClimbConstants.ArmStates getState() {
 		return state;
 	}
-
 
 	/**
 	 * @return the current arm position.
@@ -136,7 +146,8 @@ public class ClimbArm extends SubsystemBase {
 			case STOWED:
 				return UtilityFunctions.withinMargin(0.001, ClimbConstants.stowSetPoint_rad, data.positionUnits);
 			case PREPARE_FOR_CLIMB:
-				return UtilityFunctions.withinMargin(0.001, ClimbConstants.PrepareForClimbSetPoint_rad, data.positionUnits);
+				return UtilityFunctions.withinMargin(0.001, ClimbConstants.PrepareForClimbSetPoint_rad,
+						data.positionUnits);
 			case CLIMB:
 				return UtilityFunctions.withinMargin(0.001, ClimbConstants.climbSetPoint_rad, data.positionUnits);
 			case STOPPED:
@@ -146,12 +157,11 @@ public class ClimbArm extends SubsystemBase {
 		}
 	}
 
-
 	// UTILITY FUNCTIONS
 
 	public void setVoltage(double volts) {
-        armIO.setVoltage(volts);
-    }
+		armIO.setVoltage(volts);
+	}
 
 	/**
 	 * Sets the current state of the arm.
@@ -213,11 +223,7 @@ public class ClimbArm extends SubsystemBase {
 		armIO.setVoltage(pidVoltage + ffVoltage);
 	}
 
-
-
 	// PERIODIC FUNCTIONS
-
-
 
 	/** Runs the logic for the current arm state. */
 	private void runState() {
@@ -248,6 +254,16 @@ public class ClimbArm extends SubsystemBase {
 		armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
 		stateLog.set(state.name());
+
+		ClimbConstants.kG = kG.get();
+		ClimbConstants.kP = kP.get();
+		ClimbConstants.kI = kI.get();
+		ClimbConstants.kD = kD.get();
+		ClimbConstants.kS = kS.get();
+		ClimbConstants.kV = kV.get();
+		ClimbConstants.kA = kA.get();
+		ClimbConstants.maxVelocity = maxVelocity.get();
+		ClimbConstants.maxAcceleration = maxAcceleration.get();
 	}
 
 	/** Periodic method for updating arm behavior. */

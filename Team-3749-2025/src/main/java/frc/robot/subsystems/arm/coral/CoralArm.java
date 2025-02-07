@@ -62,20 +62,32 @@ public class CoralArm extends SubsystemBase {
 	private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
 	private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Coral Arm", 24, 0));
 
-    private SysIdTuner sysIdTuner;
+	private LoggedTunableNumber kG = new LoggedTunableNumber(this.getName() + "/kG", CoralConstants.kG);
+	private LoggedTunableNumber kP = new LoggedTunableNumber(this.getName() + "/kP", CoralConstants.kP);
+	private LoggedTunableNumber kI = new LoggedTunableNumber(this.getName() + "/kI", CoralConstants.kI);
+	private LoggedTunableNumber kD = new LoggedTunableNumber(this.getName() + "/kD", CoralConstants.kD);
+	private LoggedTunableNumber kS = new LoggedTunableNumber(this.getName() + "/kS", CoralConstants.kS);
+	private LoggedTunableNumber kV = new LoggedTunableNumber(this.getName() + "/kV", CoralConstants.kV);
+	private LoggedTunableNumber kA = new LoggedTunableNumber(this.getName() + "/kA", CoralConstants.kA);
+	private LoggedTunableNumber maxVelocity = new LoggedTunableNumber(this.getName() + "/max velocity",
+			CoralConstants.maxVelocity);
+	private LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(this.getName() + "/max acceleration",
+			CoralConstants.maxAcceleration);
+
+	private SysIdTuner sysIdTuner;
 
 	Map<String, MotorData> motorData = Map.of(
-            "arm_motor", new MotorData(
-                    data.appliedVolts,
-                    data.positionUnits,
-                    data.velocityUnits,
-                    data.accelerationUnits));
+			"arm_motor", new MotorData(
+					data.appliedVolts,
+					data.positionUnits,
+					data.velocityUnits,
+					data.accelerationUnits));
 
 	SysIdRoutine.Config config = new SysIdRoutine.Config(
-            Volts.per(Seconds).of(1), // Voltage ramp rate
-            Volts.of(4), // Max voltage
-            Seconds.of(4) // Test duration
-    );
+			Volts.per(Seconds).of(1), // Voltage ramp rate
+			Volts.of(4), // Max voltage
+			Seconds.of(4) // Test duration
+	);
 
 	/**
 	 * Constructor for the CoralArm subsystem. Determines if simulation or real
@@ -87,32 +99,30 @@ public class CoralArm extends SubsystemBase {
 		if (Robot.isSimulation()) {
 			armIO = new CoralArmSim();
 
-		} else { 
+		} else {
 			// If running on real hardware, use SparkMax motors for the arm.
 			armIO = new CoralArmSparkMax(CoralConstants.motorID);
 		}
-		
+
 		// Add the arm visualization to the SmartDashboard
 		SmartDashboard.putData("Coral Arm Mechanism", mechanism2d);
 
-        sysIdTuner = new SysIdTuner("coral arm", getConfig(), this, armIO::setVoltage, getMotorData());
-    }
+		sysIdTuner = new SysIdTuner("coral arm", getConfig(), this, armIO::setVoltage, getMotorData());
+	}
 
-	public SysIdRoutine.Config getConfig(){
+	public SysIdRoutine.Config getConfig() {
 		return config;
 	}
 
-	public Map<String, MotorData> getMotorData(){
+	public Map<String, MotorData> getMotorData() {
 		return motorData;
 	}
 
-    public SysIdTuner getSysIdTuner(){
-        return sysIdTuner;
-    }
-
+	public SysIdTuner getSysIdTuner() {
+		return sysIdTuner;
+	}
 
 	// SET FUNCTIONS
-
 
 	// Method to set the voltage for the arm
 	public void setVoltage(double volts) {
@@ -146,7 +156,6 @@ public class CoralArm extends SubsystemBase {
 	public void setGoal(double setPoint) {
 		controller.setGoal(setPoint);
 	}
-
 
 	// GET FUNCTIONS
 
@@ -183,7 +192,6 @@ public class CoralArm extends SubsystemBase {
 		}
 	}
 
-
 	// UTILITY FUNCTIONS
 
 	/**
@@ -213,10 +221,7 @@ public class CoralArm extends SubsystemBase {
 		armIO.setVoltage(pidVoltage + ffVoltage);
 	}
 
-
 	// PERIODIC FUNCTIONS
-
-
 
 	/** Runs the logic for the current arm state. */
 	private void runState() {
@@ -244,6 +249,16 @@ public class CoralArm extends SubsystemBase {
 		armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
 		stateLog.set(state.name());
+
+		CoralConstants.kG = kG.get();
+		CoralConstants.kP = kP.get();
+		CoralConstants.kI = kI.get();
+		CoralConstants.kD = kD.get();
+		CoralConstants.kS = kS.get();
+		CoralConstants.kV = kV.get();
+		CoralConstants.kA = kA.get();
+		CoralConstants.maxVelocity = maxVelocity.get();
+		CoralConstants.maxAcceleration = maxAcceleration.get();
 	}
 
 	/** Periodic method for updating arm behavior. */
@@ -256,9 +271,9 @@ public class CoralArm extends SubsystemBase {
 
 		logData();
 
-        getMotorData().get("arm_motor").position = data.positionUnits;
-        getMotorData().get("arm_motor").acceleration = data.accelerationUnits;
-        getMotorData().get("arm_motor").velocity = data.velocityUnits;
-        getMotorData().get("arm_motor").appliedVolts = data.appliedVolts;
+		getMotorData().get("arm_motor").position = data.positionUnits;
+		getMotorData().get("arm_motor").acceleration = data.accelerationUnits;
+		getMotorData().get("arm_motor").velocity = data.velocityUnits;
+		getMotorData().get("arm_motor").appliedVolts = data.appliedVolts;
 	}
 }

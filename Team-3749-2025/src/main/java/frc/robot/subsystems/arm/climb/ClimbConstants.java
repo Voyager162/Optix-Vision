@@ -25,20 +25,20 @@ public class ClimbConstants {
 	public static final double armMass_kg = 8.44;
 	public static final double armGearing = 255;
 
-	public static final double maxVelocity = 0.0;
-	public static final double maxAcceleration = 0.0;
+	public static double maxVelocity = 0.0;
+	public static double maxAcceleration = 0.0;
 
 	public static final double momentOfInertia = 0.775;
 
 	// control values
 	public static double kP = 15;
-	public static final double kI = 0.0;
-	public static final double kD = 0.0;
+	public static double kI = 0.0;
+	public static double kD = 0.0;
 
 	public static double kG = 0.50738;
-	public static final double kS = 0.0;
-	public static final double kA = 0.0;
-	public static final double kV = 0.0;
+	public static double kS = 0.0;
+	public static double kA = 0.0;
+	public static double kV = 0.0;
 
 	// setpoints
 	public static final double stowSetPoint_rad = 0;
