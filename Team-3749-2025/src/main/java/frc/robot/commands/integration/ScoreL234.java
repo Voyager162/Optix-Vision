@@ -13,19 +13,14 @@ import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 public class ScoreL234 extends Command {
     private final ElevatorStates state;
     private boolean handoffComplete = false;
-    public static Command activeScoreCommand = null;
-
-
 
     public ScoreL234(ElevatorStates state) {
         this.state = state;
         addRequirements(Robot.getAllSuperStructureSubsystems());
-        System.out.println("ScoreL234 Constructor: Command Created with state = " + state);
     }
 
     @Override
     public void initialize() {
-        activeScoreCommand = this;
 
         if (Robot.scoringRoller.hasPiece()) {
             Robot.elevator.setState(state);
@@ -62,7 +57,6 @@ public class ScoreL234 extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        activeScoreCommand = null;
         Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);
