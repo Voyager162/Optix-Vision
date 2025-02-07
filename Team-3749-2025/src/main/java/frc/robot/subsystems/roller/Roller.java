@@ -27,6 +27,14 @@ public abstract class Roller extends SubsystemBase {
     private ShuffleData<String> stateLog;
     private LoggedTunableNumber rollerPositionLog;
     private LoggedTunableNumber rollerLastKnownPositionLog;
+    protected LoggedTunableNumber kp;
+    protected LoggedTunableNumber ki;
+    protected LoggedTunableNumber kd;
+    protected LoggedTunableNumber kv;
+    protected LoggedTunableNumber ka;
+    protected LoggedTunableNumber ks;
+    protected LoggedTunableNumber maxVelocity;
+    protected LoggedTunableNumber maxAcceleration;
 
     public Roller(Implementations implementation, PIDController velocityController, SimpleMotorFeedforward rollerFF, PIDController positionController) {
         switch(implementation) {

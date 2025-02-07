@@ -6,6 +6,7 @@ import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
 import frc.robot.subsystems.roller.RollerIO.RollerData;
+import frc.robot.utils.LoggedTunableNumber;
 
 public class ScoringRoller extends Roller {
     private RollerData rollerData;
@@ -13,6 +14,14 @@ public class ScoringRoller extends Roller {
     public ScoringRoller() {
         super(Implementations.SCORING, velocityController(), FF(), positionController());
         this.rollerData = new RollerData();
+        kp = new LoggedTunableNumber(getName() + "/kP", RollerConstants.Scoring.kPVelocity);
+        ki = new LoggedTunableNumber(getName() + "/kI", RollerConstants.Scoring.kIVelocity);
+        kd = new LoggedTunableNumber(getName() + "/kD", RollerConstants.Scoring.kDVelocity);
+        kv = new LoggedTunableNumber(getName() + "/kV", RollerConstants.Scoring.kVVelocity);
+        ka = new LoggedTunableNumber(getName() + "/kA", RollerConstants.Scoring.kAVelocity);
+        ks = new LoggedTunableNumber(getName() + "/kS", RollerConstants.Scoring.kSVelocity);
+        maxVelocity = new LoggedTunableNumber(getName() + "/maxVelocity", RollerConstants.Scoring.maxVelocity);
+        maxAcceleration = new LoggedTunableNumber(getName() + "/maxAcceleration", RollerConstants.Scoring.maxAcceleration);
     }
 
     public static PIDController velocityController() {
