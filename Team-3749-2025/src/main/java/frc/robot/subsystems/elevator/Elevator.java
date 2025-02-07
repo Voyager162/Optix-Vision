@@ -72,17 +72,16 @@ public class Elevator extends SubsystemBase {
     private LoggedTunableNumber setpointVelocityLog = new LoggedTunableNumber("Elevator/setpoint velocity", 0.0);
     private LoggedTunableNumber setpointPositionLog = new LoggedTunableNumber("Elevator/setpoint position", 0.0);
 
-    // For tuning on real
-    // private ShuffleData<Double> kPData = new ShuffleData<Double>("Elevator",
-    // "kPData", ElevatorConstants.ElevatorControl.kPSim);
-    // private ShuffleData<Double> kDData = new ShuffleData<Double>("Elevator",
-    // "kDData", ElevatorConstants.ElevatorControl.kDSim);
-    // private ShuffleData<Double> kGData = new ShuffleData<Double>("Elevator",
-    // "kGData", ElevatorConstants.ElevatorControl.kGSim);
-    // private ShuffleData<Double> kVData = new ShuffleData<Double>("Elevator",
-    // "kVData", ElevatorConstants.ElevatorControl.kVSim);
-    // private ShuffleData<Double> kAData = new ShuffleData<Double>("Elevator",
-    // "kAData", ElevatorConstants.ElevatorControl.kASim);
+    private LoggedTunableNumber kPData = new LoggedTunableNumber("Elevator/kP", ElevatorConstants.ElevatorControl.kPSim);
+    private LoggedTunableNumber kDData = new LoggedTunableNumber("Elevator/kD", ElevatorConstants.ElevatorControl.kDSim);
+    private LoggedTunableNumber kVData = new LoggedTunableNumber("Elevator/kV", ElevatorConstants.ElevatorControl.kVSim);
+    private LoggedTunableNumber kAData = new LoggedTunableNumber("Elevator/kA", ElevatorConstants.ElevatorControl.kASim);
+    private LoggedTunableNumber kGData = new LoggedTunableNumber("Elevator/kG", ElevatorConstants.ElevatorControl.kGSim);
+    private LoggedTunableNumber kSData = new LoggedTunableNumber("Elevator/kS", ElevatorConstants.ElevatorControl.kSSim);
+    private LoggedTunableNumber kIData = new LoggedTunableNumber("Elevator/kI", ElevatorConstants.ElevatorControl.kISim);
+    private LoggedTunableNumber maxVData = new LoggedTunableNumber("Elevator/maxV", ElevatorConstants.ElevatorControl.maxV);
+    private LoggedTunableNumber maxAData = new LoggedTunableNumber("Elevator/maxA", ElevatorConstants.ElevatorControl.maxA);
+
 
     private Mechanism2d mech = new Mechanism2d(3, 3);
     private MechanismRoot2d root = mech.getRoot("elevator", 2, 0);
@@ -233,6 +232,16 @@ public class Elevator extends SubsystemBase {
 
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
         SmartDashboard.putData("elevator mechanism", mech);
+
+        ElevatorConstants.ElevatorControl.kPSim = kPData.get();
+        ElevatorConstants.ElevatorControl.kDSim = kDData.get();
+        ElevatorConstants.ElevatorControl.kVSim = kVData.get();
+        ElevatorConstants.ElevatorControl.kASim = kAData.get();
+        ElevatorConstants.ElevatorControl.kGSim = kGData.get();
+        ElevatorConstants.ElevatorControl.kSSim = kSData.get();
+        ElevatorConstants.ElevatorControl.kISim = kIData.get();
+        ElevatorConstants.ElevatorControl.maxV = maxVData.get();
+        ElevatorConstants.ElevatorControl.maxA = maxAData.get();
     }
 
     @Override
