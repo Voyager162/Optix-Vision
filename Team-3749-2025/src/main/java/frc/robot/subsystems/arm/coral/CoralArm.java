@@ -42,8 +42,6 @@ public class CoralArm extends Arm {
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 1.8, .4);
     private MechanismLigament2d armLigament = armRoot
             .append(new MechanismLigament2d("Coral Arm", CoralConstants.armLength_meters, 0));
-    // private Pose3d zeroedComponentPose = new Pose3d(0, 0, 0, new Rotation3d(roll,
-    // pitch, yaw));
 
     StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
             .getStructTopic("CoralArm Pose", Pose3d.struct).publish();
@@ -172,14 +170,7 @@ public class CoralArm extends Arm {
         // Logger.recordOutput("zeropose", zeroedComponentPose);
 
         publisher.set(new Pose3d(getTransform3d().getTranslation(), getTransform3d().getRotation()));
-        // elevatorPose3dLog.set(
-        // new Double[] {
-        // getTransform3d().getTranslation().getX(),
-        // getTransform3d().getTranslation().getY(),
-        // getTransform3d().getTranslation().getZ(),
-        // getTransform3d().getRotation().getAngle()
-        // }
-        // )
+
     }
 
     private Angle getPitch() {
