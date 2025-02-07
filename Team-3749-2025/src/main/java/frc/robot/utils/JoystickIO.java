@@ -91,21 +91,21 @@ public class JoystickIO {
         // Example binding
         // operator.a().whileTrue(new ExampleSubsystemCommand());
 
+        // operator.a().onTrue(Robot.climbArm.getSysIdTuner().runTests());
+        // operator.b().onTrue(Robot.coralArm.getSysIdTuner().runTests());
+        // operator.x().onTrue(Robot.elevator.getSysIdTuner().runTests());
+
+        // operator.a().onTrue(Robot.swerve.getRotationalSysIdTuner().runTests());
+        // operator.b().onTrue(Robot.swerve.getDriveSysIdTuner().runTests());
+
+        // operator.a().onTrue(Robot.algaeRoller.getSysIdTuner().runTests());
+        // operator.b().onTrue(Robot.coralArm.getSysIdTuner().runTests());
+        // operator.x().onTrue(Robot.climbArm.getSysIdTuner().runTests());
+
         // operator.a().onTrue(l1);
         // operator.b().onTrue(l2);
         // operator.x().onTrue(l3);
         // operator.y().onTrue(l4);
-
-        /*operator.a().onTrue(l1);
-        operator.b().onTrue(climbStow);
-        operator.x().onTrue(coralHandOff);
-        operator.y().onTrue(Robot.elevator.getSysIdTuner().runTests());*/
-
-        operator.a().onTrue(Robot.swerve.getRotationalSysIdTuner().sysIdQuasistatic(Direction.kForward));
-        operator.b().onTrue(Robot.swerve.getRotationalSysIdTuner().sysIdQuasistatic(Direction.kReverse));
-        operator.x().onTrue(Robot.swerve.getRotationalSysIdTuner().sysIdDynamic(Direction.kForward));
-        operator.y().onTrue(Robot.swerve.getRotationalSysIdTuner().sysIdDynamic(Direction.kReverse));
-
     }
 
     public static void pilotBindings() {
