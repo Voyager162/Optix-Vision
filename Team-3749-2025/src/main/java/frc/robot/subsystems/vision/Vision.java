@@ -7,8 +7,8 @@ import frc.robot.subsystems.vision.real.Photonvision;
 import frc.robot.subsystems.vision.VisionIO.*;
 
 public class Vision extends SubsystemBase {
-    VisionIO visionIO;
-    VisionData visionData = new VisionData();
+    private VisionIO visionIO;
+    private VisionData visionData = new VisionData();
 
     public Vision() {
         if (Robot.isReal()) {

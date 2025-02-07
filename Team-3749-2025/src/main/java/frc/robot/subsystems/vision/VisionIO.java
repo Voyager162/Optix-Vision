@@ -9,8 +9,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.Robot;
 
 public interface VisionIO {
-    PhotonPoseEstimator poseEstimatorList[] = VisionConstants.CameraReal.poseEstimatorList;
-    PhotonCamera cameraList[] = VisionConstants.CameraReal.cameraList;
+    public PhotonPoseEstimator poseEstimatorList[] = VisionConstants.CameraReal.poseEstimatorList;
+    public PhotonCamera cameraList[] = VisionConstants.CameraReal.cameraList;
 
     public static class VisionData {
         public Pose2d[] visionEstimatedPoses;
