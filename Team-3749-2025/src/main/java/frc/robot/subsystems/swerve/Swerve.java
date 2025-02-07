@@ -20,6 +20,7 @@ import frc.robot.subsystems.swerve.GyroIO.GyroData;
 import frc.robot.subsystems.swerve.SwerveConstants.DriveConstants;
 import frc.robot.subsystems.swerve.real.*;
 import frc.robot.subsystems.swerve.sim.*;
+import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.utils.*;
 
 /***
@@ -169,8 +170,10 @@ public class Swerve extends SubsystemBase {
             modules[3].getPosition()
         },
         new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
-        VecBuilder.fill(0.04, 0.04, 0.00),
-        VecBuilder.fill(0.965, 0.965, 5000));
+        VecBuilder.fill(0.045, 0.045, 0.0004), // 6328's 2024 numbers with factors of 1.5x, 1.5x, 2x
+        VecBuilder.fill(VisionConstants.StandardDeviations.PreMatch.xy,
+            VisionConstants.StandardDeviations.PreMatch.xy,
+            VisionConstants.StandardDeviations.PreMatch.thetaRads));
 
     turnController.enableContinuousInput(-Math.PI, Math.PI);
 
@@ -238,6 +241,10 @@ public class Swerve extends SubsystemBase {
   public double getMaxAngularSpeed() {
     return DriverStation.isTeleopEnabled() ? SwerveConstants.DriveConstants.teleopMaxAngularSpeedRadPerSecond
         : SwerveConstants.DriveConstants.autoMaxAngularSpeedRadPerSecond;
+  }
+
+  public SwerveDrivePoseEstimator getPoseEstimator() {
+    return swerveDrivePoseEstimator;
   }
 
   /**
