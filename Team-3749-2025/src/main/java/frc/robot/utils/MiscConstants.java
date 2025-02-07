@@ -1,5 +1,6 @@
 package frc.robot.utils;
 
+import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Robot;
 
 /**
@@ -8,15 +9,19 @@ import frc.robot.Robot;
  * @author Noah Simon
  */
 public class MiscConstants {
+  public static final Mode simMode = Mode.REPLAY;
+  public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
-  public static enum RobotType {
+  public static enum Mode {
+    /** Running on a real robot. */
     REAL,
-    SIM
-  }
 
-  public static final RobotType ROBOT_TYPE = Robot.isReal()
-      ? RobotType.REAL
-      : RobotType.SIM;
+    /** Running a physics simulator. */
+    SIM,
+
+    /** Replaying from a log file. */
+    REPLAY
+  }
 
   public static final class SimConstants {
     public static final double loopPeriodSec = 0.02;

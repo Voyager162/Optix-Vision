@@ -1,5 +1,7 @@
 package frc.robot.subsystems.elevator;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -42,18 +44,6 @@ public class Elevator extends SubsystemBase {
             ElevatorConstants.ElevatorControl.kVSim,
             ElevatorConstants.ElevatorControl.kASim);
 
-    private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
-    private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position", 0.0);
-    private ShuffleData<Double> velocityMetersPerSecLog = new ShuffleData<Double>("Elevator", "velocity", 0.0);
-    private ShuffleData<Double> accelerationMetersPerSecSquaredLog = new ShuffleData<Double>("Elevator", "acceleration", 0.0);
-
-    private ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Elevator", "input volts", 0.0);
-    private ShuffleData<Double> leftAppliedVoltsLog = new ShuffleData<Double>("Elevator", "left applied volts", 0.0);
-    private ShuffleData<Double> rightAppliedVoltsLog = new ShuffleData<Double>("Elevator", "right applied volts", 0.0);
-    private ShuffleData<Double> leftCurrentAmpsLog = new ShuffleData<Double>("Elevator", "left current amps", 0.0);
-    private ShuffleData<Double> rightCurrentAmpsLog = new ShuffleData<Double>("Elevator", "right current amps", 0.0);
-    private ShuffleData<Double> leftTempCelciusLog = new ShuffleData<Double>("Elevator", "left temp celcius", 0.0);
-    private ShuffleData<Double> rightTempCelciusLog = new ShuffleData<Double>("Elevator", "right temp celcius", 0.0);
 
     // For tuning on real
     // private ShuffleData<Double> kPData = new ShuffleData<Double>("Elevator",
@@ -66,11 +56,6 @@ public class Elevator extends SubsystemBase {
     // "kVData", ElevatorConstants.ElevatorControl.kVSim);
     // private ShuffleData<Double> kAData = new ShuffleData<Double>("Elevator",
     // "kAData", ElevatorConstants.ElevatorControl.kASim);
-
-    private Mechanism2d mech = new Mechanism2d(3, 3);
-    private MechanismRoot2d root = mech.getRoot("elevator", 2, 0);
-    private MechanismLigament2d elevatorMech = root
-            .append(new MechanismLigament2d("elevator", ElevatorConstants.ElevatorSpecs.baseHeight, 90));
 
     public Elevator() {
         if (Robot.isSimulation()) {
@@ -178,21 +163,29 @@ public class Elevator extends SubsystemBase {
     }
 
     private void logData() {
-        currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-        positionMetersLog.set(data.positionMeters);
-        velocityMetersPerSecLog.set(data.velocityMetersPerSecond);
-        accelerationMetersPerSecSquaredLog.set(data.accelerationMetersPerSecondSquared);
+        Logger.recordOutput("subystems/elevator/Current Command", this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
 
-        inputVoltsLog.set(data.inputVolts);
-        leftAppliedVoltsLog.set(data.leftAppliedVolts);
-        rightAppliedVoltsLog.set(data.rightAppliedVolts);
-        leftCurrentAmpsLog.set(data.leftCurrentAmps);
-        rightCurrentAmpsLog.set(data.rightCurrentAmps);
-        leftTempCelciusLog.set(data.leftTempCelcius);
-        rightTempCelciusLog.set(data.rightTempCelcius);
+        Logger.recordOutput("subystems/elevator/postion", data.positionMeters);
+        Logger.recordOutput("subystems/elevator/velocity", data.velocityMetersPerSecond);
 
-        elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
-        SmartDashboard.putData("elevator mechanism", mech);
+        Logger.recordOutput("subystems/elevator/acceleration", data.accelerationMetersPerSecondSquared);
+
+        Logger.recordOutput("subystems/elevator/left applied volts", data.leftAppliedVolts);
+
+        Logger.recordOutput("subystems/elevator/right applied volts", data.rightAppliedVolts);
+
+        Logger.recordOutput("subystems/elevator/left current", data.leftCurrentAmps);
+
+        Logger.recordOutput("subystems/elevator/right current", data.rightCurrentAmps);
+
+        Logger.recordOutput("subystems/elevator/left tempurature", data.leftTempCelcius);
+
+        Logger.recordOutput("subystems/elevator/right tempurature", data.rightTempCelcius);
+
+
+
+
+
     }
 
     @Override
