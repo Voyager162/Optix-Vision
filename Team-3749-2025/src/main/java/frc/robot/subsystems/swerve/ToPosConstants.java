@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.utils.UtilityFunctions;
 
 public class ToPosConstants {
 
@@ -144,8 +145,8 @@ public class ToPosConstants {
                     new Rotation2d(Math.toRadians(pose.getRotation().getDegrees() + degrees)));
         }
 
-        public static final double ROBOT_LENGTH = 1; // Length of the robot in meters
-        public static final double ROBOT_WIDTH = .8; // Width of the robot in meters
+        public static final double ROBOT_LENGTH = Units.inchesToMeters(37); // Length of the robot in meters
+        public static final double ROBOT_WIDTH = Units.inchesToMeters(30);; // Width of the robot in meters
 
         // Adjusted setpoints
         public static Pose2d coralLeft = adjustPose(0.851154, 7.39648, Math.toRadians(-55), true);
