@@ -15,7 +15,7 @@ public class CoralIntakeSource extends Command {
 
     @Override
     public void initialize() {
-        Robot.coralArm.setState(CoralConstants.ArmStates.SOURCE);
+        Robot.coralArm.setState(CoralConstants.ArmStates.CORAL_PICKUP); // this should be source???
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.chuteRoller.setState(RollerStates.STOP);
         Robot.coralRoller.setState(RollerStates.INTAKE);
