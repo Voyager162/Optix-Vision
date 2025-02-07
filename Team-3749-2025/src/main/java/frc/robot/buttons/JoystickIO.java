@@ -9,10 +9,12 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.buttons.ButtonBoard.ScoringLocation;
+import frc.robot.commands.elevator.SetElevatorState;
 import frc.robot.commands.example.ExampleSubsystemCommand;
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.OnTheFly;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
+import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.swerve.ToPos;
 
 /**
@@ -154,10 +156,10 @@ public class JoystickIO {
         // Example binding
         operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        pilot.povLeft().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L1)));
-        pilot.povUp().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L2)));
-        pilot.povRight().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L3)));
-        pilot.povDown().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L4)));
+        pilot.povLeft().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L1)).andThen(new SetElevatorState(ElevatorStates.L1)));
+        pilot.povUp().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L2)).andThen(new SetElevatorState(ElevatorStates.L2)));
+        pilot.povRight().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L3)).andThen(new SetElevatorState(ElevatorStates.L3)));
+        pilot.povDown().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L4)).andThen(new SetElevatorState(ElevatorStates.L4)));
     }
 
 
