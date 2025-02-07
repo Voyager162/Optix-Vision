@@ -111,7 +111,7 @@ public class ToPosConstants {
         public static Pose2d adjustPose(double x, double y, double heading, boolean isCoralStation) {
             // Calculate offsets based only on robot length
             double offsetX = (ROBOT_LENGTH / 2) * Math.cos(heading);
-            double offsetY = (ROBOT_LENGTH / 2) * Math.sin(heading);
+            double offsetY = (ROBOT_WIDTH / 2) * Math.sin(heading);
 
             // Adjust coordinates to align the robot’s front edge with the target
             if (isCoralStation) {
@@ -144,8 +144,8 @@ public class ToPosConstants {
                     new Rotation2d(Math.toRadians(pose.getRotation().getDegrees() + degrees)));
         }
 
-        public static final double ROBOT_LENGTH = Units.inchesToMeters(37); // Length of the robot in meters
-        public static final double ROBOT_WIDTH = Units.inchesToMeters(31); // Width of the robot in meters
+        public static final double ROBOT_LENGTH = 1; // Length of the robot in meters
+        public static final double ROBOT_WIDTH = .8; // Width of the robot in meters
 
         // Adjusted setpoints
         public static Pose2d coralLeft = adjustPose(0.851154, 7.39648, Math.toRadians(-55), true);
