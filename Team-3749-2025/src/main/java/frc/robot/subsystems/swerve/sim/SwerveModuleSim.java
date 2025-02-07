@@ -1,6 +1,11 @@
 package frc.robot.subsystems.swerve.sim;
 
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase.ControlType;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -42,12 +47,25 @@ public class SwerveModuleSim implements SwerveModuleIO {
             0.0 // Optional noise in sensor measurements
     );
 
+    private final PIDController turningPidController;
+    private final PIDController drivingPidController;
+
     private double turnPositionRad = 0;
     private double driveAppliedVolts = 0.0;
     private double turnAppliedVolts = 0.0;
+    private int index;
 
-    public SwerveModuleSim() {
+    public SwerveModuleSim(int index) {
+        this.index = index;
         System.out.println("[Init] Creating ModuleIOSim");
+
+        drivingPidController = new PIDController(ModuleConstants.drivePID[2][0], ModuleConstants.drivePID[2][1],
+                ModuleConstants.drivePID[2][2]);
+
+        turningPidController = new PIDController(ModuleConstants.turnPID[0][0], ModuleConstants.turnPID[0][1],
+                ModuleConstants.turnPID[0][2]);
+        turningPidController.enableContinuousInput(0, 2 * Math.PI);
+
     }
 
     @Override
@@ -69,13 +87,15 @@ public class SwerveModuleSim implements SwerveModuleIO {
         }
         // distance traveled + Rad/Time * Time * diameter
         data.drivePositionM = data.drivePositionM
-                + (driveSim.getAngularVelocityRadPerSec() * 0.02 * ModuleConstants.wheelDiameterMeters) / 2;
-        data.driveVelocityMPerSec = driveSim.getAngularVelocityRadPerSec() * ModuleConstants.wheelDiameterMeters / 2;
+                + getDriveVelocityMetersPerSec() * 0.02;
+        data.driveVelocityMPerSec = getDriveVelocityMetersPerSec();
         data.driveAppliedVolts = driveAppliedVolts;
+        // System.out.println(Integer.toString(index) + ": " + driveAppliedVolts);
+
         data.driveCurrentAmps = Math.abs(driveSim.getCurrentDrawAmps());
         data.driveTempCelcius = 0;
 
-        data.turnAbsolutePositionRad = turnPositionRad;
+        data.turnPositionRad = turnPositionRad;
         data.turnVelocityRadPerSec = turnSim.getAngularVelocityRadPerSec();
         data.turnAppliedVolts = turnAppliedVolts;
         data.turnCurrentAmps = Math.abs(turnSim.getCurrentDrawAmps());
@@ -84,11 +104,24 @@ public class SwerveModuleSim implements SwerveModuleIO {
     }
 
     @Override
+    public void setDriveVelocity(double setpointVelocity, double feedforward) {
+        double feedback = drivingPidController.calculate(getDriveVelocityMetersPerSec(), setpointVelocity);
+        setDriveVoltage(feedback + feedforward);
+
+    }
+
+    @Override
+    public void setTurnPosition(double setpointPosition, double feedforward) {
+        double feedback = turningPidController.calculate(turnPositionRad, setpointPosition);
+        setTurnVoltage(feedback + feedforward);
+
+    }
+
+    @Override
     public void setDriveVoltage(double volts) {
+
         driveAppliedVolts = MathUtil.clamp(volts, -DriveConstants.maxMotorVolts,
                 DriveConstants.maxMotorVolts);
-
-        // driveAppliedVolts = Math.copySign(12,driveAppliedVolts);
         driveSim.setInputVoltage(driveAppliedVolts);
     }
 
@@ -97,5 +130,9 @@ public class SwerveModuleSim implements SwerveModuleIO {
         turnAppliedVolts = MathUtil.clamp(volts, -DriveConstants.maxMotorVolts,
                 DriveConstants.maxMotorVolts);
         turnSim.setInputVoltage(turnAppliedVolts);
+    }
+
+    private double getDriveVelocityMetersPerSec() {
+        return (driveSim.getAngularVelocityRadPerSec() * ModuleConstants.wheelDiameterMeters) / 2;
     }
 }

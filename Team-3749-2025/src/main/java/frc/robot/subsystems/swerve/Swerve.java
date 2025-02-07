@@ -61,7 +61,7 @@ public class Swerve extends SubsystemBase {
   private ShuffleData<Double[]> odometryLog = new ShuffleData<Double[]>(
       this.getName(),
       "odometry",
-      new Double[] { 0.0, 0.0, 0.0 });
+      new Double[] { 0.0, 0.0, 0.0});
 
   private ShuffleData<Double[]> realStatesLog = new ShuffleData<Double[]>(
       this.getName(),
@@ -107,10 +107,7 @@ public class Swerve extends SubsystemBase {
       "gyro connected",
 
       false);
-  private ShuffleData<Boolean> gyroCalibratingLog = new ShuffleData<Boolean>(
-      this.getName(),
-      "gyro calibrating",
-      false);
+
 
   private ShuffleData<Double> headingLog = new ShuffleData<Double>(
       this.getName(),
@@ -150,7 +147,7 @@ public class Swerve extends SubsystemBase {
     if (Robot.isSimulation()) {
       gyro = new GyroSim();
       for (int i = 0; i < 4; i++) {
-        modules[i] = new SwerveModule(i, new SwerveModuleSim());
+        modules[i] = new SwerveModule(i, new SwerveModuleSim(i));
       }
     }
     // if real
@@ -158,7 +155,8 @@ public class Swerve extends SubsystemBase {
       // gyro = new NavX2Gyro();
       gyro = new PigeonGyro();
       for (int i = 0; i < 4; i++) {
-        modules[i] = new SwerveModule(i, new SwerveModuleSparkMax(i));
+        
+        modules[i] = new SwerveModule(i, new SwerveModuleSpark(i));
       }
     }
     // pose estimator
@@ -181,7 +179,7 @@ public class Swerve extends SubsystemBase {
 
     // put us on the field with a default orientation
     resetGyro();
-    setOdometry(new Pose2d(1.33, 5.53, new Rotation2d(0)));
+    setOdometry(new Pose2d(1.33,5.53, new Rotation2d(0)));
     logSetpoints(1.33, 0, 0, 5.53, 0, 0, 0, 0, 0);
 
   }
@@ -499,7 +497,6 @@ public class Swerve extends SubsystemBase {
     pitchLog.set(gyroData.pitchDeg);
     rollLog.set(gyroData.rollDeg);
     gyroConnectedLog.set(gyroData.isConnected);
-    gyroCalibratingLog.set(gyroData.isCalibrating);
     headingLog.set(getRotation2d().getDegrees());
 
     // velocity and acceleration logging
