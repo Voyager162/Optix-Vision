@@ -42,6 +42,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
         if (Robot.scoringRoller.getCurrentCommand() != null) {
             if (scoreTimer == 999999999) { // Initialize timer only once per command
                 scoreTimer = -1;
+                System.out.println("please print");
             }
             
             if (scoreTimer < 0) {  // Initialize timer only once per command
@@ -50,12 +51,12 @@ public class PhotoelectricSim implements PhotoelectricIO {
 
             switch(Robot.scoringRoller.getCurrentCommand().getName()) {
                 case "ScoreL234": 
-                    if (Timer.getFPGATimestamp() - scoreTimer > 2) {
-                        sensing = false;
-                        if (scoreTimer != -1) {
-                            scoreTimer = 999999999;
-                        } 
-                    }
+                if (Timer.getFPGATimestamp() - scoreTimer > 2) {
+                    sensing = false;
+                    if (scoreTimer != -1) {
+                        scoreTimer = 999999999;
+                    } 
+                }
                 break;
                 case "IntakeSource": 
                 if (Timer.getFPGATimestamp() - scoreTimer > 2) {
@@ -105,81 +106,6 @@ public class PhotoelectricSim implements PhotoelectricIO {
                 
             }
         }
-    //    // Check if ScoreL234 is currently active
-    //    if (ScoreL234.activeScoreCommand != null) {
-    //     System.out.println("scoringRoller name" + Robot.scoringRoller.getCurrentCommand().getName());
-
-    //     if (scoreTimer < 0) {  // Start timer once when command starts
-    //         scoreTimer = Timer.getFPGATimestamp();
-    //     }
-
-    //     // After 2 seconds, sensing should change
-    //     if (Timer.getFPGATimestamp() - scoreTimer > 2) {
-    //         sensing = false;  // Set sensing to false after 2 seconds
-    //         scoreTimer = -1;  // Reset timer
-    //     }
-    // }
-
-    //    // Check if IntakeSource is currently active
-    //    if (IntakeSource.activeIntakeSourceCommand != null) {
-
-    //     if (scoreTimer < 0) {  // Start timer once when command starts
-    //         scoreTimer = Timer.getFPGATimestamp();
-    //         sensing = false;
-    //     }
-
-    //     // After 2 seconds, sensing should change
-    //     if (Timer.getFPGATimestamp() - scoreTimer > 2) {
-    //         sensing = true;  // Set sensing to false after 2 seconds
-    //         scoreTimer = -1;  // Reset timer
-        
-    //     }
-    // }
-
-    // if (CoralIntakeSource.activeCoralIntakeSourceCommand != null) {
-
-    //     if (scoreTimer < 0) {  // Start timer once when command starts
-    //         scoreTimer = Timer.getFPGATimestamp();
-    //         sensing = false;
-    //     }
-
-    //     // After 2 seconds, sensing should change
-    //     if (Timer.getFPGATimestamp() - scoreTimer > 2) {
-    //         sensing = true;  // Set sensing to false after 2 seconds
-    //         scoreTimer = -1;  // Reset timer        
-    //     }
-    // }
-
-    //     // Check if ScoreL1 is currently active
-    //     if (ScoreL1.activeScore1Command != null) {
-
-    //     if (scoreTimer < 0) {  // Start timer once when command starts
-    //         scoreTimer = Timer.getFPGATimestamp();
-    //         sensing = true;
-    //     }
-    
-    //     // After 2 seconds, sensing should change
-    //     if (Timer.getFPGATimestamp() - scoreTimer > 2) {
-    //         sensing = false;  // Set sensing to false after 2 seconds
-    //         scoreTimer = -1;  // Reset timer
-            
-    //     }
-    // }
-    // // Check if IntakeFloor is currently active
-    // if (IntakeFloor.activeIntakeFloorCommand != null) {
-
-    //     if (scoreTimer < 0) {  // Start timer once when command starts
-    //         scoreTimer = Timer.getFPGATimestamp();
-    //         sensing = true;
-    //     }
-    
-    //     // After 2 seconds, sensing should change
-    //     if (Timer.getFPGATimestamp() - scoreTimer > 2) {
-    //         sensing = false;  // Set sensing to false after 2 seconds
-    //         scoreTimer = -1;  // Reset timer
-            
-    //     }
-    // }
 
     data.sensing = sensing;
   
