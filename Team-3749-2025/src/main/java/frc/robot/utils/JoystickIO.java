@@ -82,10 +82,12 @@ public class JoystickIO {
         // operator.a().whileTrue(new ExampleSubsystemCommand());
 
         operator.a().onTrue(handoff);
-        operator.b().onTrue(outtakeCoral);
+        operator.b().onTrue(intakeFloor);
         operator.x().onTrue(intakeSource);
         operator.y().onTrue(scoreL4);
 
+        pilot.a().onTrue(knockAlgaeHigh);
+        pilot.b().onTrue(scoreL1);
     }
 
     public static void pilotBindings() {
