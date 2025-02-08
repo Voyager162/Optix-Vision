@@ -64,9 +64,9 @@ public class SwerveDefaultCommand extends Command {
    linearMagnitude = Math.copySign(linearMagnitude * linearMagnitude, linearMagnitude);
    turningMagnitude = Math.copySign(turningMagnitude * turningMagnitude, turningMagnitude);
 
-   if (Robot.swerve.isOTF) {
+   if (Robot.swerve.getIsOTF()) {
      if ((Math.abs(linearMagnitude) > 0.2 || Math.abs(turningMagnitude) > 0.2)) {
-       Robot.swerve.isOTF = false;
+       Robot.swerve.setIsOTF(false);
      } else {
        return;
      }

@@ -159,15 +159,15 @@ public class JoystickIO {
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
         pilot.a().whileTrue(driveStraight);
 
-        pilot.x().onTrue(Commands.runOnce(()->{Robot.swerve.isOTF=true;}));
+        pilot.x().onTrue(Commands.runOnce(()->Robot.swerve.setIsOTF(true)));
 
-        pilot.leftBumper().onTrue(Commands.runOnce(()-> {ToPos.setSetpointByClosestReefBranch(true);Robot.swerve.isOTF=true;}));
-        pilot.rightBumper().onTrue(Commands.runOnce(()-> {ToPos.setSetpointByClosestReefBranch(false);Robot.swerve.isOTF=true;}));
+        pilot.leftBumper().onTrue(Commands.runOnce(()-> {ToPos.setSetpointByClosestReefBranch(true);Robot.swerve.setIsOTF(true);}));
+        pilot.rightBumper().onTrue(Commands.runOnce(()-> {ToPos.setSetpointByClosestReefBranch(false);Robot.swerve.setIsOTF(true);}));
 
-        new Trigger(() -> Robot.swerve.isOTF).whileTrue(onTheFly.andThen(Robot.swerve::runSetpointReachedCommand));
+        new Trigger(() -> Robot.swerve.getIsOTF()).whileTrue(onTheFly.andThen(Robot.swerve::runSetpointReachedCommand));
 
         pilot.b().onTrue(Commands.runOnce(() -> {
-            Robot.swerve.isOTF = false;
+            Robot.swerve.setIsOTF(false);
             Robot.swerve.cyclePPSetpoint();
             Robot.swerve.showSetpointEndGoal();
         }));

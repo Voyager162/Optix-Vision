@@ -8,7 +8,6 @@ import frc.robot.Robot;
 import frc.robot.buttons.ButtonBoard.ScoringLocation;
 import frc.robot.commands.elevator.SetElevatorState;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
-import frc.robot.subsystems.roller.implementations.CoralRoller;
 import frc.robot.subsystems.swerve.ToPosConstants;
 import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 import frc.robot.utils.UtilityFunctions;
@@ -53,13 +52,13 @@ public class ToPosTriggers {
     
         public static void createOTFTriggers() {
     
-            Trigger coralStation = new Trigger(() -> Robot.swerve.isOTF).and(() -> {
+            Trigger coralStation = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
                 Boolean withinMargin = OTFWithinMargin();
                 return withinMargin && isCoralSupplier.getAsBoolean();
             });
             coralStation.onTrue(new PrintCommand("Coral Station"));
     
-            Trigger coralReefL1 = new Trigger(() -> Robot.swerve.isOTF).and(() -> {
+            Trigger coralReefL1 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
                 Boolean withinMargin = OTFWithinMargin();
                 Boolean isCoralReef = isReefL1Supplier.getAsBoolean();
             Boolean isL1 = JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L1;
@@ -68,7 +67,7 @@ public class ToPosTriggers {
         coralReefL1.onTrue(new SetElevatorState(ElevatorStates.L1)); 
         //insert roller code here i dont want to 
 
-        Trigger coralReefL2 = new Trigger(() -> Robot.swerve.isOTF).and(() -> {
+        Trigger coralReefL2 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
             Boolean withinMargin = OTFWithinMargin();
             System.out.println(withinMargin);
             Boolean isCoralReef = isReefSupplier.getAsBoolean();
@@ -77,7 +76,7 @@ public class ToPosTriggers {
         });
         coralReefL2.onTrue(new SetElevatorState(ElevatorStates.L2));
 
-        Trigger coralReefL3 = new Trigger(() -> Robot.swerve.isOTF).and(() -> {
+        Trigger coralReefL3 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
             Boolean withinMargin = OTFWithinMargin();
             Boolean isCoralReef = isReefSupplier.getAsBoolean();
             Boolean isL3 = JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L3;
@@ -85,7 +84,7 @@ public class ToPosTriggers {
         });
         coralReefL3.onTrue(new SetElevatorState(ElevatorStates.L3));
 
-        Trigger coralReefL4 = new Trigger(() -> Robot.swerve.isOTF).and(() -> {
+        Trigger coralReefL4 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
             Boolean withinMargin = OTFWithinMargin();
             Boolean isCoralReef = isReefSupplier.getAsBoolean();
             Boolean isL4 = JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L4;

@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.utils.UtilityFunctions;
 
 public class ToPosConstants {
 
@@ -29,6 +28,9 @@ public class ToPosConstants {
     }
 
     public static final class ReefVerticies {
+
+        public static final double positionTolerance = .5; // meters
+        public static final double rotationTolerance = 10; // degrees
 
         // MAKE CONSTANTS
         private static final double SAFE_MARGIN = .95; // Safety margin around the robot.
@@ -77,15 +79,13 @@ public class ToPosConstants {
         }
 
         public static Pose2d reefTrig(Pose2d reefPose, TrigDirection direction) {
-            double distance = 0.4; 
-            double offsetArm = Units.inchesToMeters(6.75); // Fixed arm offset to the left
             double offsetMultiplier = 1;
             double angleOffset = 90; // 90 for perpindicular
             switch (direction) {
                 case LEFT:
                     offsetMultiplier = 1;
                     break;
-        
+
                 case RIGHT:
                     offsetMultiplier = -1;
                     break;
@@ -96,17 +96,17 @@ public class ToPosConstants {
             }
 
             double xSetup = reefPose.getX() + Math
-            .cos(Math.toRadians(reefPose.getRotation().getDegrees() + (90)))*Units.inchesToMeters(6.25);
+                    .cos(Math.toRadians(reefPose.getRotation().getDegrees() + (90))) * Units.inchesToMeters(6.25);
             double ySetup = reefPose.getY() + Math
-            .sin(Math.toRadians(reefPose.getRotation().getDegrees() + (90)))*Units.inchesToMeters(6.25);
+                    .sin(Math.toRadians(reefPose.getRotation().getDegrees() + (90))) * Units.inchesToMeters(6.25);
 
             double newX = xSetup + Math
-                    .cos(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))*Units.inchesToMeters(6.5);
+                    .cos(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))
+                    * Units.inchesToMeters(6.5);
             double newY = ySetup + Math
                     .sin(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))
                     * Units.inchesToMeters(6.5);
 
-            
             return new Pose2d(newX, newY, reefPose.getRotation());
         };
 
@@ -121,7 +121,7 @@ public class ToPosConstants {
                 return new Pose2d(x + offsetX, y + offsetY, new Rotation2d(heading));
 
             }
-           
+
             return new Pose2d(x - offsetX, y - offsetY, new Rotation2d(heading));
         };
 
@@ -152,7 +152,7 @@ public class ToPosConstants {
         public static Pose2d reefFar = adjustPose(5.35, 4, Math.toRadians(180), false);
         public static Pose2d reefFarLeft = adjustPose(4.94, 4.74, Math.toRadians(-120), false);
         public static Pose2d reefCloseLeft = adjustPose(4.07, 4.74, Math.toRadians(-60), false);
-        //im a programmer not a naming expert
+        // im a programmer not a naming expert
 
         // Please refer to:
         // https://firstfrc.blob.core.windows.net/frc2025/Manual/Sections/2025GameManual-05ARENA.pdf
@@ -195,22 +195,23 @@ public class ToPosConstants {
         public static Pose2d lL1 = rotatePose(lSetpoint, 90);
 
         public static List<Pose2d> reefSides = List.of(
-            reefClose,
-            reefCloseRight,
-            reefCloseLeft,
-            reefFar,
-            reefFarLeft,
-            reefFarRight);
+                reefClose,
+                reefCloseRight,
+                reefCloseLeft,
+                reefFar,
+                reefFarLeft,
+                reefFarRight);
 
-        public static HashMap<Pose2d,int[]> driveRelativeBranches = new HashMap<Pose2d,int[]>() 
-        {{
-            put(reefClose,new int[]{2,4}); //L R
-            put(reefCloseLeft,new int[]{22,24});
-            put(reefCloseRight,new int[]{7,8});
-            put(reefFarRight,new int[]{12,10});
-            put(reefFar,new int[]{16,14});
-            put(reefFarLeft, new int[]{20,18});
-        }}; 
+        public static HashMap<Pose2d, int[]> driveRelativeBranches = new HashMap<Pose2d, int[]>() {
+            {
+                put(reefClose, new int[] { 2, 4 }); // L R
+                put(reefCloseLeft, new int[] { 22, 24 });
+                put(reefCloseRight, new int[] { 7, 8 });
+                put(reefFarRight, new int[] { 12, 10 });
+                put(reefFar, new int[] { 16, 14 });
+                put(reefFarLeft, new int[] { 20, 18 });
+            }
+        };
 
         public static Pose2d aApproach = createApproachPoint(aSetpoint);
         public static Pose2d bApproach = createApproachPoint(bSetpoint);
@@ -228,43 +229,42 @@ public class ToPosConstants {
         public enum PPSetpoints {
             CORALLEFT(coralLeft, coralLeft),
             CORALRIGHT(coralRight, coralRight),
-            
+
             A(aSetpoint, aApproach),
             AL1(aL1, aApproach),
-            
+
             B(bSetpoint, bApproach),
             BL1(bL1, bApproach),
-            
+
             C(cSetpoint, cApproach),
             CL1(cL1, cApproach),
-            
+
             D(dSetpoint, dApproach),
             DL1(dL1, dApproach),
-            
+
             E(eSetpoint, eApproach),
             EL1(eL1, eApproach),
-            
+
             F(fSetpoint, fApproach),
             FL1(fL1, fApproach),
-            
+
             G(gSetpoint, gApproach),
             GL1(gL1, gApproach),
-            
+
             H(hSetpoint, hApproach),
             HL1(hL1, hApproach),
-            
+
             I(iSetpoint, iApproach),
             IL1(iL1, iApproach),
-            
+
             J(jSetpoint, jApproach),
             JL1(jL1, jApproach),
-            
+
             K(kSetpoint, kApproach),
             KL1(kL1, kApproach),
-            
+
             L(lSetpoint, lApproach),
             LL1(lL1, lApproach),
-            
 
             REEFCLOSE(reefClose, createApproachPoint(reefClose)),
             REEFCLOSELEFT(reefCloseLeft, createApproachPoint(reefCloseLeft)),

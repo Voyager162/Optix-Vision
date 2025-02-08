@@ -13,12 +13,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.ToPos;
+import frc.robot.subsystems.swerve.ToPosConstants;
+import frc.robot.utils.UtilityFunctions;
 
 public class OnTheFly extends Command {
     private PathPlannerTrajectory trajectory;
     private final Timer timer = new Timer();
-    private static final double positionTolerance = .5; // meters
-    private static final double rotationTolerance = 10; // degrees
+    private final double positionTolerance = ToPosConstants.ReefVerticies.positionTolerance; // meters
+    private final double rotationTolerance = ToPosConstants.ReefVerticies.rotationTolerance; // degrees
     private PathPlannerTrajectoryState secondToLastWaypoint = null;
     private boolean hasTriggeredSecondLastAction = false;
 
@@ -43,7 +45,7 @@ public class OnTheFly extends Command {
 
         if (path == null) {
             System.out.println("Error: Failed to generate path. Ending OnTheFly command.");
-            Robot.swerve.isOTF = false;
+            Robot.swerve.setIsOTF(false); 
             this.cancel();
             return;
         }
@@ -60,14 +62,14 @@ public class OnTheFly extends Command {
             }
         } catch (IOException | ParseException e) {
             e.printStackTrace();
-            Robot.swerve.isOTF = false;
+            Robot.swerve.setIsOTF(false);
             this.cancel();
         }
     }
 
     @Override
     public void execute() {
-        if (trajectory == null || !Robot.swerve.isOTF) {
+        if (trajectory == null || !Robot.swerve.getIsOTF()) {
             this.cancel();
             return;
         }
@@ -92,7 +94,7 @@ public class OnTheFly extends Command {
 
         if (isFinished()) {
             this.end(true);
-            Robot.swerve.isOTF = false;
+            Robot.swerve.setIsOTF(false);
             // Commands.run(()->Robot.swerve.getSetpointReachedCommand());
         }
     }
@@ -109,7 +111,10 @@ public class OnTheFly extends Command {
         }
         boolean trajectoryComplete = timer.get() >= trajectory.getTotalTimeSeconds();
         if (trajectoryComplete) {
-            return withinSetpointTolerance(trajectory.getEndState().pose);
+            return UtilityFunctions.withinMargin(
+            new Pose2d(positionTolerance,positionTolerance,new Rotation2d(Math.toRadians(positionTolerance))),
+            trajectory.getEndState().pose,
+            Robot.swerve.getPose());
         }
         return false;
     }

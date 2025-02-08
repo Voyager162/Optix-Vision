@@ -1,5 +1,6 @@
 package frc.robot.utils;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -47,6 +48,22 @@ public class UtilityFunctions {
     
             return Dist < translationMargin ;
     }
+    
+    /**
+     * 
+     * @param poseMargin 
+     * @param poseA
+     * @param poseB
+     * @return
+     */
+    public static boolean withinMargin(Pose2d poseMargin, Pose2d poseA, Pose2d poseB){
+        
+        Pose2d relativeMargin = poseA.relativeTo(poseB);
+
+        return Math.abs(relativeMargin.getX()) < poseMargin.getX() && 
+        Math.abs(relativeMargin.getY()) < poseMargin.getY() && 
+        Math.abs(relativeMargin.getRotation().getDegrees()) < poseMargin.getRotation().getDegrees();
+}
 
     /**
      * @param velocity
