@@ -66,19 +66,7 @@ public class Elevator extends SubsystemBase {
     private ShuffleData<Double> leftCurrentAmpsLog = new ShuffleData<Double>("Elevator", "left current amps", 0.0);
     private ShuffleData<Double> rightCurrentAmpsLog = new ShuffleData<Double>("Elevator", "right current amps", 0.0);
     private ShuffleData<Double> leftTempCelciusLog = new ShuffleData<Double>("Elevator", "left temp celcius", 0.0);
-    private ShuffleData<Double> rightTempCelciusLog = new ShuffleData<Double>("Elevator", "right temp celcius", 0.0);
-
-    // For tuning on real
-    // private ShuffleData<Double> kPData = new ShuffleData<Double>("Elevator",
-    // "kPData", ElevatorConstants.ElevatorControl.kPSim);
-    // private ShuffleData<Double> kDData = new ShuffleData<Double>("Elevator",
-    // "kDData", ElevatorConstants.ElevatorControl.kDSim);
-    // private ShuffleData<Double> kGData = new ShuffleData<Double>("Elevator",
-    // "kGData", ElevatorConstants.ElevatorControl.kGSim);
-    // private ShuffleData<Double> kVData = new ShuffleData<Double>("Elevator",
-    // "kVData", ElevatorConstants.ElevatorControl.kVSim);
-    // private ShuffleData<Double> kAData = new ShuffleData<Double>("Elevator",
-    // "kAData", ElevatorConstants.ElevatorControl.kASim);
+    private ShuffleData<Double> rightTempCelciusLog = new ShuffleData<Double>("Elevator", "right temp celcius", 0.0);;
 
     private Mechanism2d mech = new Mechanism2d(3, 3);
     private MechanismRoot2d root = mech.getRoot("elevator", 1, 0);
@@ -87,6 +75,11 @@ public class Elevator extends SubsystemBase {
 
     private double elevatorInnerStagePos;
     private double elevatorMiddleStagePos;
+
+    StructPublisher<Pose3d> elevatorInnerStage = NetworkTableInstance.getDefault()
+            .getStructTopic("Elevator Inner Stage", Pose3d.struct).publish();
+    StructPublisher<Pose3d> elevatorMiddleStage = NetworkTableInstance.getDefault()
+            .getStructTopic("Elevator Middle Stage", Pose3d.struct).publish();
 
     public Elevator() {
         if (Robot.isSimulation()) {
@@ -97,6 +90,11 @@ public class Elevator extends SubsystemBase {
     }
 
     public ElevatorStates getState() {
+
+        StructPublisher<Pose3d> elevatorInnerStage = NetworkTableInstance.getDefault()
+                .getStructTopic("Elevator Inner Stage", Pose3d.struct).publish();
+        StructPublisher<Pose3d> elevatorMiddleStage = NetworkTableInstance.getDefault()
+                .getStructTopic("Elevator Middle Stage", Pose3d.struct).publish();
         return state;
     }
 
@@ -209,16 +207,13 @@ public class Elevator extends SubsystemBase {
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
         SmartDashboard.putData("elevator mechanism", mech);
 
-
         elevatorInnerStagePos = data.positionMeters / 2;
         elevatorMiddleStagePos = data.positionMeters - Units.inchesToMeters(1);
         elevatorInnerStage.set(new Pose3d(getTransform3d(elevatorInnerStagePos).getTranslation(),
-        getTransform3d(elevatorInnerStagePos).getRotation()));
+                getTransform3d(elevatorInnerStagePos).getRotation()));
         elevatorMiddleStage.set(new Pose3d(getTransform3d(elevatorMiddleStagePos).getTranslation(),
                 getTransform3d(elevatorMiddleStagePos).getRotation()));
     }
-
-    
 
     private Transform3d getTransform3d(double pos) {
         Transform3d transform = new Transform3d(0, 0, pos, new Rotation3d(Angle.ofBaseUnits(0, Radians),
@@ -226,16 +221,10 @@ public class Elevator extends SubsystemBase {
         return transform;
     }
 
-    StructPublisher<Pose3d> elevatorInnerStage = NetworkTableInstance.getDefault()
-            .getStructTopic("Elevator Inner Stage", Pose3d.struct).publish();
-    StructPublisher<Pose3d> elevatorMiddleStage = NetworkTableInstance.getDefault()
-            .getStructTopic("Elevator Middle Stage", Pose3d.struct).publish();
-
     @Override
     public void periodic() {
         elevatorio.updateData(data);
         runState();
         logData();
-        // pidController.setPID(kPData.get(),0,kDData.get())
     }
 }

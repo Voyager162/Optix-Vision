@@ -20,6 +20,8 @@ import frc.robot.commands.integration.ScoreL234;
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
+import frc.robot.commands.swerve.DriveStraight;
+import frc.robot.commands.swerve.SwerveDefaultCommand;
 
 /**
  * Util class for button bindings
@@ -88,6 +90,7 @@ public class JoystickIO {
 
         pilot.a().onTrue(knockAlgaeHigh);
         pilot.b().onTrue(scoreL1);
+  
     }
 
     public static void pilotBindings() {

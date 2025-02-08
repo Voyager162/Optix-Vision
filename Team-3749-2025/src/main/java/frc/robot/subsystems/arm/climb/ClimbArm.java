@@ -2,8 +2,15 @@ package frc.robot.subsystems.arm.climb;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -15,6 +22,8 @@ import frc.robot.subsystems.arm.climb.real.ClimbArmSparkMax;
 import frc.robot.subsystems.arm.climb.sim.ClimbArmSim;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
+
+import static edu.wpi.first.units.Units.*;
 
 /**
  * Subsystem class for the climb arm
@@ -60,7 +69,8 @@ public class ClimbArm extends SubsystemBase {
 	private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
 	private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
 	private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Climb Arm", 24, 0));
-
+    StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
+            .getStructTopic("ClimbArm Pose", Pose3d.struct).publish();
 	/**
 	 * Constructor for the CoralArm subsystem. Determines if simulation or real
 	 * hardware is used.
@@ -151,6 +161,19 @@ public class ClimbArm extends SubsystemBase {
 		}
 	}
 
+      
+
+    private Angle getPitch() {
+        return Angle.ofBaseUnits(-data.positionUnits + Units.degreesToRadians(0), Radians); // remove offset once climb
+                                                                                            // arm code is fixed
+    }
+
+    private Pose3d getPose3d() {
+        //
+        Pose3d pose = new Pose3d(0, 0.18, 0.165,
+                new Rotation3d(getPitch(), Angle.ofBaseUnits(0, Radians), Angle.ofBaseUnits(0, Radians)));
+        return pose;
+    }
 	/**
 	 * method to set the goal of the controller
 	 * 
@@ -224,6 +247,8 @@ public class ClimbArm extends SubsystemBase {
 		armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
 		stateLog.set(state.name());
+
+        publisher.set(getPose3d());
 	}
 
 	/**
