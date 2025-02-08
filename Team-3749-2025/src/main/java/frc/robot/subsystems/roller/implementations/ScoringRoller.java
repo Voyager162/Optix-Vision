@@ -12,7 +12,7 @@ public class ScoringRoller extends Roller {
     private RollerData rollerData;
     
     public ScoringRoller() {
-        super(Implementations.SCORING, velocityController(), FF(), positionController());
+        super(Implementations.SCORING, FF());
         this.rollerData = new RollerData();
         kp = new LoggedTunableNumber(getName() + "/kP", RollerConstants.Scoring.kPVelocity);
         ki = new LoggedTunableNumber(getName() + "/kI", RollerConstants.Scoring.kIVelocity);

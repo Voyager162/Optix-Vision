@@ -6,8 +6,15 @@ import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -20,6 +27,12 @@ import frc.robot.utils.MotorData;
 import static edu.wpi.first.units.Units.*;
 
 import java.util.Map;
+import frc.robot.subsystems.arm.climb.real.ClimbArmSparkMax;
+import frc.robot.subsystems.arm.climb.sim.ClimbArmSim;
+import frc.robot.utils.ShuffleData;
+import frc.robot.utils.UtilityFunctions;
+
+import static edu.wpi.first.units.Units.*;
 
 /**
  * Subsystem class for the climb arm
@@ -29,24 +42,21 @@ import java.util.Map;
 
 public class ClimbArm extends SubsystemBase {
 
-	private ClimbConstants.ArmStates state = ClimbConstants.ArmStates.STOPPED;
-
-	private ProfiledPIDController controller = new ProfiledPIDController(
-			ClimbConstants.kP,
-			ClimbConstants.kI,
-			ClimbConstants.kD,
+	private ProfiledPIDController profile = new ProfiledPIDController(
+			0, 0, 0,
 			new TrapezoidProfile.Constraints(
-					ClimbConstants.maxVelocity,
-					ClimbConstants.maxAcceleration));
+					ClimbArmConstants.maxVelocity,
+					ClimbArmConstants.maxAcceleration));
 
 	private ArmFeedforward feedforward = new ArmFeedforward(
-			ClimbConstants.kS,
-			ClimbConstants.kG,
-			ClimbConstants.kV,
-			ClimbConstants.kA);
+			ClimbArmConstants.kS,
+			ClimbArmConstants.kG,
+			ClimbArmConstants.kV,
+			ClimbArmConstants.kA);
 
 	private ClimbArmIO armIO;
 	private ArmData data = new ArmData();
+	private ClimbArmConstants.ArmStates state = ClimbArmConstants.ArmStates.STOPPED;
 
 	private ShuffleData<String> currentCommandLog = new ShuffleData<>(this.getName(), "current command", "None");
 	private LoggedTunableNumber positionUnitsLog = new LoggedTunableNumber(this.getName() + "/position units", 0.0);
@@ -70,17 +80,23 @@ public class ClimbArm extends SubsystemBase {
 	private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
 	private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Climb Arm", 24, 0));
 
-	private LoggedTunableNumber kG = new LoggedTunableNumber(this.getName() + "/kG", ClimbConstants.kG);
-	private LoggedTunableNumber kP = new LoggedTunableNumber(this.getName() + "/kP", ClimbConstants.kP);
-	private LoggedTunableNumber kI = new LoggedTunableNumber(this.getName() + "/kI", ClimbConstants.kI);
-	private LoggedTunableNumber kD = new LoggedTunableNumber(this.getName() + "/kD", ClimbConstants.kD);
-	private LoggedTunableNumber kS = new LoggedTunableNumber(this.getName() + "/kS", ClimbConstants.kS);
-	private LoggedTunableNumber kV = new LoggedTunableNumber(this.getName() + "/kV", ClimbConstants.kV);
-	private LoggedTunableNumber kA = new LoggedTunableNumber(this.getName() + "/kA", ClimbConstants.kA);
+	private LoggedTunableNumber kG = new LoggedTunableNumber(this.getName() + "/kG", ClimbArmConstants.kG);
+	private LoggedTunableNumber kP = new LoggedTunableNumber(this.getName() + "/kP", ClimbArmConstants.kP);
+	private LoggedTunableNumber kI = new LoggedTunableNumber(this.getName() + "/kI", ClimbArmConstants.kI);
+	private LoggedTunableNumber kD = new LoggedTunableNumber(this.getName() + "/kD", ClimbArmConstants.kD);
+	private LoggedTunableNumber kS = new LoggedTunableNumber(this.getName() + "/kS", ClimbArmConstants.kS);
+	private LoggedTunableNumber kV = new LoggedTunableNumber(this.getName() + "/kV", ClimbArmConstants.kV);
+	private LoggedTunableNumber kA = new LoggedTunableNumber(this.getName() + "/kA", ClimbArmConstants.kA);
 	private LoggedTunableNumber maxVelocity = new LoggedTunableNumber(this.getName() + "/max velocity",
-			ClimbConstants.maxVelocity);
+			ClimbArmConstants.maxVelocity);
 	private LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(this.getName() + "/max acceleration",
-			ClimbConstants.maxAcceleration);
+			ClimbArmConstants.maxAcceleration);
+    StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
+            .getStructTopic("ClimbArm Pose", Pose3d.struct).publish();
+	/**
+	 * Constructor for the CoralArm subsystem. Determines if simulation or real
+	 * hardware is used.
+	 */
 
 	private SysIdTuner sysIdTuner;
 
@@ -103,7 +119,7 @@ public class ClimbArm extends SubsystemBase {
 			armIO = new ClimbArmSim();
 
 		} else {
-			armIO = new ClimbArmSparkMax(ClimbConstants.frontMotorId, ClimbConstants.backMotorId);
+			armIO = new ClimbArmSparkMax();
 		}
 		SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
 
@@ -123,10 +139,12 @@ public class ClimbArm extends SubsystemBase {
 		return sysIdTuner;
 	}
 
+	// GET FUNCTIONS
+
 	/**
 	 * @return the current arm state.
 	 */
-	public ClimbConstants.ArmStates getState() {
+	public ClimbArmConstants.ArmStates getState() {
 		return state;
 	}
 
@@ -144,21 +162,29 @@ public class ClimbArm extends SubsystemBase {
 
 		switch (state) {
 			case STOWED:
-				return UtilityFunctions.withinMargin(0.001, ClimbConstants.stowSetPoint_rad, data.positionUnits);
+				return UtilityFunctions.withinMargin(ClimbArmConstants.stateMarginOfError,
+						ClimbArmConstants.stowSetPoint_rad, data.positionUnits);
 			case PREPARE_FOR_CLIMB:
-				return UtilityFunctions.withinMargin(0.001, ClimbConstants.PrepareForClimbSetPoint_rad,
+				return UtilityFunctions.withinMargin(ClimbArmConstants.stateMarginOfError,
+						ClimbArmConstants.PrepareForClimbSetPoint_rad,
 						data.positionUnits);
 			case CLIMB:
-				return UtilityFunctions.withinMargin(0.001, ClimbConstants.climbSetPoint_rad, data.positionUnits);
+				return UtilityFunctions.withinMargin(ClimbArmConstants.stateMarginOfError,
+						ClimbArmConstants.climbSetPoint_rad, data.positionUnits);
 			case STOPPED:
-				return UtilityFunctions.withinMargin(0.001, 0, data.velocityUnits);
+				return UtilityFunctions.withinMargin(ClimbArmConstants.stateMarginOfError, 0, data.velocityUnits);
 			default:
 				return false;
 		}
 	}
 
-	// UTILITY FUNCTIONS
+	// SET FUNCTIONS
 
+	/**
+	 * method to set the voltage for the arm
+	 * 
+	 * @param volts
+	 */
 	public void setVoltage(double volts) {
 		armIO.setVoltage(volts);
 	}
@@ -168,32 +194,45 @@ public class ClimbArm extends SubsystemBase {
 	 *
 	 * @param state The new state for the arm.
 	 */
-	public void setState(ClimbConstants.ArmStates state) {
-		this.state = (ClimbConstants.ArmStates) state;
+	public void setState(ClimbArmConstants.ArmStates state) {
+		this.state = (ClimbArmConstants.ArmStates) state;
 		switch (this.state) {
 			case STOPPED:
 				stop();
 				break;
 			case STOWED:
-				setGoal(ClimbConstants.stowSetPoint_rad);
+				setGoal(ClimbArmConstants.stowSetPoint_rad);
 				break;
 			case PREPARE_FOR_CLIMB:
-				setGoal(ClimbConstants.PrepareForClimbSetPoint_rad);
+				setGoal(ClimbArmConstants.PrepareForClimbSetPoint_rad);
 			case CLIMB:
-				setGoal(ClimbConstants.climbSetPoint_rad);
+				setGoal(ClimbArmConstants.climbSetPoint_rad);
 			default:
 				stop();
 				break;
 		}
 	}
 
+      
+
+    private Angle getPitch() {
+        return Angle.ofBaseUnits(-data.positionUnits + Units.degreesToRadians(0), Radians); // remove offset once climb
+                                                                                            // arm code is fixed
+    }
+
+    private Pose3d getPose3d() {
+        //
+        Pose3d pose = new Pose3d(0, 0.18, 0.165,
+                new Rotation3d(getPitch(), Angle.ofBaseUnits(0, Radians), Angle.ofBaseUnits(0, Radians)));
+        return pose;
+    }
 	/**
 	 * method to set the goal of the controller
 	 * 
 	 * @param setPoint
 	 */
 	public void setGoal(double setPoint) {
-		controller.setGoal(setPoint);
+		profile.setGoal(setPoint);
 	}
 
 	/**
@@ -209,18 +248,18 @@ public class ClimbArm extends SubsystemBase {
 	 */
 	private void moveToGoal() {
 		// Get setpoint from the PID controller
-		State firstState = controller.getSetpoint();
+		State firstState = profile.getSetpoint();
 
 		// Calculate PID voltage based on the current position
-		double pidVoltage = controller.calculate(getPositionRad());
+		profile.calculate(getPositionRad());
 
-		State nextState = controller.getSetpoint();
+		State nextState = profile.getSetpoint();
 
 		// Calculate feedforward voltage
 		double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
 
 		// Set the voltage for the arm motor (combine PID and feedforward)
-		armIO.setVoltage(pidVoltage + ffVoltage);
+		armIO.setPosition(firstState.position, ffVoltage);
 	}
 
 	// PERIODIC FUNCTIONS
@@ -255,15 +294,16 @@ public class ClimbArm extends SubsystemBase {
 
 		stateLog.set(state.name());
 
-		ClimbConstants.kG = kG.get();
-		ClimbConstants.kP = kP.get();
-		ClimbConstants.kI = kI.get();
-		ClimbConstants.kD = kD.get();
-		ClimbConstants.kS = kS.get();
-		ClimbConstants.kV = kV.get();
-		ClimbConstants.kA = kA.get();
-		ClimbConstants.maxVelocity = maxVelocity.get();
-		ClimbConstants.maxAcceleration = maxAcceleration.get();
+		ClimbArmConstants.kG = kG.get();
+		ClimbArmConstants.kP = kP.get();
+		ClimbArmConstants.kI = kI.get();
+		ClimbArmConstants.kD = kD.get();
+		ClimbArmConstants.kS = kS.get();
+		ClimbArmConstants.kV = kV.get();
+		ClimbArmConstants.kA = kA.get();
+		ClimbArmConstants.maxVelocity = maxVelocity.get();
+		ClimbArmConstants.maxAcceleration = maxAcceleration.get();
+        publisher.set(getPose3d());
 	}
 
 	/** Periodic method for updating arm behavior. */

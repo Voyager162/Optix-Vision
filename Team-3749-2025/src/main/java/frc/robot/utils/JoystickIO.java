@@ -30,35 +30,33 @@ public class JoystickIO {
 
     private static final CommandXboxController pilot = new CommandXboxController(0);
     private static final CommandXboxController operator = new CommandXboxController(1);
-    private static final Command MaintainCommand = new MaintainCommand();
-    private static final Command RunCommand = new RunCommand();
-    private static final Command StopCommand = new StopCommand();
-    
+
     private static final Command climbStow = new SetClimbArmState(Robot.climbArm, ClimbConstants.ArmStates.STOWED,
-    ClimbConstants.stowSetPoint_rad);
     private static final Command climb = new SetClimbArmState(Robot.climbArm, ClimbConstants.ArmStates.CLIMB,
-    ClimbConstants.climbSetPoint_rad);
+            ClimbConstants.climbSetPoint_rad);
     private static final Command coralHandOff = new SetCoralArmState(Robot.coralArm, CoralConstants.ArmStates.HAND_OFF,
-    CoralConstants.handOffSetPoint_rad);
-    private static final Command coralPickUp = new SetCoralArmState(Robot.coralArm, CoralConstants.ArmStates.CORAL_PICKUP,
-    CoralConstants.coralPickUpSetPoint_rad);
-    
-    private static final RotationialSysId rotate1 = new RotationialSysId(Robot.swerve.getDriveSysIdTuner().sysIdQuasistatic(Direction.kForward), Robot.swerve);
-    private static final RotationialSysId rotate2 = new RotationialSysId(Robot.swerve.getDriveSysIdTuner().sysIdQuasistatic(Direction.kReverse), Robot.swerve);
-    private static final RotationialSysId rotate3 = new RotationialSysId(Robot.swerve.getDriveSysIdTuner().sysIdDynamic(Direction.kForward), Robot.swerve);
-    private static final RotationialSysId rotate4 = new RotationialSysId(Robot.swerve.getDriveSysIdTuner().sysIdDynamic(Direction.kReverse), Robot.swerve);
-    
+            CoralConstants.handOffSetPoint_rad);
+    private static final Command coralPickUp = new SetCoralArmState(Robot.coralArm,
+            CoralConstants.ArmStates.CORAL_PICKUP,
+            CoralConstants.coralPickUpSetPoint_rad);
+
+    private static final RotationialSysId rotate1 = new RotationialSysId(
+            Robot.swerve.getDriveSysIdTuner().sysIdQuasistatic(Direction.kForward), Robot.swerve);
+    private static final RotationialSysId rotate2 = new RotationialSysId(
+            Robot.swerve.getDriveSysIdTuner().sysIdQuasistatic(Direction.kReverse), Robot.swerve);
+    private static final RotationialSysId rotate3 = new RotationialSysId(
+            Robot.swerve.getDriveSysIdTuner().sysIdDynamic(Direction.kForward), Robot.swerve);
+    private static final RotationialSysId rotate4 = new RotationialSysId(
+            Robot.swerve.getDriveSysIdTuner().sysIdDynamic(Direction.kReverse), Robot.swerve);
+
     private static final SetElevatorState l1 = new SetElevatorState(ElevatorStates.L1);
     private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
     private static final SetElevatorState l3 = new SetElevatorState(ElevatorStates.L3);
     private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
 
     public JoystickIO() {
-    }
+    }*/
 
-    /**
-     * Calls binding methods according to the joysticks connected
-     */
     public static void getButtonBindings() {
 
         if (DriverStation.isJoystickConnected(1)) {
@@ -84,6 +82,7 @@ public class JoystickIO {
     public static void pilotAndOperatorBindings() {
         // gyro reset
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
+<<<<<<< HEAD
         pilot.a().whileTrue(RunCommand);
         pilot.b().whileTrue(MaintainCommand);
         pilot.x().whileTrue(StopCommand);
@@ -106,6 +105,9 @@ public class JoystickIO {
         // operator.b().onTrue(l2);
         // operator.x().onTrue(l3);
         // operator.y().onTrue(l4);
+=======
+  
+>>>>>>> origin/main
     }
 
     public static void pilotBindings() {

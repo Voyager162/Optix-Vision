@@ -38,6 +38,10 @@ import frc.robot.utils.MotorData;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
+import frc.robot.subsystems.swerve.real.*;
+import frc.robot.subsystems.swerve.sim.*;
+import frc.robot.subsystems.vision.VisionConstants;
+import frc.robot.utils.*;
 
 /***
  * Subsystem class for swerve drive, used to manage four swerve
@@ -77,7 +81,7 @@ public class Swerve extends SubsystemBase {
   private ShuffleData<Double[]> odometryLog = new ShuffleData<Double[]>(
       this.getName(),
       "odometry",
-      new Double[] { 0.0, 0.0, 0.0 });
+      new Double[] { 0.0, 0.0, 0.0});
 
   private ShuffleData<Double[]> realStatesLog = new ShuffleData<Double[]>(
       this.getName(),
@@ -124,10 +128,6 @@ public class Swerve extends SubsystemBase {
 
       false);
 
-  private ShuffleData<Boolean> gyroCalibratingLog = new ShuffleData<Boolean>(
-      this.getName(),
-      "gyro calibrating",
-      false);
 
   private LoggedTunableNumber headingLog = new LoggedTunableNumber(
       this.getName() +
@@ -182,7 +182,7 @@ public class Swerve extends SubsystemBase {
     if (Robot.isSimulation()) {
       gyro = new GyroSim();
       for (int i = 0; i < 4; i++) {
-        modules[i] = new SwerveModule(i, new SwerveModuleSim());
+        modules[i] = new SwerveModule(i, new SwerveModuleSim(i));
       }
     }
     // if real
@@ -190,7 +190,8 @@ public class Swerve extends SubsystemBase {
       // gyro = new NavX2Gyro();
       gyro = new PigeonGyro();
       for (int i = 0; i < 4; i++) {
-        modules[i] = new SwerveModule(i, new SwerveModuleSparkMax(i));
+        
+        modules[i] = new SwerveModule(i, new SwerveModuleSpark(i));
       }
     }
     // pose estimator
@@ -204,8 +205,10 @@ public class Swerve extends SubsystemBase {
             modules[3].getPosition()
         },
         new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
-        VecBuilder.fill(0.04, 0.04, 0.00),
-        VecBuilder.fill(0.965, 0.965, 5000));
+        VecBuilder.fill(0.045, 0.045, 0.0004), // 6328's 2024 numbers with factors of 1.5x, 1.5x, 2x
+        VecBuilder.fill(VisionConstants.StandardDeviations.PreMatch.xy,
+            VisionConstants.StandardDeviations.PreMatch.xy,
+            VisionConstants.StandardDeviations.PreMatch.thetaRads));
 
     driveMotorData = Map.of("drive_left",
         new MotorData(
@@ -217,7 +220,7 @@ public class Swerve extends SubsystemBase {
     turningMotorData = Map.of("turning_left",
     new MotorData(
         modules[0].getModuleData().turnAppliedVolts,
-        modules[0].getModuleData().turnAbsolutePositionRad,
+        modules[0].getModuleData().turnPositionRad,
         modules[0].getModuleData().turnVelocityRadPerSec,
         0));
     
@@ -247,7 +250,7 @@ public class Swerve extends SubsystemBase {
 
     // put us on the field with a default orientation
     resetGyro();
-    setOdometry(new Pose2d(1.33, 5.53, new Rotation2d(0)));
+    setOdometry(new Pose2d(1.33,5.53, new Rotation2d(0)));
     logSetpoints(1.33, 0, 0, 5.53, 0, 0, 0, 0, 0);
 
   }
@@ -265,10 +268,10 @@ public class Swerve extends SubsystemBase {
   }
 
   public boolean getRotated(){
-    return UtilityFunctions.withinMargin(0.01, modules[0].getModuleData().turnAbsolutePositionRad, Rotation2d.fromDegrees(45).getRadians())
-    &&  UtilityFunctions.withinMargin(0.01, modules[1].getModuleData().turnAbsolutePositionRad, Rotation2d.fromDegrees(135).getRadians())
-    &&  UtilityFunctions.withinMargin(0.01, modules[2].getModuleData().turnAbsolutePositionRad, Rotation2d.fromDegrees(225).getRadians())
-    &&  UtilityFunctions.withinMargin(0.01, modules[3].getModuleData().turnAbsolutePositionRad, Rotation2d.fromDegrees(315).getRadians());
+    return UtilityFunctions.withinMargin(0.01, modules[0].getModuleData().turnPositionRad, Rotation2d.fromDegrees(45).getRadians())
+    &&  UtilityFunctions.withinMargin(0.01, modules[1].getModuleData().turnPositionRad, Rotation2d.fromDegrees(135).getRadians())
+    &&  UtilityFunctions.withinMargin(0.01, modules[2].getModuleData().turnPositionRad, Rotation2d.fromDegrees(225).getRadians())
+    &&  UtilityFunctions.withinMargin(0.01, modules[3].getModuleData().turnPositionRad, Rotation2d.fromDegrees(315).getRadians());
 
   }
 
@@ -329,6 +332,10 @@ public class Swerve extends SubsystemBase {
   public double getMaxAngularSpeed() {
     return DriverStation.isTeleopEnabled() ? SwerveConstants.DriveConstants.teleopMaxAngularSpeedRadPerSecond
         : SwerveConstants.DriveConstants.autoMaxAngularSpeedRadPerSecond;
+  }
+
+  public SwerveDrivePoseEstimator getPoseEstimator() {
+    return swerveDrivePoseEstimator;
   }
 
   /**
@@ -590,7 +597,6 @@ public class Swerve extends SubsystemBase {
     pitchLog.set(gyroData.pitchDeg);
     rollLog.set(gyroData.rollDeg);
     gyroConnectedLog.set(gyroData.isConnected);
-    gyroCalibratingLog.set(gyroData.isCalibrating);
     headingLog.set(getRotation2d().getDegrees());
 
     // velocity and acceleration logging
@@ -619,7 +625,7 @@ public class Swerve extends SubsystemBase {
     driveMotorData.get("drive_left").acceleration = modules[0].getModuleData().driveAccelerationMPerSecSquared;
 
     turningMotorData.get("turning_left").appliedVolts = modules[0].getModuleData().turnAppliedVolts;
-    turningMotorData.get("turning_left").position = modules[0].getModuleData().turnAbsolutePositionRad;
+    turningMotorData.get("turning_left").position = modules[0].getModuleData().turnPositionRad;
     turningMotorData.get("turning_left").velocity = modules[0].getModuleData().turnVelocityRadPerSec;
     turningMotorData.get("turning_left").acceleration = 0;
 

@@ -10,7 +10,7 @@ import frc.robot.utils.LoggedTunableNumber;
 public class CoralRoller extends Roller {
     
     public CoralRoller() {
-        super(Implementations.CORAL, velocityController(), FF(), positionController());
+        super(Implementations.CORAL, FF());
         kp = new LoggedTunableNumber(getName() + "/kP", RollerConstants.Coral.kPVelocity);
         ki = new LoggedTunableNumber(getName() + "/kI", RollerConstants.Coral.kIVelocity);
         kd = new LoggedTunableNumber(getName() + "/kD", RollerConstants.Coral.kDVelocity);
@@ -21,17 +21,12 @@ public class CoralRoller extends Roller {
         maxAcceleration = new LoggedTunableNumber(getName() + "/maxAcceleration", RollerConstants.Coral.maxAcceleration);
     }
 
-    public static PIDController velocityController() {
-        return new PIDController(RollerConstants.Coral.kPVelocity, RollerConstants.Coral.kIVelocity, RollerConstants.Coral.kDVelocity);
-    }
 
     public static SimpleMotorFeedforward FF() {
         return new SimpleMotorFeedforward(RollerConstants.Coral.kSVelocity, RollerConstants.Coral.kVVelocity, RollerConstants.Coral.kAVelocity);
     }
 
-    public static PIDController positionController() {
-        return new PIDController(RollerConstants.Coral.kPPosition, RollerConstants.Coral.kIPosition, RollerConstants.Coral.kDPosition);
-    }
+
 
     @Override
     public void run() {

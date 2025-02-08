@@ -2,6 +2,8 @@ package frc.robot.subsystems.roller;
 public class RollerConstants {
     public static final class Algae {
         public static final int motorId = 1;
+        public static final boolean inverted = false;
+
         public static final double momentOfInertia = 0.04;
         public static final double gearRatio = 1.0;
         public static final double measurementNoise = 0.0;
@@ -23,7 +25,9 @@ public class RollerConstants {
         public static double maxAcceleration = 0.0;
     }
     public static final class Coral {
-        public static final int motorId = 2; 
+        public static final int motorId = 18; 
+        public static final boolean inverted = false;
+
         public static final double momentOfInertia = 0.04;
         public static final double gearRatio = 1.0;
         public static final double measurementNoise = 0.0;
@@ -45,7 +49,9 @@ public class RollerConstants {
         public static double maxAcceleration = 0.0;
     }
     public static final class Scoring {
-        public static final int motorId = 3; 
+        public static final int motorId = 21; 
+        public static final boolean inverted = false;
+
         public static final double momentOfInertia = 0.04;
         public static final double gearRatio = 1.0;
         public static final double measurementNoise = 0.0;

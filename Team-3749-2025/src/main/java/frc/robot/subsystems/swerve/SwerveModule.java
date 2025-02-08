@@ -1,6 +1,5 @@
 package frc.robot.subsystems.swerve;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
@@ -20,8 +19,7 @@ public class SwerveModule {
 
     private String name;
     private SwerveModuleState desiredState = new SwerveModuleState();
-    private final PIDController turningPidController;
-    private final PIDController drivingPidController;
+
     private final SimpleMotorFeedforward drivingFeedFordward;
 
     private ModuleData moduleData = new ModuleData();
@@ -29,7 +27,6 @@ public class SwerveModule {
 
     private double previousSetpointVelocity = 0;
 
-    // private double previousSetpointVelocity = 0;
 
     private LoggedTunableNumber driveSpeed;
     private LoggedTunableNumber drivePosition;
@@ -47,12 +44,6 @@ public class SwerveModule {
     public SwerveModule(int index, SwerveModuleIO SwerveModule) {
 
         moduleIO = SwerveModule;
-
-        drivingPidController = new PIDController(ModuleConstants.kPDriving, 0, 0);
-        drivingFeedFordward = new SimpleMotorFeedforward(ModuleConstants.kSDriving,
-                ModuleConstants.kVDriving, ModuleConstants.kADriving);
-        turningPidController = new PIDController(ModuleConstants.kPturning, 0, ModuleConstants.kDTurning);
-        turningPidController.enableContinuousInput(0, 2 * Math.PI);
 
         if (index == 0) {
             name = "FL module";
@@ -87,6 +78,9 @@ public class SwerveModule {
                 moduleData.driveVelocityMPerSec);
         turningCurrent = new LoggedTunableNumber("Swerve/" + name + "/turning current",
                 moduleData.turnCurrentAmps);
+
+        drivingFeedFordward = new SimpleMotorFeedforward(ModuleConstants.kSDriving,
+                ModuleConstants.kVDriving, ModuleConstants.kADriving);
     }
 
     public String getName() {
@@ -101,7 +95,7 @@ public class SwerveModule {
     public SwerveModuleState getState() {
         return new SwerveModuleState(
                 moduleData.driveVelocityMPerSec,
-                new Rotation2d(moduleData.turnAbsolutePositionRad));
+                new Rotation2d(moduleData.turnPositionRad));
     }
 
     /**
@@ -110,7 +104,7 @@ public class SwerveModule {
      * @return The position of the module as a SwerveModuleState object
      */
     public SwerveModulePosition getPosition() {
-        return new SwerveModulePosition(moduleData.drivePositionM, new Rotation2d(moduleData.turnAbsolutePositionRad));
+        return new SwerveModulePosition(moduleData.drivePositionM, new Rotation2d(moduleData.turnPositionRad));
     }
 
     /**
@@ -149,13 +143,13 @@ public class SwerveModule {
      */
     public void setDriveSpeed(double speedMetersPerSecond) {
 
-        double drive_volts = 0;
         double setpointAcceleration = (speedMetersPerSecond - previousSetpointVelocity) / 0.02;
-
-        drive_volts = drivingFeedFordward.calculate(speedMetersPerSecond, setpointAcceleration)
-                + drivingPidController.calculate(moduleData.driveVelocityMPerSec, speedMetersPerSecond);
-        setDriveVoltage(drive_volts);
         previousSetpointVelocity = speedMetersPerSecond;
+
+        double feedforward = drivingFeedFordward.calculate(speedMetersPerSecond, setpointAcceleration);
+        
+
+        moduleIO.setDriveVelocity(speedMetersPerSecond, feedforward);
 
     }
 
@@ -164,10 +158,7 @@ public class SwerveModule {
      * @param positionRad - the angle setpoint (0-2pi) for the module
      */
     public void setTurnPosition(double positionRad) {
-        double turning_volts = turningPidController.calculate(moduleData.turnAbsolutePositionRad,
-                positionRad);
-        // Make a drive PID Controller
-        setTurnVoltage(turning_volts);
+        moduleIO.setTurnPosition(positionRad, 0);
     }
 
     public void setDriveVoltage(double volts) {
@@ -186,8 +177,8 @@ public class SwerveModule {
     }
 
     public void stop() {
-        setDriveVoltage(0);
-        setTurnVoltage(0);
+        // setDriveVoltage(0);
+        // setTurnVoltage(0);
     }
 
     public ModuleData getModuleData() {
@@ -197,7 +188,7 @@ public class SwerveModule {
     // called within the swerve subsystem's periodic
     public void periodic() {
         moduleIO.updateData(moduleData);
-        // Logging
+        // // Logging
         driveSpeed.set(moduleData.driveVelocityMPerSec);
         drivePosition.set(moduleData.drivePositionM);
         driveAcceleration.set(moduleData.driveAccelerationMPerSecSquared);
@@ -206,7 +197,7 @@ public class SwerveModule {
         driveCurrent.set(moduleData.driveCurrentAmps);
 
         turningSpeed.set(moduleData.turnVelocityRadPerSec);
-        turningPosition.set(moduleData.turnAbsolutePositionRad);
+        turningPosition.set(moduleData.turnPositionRad);
         turningTemp.set(moduleData.turnTempCelcius);
         turningVolts.set(moduleData.turnAppliedVolts);
         turningCurrent.set(moduleData.turnCurrentAmps);

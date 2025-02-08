@@ -10,7 +10,8 @@ import frc.robot.utils.LoggedTunableNumber;
 public class AlgaeRoller extends Roller {
 
     public AlgaeRoller() {
-        super(Implementations.ALGAE, velocityController(), FF(), positionController()); 
+        super(Implementations.ALGAE, FF()); 
+
         kp = new LoggedTunableNumber(getName() + "/kP", RollerConstants.Algae.kPVelocity);
         ki = new LoggedTunableNumber(getName() + "/kI", RollerConstants.Algae.kIVelocity);
         kd = new LoggedTunableNumber(getName() + "/kD", RollerConstants.Algae.kDVelocity);
@@ -21,17 +22,11 @@ public class AlgaeRoller extends Roller {
         maxAcceleration = new LoggedTunableNumber(getName() + "/maxAcceleration", RollerConstants.Algae.maxAcceleration);
     }
 
-    public static PIDController velocityController() {
-        return new PIDController(RollerConstants.Algae.kPVelocity, RollerConstants.Algae.kIVelocity, RollerConstants.Algae.kDVelocity);
-    }
-
+ 
     public static SimpleMotorFeedforward FF() {
         return new SimpleMotorFeedforward(RollerConstants.Algae.kSVelocity, RollerConstants.Algae.kVVelocity, RollerConstants.Algae.kAVelocity);
     }
 
-    public static PIDController positionController() {
-        return new PIDController(RollerConstants.Algae.kPPosition, RollerConstants.Algae.kIPosition, RollerConstants.Algae.kDPosition);
-    }
 
     @Override
     public void run() {

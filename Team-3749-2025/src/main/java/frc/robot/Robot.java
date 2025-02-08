@@ -5,10 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.hal.AllianceStationID;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -16,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
-import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.implementations.AlgaeRoller;
 import frc.robot.subsystems.roller.implementations.CoralRoller;
@@ -38,8 +34,7 @@ public class Robot extends LoggedRobot {
   public static Roller algaeRoller = new AlgaeRoller();
   public static Roller coralRoller = new CoralRoller();
   public static Roller scoringRoller = new ScoringRoller();
-  
-  public static ExampleSubsystem subsystem = new ExampleSubsystem();
+
   public static Elevator elevator = new Elevator();
 
   public static CoralArm coralArm = new CoralArm();
@@ -53,7 +48,6 @@ public class Robot extends LoggedRobot {
   private ShuffleData<String> allianceLog = new ShuffleData<String>("DS", "alliance", "Red");
   private ShuffleData<Boolean> FMSLog = new ShuffleData<Boolean>("DS", "FMS connected", false);
   private RobotContainer m_robotContainer;
-  PowerDistribution pdp = new PowerDistribution(1, ModuleType.kRev); // Enables power distribution logging
   
   public Robot() {
 		// Record metadata
@@ -105,19 +99,13 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-    
+
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    batteryVoltageLog.set(RobotController.getBatteryVoltage());
-    cpuTempLog.set(RobotController.getCPUTemp());
-    CANUtilizationLog.set(RobotController.getCANStatus().percentBusUtilization);
-    radioStatusLog.set(RobotController.getRadioLEDState().name());
-    isBrownedOutLog.set(RobotController.isBrownedOut());
-    allianceLog.set(DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get().name() : "None");
-    FMSLog.set(DriverStation.isFMSAttached());
+ 
 
   }
 
@@ -162,7 +150,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopPeriodic() {
-    
+
   }
 
   @Override
@@ -181,8 +169,9 @@ public class Robot extends LoggedRobot {
   @Override
   public void testExit() {
   }
+
   @Override
-  public void simulationInit(){
+  public void simulationInit() {
     DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
   }
 }
