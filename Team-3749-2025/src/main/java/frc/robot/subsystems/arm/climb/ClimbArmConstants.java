@@ -45,7 +45,6 @@ public class ClimbArmConstants {
 	public static final double PrepareForClimbSetPoint_rad = Math.PI / 2; // 90
 	public static final double climbSetPoint_rad = 20 * Math.PI / 180; // 20
 
-
 	// extra
 	public static final boolean simulateGravity = true;
 	public static final double stateMarginOfError = 0.01;

@@ -20,18 +20,18 @@ public class StopCommand extends Command {
 
     @Override
     public void execute() {
-       
+
     }
 
     @Override
     public void end(boolean interrupted) {
         Robot.algaeRoller.setState(RollerStates.STOP);
         Robot.coralRoller.setState(RollerStates.STOP);
-        Robot.scoringRoller.setState(RollerStates.STOP);    
+        Robot.scoringRoller.setState(RollerStates.STOP);
     }
-    
+
     @Override
     public boolean isFinished() {
-        return false; 
+        return false;
     }
 }

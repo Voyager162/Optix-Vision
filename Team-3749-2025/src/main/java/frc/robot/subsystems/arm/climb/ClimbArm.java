@@ -69,8 +69,8 @@ public class ClimbArm extends SubsystemBase {
 			ClimbArmConstants.maxVelocity);
 	private LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(this.getName() + "/max acceleration",
 			ClimbArmConstants.maxAcceleration);
-    StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
-            .getStructTopic("ClimbArm Pose", Pose3d.struct).publish();
+	StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
+			.getStructTopic("ClimbArm Pose", Pose3d.struct).publish();
 	/**
 	 * Constructor for the CoralArm subsystem. Determines if simulation or real
 	 * hardware is used.
@@ -191,19 +191,18 @@ public class ClimbArm extends SubsystemBase {
 		}
 	}
 
-      
+	private Angle getPitch() {
+		return Angle.ofBaseUnits(-data.positionUnits + Units.degreesToRadians(0), Radians); // remove offset once climb
+																							// arm code is fixed
+	}
 
-    private Angle getPitch() {
-        return Angle.ofBaseUnits(-data.positionUnits + Units.degreesToRadians(0), Radians); // remove offset once climb
-                                                                                            // arm code is fixed
-    }
+	private Pose3d getPose3d() {
+		//
+		Pose3d pose = new Pose3d(0, 0.18, 0.165,
+				new Rotation3d(getPitch(), Angle.ofBaseUnits(0, Radians), Angle.ofBaseUnits(0, Radians)));
+		return pose;
+	}
 
-    private Pose3d getPose3d() {
-        //
-        Pose3d pose = new Pose3d(0, 0.18, 0.165,
-                new Rotation3d(getPitch(), Angle.ofBaseUnits(0, Radians), Angle.ofBaseUnits(0, Radians)));
-        return pose;
-    }
 	/**
 	 * method to set the goal of the controller
 	 * 
@@ -281,7 +280,7 @@ public class ClimbArm extends SubsystemBase {
 		ClimbArmConstants.kA = kA.get();
 		ClimbArmConstants.maxVelocity = maxVelocity.get();
 		ClimbArmConstants.maxAcceleration = maxAcceleration.get();
-        publisher.set(getPose3d());
+		publisher.set(getPose3d());
 
 		profile = new ProfiledPIDController(ClimbArmConstants.kP, ClimbArmConstants.kI, ClimbArmConstants.kD,
 				new TrapezoidProfile.Constraints(ClimbArmConstants.maxVelocity, ClimbArmConstants.maxAcceleration));

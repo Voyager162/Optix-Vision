@@ -24,8 +24,6 @@ public class ElevatorConstants {
         public static int[] motorIds = { 15, 16 };
         public static boolean[] motorInverted = { false, true };
 
-
-
         public static int zeroOffset = 0;
     }
 

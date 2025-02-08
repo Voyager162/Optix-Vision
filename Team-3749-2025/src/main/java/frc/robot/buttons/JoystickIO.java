@@ -13,7 +13,6 @@ import frc.robot.commands.arm.SetClimbArmState;
 import frc.robot.commands.arm.SetCoralArmState;
 import frc.robot.commands.elevator.SetElevatorState;
 
-
 import frc.robot.commands.swerve.RotationialSysId;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
 import frc.robot.subsystems.arm.climb.ClimbArmConstants;
@@ -42,14 +41,15 @@ public class JoystickIO {
             Robot.swerve.getDriveSysIdTuner().sysIdDynamic(Direction.kReverse), Robot.swerve);
 
     private static final Command climbStow = new SetClimbArmState(Robot.climbArm, ClimbArmConstants.ArmStates.STOWED,
-        ClimbArmConstants.stowSetPoint_rad);
+            ClimbArmConstants.stowSetPoint_rad);
     private static final Command climb = new SetClimbArmState(Robot.climbArm, ClimbArmConstants.ArmStates.CLIMB,
-        ClimbArmConstants.climbSetPoint_rad);
-    private static final Command coralHandOff = new SetCoralArmState(Robot.coralArm, CoralArmConstants.ArmStates.HAND_OFF,
-        CoralArmConstants.handOffSetPoint_rad);
+            ClimbArmConstants.climbSetPoint_rad);
+    private static final Command coralHandOff = new SetCoralArmState(Robot.coralArm,
+            CoralArmConstants.ArmStates.HAND_OFF,
+            CoralArmConstants.handOffSetPoint_rad);
     private static final Command coralPickUp = new SetCoralArmState(Robot.coralArm,
-        CoralArmConstants.ArmStates.CORAL_PICKUP,
-        CoralArmConstants.coralPickUpSetPoint_rad);
+            CoralArmConstants.ArmStates.CORAL_PICKUP,
+            CoralArmConstants.coralPickUpSetPoint_rad);
 
     private static final SetElevatorState l1 = new SetElevatorState(ElevatorStates.L1);
     private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
@@ -113,8 +113,6 @@ public class JoystickIO {
         buttonBoard.buttonUtilityA.onTrue(Commands.runOnce(() -> System.out.println("1, 1")));
         buttonBoard.buttonUtilityB.onTrue(Commands.runOnce(() -> System.out.println("1, 2")));
         buttonBoard.buttonPlayer1Start.onTrue(Commands.runOnce(() -> System.out.println("1, 8")));
-
-  
 
         // operator.a().whileTrue(Robot.climbArm.getSysIdTuner().runTests());
         // operator.b().whileTrue(Robot.coralArm.getSysIdTuner().runTests());

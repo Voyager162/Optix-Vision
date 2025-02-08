@@ -37,7 +37,8 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 		frontMotorLead = new OptixSpark(ClimbArmConstants.frontMotorId, OptixSpark.Type.SPARKMAX);
 		backMotorFollower = new OptixSpark(ClimbArmConstants.backMotorId, OptixSpark.Type.SPARKMAX);
 
-		frontMotorLead.setCurrentLimit(MotorControllerConstants.standardStallLimit, MotorControllerConstants.standardFreeLimit);
+		frontMotorLead.setCurrentLimit(MotorControllerConstants.standardStallLimit,
+				MotorControllerConstants.standardFreeLimit);
 		frontMotorLead.setInverted(false);
 		frontMotorLead.setBrakeMode(true);
 		frontMotorLead.setPositionConversionFactor(1 / ClimbArmConstants.armGearing * 2 * Math.PI);
@@ -53,7 +54,6 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 		frontMotorLead.setPosition(absolutePos);
 		backMotorFollower.setPosition(absolutePos);
 		backMotorFollower.setFollow(frontMotorLead);
-
 
 	}
 

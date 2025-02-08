@@ -63,7 +63,7 @@ public class OptixSpark {
         return motor.getOutputCurrent();
     }
 
-    public double getTemperature(){
+    public double getTemperature() {
         return motor.getMotorTemperature();
     }
 
@@ -75,15 +75,15 @@ public class OptixSpark {
         return controller;
     }
 
-    public SparkAbsoluteEncoder getAbsoluteEncoder(){
+    public SparkAbsoluteEncoder getAbsoluteEncoder() {
         return motor.getAbsoluteEncoder();
     }
 
-    public SparkBase getSpark(){
+    public SparkBase getSpark() {
         return motor;
     }
 
-    public void setPosition(double position){
+    public void setPosition(double position) {
         motor.getEncoder().setPosition(position);
     }
 
@@ -244,12 +244,12 @@ public class OptixSpark {
 
     }
 
-    public void setFollow(OptixSpark spark){
+    public void setFollow(OptixSpark spark) {
         motorConfig.follow(spark.getSpark());
         motor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public void applyConfig(SparkBaseConfig config){
+    public void applyConfig(SparkBaseConfig config) {
         motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     }
 

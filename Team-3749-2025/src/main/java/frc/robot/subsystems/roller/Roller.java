@@ -41,9 +41,9 @@ public abstract class Roller extends SubsystemBase {
                     0));
 
     private SysIdRoutine.Config config = new SysIdRoutine.Config(
-        Volts.per(Seconds).of(1), // Voltage ramp rate
-        Volts.of(7), // Max voltage
-        Seconds.of(4) // Test duration
+            Volts.per(Seconds).of(1), // Voltage ramp rate
+            Volts.of(7), // Max voltage
+            Seconds.of(4) // Test duration
     );
 
     private SysIdTuner sysIdTuner;
@@ -59,7 +59,7 @@ public abstract class Roller extends SubsystemBase {
         sysIdTuner = new SysIdTuner("roller " + name, config, this, rollerIO::setVoltage, motorData);
     }
 
-    public SysIdTuner getSysIdTuner(){
+    public SysIdTuner getSysIdTuner() {
         return sysIdTuner;
     }
 

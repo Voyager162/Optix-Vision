@@ -75,7 +75,6 @@ public class Swerve extends SubsystemBase {
   private double velocity = 0;
   private double yaw;
 
-
   private SysIdTuner driveSysIdTuner;
   private SysIdTuner turningSysIdTuner;
   private SysIdTuner rotationalSysIdTuner;
@@ -84,23 +83,26 @@ public class Swerve extends SubsystemBase {
   private Map<String, MotorData> turningMotorData;
   private Map<String, MotorData> rotationalMotorData;
 
-
   SysIdRoutine.Config config = new SysIdRoutine.Config(
       Volts.per(Seconds).of(1.2), // Voltage ramp rate
       Volts.of(12), // Max voltage
       Seconds.of(10) // Test duration
   );
 
-
   private LoggedTunableNumber kPDriving = new LoggedTunableNumber("swerve/kP Drive", AutoConstants.kPDrive);
   private LoggedTunableNumber kDDriving = new LoggedTunableNumber("swerve/kD Drive", AutoConstants.kDDrive);
   private LoggedTunableNumber kPTurn = new LoggedTunableNumber("swerve/kP Turn controller", AutoConstants.kPTurn);
   private LoggedTunableNumber kDTurn = new LoggedTunableNumber("swerve/kD Turn controller", AutoConstants.kDTurn);
-  private LoggedTunableNumber kVDriving = new LoggedTunableNumber("swerve/kvDrive", SwerveConstants.ControlConstants.kVDriving);
-  private LoggedTunableNumber kSDriving = new LoggedTunableNumber("swerve/kvDrive", SwerveConstants.ControlConstants.kSDriving);
-  private LoggedTunableNumber kADriving = new LoggedTunableNumber("swerve/kvDrive", SwerveConstants.ControlConstants.kADriving);
-  private LoggedTunableNumber maxVelocity = new LoggedTunableNumber("swerve/maxVelocity", SwerveConstants.ControlConstants.maxSpeedMetersPerSecond);
-  private LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("swerve/maxAcceleration", SwerveConstants.ControlConstants.maxAccelerationMetersPerSecondSquared);
+  private LoggedTunableNumber kVDriving = new LoggedTunableNumber("swerve/kvDrive",
+      SwerveConstants.ControlConstants.kVDriving);
+  private LoggedTunableNumber kSDriving = new LoggedTunableNumber("swerve/kvDrive",
+      SwerveConstants.ControlConstants.kSDriving);
+  private LoggedTunableNumber kADriving = new LoggedTunableNumber("swerve/kvDrive",
+      SwerveConstants.ControlConstants.kADriving);
+  private LoggedTunableNumber maxVelocity = new LoggedTunableNumber("swerve/maxVelocity",
+      SwerveConstants.ControlConstants.maxSpeedMetersPerSecond);
+  private LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("swerve/maxAcceleration",
+      SwerveConstants.ControlConstants.maxAccelerationMetersPerSecondSquared);
 
   public Swerve() {
 
@@ -116,7 +118,7 @@ public class Swerve extends SubsystemBase {
       // gyro = new NavX2Gyro();
       gyro = new PigeonGyro();
       for (int i = 0; i < 4; i++) {
-        
+
         modules[i] = new SwerveModule(i, new SwerveModuleSpark(i));
       }
     }
@@ -142,41 +144,44 @@ public class Swerve extends SubsystemBase {
             modules[0].getModuleData().drivePositionM,
             modules[0].getModuleData().driveVelocityMPerSec,
             modules[0].getModuleData().driveAccelerationMPerSecSquared));
-    
+
     turningMotorData = Map.of("turning_left",
-    new MotorData(
-        modules[0].getModuleData().turnAppliedVolts,
-        modules[0].getModuleData().turnPositionRad,
-        modules[0].getModuleData().turnVelocityRadPerSec,
-        0));
-    
+        new MotorData(
+            modules[0].getModuleData().turnAppliedVolts,
+            modules[0].getModuleData().turnPositionRad,
+            modules[0].getModuleData().turnVelocityRadPerSec,
+            0));
+
     rotationalMotorData = Map.of("drive_left",
-    new MotorData(
-        modules[0].getModuleData().driveAppliedVolts,
-        modules[0].getModuleData().drivePositionM,
-        modules[0].getModuleData().driveVelocityMPerSec,
-        modules[0].getModuleData().driveAccelerationMPerSecSquared));
+        new MotorData(
+            modules[0].getModuleData().driveAppliedVolts,
+            modules[0].getModuleData().drivePositionM,
+            modules[0].getModuleData().driveVelocityMPerSec,
+            modules[0].getModuleData().driveAccelerationMPerSecSquared));
 
     driveSysIdTuner = new SysIdTuner("drive", config, this, (volts) -> {
       for (int i = 0; i < 4; i++) {
         modules[i].setDriveVoltage(volts);
-      }}, driveMotorData);
-    
+      }
+    }, driveMotorData);
+
     turningSysIdTuner = new SysIdTuner("turn", config, this, (volts) -> {
       for (int i = 0; i < 4; i++) {
         modules[i].setTurnVoltage(volts);
-      }}, turningMotorData);
+      }
+    }, turningMotorData);
 
     rotationalSysIdTuner = new SysIdTuner("rotate", config, this, (volts) -> {
       for (int i = 0; i < 4; i++) {
         modules[i].setDriveVoltage(volts);
-      }}, rotationalMotorData);
-    
+      }
+    }, rotationalMotorData);
+
     turnController.enableContinuousInput(-Math.PI, Math.PI);
 
     // put us on the field with a default orientation
     resetGyro();
-    setOdometry(new Pose2d(1.33,5.53, new Rotation2d(0)));
+    setOdometry(new Pose2d(1.33, 5.53, new Rotation2d(0)));
     logSetpoints(1.33, 0, 0, 5.53, 0, 0, 0, 0, 0);
 
   }
@@ -189,15 +194,19 @@ public class Swerve extends SubsystemBase {
     return turningSysIdTuner;
   }
 
-  public SysIdTuner getRotationalSysIdTuner(){
+  public SysIdTuner getRotationalSysIdTuner() {
     return rotationalSysIdTuner;
   }
 
-  public boolean getRotated(){
-    return UtilityFunctions.withinMargin(0.01, modules[0].getModuleData().turnPositionRad, Rotation2d.fromDegrees(45).getRadians())
-    &&  UtilityFunctions.withinMargin(0.01, modules[1].getModuleData().turnPositionRad, Rotation2d.fromDegrees(135).getRadians())
-    &&  UtilityFunctions.withinMargin(0.01, modules[2].getModuleData().turnPositionRad, Rotation2d.fromDegrees(225).getRadians())
-    &&  UtilityFunctions.withinMargin(0.01, modules[3].getModuleData().turnPositionRad, Rotation2d.fromDegrees(315).getRadians());
+  public boolean getRotated() {
+    return UtilityFunctions.withinMargin(0.01, modules[0].getModuleData().turnPositionRad,
+        Rotation2d.fromDegrees(45).getRadians())
+        && UtilityFunctions.withinMargin(0.01, modules[1].getModuleData().turnPositionRad,
+            Rotation2d.fromDegrees(135).getRadians())
+        && UtilityFunctions.withinMargin(0.01, modules[2].getModuleData().turnPositionRad,
+            Rotation2d.fromDegrees(225).getRadians())
+        && UtilityFunctions.withinMargin(0.01, modules[3].getModuleData().turnPositionRad,
+            Rotation2d.fromDegrees(315).getRadians());
 
   }
 
@@ -380,12 +389,12 @@ public class Swerve extends SubsystemBase {
         pose);
   }
 
-  public void setRotation(){
-    modules[0].setTurnPosition(45*(Math.PI/180));
-    modules[1].setTurnPosition(135*Math.PI/180);
+  public void setRotation() {
+    modules[0].setTurnPosition(45 * (Math.PI / 180));
+    modules[1].setTurnPosition(135 * Math.PI / 180);
 
-    modules[2].setTurnPosition(225*Math.PI/180);
-    modules[3].setTurnPosition(315*Math.PI/180);
+    modules[2].setTurnPosition(225 * Math.PI / 180);
+    modules[3].setTurnPosition(315 * Math.PI / 180);
 
   }
 
@@ -584,6 +593,7 @@ public class Swerve extends SubsystemBase {
     rotationalMotorData.get("drive_left").appliedVolts = modules[0].getModuleData().driveAppliedVolts;
     rotationalMotorData.get("drive_left").position = modules[0].getModuleData().drivePositionM;
     rotationalMotorData.get("drive_left").velocity = modules[0].getModuleData().driveVelocityMPerSec / 0.533;
-    rotationalMotorData.get("drive_left").acceleration = modules[0].getModuleData().driveAccelerationMPerSecSquared / 0.533;
+    rotationalMotorData.get("drive_left").acceleration = modules[0].getModuleData().driveAccelerationMPerSecSquared
+        / 0.533;
   }
 }
