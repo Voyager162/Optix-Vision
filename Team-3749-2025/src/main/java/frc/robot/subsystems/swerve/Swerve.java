@@ -20,6 +20,7 @@ import frc.robot.subsystems.swerve.GyroIO.GyroData;
 import frc.robot.subsystems.swerve.SwerveConstants.DriveConstants;
 import frc.robot.subsystems.swerve.real.*;
 import frc.robot.subsystems.swerve.sim.*;
+import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.utils.*;
 
 /***
@@ -60,7 +61,7 @@ public class Swerve extends SubsystemBase {
   private ShuffleData<Double[]> odometryLog = new ShuffleData<Double[]>(
       this.getName(),
       "odometry",
-      new Double[] { 0.0, 0.0, 0.0 });
+      new Double[] { 0.0, 0.0, 0.0});
 
   private ShuffleData<Double[]> realStatesLog = new ShuffleData<Double[]>(
       this.getName(),
@@ -106,10 +107,7 @@ public class Swerve extends SubsystemBase {
       "gyro connected",
 
       false);
-  private ShuffleData<Boolean> gyroCalibratingLog = new ShuffleData<Boolean>(
-      this.getName(),
-      "gyro calibrating",
-      false);
+
 
   private ShuffleData<Double> headingLog = new ShuffleData<Double>(
       this.getName(),
@@ -149,7 +147,7 @@ public class Swerve extends SubsystemBase {
     if (Robot.isSimulation()) {
       gyro = new GyroSim();
       for (int i = 0; i < 4; i++) {
-        modules[i] = new SwerveModule(i, new SwerveModuleSim());
+        modules[i] = new SwerveModule(i, new SwerveModuleSim(i));
       }
     }
     // if real
@@ -157,7 +155,8 @@ public class Swerve extends SubsystemBase {
       // gyro = new NavX2Gyro();
       gyro = new PigeonGyro();
       for (int i = 0; i < 4; i++) {
-        modules[i] = new SwerveModule(i, new SwerveModuleSparkMax(i));
+        
+        modules[i] = new SwerveModule(i, new SwerveModuleSpark(i));
       }
     }
     // pose estimator
@@ -171,14 +170,16 @@ public class Swerve extends SubsystemBase {
             modules[3].getPosition()
         },
         new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
-        VecBuilder.fill(0.04, 0.04, 0.00),
-        VecBuilder.fill(0.965, 0.965, 5000));
+        VecBuilder.fill(0.045, 0.045, 0.0004), // 6328's 2024 numbers with factors of 1.5x, 1.5x, 2x
+        VecBuilder.fill(VisionConstants.StandardDeviations.PreMatch.xy,
+            VisionConstants.StandardDeviations.PreMatch.xy,
+            VisionConstants.StandardDeviations.PreMatch.thetaRads));
 
     turnController.enableContinuousInput(-Math.PI, Math.PI);
 
     // put us on the field with a default orientation
     resetGyro();
-    setOdometry(new Pose2d(1.33, 5.53, new Rotation2d(0)));
+    setOdometry(new Pose2d(1.33,5.53, new Rotation2d(0)));
     logSetpoints(1.33, 0, 0, 5.53, 0, 0, 0, 0, 0);
 
   }
@@ -240,6 +241,10 @@ public class Swerve extends SubsystemBase {
   public double getMaxAngularSpeed() {
     return DriverStation.isTeleopEnabled() ? SwerveConstants.DriveConstants.teleopMaxAngularSpeedRadPerSecond
         : SwerveConstants.DriveConstants.autoMaxAngularSpeedRadPerSecond;
+  }
+
+  public SwerveDrivePoseEstimator getPoseEstimator() {
+    return swerveDrivePoseEstimator;
   }
 
   /**
@@ -492,7 +497,6 @@ public class Swerve extends SubsystemBase {
     pitchLog.set(gyroData.pitchDeg);
     rollLog.set(gyroData.rollDeg);
     gyroConnectedLog.set(gyroData.isConnected);
-    gyroCalibratingLog.set(gyroData.isCalibrating);
     headingLog.set(getRotation2d().getDegrees());
 
     // velocity and acceleration logging

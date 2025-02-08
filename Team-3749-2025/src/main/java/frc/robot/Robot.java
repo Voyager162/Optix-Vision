@@ -4,11 +4,8 @@
 
 package frc.robot;
 
+
 import edu.wpi.first.hal.AllianceStationID;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -16,14 +13,12 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
-import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.implementations.AlgaeRoller;
 import frc.robot.subsystems.roller.implementations.CoralRoller;
 import frc.robot.subsystems.roller.implementations.ScoringRoller;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utils.MiscConstants;
-import frc.robot.utils.ShuffleData;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -38,8 +33,7 @@ public class Robot extends LoggedRobot {
   public static Roller algaeRoller = new AlgaeRoller();
   public static Roller coralRoller = new CoralRoller();
   public static Roller scoringRoller = new ScoringRoller();
-  
-  public static ExampleSubsystem subsystem = new ExampleSubsystem();
+
   public static Elevator elevator = new Elevator();
 
   public static CoralArm coralArm = new CoralArm();
@@ -97,12 +91,14 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-    
+
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+ 
+
   
   }
 
@@ -147,7 +143,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void teleopPeriodic() {
-    
+
   }
 
   @Override
@@ -166,8 +162,9 @@ public class Robot extends LoggedRobot {
   @Override
   public void testExit() {
   }
+
   @Override
-  public void simulationInit(){
+  public void simulationInit() {
     DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
   }
 }

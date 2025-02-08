@@ -1,11 +1,23 @@
 package frc.robot.subsystems.elevator;
 
+import static edu.wpi.first.units.Units.Radians;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -31,31 +43,45 @@ public class Elevator extends SubsystemBase {
     private ElevatorData data = new ElevatorData();
     private ElevatorStates state = ElevatorStates.STOP;
 
-    private ProfiledPIDController pidController = new ProfiledPIDController(
-            ElevatorConstants.ElevatorControl.kPSim,
+    private ProfiledPIDController profile = new ProfiledPIDController(
             0,
-            ElevatorConstants.ElevatorControl.kDSim,
+            0,
+            0,
             new TrapezoidProfile.Constraints(ElevatorConstants.ElevatorControl.maxV,
                     ElevatorConstants.ElevatorControl.maxA));
 
     private ElevatorFeedforward feedforward = new ElevatorFeedforward(
-            ElevatorConstants.ElevatorControl.kSSim,
-            ElevatorConstants.ElevatorControl.kGSim,
-            ElevatorConstants.ElevatorControl.kVSim,
-            ElevatorConstants.ElevatorControl.kASim);
+            ElevatorConstants.ElevatorControl.kS,
+            ElevatorConstants.ElevatorControl.kG,
+            ElevatorConstants.ElevatorControl.kV,
+            ElevatorConstants.ElevatorControl.kA);
 
+    private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
+    private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position", 0.0);
+    private ShuffleData<Double> velocityMetersPerSecLog = new ShuffleData<Double>("Elevator", "velocity", 0.0);
+    private ShuffleData<Double> accelerationMetersPerSecSquaredLog = new ShuffleData<Double>("Elevator", "acceleration",
+            0.0);
 
-    // For tuning on real
-    // private ShuffleData<Double> kPData = new ShuffleData<Double>("Elevator",
-    // "kPData", ElevatorConstants.ElevatorControl.kPSim);
-    // private ShuffleData<Double> kDData = new ShuffleData<Double>("Elevator",
-    // "kDData", ElevatorConstants.ElevatorControl.kDSim);
-    // private ShuffleData<Double> kGData = new ShuffleData<Double>("Elevator",
-    // "kGData", ElevatorConstants.ElevatorControl.kGSim);
-    // private ShuffleData<Double> kVData = new ShuffleData<Double>("Elevator",
-    // "kVData", ElevatorConstants.ElevatorControl.kVSim);
-    // private ShuffleData<Double> kAData = new ShuffleData<Double>("Elevator",
-    // "kAData", ElevatorConstants.ElevatorControl.kASim);
+    private ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Elevator", "input volts", 0.0);
+    private ShuffleData<Double> leftAppliedVoltsLog = new ShuffleData<Double>("Elevator", "left applied volts", 0.0);
+    private ShuffleData<Double> rightAppliedVoltsLog = new ShuffleData<Double>("Elevator", "right applied volts", 0.0);
+    private ShuffleData<Double> leftCurrentAmpsLog = new ShuffleData<Double>("Elevator", "left current amps", 0.0);
+    private ShuffleData<Double> rightCurrentAmpsLog = new ShuffleData<Double>("Elevator", "right current amps", 0.0);
+    private ShuffleData<Double> leftTempCelciusLog = new ShuffleData<Double>("Elevator", "left temp celcius", 0.0);
+    private ShuffleData<Double> rightTempCelciusLog = new ShuffleData<Double>("Elevator", "right temp celcius", 0.0);;
+
+    private Mechanism2d mech = new Mechanism2d(3, 3);
+    private MechanismRoot2d root = mech.getRoot("elevator", 1, 0);
+    private MechanismLigament2d elevatorMech = root
+            .append(new MechanismLigament2d("elevator", ElevatorConstants.ElevatorSpecs.baseHeight, 90));
+
+    private double elevatorInnerStagePos;
+    private double elevatorMiddleStagePos;
+
+    StructPublisher<Pose3d> elevatorInnerStage = NetworkTableInstance.getDefault()
+            .getStructTopic("Elevator Inner Stage", Pose3d.struct).publish();
+    StructPublisher<Pose3d> elevatorMiddleStage = NetworkTableInstance.getDefault()
+            .getStructTopic("Elevator Middle Stage", Pose3d.struct).publish();
 
     public Elevator() {
         if (Robot.isSimulation()) {
@@ -66,6 +92,11 @@ public class Elevator extends SubsystemBase {
     }
 
     public ElevatorStates getState() {
+
+        StructPublisher<Pose3d> elevatorInnerStage = NetworkTableInstance.getDefault()
+                .getStructTopic("Elevator Inner Stage", Pose3d.struct).publish();
+        StructPublisher<Pose3d> elevatorMiddleStage = NetworkTableInstance.getDefault()
+                .getStructTopic("Elevator Middle Stage", Pose3d.struct).publish();
         return state;
     }
 
@@ -130,7 +161,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void setGoal(double height) {
-        pidController.setGoal(height);
+        profile.setGoal(height);
     }
 
     private void runState() {
@@ -145,13 +176,13 @@ public class Elevator extends SubsystemBase {
     }
 
     private void moveToGoal() {
-        State firstState = pidController.getSetpoint();
-        double pidVoltage = pidController.calculate(getPositionMeters());
+        State firstState = profile.getSetpoint();
+        profile.calculate(getPositionMeters());
 
-        State nextState = pidController.getSetpoint();
+        State nextState = profile.getSetpoint();
         double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
 
-        elevatorio.setVoltage(ffVoltage + pidVoltage);
+        elevatorio.setPosition(firstState.position, ffVoltage);
     }
 
     private void runStateStop() {
@@ -170,30 +201,34 @@ public class Elevator extends SubsystemBase {
 
         Logger.recordOutput("subystems/elevator/acceleration", data.accelerationMetersPerSecondSquared);
 
-        Logger.recordOutput("subystems/elevator/left applied volts", data.leftAppliedVolts);
+        leftAppliedVoltsLog.set(data.leftAppliedVolts);
+        rightAppliedVoltsLog.set(data.rightAppliedVolts);
+        leftCurrentAmpsLog.set(data.leftCurrentAmps);
+        rightCurrentAmpsLog.set(data.rightCurrentAmps);
+        leftTempCelciusLog.set(data.leftTempCelcius);
+        rightTempCelciusLog.set(data.rightTempCelcius);
 
-        Logger.recordOutput("subystems/elevator/right applied volts", data.rightAppliedVolts);
+        elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
+        SmartDashboard.putData("elevator mechanism", mech);
 
-        Logger.recordOutput("subystems/elevator/left current", data.leftCurrentAmps);
+        elevatorInnerStagePos = data.positionMeters / 2;
+        elevatorMiddleStagePos = data.positionMeters - Units.inchesToMeters(1);
+        elevatorInnerStage.set(new Pose3d(getTransform3d(elevatorInnerStagePos).getTranslation(),
+                getTransform3d(elevatorInnerStagePos).getRotation()));
+        elevatorMiddleStage.set(new Pose3d(getTransform3d(elevatorMiddleStagePos).getTranslation(),
+                getTransform3d(elevatorMiddleStagePos).getRotation()));
+    }
 
-        Logger.recordOutput("subystems/elevator/right current", data.rightCurrentAmps);
-
-        Logger.recordOutput("subystems/elevator/left tempurature", data.leftTempCelcius);
-
-        Logger.recordOutput("subystems/elevator/right tempurature", data.rightTempCelcius);
-
-
-
-
-
+    private Transform3d getTransform3d(double pos) {
+        Transform3d transform = new Transform3d(0, 0, pos, new Rotation3d(Angle.ofBaseUnits(0, Radians),
+                Angle.ofBaseUnits(0, Radians), Angle.ofBaseUnits(0, Radians)));
+        return transform;
     }
 
     @Override
     public void periodic() {
         elevatorio.updateData(data);
-
         runState();
         logData();
-        // pidController.setPID(kPData.get(),0,kDData.get())
     }
 }

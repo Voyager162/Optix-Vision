@@ -9,7 +9,7 @@ import frc.robot.subsystems.roller.RollerConstants.Implementations;
 public class CoralRoller extends Roller {
     
     public CoralRoller() {
-        super(Implementations.CORAL, velocityController(), FF(), positionController());
+        super(Implementations.CORAL, FF());
     }
 
     public static PIDController velocityController() {
