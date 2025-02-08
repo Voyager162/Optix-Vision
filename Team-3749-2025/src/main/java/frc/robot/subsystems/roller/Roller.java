@@ -21,7 +21,7 @@ import static edu.wpi.first.units.Units.*;
 
 public abstract class Roller extends SubsystemBase {
     private RollerIO rollerIO;
-    private RollerData rollerData;
+    private RollerData rollerData = new RollerData();
     private RollerStates rollerState;
     private PIDController positionController;
     private PIDController velocityController;
@@ -77,7 +77,6 @@ public abstract class Roller extends SubsystemBase {
         this.rollerFF = rollerFF;
         this.positionController = positionController;
         this.rollerState = RollerConstants.RollerStates.STOP;
-        rollerData = new RollerData();
 
         rollerVelocityLog = new LoggedTunableNumber(getName() + "/" + name + " Velocity", 0.0);
         rollerVoltageLog = new LoggedTunableNumber(getName() + "/" + name + " Voltage", 0.0);
