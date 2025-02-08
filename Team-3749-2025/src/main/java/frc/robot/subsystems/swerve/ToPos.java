@@ -412,7 +412,7 @@ public class ToPos {
         {
             if(closestSide.equals(side))
             {
-                Robot.swerve.currentPPSetpointIndex = ToPosConstants.Setpoints.driveRelativeBranches.get(side)[branchIndex];
+                Robot.swerve.setPPSetpointIndex(ToPosConstants.Setpoints.driveRelativeBranches.get(side)[branchIndex]);
                 break;
             }
         }

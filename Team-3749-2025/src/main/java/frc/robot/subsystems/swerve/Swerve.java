@@ -154,10 +154,40 @@ public class Swerve extends SubsystemBase {
       "setpoint rotational acceleration",
       0.0);
 
-  public int currentPPSetpointIndex = 0;
-  public int currentPPApproachSetpointIndex = 0;
+  private int currentPPSetpointIndex = 0;
+  private int currentPPApproachSetpointIndex = 0;
 
-  public boolean isOTF = false;
+  private boolean isOTF = false;
+
+  public int getPPSetpointIndex()
+  {
+    return currentPPApproachSetpointIndex;
+  }
+
+  public void setPPSetpointIndex(int index)
+  {
+    currentPPSetpointIndex = index;
+  }
+
+  public int getApproachSetpointIndex()
+  {
+    return currentPPApproachSetpointIndex;
+  }
+
+  public void setApproachSetpointIndex(int index)
+  {
+    currentPPApproachSetpointIndex = index;
+  }
+
+  public boolean getIsOTF()
+  {
+    return isOTF;
+  }
+
+  public void setIsOTF(boolean otf)
+  {
+    isOTF = otf;
+  }
 
   public Swerve() {
 
