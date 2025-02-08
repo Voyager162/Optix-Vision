@@ -3,7 +3,8 @@ package frc.robot.subsystems.swerve;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
-import frc.robot.subsystems.swerve.SwerveConstants.ModuleConstants;
+import frc.robot.subsystems.swerve.SwerveConstants;
+import frc.robot.subsystems.swerve.SwerveConstants.ControlConstants;
 import frc.robot.subsystems.swerve.SwerveModuleIO.ModuleData;
 import frc.robot.utils.LoggedTunableNumber;
 
@@ -79,8 +80,8 @@ public class SwerveModule {
         turningCurrent = new LoggedTunableNumber("Swerve/" + name + "/turning current",
                 moduleData.turnCurrentAmps);
 
-        drivingFeedFordward = new SimpleMotorFeedforward(ModuleConstants.kSDriving,
-                ModuleConstants.kVDriving, ModuleConstants.kADriving);
+        drivingFeedFordward = new SimpleMotorFeedforward(ControlConstants.kSDriving,
+                ControlConstants.kVDriving, ControlConstants.kADriving);
     }
 
     public String getName() {
@@ -147,7 +148,6 @@ public class SwerveModule {
         previousSetpointVelocity = speedMetersPerSecond;
 
         double feedforward = drivingFeedFordward.calculate(speedMetersPerSecond, setpointAcceleration);
-        
 
         moduleIO.setDriveVelocity(speedMetersPerSecond, feedforward);
 

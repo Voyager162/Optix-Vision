@@ -12,8 +12,10 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.subsystems.swerve.SwerveModuleIO;
-import frc.robot.subsystems.swerve.SwerveConstants.DriveConstants;
-import frc.robot.subsystems.swerve.SwerveConstants.ModuleConstants;
+import frc.robot.subsystems.swerve.SwerveConstants.ControlConstants;
+import frc.robot.subsystems.swerve.SwerveConstants.DrivetrainConstants;
+import frc.robot.subsystems.swerve.SwerveConstants.MotorConstants;
+import frc.robot.utils.MiscConstants.MotorControllerConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
@@ -29,7 +31,7 @@ public class SwerveModuleSim implements SwerveModuleIO {
     LinearSystem<N1, N1, N1> drivePlant = LinearSystemId.createFlywheelSystem(
             DCMotor.getNEO(1), // Motor
             0.09, // J (moment of inertia)
-            ModuleConstants.driveMotorGearRatio // Gear ratio
+            MotorConstants.driveMotorGearRatio // Gear ratio
     );
     FlywheelSim driveSim = new FlywheelSim(
             drivePlant, // The linear system
@@ -39,7 +41,7 @@ public class SwerveModuleSim implements SwerveModuleIO {
     LinearSystem<N1, N1, N1> turnPlant = LinearSystemId.createFlywheelSystem(
             DCMotor.getNEO(1), // Motor
             0.04, // J (moment of inertia)
-            ModuleConstants.turnMotorGearRatio // Gear ratio
+            MotorConstants.turnMotorGearRatio // Gear ratio
     );
     FlywheelSim turnSim = new FlywheelSim(
             turnPlant, // The linear system
@@ -59,11 +61,11 @@ public class SwerveModuleSim implements SwerveModuleIO {
         this.index = index;
         System.out.println("[Init] Creating ModuleIOSim");
 
-        drivingPidController = new PIDController(ModuleConstants.drivePID[2][0], ModuleConstants.drivePID[2][1],
-                ModuleConstants.drivePID[2][2]);
+        drivingPidController = new PIDController(ControlConstants.drivePID[2][0], ControlConstants.drivePID[2][1],
+                ControlConstants.drivePID[2][2]);
 
-        turningPidController = new PIDController(ModuleConstants.turnPID[0][0], ModuleConstants.turnPID[0][1],
-                ModuleConstants.turnPID[0][2]);
+        turningPidController = new PIDController(ControlConstants.turnPID[0][0], ControlConstants.turnPID[0][1],
+                ControlConstants.turnPID[0][2]);
         turningPidController.enableContinuousInput(0, 2 * Math.PI);
 
     }
@@ -120,19 +122,19 @@ public class SwerveModuleSim implements SwerveModuleIO {
     @Override
     public void setDriveVoltage(double volts) {
 
-        driveAppliedVolts = MathUtil.clamp(volts, -DriveConstants.maxMotorVolts,
-                DriveConstants.maxMotorVolts);
+        driveAppliedVolts = MathUtil.clamp(volts, -MotorControllerConstants.maxMotorVolts,
+                MotorControllerConstants.maxMotorVolts);
         driveSim.setInputVoltage(driveAppliedVolts);
     }
 
     @Override
     public void setTurnVoltage(double volts) {
-        turnAppliedVolts = MathUtil.clamp(volts, -DriveConstants.maxMotorVolts,
-                DriveConstants.maxMotorVolts);
+        turnAppliedVolts = MathUtil.clamp(volts, -MotorControllerConstants.maxMotorVolts,
+                MotorControllerConstants.maxMotorVolts);
         turnSim.setInputVoltage(turnAppliedVolts);
     }
 
     private double getDriveVelocityMetersPerSec() {
-        return (driveSim.getAngularVelocityRadPerSec() * ModuleConstants.wheelDiameterMeters) / 2;
+        return (driveSim.getAngularVelocityRadPerSec() * DrivetrainConstants.wheelDiameterMeters) / 2;
     }
 }
