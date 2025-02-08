@@ -78,7 +78,6 @@ public class ToPosConstants {
 
         public static Pose2d reefTrig(Pose2d reefPose, TrigDirection direction) {
             double offsetMultiplier = 1;
-            double forwardMagnitudeMultiplier = 1;
             double angleOffset = 90; // 90 for perpindicular
             switch (direction) {
                 case LEFT:
@@ -89,23 +88,24 @@ public class ToPosConstants {
                     offsetMultiplier = -1;
                     break;
 
-                case FORWARD:
-                    angleOffset = 0;
-                    forwardMagnitudeMultiplier = 1.5;
-                    break;
-
                 default:
                     System.out.println("did not specify trig direction");
                     break;
             }
 
-            double xOffset = Math
-                    .cos(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))
-                    / (4 * forwardMagnitudeMultiplier);
-            double yOffset = Math
+            double xSetup = reefPose.getX() + Math
+            .cos(Math.toRadians(reefPose.getRotation().getDegrees() + (90)))*Units.inchesToMeters(6.25);
+            double ySetup = reefPose.getY() + Math
+            .sin(Math.toRadians(reefPose.getRotation().getDegrees() + (90)))*Units.inchesToMeters(6.25);
+
+            double newX = xSetup + Math
+                    .cos(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))*Units.inchesToMeters(6.5);
+            double newY = ySetup + Math
                     .sin(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))
-                    / (4 * forwardMagnitudeMultiplier);
-            return new Pose2d(reefPose.getX() + xOffset, reefPose.getY() + yOffset, reefPose.getRotation());
+                    * Units.inchesToMeters(6.5);
+
+            
+            return new Pose2d(newX, newY, reefPose.getRotation());
         };
 
         // Helper method to adjust Pose2d
