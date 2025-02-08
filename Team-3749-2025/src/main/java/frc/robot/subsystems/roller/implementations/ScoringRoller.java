@@ -5,6 +5,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
+import frc.robot.commands.auto.Autos;
 import frc.robot.subsystems.roller.PhotoelectricIO;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
@@ -21,8 +22,10 @@ public class ScoringRoller extends Roller {
     private PhotoelectricData photoelectricData = new PhotoelectricData();
     private PhotoelectricIO photoelectricIO;
     private boolean hasPiece = true;
+    private boolean routineStarted = false;
 
     private ShuffleData<Boolean> hasPieceLog = new ShuffleData<Boolean>(this.getName(), "hasPiece", hasPiece);
+    private ShuffleData<Boolean> setInitialStateLog = new ShuffleData<Boolean>(this.getName(), "setInitialState", routineStarted);
 
     public ScoringRoller() {
         super(Implementations.SCORING, FF());
@@ -80,6 +83,17 @@ public class ScoringRoller extends Roller {
 
         hasPiece = photoelectricData.sensing;
         hasPieceLog.set(hasPiece);
+        setInitialStateLog.set(routineStarted);
+
+        if (Autos.isRoutineStarted() && !routineStarted) { 
+            routineStarted = true; 
+            photoelectricIO.setInitialState(true);
+        }
+        
+        if (!Autos.isRoutineStarted() && routineStarted) {
+            routineStarted = false;  
+        }
+
         if (this.getCurrentCommand() != null) {
             SmartDashboard.putString("scoring roller command", this.getCurrentCommand().getName());
         } else {

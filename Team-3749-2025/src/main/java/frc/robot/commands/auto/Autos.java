@@ -3,7 +3,9 @@ package frc.robot.commands.auto;
 import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
  * Class containing our auto routines. Referenced by the auto selector and
@@ -12,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
  * @author Noah Simon
  */
 public class Autos {
-
+    private static boolean routineStarted = false; 
     /***
      * 
      * @return The command current selected by the auto chooser
@@ -29,8 +31,18 @@ public class Autos {
     public static Command getPrint() {
         return Commands.print("Print Auto!");
     }
+    
+    public static boolean isRoutineStarted() {
+        return routineStarted;
+    }
 
-   
+    public static void startRoutineTracking() {
+        routineStarted = true;
+    }
+
+    public static void stopRoutineTracking() {
+        routineStarted = false;
+    }
     /**
      * 
      * @return a command that scores at positions 5, 4, and 3 at L4 
@@ -57,9 +69,14 @@ public class Autos {
         AutoUtils.goNextAfterCommand(trajectory3, trajectory4, score2);
         AutoUtils.goNextAfterCommand(trajectory2, trajectory3, intake1);
         AutoUtils.goNextAfterCommand(trajectory1, trajectory2, score1);
+        
+        new Trigger(() -> trajectory5.cmd().isFinished())
+        .onTrue(Commands.runOnce(() -> stopRoutineTracking()))
+        .onTrue(Commands.print("done!"));
 
-        return Commands.print("3 piece auto!").andThen(
-                AutoUtils.startRoutine(routine, "Start-L5", trajectory1));
+        return Commands.print("3 piece auto!")
+            .andThen(Commands.runOnce(() -> startRoutineTracking()))  // Track routine start
+            .andThen(AutoUtils.startRoutine(routine, "Start-L5", trajectory1));
     }
 
      /**
