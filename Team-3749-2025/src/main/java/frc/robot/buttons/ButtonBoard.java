@@ -39,11 +39,12 @@ public class ButtonBoard {
     public JoystickButton buttonUtilityB = new JoystickButton(buttonBoardPlayer1, 2);
     public JoystickButton buttonPlayer1Start = new JoystickButton(buttonBoardPlayer1, 8);
 
-    public ButtonBoard() {}
+    public ButtonBoard() {
+    }
 
     private ScoringMode scoringMode;
 
-    public enum ScoringMode{
+    public enum ScoringMode {
         L1,
         L2,
         L3,
@@ -51,9 +52,8 @@ public class ButtonBoard {
         ALGAE;
     }
 
-    public ScoringMode getScoringMode(){
+    public ScoringMode getScoringMode() {
         return scoringMode;
     }
-
 
 }

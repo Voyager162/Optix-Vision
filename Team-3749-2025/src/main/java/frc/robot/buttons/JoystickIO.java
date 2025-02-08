@@ -31,6 +31,7 @@ public class JoystickIO {
     private static final Command RunCommand = new RunCommand();
     private static final Command StopCommand = new StopCommand();
     private static final ButtonBoard buttonBoard = new ButtonBoard();
+
     public JoystickIO() {
     }
 
@@ -66,8 +67,7 @@ public class JoystickIO {
         pilot.b().whileTrue(MaintainCommand);
         pilot.x().whileTrue(StopCommand);
 
-
-        // Example binding 
+        // Example binding
         // operator.a().whileTrue(new ExampleSubsystemCommand());
         buttonBoard.buttonl1.onTrue(Commands.runOnce(() -> System.out.println("1, 5")));
         buttonBoard.buttonl2.onTrue(Commands.runOnce(() -> System.out.println("1, 6")));
@@ -95,7 +95,6 @@ public class JoystickIO {
         buttonBoard.buttonUtilityB.onTrue(Commands.runOnce(() -> System.out.println("1, 2")));
         buttonBoard.buttonPlayer1Start.onTrue(Commands.runOnce(() -> System.out.println("1, 8")));
 
-        
     }
 
     public static void pilotBindings() {
