@@ -14,11 +14,12 @@ public class PhotoelectricSim implements PhotoelectricIO {
      */
     @Override
     public void setInitialState(boolean initialState) {
-        if (initialState) {
-            sensing = true;
-        } else {
-            sensing = false;
-        }
+        // if (initialState) {
+        //     sensing = true;
+        // } else {
+        //     sensing = false;
+        // }
+        sensing = initialState;
     }
 
     @Override

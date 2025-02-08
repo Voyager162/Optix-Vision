@@ -23,7 +23,6 @@ import frc.robot.commands.integration.ScoreL234;
 import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.OnTheFly;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
-import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.climb.ClimbConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.swerve.ToPos;
@@ -143,10 +142,10 @@ public class JoystickIO {
         buttonReefZoneJ.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(20)));
         buttonReefZoneK.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(22)));
         buttonReefZoneL.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(24)));
-        buttonl1.onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L1)));
-        buttonl2.onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L2)));
-        buttonl3.onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L3)));
-        buttonl4.onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L4)));
+        buttonl1.onTrue(l1);
+        buttonl2.onTrue(l2);
+        buttonl3.onTrue(l3);
+        buttonl4.onTrue(l4);
         buttonAlgaeKnockoff.onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.ALGAE)));
 
     }

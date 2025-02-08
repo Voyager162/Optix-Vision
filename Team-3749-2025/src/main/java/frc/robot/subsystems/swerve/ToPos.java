@@ -313,10 +313,10 @@ public class ToPos {
         double headingInit = initialPose.getRotation().getDegrees();
         double headingFinal = finalPose.getRotation().getDegrees();
 
-        System.out.println("All values for removing waypoints:");
-        System.out.println("Distance: " + distance);
-        System.out.println("Heading Initial: " + headingInit);
-        System.out.println("Heading Final: " + headingFinal);
+        // System.out.println("All values for removing waypoints:");
+        // System.out.println("Distance: " + distance);
+        // System.out.println("Heading Initial: " + headingInit);
+        // System.out.println("Heading Final: " + headingFinal);
 
         // Fix floating-point precision issue in heading difference
         double headingDifference = Math.abs((headingFinal - headingInit) % 360);
@@ -324,11 +324,11 @@ public class ToPos {
             headingDifference = 360 - headingDifference;
         }
 
-        System.out.println("Computed Heading Difference: " + headingDifference);
+        // System.out.println("Computed Heading Difference: " + headingDifference);
 
         // Check if the heading difference is within ±20 degrees
         if (distance < 1.0 && headingDifference <= 20) {
-            System.out.println("called");
+            // System.out.println("called");
             if (waypoints.size() > 2) {
                 waypoints.subList(1, waypoints.size() - 1).clear();
             }
@@ -391,20 +391,20 @@ public class ToPos {
 
         Translation2d finalVertexToEndVector = end.minus(finalVertex);
         Translation2d secondToFinalVertexToFinalVertexVector = finalVertex.minus(secondToFinalVertex);
-        System.out.println("Vectors");
-        System.out.println(finalVertexToEndVector.toString());
-        System.out.println(secondToFinalVertexToFinalVertexVector);
+        // System.out.println("Vectors");
+        // System.out.println(finalVertexToEndVector.toString());
+        // System.out.println(secondToFinalVertexToFinalVertexVector);
 
         double endingAlignment = (finalVertexToEndVector.getX() * secondToFinalVertexToFinalVertexVector.getX()
                 + finalVertexToEndVector.getY() * secondToFinalVertexToFinalVertexVector.getY());
-        System.out.println("alignment and size");
-        System.out.println(endingAlignment);
-        System.out.println(waypoints.size());
-        System.out.println("waypoints");
-        System.out.println(waypoints.get(waypoints.size() - 1).anchor().toString());
-        System.out.println(waypoints.get(waypoints.size() - 2).anchor().toString());
-        System.out.println(waypoints.get(waypoints.size() - 3).anchor().toString());
-        System.out.println(waypoints.get(waypoints.size() - 4).anchor().toString());
+        // System.out.println("alignment and size");
+        // System.out.println(endingAlignment);
+        // System.out.println(waypoints.size());
+        // System.out.println("waypoints");
+        // System.out.println(waypoints.get(waypoints.size() - 1).anchor().toString());
+        // System.out.println(waypoints.get(waypoints.size() - 2).anchor().toString());
+        // System.out.println(waypoints.get(waypoints.size() - 3).anchor().toString());
+        // System.out.println(waypoints.get(waypoints.size() - 4).anchor().toString());
         if (endingAlignment < 0) {
 
             waypoints.remove(waypoints.size() - 2);
@@ -416,7 +416,7 @@ public class ToPos {
      *  
      */
 
-    public static void setSetpointByClosestReefBranch(boolean isLeftBranch) // i am SO good at naming things
+    public static void setSetpointByClosestReefBranch(boolean isLeftBranch)
     {
         int branchIndex = 1;
         if (isLeftBranch) {

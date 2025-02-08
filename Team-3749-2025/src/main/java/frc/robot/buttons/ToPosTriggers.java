@@ -69,7 +69,7 @@ public class ToPosTriggers {
 
         Trigger coralReefL2 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
             Boolean withinMargin = OTFWithinMargin();
-            System.out.println(withinMargin);
+            // System.out.println(withinMargin);
             Boolean isCoralReef = isReefSupplier.getAsBoolean();
             Boolean isL2 = JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L2;
             return withinMargin && isCoralReef && isL2;

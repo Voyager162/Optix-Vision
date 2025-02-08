@@ -37,7 +37,7 @@ public class ToPosConstants {
         private static final double xComponenet = Math.cos(Math.toRadians(30));
         private static final double yComponenet = Math.sin(Math.toRadians(30));
 
-        private static Translation2d flipAccount(Translation2d translation) {
+        private static Translation2d flipIfRed(Translation2d translation) {
             if (DriverStationSim.getAllianceStationId().equals(AllianceStationID.Red1)) {
                 return new Translation2d(flipper.flipX(translation.getX()), flipper.flipY(translation.getY()));
             }
@@ -46,17 +46,17 @@ public class ToPosConstants {
         // Vertices of the hexagon, adjusted for safety margins.
 
         public static List<Translation2d> HEXAGON_VERTICES = List.of(
-                flipAccount(new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN)), // close
+                flipIfRed(new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN)), // close
                                                                                                                       // right
-                flipAccount(new Translation2d(4.5, 3.039 - SAFE_MARGIN)), // middle right
-                flipAccount(new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN)), // far
+                flipIfRed(new Translation2d(4.5, 3.039 - SAFE_MARGIN)), // middle right
+                flipIfRed(new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN)), // far
                                                                                                                       // right
-                flipAccount(new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 4.480 + yComponenet * SAFE_MARGIN)), // far
+                flipIfRed(new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 4.480 + yComponenet * SAFE_MARGIN)), // far
                                                                                                                       // left
-                flipAccount(new Translation2d(4.5, 4.961 + SAFE_MARGIN)), // middle left
-                flipAccount(new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 4.480 + yComponenet * SAFE_MARGIN)), // close
+                flipIfRed(new Translation2d(4.5, 4.961 + SAFE_MARGIN)), // middle left
+                flipIfRed(new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 4.480 + yComponenet * SAFE_MARGIN)), // close
                                                                                                                       // left
-                flipAccount(new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN))); // close
+                flipIfRed(new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN))); // close
                                                                                                                        // right
     }
 
