@@ -74,11 +74,14 @@ public class ToPosConstants {
         public static enum TrigDirection {
             LEFT,
             RIGHT,
+            BACKWARD
         }
 
         public static Pose2d reefTrig(Pose2d reefPose, TrigDirection direction) {
             double offsetMultiplier = 1;
+            double isBackwardOffset = 1;
             double angleOffset = 90; // 90 for perpindicular
+            double distance = 6.5;
             switch (direction) {
                 case LEFT:
                     offsetMultiplier = 1;
@@ -87,7 +90,11 @@ public class ToPosConstants {
                 case RIGHT:
                     offsetMultiplier = -1;
                     break;
-
+                case BACKWARD:
+                    angleOffset = 0;
+                    distance=3;
+                    isBackwardOffset=-1;
+                break;
             }
 
             double xSetup = reefPose.getX() + Math
@@ -97,10 +104,10 @@ public class ToPosConstants {
 
             double newX = xSetup + Math
                     .cos(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))
-                    * Units.inchesToMeters(6.5);
+                    * Units.inchesToMeters(distance) * isBackwardOffset;
             double newY = ySetup + Math
                     .sin(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))
-                    * Units.inchesToMeters(6.5);
+                    * Units.inchesToMeters(distance) * isBackwardOffset;
 
             return new Pose2d(newX, newY, reefPose.getRotation());
         };
@@ -153,40 +160,40 @@ public class ToPosConstants {
         // to see what each letter setpoint refers to
 
         public static Pose2d aSetpoint = reefTrig(reefClose, TrigDirection.LEFT);
-        public static Pose2d aL1 = rotatePose(aSetpoint, 90);
+        public static Pose2d aL1 = reefTrig(rotatePose(aSetpoint, 90),TrigDirection.BACKWARD);
 
         public static Pose2d bSetpoint = reefTrig(reefClose, TrigDirection.RIGHT);
-        public static Pose2d bL1 = rotatePose(bSetpoint, 90);
+        public static Pose2d bL1 = reefTrig(rotatePose(bSetpoint, 90),TrigDirection.BACKWARD);
 
         public static Pose2d cSetpoint = reefTrig(reefCloseRight, TrigDirection.LEFT);
-        public static Pose2d cL1 = rotatePose(cSetpoint, 90);
+        public static Pose2d cL1 = reefTrig(rotatePose(cSetpoint, 90),TrigDirection.BACKWARD);
 
         public static Pose2d dSetpoint = reefTrig(reefCloseRight, TrigDirection.RIGHT);
-        public static Pose2d dL1 = rotatePose(dSetpoint, 90);
+        public static Pose2d dL1 = reefTrig(rotatePose(dSetpoint, 90),TrigDirection.BACKWARD);
 
         public static Pose2d eSetpoint = reefTrig(reefFarRight, TrigDirection.LEFT);
-        public static Pose2d eL1 = rotatePose(eSetpoint, 90);
+        public static Pose2d eL1 = reefTrig(rotatePose(eSetpoint, 90),TrigDirection.BACKWARD);
 
         public static Pose2d fSetpoint = reefTrig(reefFarRight, TrigDirection.RIGHT);
-        public static Pose2d fL1 = rotatePose(fSetpoint, 90);
+        public static Pose2d fL1 = reefTrig(rotatePose(fSetpoint, 90),TrigDirection.BACKWARD);
 
         public static Pose2d gSetpoint = reefTrig(reefFar, TrigDirection.LEFT);
-        public static Pose2d gL1 = rotatePose(gSetpoint, 90);
+        public static Pose2d gL1 = reefTrig(rotatePose(gSetpoint, 90),TrigDirection.BACKWARD);
 
         public static Pose2d hSetpoint = reefTrig(reefFar, TrigDirection.RIGHT);
-        public static Pose2d hL1 = rotatePose(hSetpoint, 90);
+        public static Pose2d hL1 = reefTrig(rotatePose(hSetpoint, 90),TrigDirection.BACKWARD);
 
         public static Pose2d iSetpoint = reefTrig(reefFarLeft, TrigDirection.LEFT);
-        public static Pose2d iL1 = rotatePose(iSetpoint, 90);
+        public static Pose2d iL1 = reefTrig(rotatePose(iSetpoint, 90),TrigDirection.BACKWARD);
 
         public static Pose2d jSetpoint = reefTrig(reefFarLeft, TrigDirection.RIGHT);
-        public static Pose2d jL1 = rotatePose(jSetpoint, 90);
+        public static Pose2d jL1 = reefTrig(rotatePose(jSetpoint, 90),TrigDirection.BACKWARD);
 
         public static Pose2d kSetpoint = reefTrig(reefCloseLeft, TrigDirection.LEFT);
-        public static Pose2d kL1 = rotatePose(kSetpoint, 90);
+        public static Pose2d kL1 = reefTrig(rotatePose(kSetpoint, 90),TrigDirection.BACKWARD);
 
         public static Pose2d lSetpoint = reefTrig(reefCloseLeft, TrigDirection.RIGHT);
-        public static Pose2d lL1 = rotatePose(lSetpoint, 90);
+        public static Pose2d lL1 = reefTrig(rotatePose(lSetpoint, 90),TrigDirection.BACKWARD);
 
         public static List<Pose2d> reefSides = List.of(
                 reefClose,
