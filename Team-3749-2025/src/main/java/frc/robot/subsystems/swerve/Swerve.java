@@ -446,24 +446,13 @@ public class Swerve extends SubsystemBase {
     isOTF = true;
   }
 
-  public void runSetpointReachedCommand() {
-    Command command = PPSetpoints.values()[currentPPSetpointIndex].onReachCommand;
-
-    if (command == null) {
-        System.out.println("Warning: Attempted to schedule a null command, skipping execution.");
-        return; 
-    }
-
-    CommandScheduler.getInstance().schedule(command);
-}
-
   /**
    * Manually sets our odometry position
    * 
    * @param pose - Pose2d object of what to set our position to
    */
   public void setOdometry(Pose2d pose) {
-    System.out.println("Set Odometry: " + pose.getX() + ", " + pose.getY() + ", " + pose.getRotation().getDegrees());
+    // System.out.println("Set Odometry: " + pose.getX() + ", " + pose.getY() + ", " + pose.getRotation().getDegrees());
     Rotation2d gyroHeading = Rotation2d.fromDegrees(gyroData.yawDeg);
 
     swerveDrivePoseEstimator.resetPosition(

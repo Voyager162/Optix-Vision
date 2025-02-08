@@ -29,7 +29,7 @@ public class ElevatorSimulation implements ElevatorIO {
             ElevatorConstants.ElevatorSpecs.startingHeightMeters);
 
     public ElevatorSimulation() {
-        System.out.println("[Init] Creating ElevatorSimulation");
+        // System.out.println("[Init] Creating ElevatorSimulation");
     }
 
     @Override

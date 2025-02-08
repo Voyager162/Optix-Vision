@@ -25,7 +25,7 @@ public class ScoreL234 extends Command {
             Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
             Robot.chuteRoller.setState(RollerConstants.RollerStates.MAINTAIN);
             Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
-            System.out.println("scoreL234 start");
+            // System.out.println("scoreL234 start");
         } else if (Robot.coralRoller.hasPiece()) {
             Robot.elevator.setState(ElevatorStates.STOW);
             Robot.coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
@@ -59,12 +59,12 @@ public class ScoreL234 extends Command {
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.chuteRoller.setState(RollerConstants.RollerStates.STOP);
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
-        System.out.println("scoreL234 end");
+        // System.out.println("scoreL234 end");
     }
 
     @Override
     public boolean isFinished() {
-        System.out.println("scoreL234 finishing: " + Robot.chuteRoller.hasPiece());
+        // System.out.println("scoreL234 finishing: " + Robot.chuteRoller.hasPiece());
         return !Robot.chuteRoller.hasPiece();
     }
 }

@@ -25,14 +25,14 @@ public class PhotoelectricSim implements PhotoelectricIO {
     @Override
     public void updateData(PhotoelectricData data) {
         if (Robot.chuteRoller.getCurrentCommand() != null) {
-            System.out.println("getCurrentCommand is not null");
+            // System.out.println("getCurrentCommand is not null");
             if (scoreTimer == 999999999) { // Initialize timer only once per command
-                System.out.println("get the scoreTimer AGAIN");
+                // System.out.println("get the scoreTimer AGAIN");
                 scoreTimer = -1;
             }
             
             if (scoreTimer < 0) {  // Initialize timer only once per command
-                System.out.println("get the scoreTimer");
+                // System.out.println("get the scoreTimer");
                 scoreTimer = Timer.getFPGATimestamp();
             }
     
@@ -42,14 +42,14 @@ public class PhotoelectricSim implements PhotoelectricIO {
                 case "IntakeFloor": 
                 case "IntakeSource":
                 case "CoralIntakeSource":
-                    System.out.println("sensing before score timer" + sensing);
+                    // System.out.println("sensing before score timer" + sensing);
                     // sensing = false;
                     if (Timer.getFPGATimestamp() - scoreTimer > 2) {
                         sensing = true;
-                        System.out.println("scoreTimer" + scoreTimer);
+                        // System.out.println("scoreTimer" + scoreTimer);
                         if (scoreTimer != -1) {
                             scoreTimer = 999999999;
-                            System.out.println("sensing set after score timer: " + sensing);
+                            // System.out.println("sensing set after score timer: " + sensing);
                         } 
                     }
                     break;
@@ -69,7 +69,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
                     if (Timer.getFPGATimestamp() - scoreTimer > 2) {
                         sensing = false;
                         if (scoreTimer != -1) {
-                            System.out.println("sensing change after 2 sec");
+                            // System.out.println("sensing change after 2 sec");
                             scoreTimer = 999999999; 
                         } 
                     }

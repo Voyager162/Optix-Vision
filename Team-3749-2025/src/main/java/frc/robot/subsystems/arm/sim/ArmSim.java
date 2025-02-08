@@ -26,7 +26,7 @@ public class ArmSim implements ArmIO {
             boolean simulateGravity,
             double startingAngle_Degrees) {
 
-        System.out.println("[Init] Creating ArmSim");
+        // System.out.println("[Init] Creating ArmSim");
 
         armSim = new SingleJointedArmSim(
                 DCMotor.getNEO(numMotors),

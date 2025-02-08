@@ -93,7 +93,7 @@ public class UtilityFunctions {
      */
     public static Rotation2d safeRotation(double rads) {
         if (Math.abs(Math.cos(rads)) < 1e-6 && Math.abs(Math.sin(rads)) < 1e-6) {
-            System.out.println("Warning: Invalid Rotation2d detected. Falling back to neutral rotation.");
+            // System.out.println("Warning: Invalid Rotation2d detected. Falling back to neutral rotation.");
             return new Rotation2d(0); // Neutral rotation
         }
         return new Rotation2d(rads);
@@ -106,7 +106,7 @@ public class UtilityFunctions {
         }
         
         if (Math.abs(Math.cos(rads)) < 1e-6 && Math.abs(Math.sin(rads)) < 1e-6) {
-            System.out.println("Warning: Invalid Rotation2d detected. Falling back to neutral rotation.");
+            // System.out.println("Warning: Invalid Rotation2d detected. Falling back to neutral rotation.");
             return new Rotation2d(0); // Neutral rotation
         }
         return new Rotation2d(rads);

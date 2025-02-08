@@ -41,7 +41,7 @@ public class ToPos {
         }
 
         if (initialPose.equals(finalPose) || initialPose.equals(approachPoint) || approachPoint.equals(finalPose)) {
-            System.out.println("No movement required: Initial, approach, and final poses are the same.");
+            // System.out.println("No movement required: Initial, approach, and final poses are the same.");
             return null; // Prevents unnecessary movement
         }
 
@@ -59,7 +59,7 @@ public class ToPos {
 
         // 🚨 New Check: Ensure at least 2 waypoints before creating the path
         if (waypoints.size() < 2) {
-            System.out.println("Error: Not enough waypoints to create a valid path. Returning null.");
+            // System.out.println("Error: Not enough waypoints to create a valid path. Returning null.");
             return null;
         }
 
@@ -344,7 +344,7 @@ public class ToPos {
             }
         }
         if (waypoints.size() < 2) {
-            System.out.println("Warning: Too few waypoints left after cleaning. Restoring at least two.");
+            // System.out.println("Warning: Too few waypoints left after cleaning. Restoring at least two.");
             waypoints.clear();
             waypoints.add(new Waypoint(initialTranslation, initialTranslation, initialTranslation));
             waypoints.add(new Waypoint(finalTranslation, finalTranslation, finalTranslation));

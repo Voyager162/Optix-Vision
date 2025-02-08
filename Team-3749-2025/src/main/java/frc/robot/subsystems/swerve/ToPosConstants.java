@@ -74,8 +74,6 @@ public class ToPosConstants {
         public static enum TrigDirection {
             LEFT,
             RIGHT,
-            FORWARD,
-
         }
 
         public static Pose2d reefTrig(Pose2d reefPose, TrigDirection direction) {
@@ -90,9 +88,7 @@ public class ToPosConstants {
                     offsetMultiplier = -1;
                     break;
 
-                default:
-                    System.out.println("Did not specify trig direction");
-                    break;
+               
             }
 
             double xSetup = reefPose.getX() + Math

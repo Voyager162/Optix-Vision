@@ -32,7 +32,7 @@ public class SubsystemSim implements ExampleSubsystemIO {
     private double conversionFactor = 1;
 
     public SubsystemSim() {
-        System.out.println("[Init] Creating SubsytemSim");
+        // System.out.println("[Init] Creating SubsytemSim");
     }
 
     @Override

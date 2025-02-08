@@ -47,7 +47,7 @@ public class SwerveModuleSim implements SwerveModuleIO {
     private double turnAppliedVolts = 0.0;
 
     public SwerveModuleSim() {
-        System.out.println("[Init] Creating ModuleIOSim");
+        // System.out.println("[Init] Creating ModuleIOSim");
     }
 
     @Override

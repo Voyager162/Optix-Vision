@@ -33,7 +33,7 @@ public class ElevatorSparkMax implements ElevatorIO {
     private double velocity = 0;
 
     public ElevatorSparkMax() {
-        System.out.println("[Init] Creating Elevator");
+        // System.out.println("[Init] Creating Elevator");
 
         leftConfig.smartCurrentLimit(ElevatorConstants.ElevatorSpecs.stallLimit,
                 ElevatorConstants.ElevatorSpecs.freeLimit);

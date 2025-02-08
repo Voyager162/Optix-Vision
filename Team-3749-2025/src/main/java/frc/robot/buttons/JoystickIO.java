@@ -163,8 +163,6 @@ public class JoystickIO {
         pilot.leftBumper().onTrue(Commands.runOnce(()-> {ToPos.setSetpointByClosestReefBranch(true);Robot.swerve.setIsOTF(true);}));
         pilot.rightBumper().onTrue(Commands.runOnce(()-> {ToPos.setSetpointByClosestReefBranch(false);Robot.swerve.setIsOTF(true);}));
 
-        new Trigger(() -> Robot.swerve.getIsOTF()).whileTrue(onTheFly.andThen(Robot.swerve::runSetpointReachedCommand));
-
         pilot.b().onTrue(Commands.runOnce(() -> {
             Robot.swerve.setIsOTF(false);
             Robot.swerve.cyclePPSetpoint();
