@@ -18,13 +18,12 @@ public class IntakeSource extends Command {
     public void initialize() {
         if (Robot.chuteRoller.hasPiece()) {
             this.cancel();
+            return;
         }
-        else {
             Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
             Robot.elevator.setState(ElevatorStates.SOURCE);
             Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
             Robot.chuteRoller.setState(RollerConstants.RollerStates.INTAKE); 
-        }
     }
 
     @Override

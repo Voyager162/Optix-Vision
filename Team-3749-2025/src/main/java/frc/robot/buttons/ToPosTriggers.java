@@ -2,12 +2,14 @@ package frc.robot.buttons;
 
 import java.util.function.BooleanSupplier;
 
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.buttons.ButtonBoard.ScoringLocation;
 import frc.robot.commands.elevator.SetElevatorState;
+import frc.robot.commands.integration.IntakeSource;
 import frc.robot.commands.integration.KnockAlgae;
+import frc.robot.commands.integration.ScoreL1;
+import frc.robot.commands.integration.ScoreL234;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.swerve.ToPosConstants;
 import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
@@ -74,7 +76,7 @@ public class ToPosTriggers {
                 Boolean withinMargin = OTFWithinMargin();
                 return withinMargin && isCoralSupplier.getAsBoolean();
             });
-            coralStation.onTrue(new PrintCommand("Coral Station"));
+            coralStation.onTrue(new IntakeSource());
     
             Trigger coralReefL1 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
                 Boolean withinMargin = OTFWithinMargin();
@@ -82,7 +84,7 @@ public class ToPosTriggers {
             Boolean isL1 = JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L1;
             return withinMargin && isCoralReef && isL1;
         });
-        coralReefL1.onTrue(new SetElevatorState(ElevatorStates.L1)); 
+        coralReefL1.onTrue(new SetElevatorState(ElevatorStates.L1).andThen(new ScoreL1())); 
         
 
         Trigger coralReefL2 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
@@ -92,7 +94,7 @@ public class ToPosTriggers {
             Boolean isL2 = JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L2;
             return withinMargin && isCoralReef && isL2;
         });
-        coralReefL2.onTrue(new SetElevatorState(ElevatorStates.L2));
+        coralReefL2.onTrue(new SetElevatorState(ElevatorStates.L2).andThen(new ScoreL234(ElevatorStates.L2)));
 
         Trigger coralReefL3 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
             Boolean withinMargin = OTFWithinMargin();
@@ -100,7 +102,7 @@ public class ToPosTriggers {
             Boolean isL3 = JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L3;
             return withinMargin && isCoralReef && isL3;
         });
-        coralReefL3.onTrue(new SetElevatorState(ElevatorStates.L3));
+        coralReefL3.onTrue(new SetElevatorState(ElevatorStates.L3).andThen(new ScoreL234(ElevatorStates.L3)));
 
         Trigger coralReefL4 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
             Boolean withinMargin = OTFWithinMargin();
@@ -108,7 +110,7 @@ public class ToPosTriggers {
             Boolean isL4 = JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L4;
             return withinMargin && isCoralReef && isL4;
         });
-        coralReefL4.onTrue(new SetElevatorState(ElevatorStates.L4));
+        coralReefL4.onTrue(new SetElevatorState(ElevatorStates.L4).andThen(new ScoreL234(ElevatorStates.L4)));
 
         Trigger highAlgaeTrigger = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
             Boolean withinMargin = OTFWithinMargin();
