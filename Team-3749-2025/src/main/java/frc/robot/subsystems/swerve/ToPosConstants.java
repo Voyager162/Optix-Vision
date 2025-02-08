@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 
 public class ToPosConstants {
@@ -39,7 +41,7 @@ public class ToPosConstants {
         private static final double yComponenet = Math.sin(Math.toRadians(30));
 
         private static Translation2d flipIfRed(Translation2d translation) {
-            if (DriverStationSim.getAllianceStationId().equals(AllianceStationID.Red1)) {
+            if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
                 return new Translation2d(flipper.flipX(translation.getX()), flipper.flipY(translation.getY()));
             }
             return translation;
@@ -310,7 +312,7 @@ public class ToPosConstants {
             private PPSetpoints(Pose2d setpoint, Pose2d approachPoint) {
                 this.setpoint = setpoint;
                 this.approachPoint = approachPoint;
-                if (DriverStationSim.getAllianceStationId().equals(AllianceStationID.Red1)) {
+                if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
                     this.setpoint = flipPose(setpoint);
                     this.approachPoint = flipPose(approachPoint);
                 }

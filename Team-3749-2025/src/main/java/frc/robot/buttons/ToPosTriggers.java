@@ -68,7 +68,7 @@ public class ToPosTriggers {
         public static void createOTFTriggers() {
 
             //Trigger trigger(boolean condition)
-            //trigger.onTrue(command) (the condition is met, usually being within a certain distance to the selected point)
+            //trigger.onTrue(command) (the condition is met, usually being within a certain distance to the selected point), and the trigger runs
     
             Trigger coralStation = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
                 Boolean withinMargin = OTFWithinMargin();
