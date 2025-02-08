@@ -59,6 +59,7 @@ public class Elevator extends SubsystemBase {
     private ShuffleData<Double> velocityMetersPerSecLog = new ShuffleData<Double>("Elevator", "velocity", 0.0);
     private ShuffleData<Double> accelerationMetersPerSecSquaredLog = new ShuffleData<Double>("Elevator", "acceleration",
             0.0);
+    private ShuffleData<String> stateLog = new ShuffleData<String>("Elevator", "State", state.name());
 
     private ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Elevator", "input volts", 0.0);
     private ShuffleData<Double> leftAppliedVoltsLog = new ShuffleData<Double>("Elevator", "left applied volts", 0.0);
@@ -196,6 +197,7 @@ public class Elevator extends SubsystemBase {
         positionMetersLog.set(data.positionMeters);
         velocityMetersPerSecLog.set(data.velocityMetersPerSecond);
         accelerationMetersPerSecSquaredLog.set(data.accelerationMetersPerSecondSquared);
+        stateLog.set(state.name());
 
         leftAppliedVoltsLog.set(data.leftAppliedVolts);
         rightAppliedVoltsLog.set(data.rightAppliedVolts);
