@@ -18,7 +18,7 @@ public class CoralRoller extends Roller {
     private PhotoelectricIO photoelectricIO;
     private PhotoelectricData photoelectricData = new PhotoelectricData();
     private RollerData data = new RollerData();
-    
+
     public CoralRoller() {
         super(Implementations.CORAL, velocityController(), FF(), positionController());
         this.photoelectricIO = new PhotoelectricSim();
@@ -26,15 +26,18 @@ public class CoralRoller extends Roller {
     }
 
     public static PIDController velocityController() {
-        return new PIDController(RollerConstants.Coral.kPVelocity, RollerConstants.Coral.kIVelocity, RollerConstants.Coral.kDVelocity);
+        return new PIDController(RollerConstants.Coral.kPVelocity, RollerConstants.Coral.kIVelocity,
+                RollerConstants.Coral.kDVelocity);
     }
 
     public static SimpleMotorFeedforward FF() {
-        return new SimpleMotorFeedforward(RollerConstants.Coral.kSVelocity, RollerConstants.Coral.kVVelocity, RollerConstants.Coral.kAVelocity);
+        return new SimpleMotorFeedforward(RollerConstants.Coral.kSVelocity, RollerConstants.Coral.kVVelocity,
+                RollerConstants.Coral.kAVelocity);
     }
 
     public static PIDController positionController() {
-        return new PIDController(RollerConstants.Coral.kPPosition, RollerConstants.Coral.kIPosition, RollerConstants.Coral.kDPosition);
+        return new PIDController(RollerConstants.Coral.kPPosition, RollerConstants.Coral.kIPosition,
+                RollerConstants.Coral.kDPosition);
     }
 
     public boolean getIsStableState() {
@@ -46,13 +49,12 @@ public class CoralRoller extends Roller {
 
     public boolean hasPiece() {
         if (Robot.isSimulation()) {
-           return hasPiece; 
-        } else {
-            if (!getIsStableState() && lastVelocity > 0.1) { 
-                hasPiece = true; 
-            }
             return hasPiece;
         }
+        if (!getIsStableState() && lastVelocity > 0.1) {
+            hasPiece = true;
+        }
+        return hasPiece;
     }
 
     public boolean getHasPiece() {
@@ -69,7 +71,7 @@ public class CoralRoller extends Roller {
         setVelocity(RollerConstants.Coral.scoreVelocity);
     }
 
-    public Command getCurrentCommand(){
+    public Command getCurrentCommand() {
         return this.getCurrentCommand();
     }
 
@@ -77,11 +79,6 @@ public class CoralRoller extends Roller {
     public void periodic() {
         super.periodic();
         photoelectricIO.updateData(photoelectricData);
-
-        if (photoelectricData.sensing) {
-            hasPiece = true;
-        } else {
-            hasPiece = false;
-        }
+        hasPiece = photoelectricData.sensing;
     }
 }

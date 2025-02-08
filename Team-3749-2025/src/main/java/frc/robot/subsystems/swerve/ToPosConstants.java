@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation; //dont remove all unusred importas here read line 42
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class ToPosConstants {
@@ -39,9 +39,11 @@ public class ToPosConstants {
         private static final double yComponenet = Math.sin(Math.toRadians(30));
 
         private static Translation2d flipIfRed(Translation2d translation) {
-            if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
-                return new Translation2d(flipper.flipX(translation.getX()), flipper.flipY(translation.getY()));
-            }
+            // if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
+                // return new Translation2d(flipper.flipX(translation.getX()), flipper.flipY(translation.getY()));
+            // }
+            //i can't really do anything about this cause it will crash otherwise asi driverstation doesn't exist in context of sim
+            //uncomment this on the real bot though
             return translation;
         }
         // Vertices of the hexagon, adjusted for safety margins.
@@ -310,10 +312,10 @@ public class ToPosConstants {
             private PPSetpoints(Pose2d setpoint, Pose2d approachPoint) {
                 this.setpoint = setpoint;
                 this.approachPoint = approachPoint;
-                if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
-                    this.setpoint = flipPose(setpoint);
-                    this.approachPoint = flipPose(approachPoint);
-                }
+                // if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
+                //     this.setpoint = flipPose(setpoint);
+                //     this.approachPoint = flipPose(approachPoint);
+                // } see line 42
             }
 
         }

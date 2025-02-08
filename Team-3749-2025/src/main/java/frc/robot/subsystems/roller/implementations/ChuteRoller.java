@@ -16,7 +16,7 @@ public class ChuteRoller extends Roller {
     private RollerData rollerData;
     private PhotoelectricData photoelectricData = new PhotoelectricData();
     private PhotoelectricIO photoelectricIO;
-    private boolean hasPiece = true;
+    // private boolean hasPiece = true; //this is never used from what ive seen
 
     public ChuteRoller() {
         super(Implementations.SCORING, velocityController(), FF(), positionController());
@@ -24,9 +24,9 @@ public class ChuteRoller extends Roller {
         if (Robot.isSimulation()) {
             this.photoelectricIO = new PhotoelectricSim();
             photoelectricIO.setInitialState(true);
-        } else {
-            this.photoelectricIO = new JTVisiSight(); 
+            return;
         }
+        this.photoelectricIO = new JTVisiSight(); 
     }
 
     public static PIDController velocityController() {
@@ -48,9 +48,9 @@ public class ChuteRoller extends Roller {
     public void intake() {
         if (!rollerData.sensorTripped) {
             setVelocity(RollerConstants.Scoring.velocity);
-        } else {
-            setVoltage(0.0);
+            return;
         }
+            setVoltage(0.0);
     }
 
     @Override
@@ -62,9 +62,9 @@ public class ChuteRoller extends Roller {
         return photoelectricData.sensing;
     }
 
-    public void setHasPiece(boolean hasPiece) {
-        this.hasPiece = hasPiece;
-    }
+    // public void setHasPiece(boolean hasPiece) {
+    //     this.hasPiece = hasPiece;
+    // }
 
     @Override
     public void periodic() {
@@ -78,6 +78,6 @@ public class ChuteRoller extends Roller {
         
         //     hasPiece = false;
         // }
-        hasPiece = photoelectricData.sensing; //srsly
+        // hasPiece = photoelectricData.sensing; //srsly
     }
 }
