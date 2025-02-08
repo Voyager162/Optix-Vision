@@ -16,7 +16,7 @@ import frc.robot.utils.ShuffleData;
 
 public class CoralRoller extends Roller {
     private double lastVelocity = 0.0;
-    private boolean hasPiece = false;
+    private boolean hasPiece = true;
     private PhotoelectricIO photoelectricIO;
     private PhotoelectricData photoelectricData = new PhotoelectricData();
     private RollerData data = new RollerData();
@@ -86,7 +86,7 @@ public class CoralRoller extends Roller {
 
         if (Autos.isRoutineStarted() && !routineStarted) { 
             routineStarted = true; 
-            photoelectricIO.setInitialState(false);
+            photoelectricIO.setInitialState(true);
         }
         
         if (!Autos.isRoutineStarted() && routineStarted) {

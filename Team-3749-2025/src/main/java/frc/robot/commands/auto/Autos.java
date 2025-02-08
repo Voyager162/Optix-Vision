@@ -93,25 +93,28 @@ public class Autos {
                 AutoUtils.startRoutine(routine, "Start-L5", trajectory1));
     }
 
-    public static Command getCoralIntake(){
-        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("Start-Source");
+    public static Command getTwoPieceScoreL1(){
+        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("Start-L5");
 
         // loop.trajectory, or the new name
-        AutoTrajectory trajectory1 = routine.trajectory("Start-Source");
-        AutoTrajectory trajectory2 = routine.trajectory("Station-L3");
+        AutoTrajectory trajectory1 = routine.trajectory("Start-L5");
+        AutoTrajectory trajectory2 = routine.trajectory("L5-Station");
+        AutoTrajectory trajectory3 = routine.trajectory("Station-L4");
        
-        Command intake1 = AutoUtils.addCoralIntakeSource(trajectory1);
-        AutoUtils.addScoreL1(trajectory2);
-        
-          AutoUtils.goNextAfterCommand(trajectory1, trajectory2, intake1);
+        Command score1 = AutoUtils.addScoreL1(trajectory1);
+        Command intake1 = AutoUtils.addCoralIntakeSource(trajectory2);
+        AutoUtils.addScoreL1(trajectory3);
 
-        new Trigger(() -> trajectory2.cmd().isFinished())
+        AutoUtils.goNextAfterCommand(trajectory2, trajectory3, intake1);
+        AutoUtils.goNextAfterCommand(trajectory1, trajectory2, score1);
+
+        new Trigger(() -> trajectory3.cmd().isFinished())
           .onTrue(Commands.runOnce(() -> stopRoutineTracking()))
           .onTrue(Commands.print("done!"));
 
-        return Commands.print("Coral Intake")
+        return Commands.print("Two Piece Score L1")
                 .andThen(Commands.runOnce(() -> startRoutineTracking()))
-                .andThen(AutoUtils.startRoutine(routine, "Start-Source", trajectory1));
+                .andThen(AutoUtils.startRoutine(routine, "Start-L5", trajectory1));
     }
 
       /**
