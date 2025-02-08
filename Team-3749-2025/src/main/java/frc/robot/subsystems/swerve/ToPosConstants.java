@@ -47,17 +47,17 @@ public class ToPosConstants {
 
         public static List<Translation2d> HEXAGON_VERTICES = List.of(
                 flipIfRed(new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN)), // close
-                                                                                                                      // right
+                                                                                                                    // right
                 flipIfRed(new Translation2d(4.5, 3.039 - SAFE_MARGIN)), // middle right
                 flipIfRed(new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN)), // far
-                                                                                                                      // right
+                                                                                                                    // right
                 flipIfRed(new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 4.480 + yComponenet * SAFE_MARGIN)), // far
-                                                                                                                      // left
+                                                                                                                    // left
                 flipIfRed(new Translation2d(4.5, 4.961 + SAFE_MARGIN)), // middle left
                 flipIfRed(new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 4.480 + yComponenet * SAFE_MARGIN)), // close
-                                                                                                                      // left
+                                                                                                                    // left
                 flipIfRed(new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN))); // close
-                                                                                                                       // right
+                                                                                                                     // right
     }
 
     public static final class PathPlannerConstants {
@@ -88,7 +88,6 @@ public class ToPosConstants {
                     offsetMultiplier = -1;
                     break;
 
-               
             }
 
             double xSetup = reefPose.getX() + Math
@@ -148,7 +147,6 @@ public class ToPosConstants {
         public static Pose2d reefFar = adjustPose(5.35, 4, Math.toRadians(180), false);
         public static Pose2d reefFarLeft = adjustPose(4.94, 4.74, Math.toRadians(-120), false);
         public static Pose2d reefCloseLeft = adjustPose(4.07, 4.74, Math.toRadians(-60), false);
-        // im a programmer not a naming expert
 
         // Please refer to:
         // https://firstfrc.blob.core.windows.net/frc2025/Manual/Sections/2025GameManual-05ARENA.pdf
@@ -262,13 +260,13 @@ public class ToPosConstants {
             L(lSetpoint, lApproach),
             LL1(lL1, lApproach),
 
-            REEFCLOSE(reefClose, createApproachPoint(reefClose)),
-            REEFCLOSELEFT(reefCloseLeft, createApproachPoint(reefCloseLeft)),
-            REEFCLOSERIGHT(reefCloseRight, createApproachPoint(reefCloseRight)),
+            REEFCLOSE(rotatePose(reefClose,90), createApproachPoint(reefClose)),
+            REEFCLOSELEFT(rotatePose(reefCloseLeft,90), createApproachPoint(reefCloseLeft)),
+            REEFCLOSERIGHT(rotatePose(reefCloseRight,90), createApproachPoint(reefCloseRight)),
 
-            REEFFAR(reefFar, createApproachPoint(reefFar)),
-            REEFFARLEFT(reefFarLeft, createApproachPoint(reefFarLeft)),
-            REEFFARRIGHT(reefFarRight, createApproachPoint(reefFarRight));
+            REEFFAR(rotatePose(reefFar,90), createApproachPoint(reefFar)),
+            REEFFARLEFT(rotatePose(reefFarLeft,90), createApproachPoint(reefFarLeft)),
+            REEFFARRIGHT(rotatePose(reefFarRight,90), createApproachPoint(reefFarRight));
 
             public Pose2d setpoint;
             public Pose2d approachPoint;

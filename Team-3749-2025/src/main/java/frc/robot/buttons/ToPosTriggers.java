@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.buttons.ButtonBoard.ScoringLocation;
 import frc.robot.commands.elevator.SetElevatorState;
+import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.swerve.ToPosConstants;
 import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
@@ -43,6 +44,18 @@ public class ToPosTriggers {
     public static BooleanSupplier isCoralSupplier = () -> 
     Robot.swerve.getPPSetpoint() == PPSetpoints.CORALLEFT || 
     Robot.swerve.getPPSetpoint() == PPSetpoints.CORALRIGHT;
+
+    public static BooleanSupplier isHighAlgaeSupplier = () -> 
+    Robot.swerve.getPPSetpoint() == PPSetpoints.REEFCLOSE || 
+    Robot.swerve.getPPSetpoint() == PPSetpoints.REEFFARLEFT || 
+    Robot.swerve.getPPSetpoint() == PPSetpoints.REEFFARRIGHT;
+
+    public static BooleanSupplier isLowAlgaeSupplier = () -> 
+    Robot.swerve.getPPSetpoint() == PPSetpoints.REEFFAR || 
+    Robot.swerve.getPPSetpoint() == PPSetpoints.REEFCLOSELEFT || 
+    Robot.swerve.getPPSetpoint() == PPSetpoints.REEFCLOSERIGHT;
+
+
 
         private static boolean OTFWithinMargin() {
             return UtilityFunctions.withinMargin(ToPosConstants.Setpoints.approachPointDistance,
@@ -91,6 +104,20 @@ public class ToPosTriggers {
             return withinMargin && isCoralReef && isL4;
         });
         coralReefL4.onTrue(new SetElevatorState(ElevatorStates.L4));
+
+        Trigger highAlgaeTrigger = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
+            Boolean withinMargin = OTFWithinMargin();
+            Boolean isAlgaeKnocking = isHighAlgaeSupplier.getAsBoolean();
+            return withinMargin && isAlgaeKnocking;
+        });
+        highAlgaeTrigger.onTrue(new KnockAlgae(ElevatorStates.ALGAE_HIGH));
+
+        Trigger lowAlgaeTrigger = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
+            Boolean withinMargin = OTFWithinMargin();
+            Boolean isAlgaeKnocking = isLowAlgaeSupplier.getAsBoolean();
+            return withinMargin && isAlgaeKnocking;
+        });
+        lowAlgaeTrigger.onTrue(new KnockAlgae(ElevatorStates.ALGAE_LOW));
 
     }
 }
