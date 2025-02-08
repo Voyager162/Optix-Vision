@@ -91,21 +91,28 @@ public class JoystickIO {
         // Example binding
         // operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        // operator.a().onTrue(Robot.climbArm.getSysIdTuner().runTests());
-        // operator.b().onTrue(Robot.coralArm.getSysIdTuner().runTests());
-        // operator.x().onTrue(Robot.elevator.getSysIdTuner().runTests());
+        // operator.a().whileTrue(Robot.climbArm.getSysIdTuner().runTests());
+        // operator.b().whileTrue(Robot.coralArm.getSysIdTuner().runTests());
+        // operator.x().whileTrue(Robot.elevator.getSysIdTuner().runTests());
 
-        // operator.a().onTrue(Robot.swerve.getRotationalSysIdTuner().runTests());
-        // operator.b().onTrue(Robot.swerve.getDriveSysIdTuner().runTests());
+        // operator.a().whileTrue(Robot.swerve.getRotationalSysIdTuner().runTests());
+        // operator.b().whileTrue(Robot.swerve.getDriveSysIdTuner().runTests());
 
-        // operator.a().onTrue(Robot.algaeRoller.getSysIdTuner().runTests());
-        // operator.b().onTrue(Robot.coralArm.getSysIdTuner().runTests());
-        // operator.x().onTrue(Robot.climbArm.getSysIdTuner().runTests());
+        // operator.a().whileTrue(Robot.algaeRoller.getSysIdTuner().runTests());
+        // operator.b().whileTrue(Robot.coralArm.getSysIdTuner().runTests());
+        // operator.x().whileTrue(Robot.climbArm.getSysIdTuner().runTests());
 
         // operator.a().onTrue(l1);
         // operator.b().onTrue(l2);
         // operator.x().onTrue(l3);
         // operator.y().onTrue(l4);
+
+        // operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(0)));
+        // operator.a().onTrue(Commands.run(() -> Robot.coralArm.setVoltage(0)));
+        // operator.a().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(0)));
+        // operator.a().onTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(0)));
+        // operator.a().onTrue(Commands.run(() -> Robot.coralRoller.setVoltage(0)));
+        // operator.a().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(0)));
     }
 
     public static void pilotBindings() {
