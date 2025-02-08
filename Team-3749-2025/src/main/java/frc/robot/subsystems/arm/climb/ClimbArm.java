@@ -19,10 +19,11 @@ import frc.robot.Robot;
 import frc.robot.subsystems.arm.climb.ClimbArmIO.ArmData;
 import frc.robot.subsystems.arm.climb.real.ClimbArmSparkMax;
 import frc.robot.subsystems.arm.climb.sim.ClimbArmSim;
-import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 
 import static edu.wpi.first.units.Units.*;
+
+import org.littletonrobotics.junction.Logger;
 
 /**
  * Subsystem class for the climb arm
@@ -46,24 +47,6 @@ public class ClimbArm extends SubsystemBase {
 	private ClimbArmIO armIO;
 	private ArmData data = new ArmData();
 	private ClimbArmConstants.ArmStates state = ClimbArmConstants.ArmStates.STOPPED;
-
-	private ShuffleData<String> currentCommandLog = new ShuffleData<>(this.getName(), "current command", "None");
-	private ShuffleData<Double> positionUnitsLog = new ShuffleData<>(this.getName(), "position units", 0.0);
-	private ShuffleData<Double> velocityUnitsLog = new ShuffleData<>(this.getName(), "velocity units", 0.0);
-	private ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>(this.getName(), "input volts", 0.0);
-	private ShuffleData<Double> frontMotorAppliedVoltsLog = new ShuffleData<>(this.getName(),
-			"first motor applied volts", 0.0);
-	private ShuffleData<Double> backMotorAppliedVoltsLog = new ShuffleData<>(this.getName(),
-			"second motor applied volts", 0.0);
-	private ShuffleData<Double> frontMotorCurrentAmpsLog = new ShuffleData<>(this.getName(),
-			"first motor current amps", 0.0);
-	private ShuffleData<Double> backMotorCurrentAmpsLog = new ShuffleData<>(this.getName(),
-			"second motor current amps", 0.0);
-	private ShuffleData<Double> frontMotorTempCelciusLog = new ShuffleData<>(this.getName(),
-			"first motor temp celcius", 0.0);
-	private ShuffleData<Double> backMotorTempCelciusLog = new ShuffleData<>(this.getName(),
-			"second motor temp celcius", 0.0);
-	private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
 	private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
 	private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
@@ -231,21 +214,21 @@ public class ClimbArm extends SubsystemBase {
 	 * Logs data to Shuffleboard.
 	 */
 	private void logData() {
-		currentCommandLog.set(
+		Logger.recordOutput("subystems/climbArm/Current Command",
 				this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-		positionUnitsLog.set(data.positionUnits);
-		velocityUnitsLog.set(data.velocityUnits);
-		inputVoltsLog.set(data.inputVolts);
-		frontMotorAppliedVoltsLog.set(data.frontMotorAppliedVolts);
-		backMotorAppliedVoltsLog.set(data.backMotorAppliedVolts);
-		frontMotorCurrentAmpsLog.set(data.frontMotorCurrentAmps);
-		backMotorCurrentAmpsLog.set(data.backMotorCurrentAmps);
-		frontMotorTempCelciusLog.set(data.frontMotorTempCelcius);
-		backMotorTempCelciusLog.set(data.backMotorTempCelcius);
+		Logger.recordOutput("subsystems/arms/climbArm/position", data.positionUnits);
+		Logger.recordOutput("subsystems/arms/climbArm/velocity", data.velocityUnits);
+		Logger.recordOutput("subsystems/arms/climbArm/input volts", data.inputVolts);
+		Logger.recordOutput("subsystems/arms/climbArm/frontMotor/applied volts", data.frontMotorAppliedVolts);
+		Logger.recordOutput("subsystems/arms/climbArm/backMotor/applied volts", data.backMotorAppliedVolts);
+		Logger.recordOutput("subsystems/arms/climbArm/frontMotor/current amps", data.frontMotorCurrentAmps);
+		Logger.recordOutput("subsystems/arms/climbArm/backMotor/current amps", data.backMotorCurrentAmps);
+		Logger.recordOutput("subsystems/arms/climbArm/frontMotor/temperature", data.frontMotorTempCelcius);
+		Logger.recordOutput("subsystems/arms/climbArm/backMotor/temperature", data.backMotorTempCelcius);
 
 		armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
-		stateLog.set(state.name());
+		Logger.recordOutput("subsystems/climbArm/current state", state.name());
 
         publisher.set(getPose3d());
 	}

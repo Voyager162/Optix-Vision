@@ -1,7 +1,6 @@
 package frc.robot.subsystems.arm.coral;
 
 import frc.robot.Robot;
-import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -23,6 +22,8 @@ import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
 import frc.robot.subsystems.arm.coral.sim.CoralArmSim;
 
 import static edu.wpi.first.units.Units.*;
+
+import org.littletonrobotics.junction.Logger;
 
 /**
  * Subsystem class for the coral arm
@@ -53,19 +54,6 @@ public class CoralArm extends SubsystemBase {
     private ArmData data = new ArmData();
     // The current state of the arm (e.g., stopped, stowed).
     private CoralArmConstants.ArmStates state = CoralArmConstants.ArmStates.STOPPED;
-
-    // Shuffleboard data for logging and displaying real-time data in the dashboard.
-    private ShuffleData<String> currentCommandLog = new ShuffleData<>(this.getName(), "current command", "None");
-    private ShuffleData<Double> positionUnitsLog = new ShuffleData<>(this.getName(), "position units", 0.0);
-    private ShuffleData<Double> velocityUnitsLog = new ShuffleData<>(this.getName(), "velocity units", 0.0);
-    private ShuffleData<Double> inputVoltsLog = new ShuffleData<>(this.getName(), "input volts", 0.0);
-    private ShuffleData<Double> motorAppliedVoltsLog = new ShuffleData<>(this.getName(),
-            "first motor applied volts", 0.0);
-    private ShuffleData<Double> motorCurrentAmpsLog = new ShuffleData<>(this.getName(),
-            "first motor current amps", 0.0);
-    private ShuffleData<Double> motorTempCelciusLog = new ShuffleData<>(this.getName(),
-            "first motor temp celcius", 0.0);
-    private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
     private Mechanism2d mechanism2d = new Mechanism2d(3, 3);
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 1.8, .4);
@@ -128,13 +116,7 @@ public class CoralArm extends SubsystemBase {
                 return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
                         CoralArmConstants.coralPickUpSetPoint_rad, data.positionUnits);
             case STOPPED:
-                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError, 0, data.velocityUnits); // Ensure
-                                                                                                                   // velocity
-                                                                                                                   // is
-                                                                                                                   // near
-                                                                                                                   // zero
-                                                                                                                   // when
-                                                                                                                   // stopped.
+                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError, 0, data.velocityUnits); // Ensure velocity is near zero when stopped.
             default:
                 return false; // Return false if the state is unrecognized.
         }
@@ -252,19 +234,19 @@ public class CoralArm extends SubsystemBase {
      */
     private void logData() {
         // Log various arm parameters to Shuffleboard
-        currentCommandLog.set(
+        Logger.recordOutput("subsystems/arms/coralArm/Current Command", 
                 this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-        positionUnitsLog.set(data.positionUnits);
-        velocityUnitsLog.set(data.velocityUnits);
-        inputVoltsLog.set(data.inputVolts);
-        motorAppliedVoltsLog.set(data.motorAppliedVolts);
-        motorCurrentAmpsLog.set(data.motorCurrentAmps);
-        motorTempCelciusLog.set(data.motorTempCelcius);
+        Logger.recordOutput("subsystems/arms/coralArm/position", data.positionUnits);
+        Logger.recordOutput("subsystems/arms/coralArm/velocity", data.velocityUnits);
+        Logger.recordOutput("subsystems/arms/coralArm/input volts", data.inputVolts);
+        Logger.recordOutput("subsystems/arms/coralArm/applied volts", data.motorAppliedVolts);
+        Logger.recordOutput("subsystems/arms/coralArm/current amps", data.motorCurrentAmps);
+        Logger.recordOutput("subsystems/arms/coralArm/temperature", data.motorTempCelcius);
 
         // Update the visualization on the SmartDashboard with the arm's position
         armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
-        stateLog.set(state.name());
+        Logger.recordOutput("subsystems/arms/coralArm/state", state.name());
 
         // Logger.recordOutput("zeropose", zeroedComponentPose);
 
