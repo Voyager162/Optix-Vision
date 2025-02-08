@@ -15,6 +15,7 @@ public interface CoralArmIO {
 		public double motorCurrentAmps = 0;
 		public double motorAppliedVolts = 0;
 		public double motorTempCelcius = 0;
+        public Double inputVolts;
 	}
 
 	/**

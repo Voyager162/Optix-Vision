@@ -1,15 +1,18 @@
-package frc.robot.utils;
+package frc.robot.buttons;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Robot;
 
 import frc.robot.commands.arm.SetClimbArmState;
 import frc.robot.commands.arm.SetCoralArmState;
 import frc.robot.commands.elevator.SetElevatorState;
+
 
 import frc.robot.commands.swerve.RotationialSysId;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
@@ -52,6 +55,7 @@ public class JoystickIO {
     private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
     private static final SetElevatorState l3 = new SetElevatorState(ElevatorStates.L3);
     private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
+    private static ButtonBoard buttonBoard = new ButtonBoard();
 
     public JoystickIO() {
     }
@@ -84,6 +88,33 @@ public class JoystickIO {
 
         // Example binding
         // operator.a().whileTrue(new ExampleSubsystemCommand());
+        buttonBoard.buttonl1.onTrue(Commands.runOnce(() -> System.out.println("1, 5")));
+        buttonBoard.buttonl2.onTrue(Commands.runOnce(() -> System.out.println("1, 6")));
+        buttonBoard.buttonl3.onTrue(Commands.runOnce(() -> System.out.println("3, 1")));
+        buttonBoard.buttonl4.onTrue(Commands.runOnce(() -> System.out.println("3, 2")));
+
+        buttonBoard.buttonRightSource.onTrue(Commands.runOnce(() -> System.out.println("1, 4")));
+        buttonBoard.buttonLeftSource.onTrue(Commands.runOnce(() -> System.out.println("1, 7")));
+
+        buttonBoard.buttonReefZoneA.onTrue(Commands.runOnce(() -> System.out.println("3, 6")));
+        buttonBoard.buttonReefZoneB.onTrue(Commands.runOnce(() -> System.out.println("2, 5")));
+        buttonBoard.buttonReefZoneC.onTrue(Commands.runOnce(() -> System.out.println("2, 6")));
+        buttonBoard.buttonReefZoneD.onTrue(Commands.runOnce(() -> System.out.println("3, 3")));
+        buttonBoard.buttonReefZoneE.onTrue(Commands.runOnce(() -> System.out.println("3, 4")));
+        buttonBoard.buttonReefZoneF.onTrue(Commands.runOnce(() -> System.out.println("2, 8")));
+        buttonBoard.buttonReefZoneG.onTrue(Commands.runOnce(() -> System.out.println("2, 7")));
+        buttonBoard.buttonReefZoneH.onTrue(Commands.runOnce(() -> System.out.println("2, 4")));
+        buttonBoard.buttonReefZoneI.onTrue(Commands.runOnce(() -> System.out.println("2, 3")));
+        buttonBoard.buttonReefZoneJ.onTrue(Commands.runOnce(() -> System.out.println("2, 2")));
+        buttonBoard.buttonReefZoneK.onTrue(Commands.runOnce(() -> System.out.println("2, 1")));
+        buttonBoard.buttonReefZoneL.onTrue(Commands.runOnce(() -> System.out.println("3, 5")));
+
+        buttonBoard.buttonAlgaeKnockoff.onTrue(Commands.runOnce(() -> System.out.println("1, 3")));
+        buttonBoard.buttonUtilityA.onTrue(Commands.runOnce(() -> System.out.println("1, 1")));
+        buttonBoard.buttonUtilityB.onTrue(Commands.runOnce(() -> System.out.println("1, 2")));
+        buttonBoard.buttonPlayer1Start.onTrue(Commands.runOnce(() -> System.out.println("1, 8")));
+
+  
 
         // operator.a().whileTrue(Robot.climbArm.getSysIdTuner().runTests());
         // operator.b().whileTrue(Robot.coralArm.getSysIdTuner().runTests());

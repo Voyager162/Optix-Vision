@@ -1,14 +1,12 @@
 package frc.robot.subsystems.arm.climb;
 
 import frc.robot.Robot;
-import frc.robot.utils.ShuffleData;
 import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
@@ -29,10 +27,8 @@ import static edu.wpi.first.units.Units.*;
 import java.util.Map;
 import frc.robot.subsystems.arm.climb.real.ClimbArmSparkMax;
 import frc.robot.subsystems.arm.climb.sim.ClimbArmSim;
-import frc.robot.utils.ShuffleData;
-import frc.robot.utils.UtilityFunctions;
 
-import static edu.wpi.first.units.Units.*;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * Subsystem class for the climb arm
@@ -57,24 +53,6 @@ public class ClimbArm extends SubsystemBase {
 	private ClimbArmIO armIO;
 	private ArmData data = new ArmData();
 	private ClimbArmConstants.ArmStates state = ClimbArmConstants.ArmStates.STOPPED;
-
-	private ShuffleData<String> currentCommandLog = new ShuffleData<>(this.getName(), "current command", "None");
-	private LoggedTunableNumber positionUnitsLog = new LoggedTunableNumber(this.getName() + "/position units", 0.0);
-	private LoggedTunableNumber velocityUnitsLog = new LoggedTunableNumber(this.getName() + "/velocity units", 0.0);
-	private LoggedTunableNumber inputVoltsLog = new LoggedTunableNumber(this.getName() + "/input volts", 0.0);
-	private LoggedTunableNumber frontMotorAppliedVoltsLog = new LoggedTunableNumber(this.getName() +
-			"/first motor applied volts", 0.0);
-	private LoggedTunableNumber backMotorAppliedVoltsLog = new LoggedTunableNumber(this.getName() +
-			"/second motor applied volts", 0.0);
-	private LoggedTunableNumber frontMotorCurrentAmpsLog = new LoggedTunableNumber(this.getName() +
-			"/first motor current amps", 0.0);
-	private LoggedTunableNumber backMotorCurrentAmpsLog = new LoggedTunableNumber(this.getName() +
-			"/second motor current amps", 0.0);
-	private LoggedTunableNumber frontMotorTempCelciusLog = new LoggedTunableNumber(this.getName() +
-			"/first motor temp celcius", 0.0);
-	private LoggedTunableNumber backMotorTempCelciusLog = new LoggedTunableNumber(this.getName() +
-			"/second motor temp celcius", 0.0);
-	private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
 	private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
 	private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
@@ -278,21 +256,21 @@ public class ClimbArm extends SubsystemBase {
 
 	/** Logs data to Shuffleboard. */
 	private void logData() {
-		currentCommandLog.set(
+		Logger.recordOutput("subystems/climbArm/Current Command",
 				this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-		positionUnitsLog.set(data.positionUnits);
-		velocityUnitsLog.set(data.velocityUnits);
-		inputVoltsLog.set(data.inputVolts);
-		frontMotorAppliedVoltsLog.set(data.frontMotorAppliedVolts);
-		backMotorAppliedVoltsLog.set(data.backMotorAppliedVolts);
-		frontMotorCurrentAmpsLog.set(data.frontMotorCurrentAmps);
-		backMotorCurrentAmpsLog.set(data.backMotorCurrentAmps);
-		frontMotorTempCelciusLog.set(data.frontMotorTempCelcius);
-		backMotorTempCelciusLog.set(data.backMotorTempCelcius);
+		Logger.recordOutput("subsystems/arms/climbArm/position", data.positionUnits);
+		Logger.recordOutput("subsystems/arms/climbArm/velocity", data.velocityUnits);
+		Logger.recordOutput("subsystems/arms/climbArm/input volts", data.inputVolts);
+		Logger.recordOutput("subsystems/arms/climbArm/frontMotor/applied volts", data.frontMotorAppliedVolts);
+		Logger.recordOutput("subsystems/arms/climbArm/backMotor/applied volts", data.backMotorAppliedVolts);
+		Logger.recordOutput("subsystems/arms/climbArm/frontMotor/current amps", data.frontMotorCurrentAmps);
+		Logger.recordOutput("subsystems/arms/climbArm/backMotor/current amps", data.backMotorCurrentAmps);
+		Logger.recordOutput("subsystems/arms/climbArm/frontMotor/temperature", data.frontMotorTempCelcius);
+		Logger.recordOutput("subsystems/arms/climbArm/backMotor/temperature", data.backMotorTempCelcius);
 
 		armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
-		stateLog.set(state.name());
+		Logger.recordOutput("subsystems/climbArm/current state", state.name());
 
 		ClimbArmConstants.kG = kG.get();
 		ClimbArmConstants.kP = kP.get();
@@ -304,9 +282,15 @@ public class ClimbArm extends SubsystemBase {
 		ClimbArmConstants.maxVelocity = maxVelocity.get();
 		ClimbArmConstants.maxAcceleration = maxAcceleration.get();
         publisher.set(getPose3d());
+
+		profile = new ProfiledPIDController(ClimbArmConstants.kP, ClimbArmConstants.kI, ClimbArmConstants.kD,
+				new TrapezoidProfile.Constraints(ClimbArmConstants.maxVelocity, ClimbArmConstants.maxAcceleration));
+		feedforward = new ArmFeedforward(ClimbArmConstants.kS, ClimbArmConstants.kG, ClimbArmConstants.kV);
 	}
 
-	/** Periodic method for updating arm behavior. */
+	/**
+	 * Periodic method for updating arm behavior.
+	 */
 	@Override
 	public void periodic() {
 

@@ -4,14 +4,13 @@ import java.util.Map;
 import java.util.function.Consumer;
 import static edu.wpi.first.units.Units.Radians;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.measure.Voltage;
@@ -45,7 +44,7 @@ import static edu.wpi.first.units.Units.*;
  * @author Dhyan Soni
  * @author Andrew Ge
  */
-
+@SuppressWarnings("unused")
 public class Elevator extends SubsystemBase {
     private ElevatorIO elevatorio;
     private ElevatorData data = new ElevatorData();
@@ -66,23 +65,6 @@ public class Elevator extends SubsystemBase {
             ElevatorConstants.ElevatorControl.kG,
             ElevatorConstants.ElevatorControl.kV,
             ElevatorConstants.ElevatorControl.kA);
-
-    private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
-    private LoggedTunableNumber positionMetersLog = new LoggedTunableNumber("Elevator/position", 0.0);
-    private LoggedTunableNumber velocityMetersPerSecLog = new LoggedTunableNumber("Elevator/velocity", 0.0);
-    private LoggedTunableNumber accelerationMetersPerSecSquaredLog = new LoggedTunableNumber("Elevator/acceleration",
-            0.0);
-
-    private LoggedTunableNumber inputVoltsLog = new LoggedTunableNumber("Elevator/input volts", 0.0);
-    private LoggedTunableNumber leftAppliedVoltsLog = new LoggedTunableNumber("Elevator/left applied volts", 0.0);
-    private LoggedTunableNumber rightAppliedVoltsLog = new LoggedTunableNumber("Elevator/right applied volts", 0.0);
-    private LoggedTunableNumber leftCurrentAmpsLog = new LoggedTunableNumber("Elevator/left current amps", 0.0);
-    private LoggedTunableNumber rightCurrentAmpsLog = new LoggedTunableNumber("Elevator/right current amps", 0.0);
-    private LoggedTunableNumber leftTempCelciusLog = new LoggedTunableNumber("Elevator/left temp celcius", 0.0);
-    private LoggedTunableNumber rightTempCelciusLog = new LoggedTunableNumber("Elevator/right temp celcius", 0.0);
-
-    private LoggedTunableNumber setpointVelocityLog = new LoggedTunableNumber("Elevator/setpoint velocity", 0.0);
-    private LoggedTunableNumber setpointPositionLog = new LoggedTunableNumber("Elevator/setpoint position", 0.0);
 
     private LoggedTunableNumber kPData = new LoggedTunableNumber("Elevator/kP",
             ElevatorConstants.ElevatorControl.kP);
@@ -145,11 +127,6 @@ public class Elevator extends SubsystemBase {
     }
 
     public ElevatorStates getState() {
-
-        StructPublisher<Pose3d> elevatorInnerStage = NetworkTableInstance.getDefault()
-                .getStructTopic("Elevator Inner Stage", Pose3d.struct).publish();
-        StructPublisher<Pose3d> elevatorMiddleStage = NetworkTableInstance.getDefault()
-                .getStructTopic("Elevator Middle Stage", Pose3d.struct).publish();
         return state;
     }
 
@@ -161,7 +138,7 @@ public class Elevator extends SubsystemBase {
         return data.velocityMetersPerSecond;
     }
 
-    // returns true when the state is reached
+    /** returns true when the state is reached */
     public boolean getIsStableState() {
         switch (state) {
             case L1:
@@ -189,7 +166,7 @@ public class Elevator extends SubsystemBase {
         this.state = state;
         switch (state) {
             case STOP:
-                runStateStop();
+                stop();
                 break;
             case L1:
                 setGoal(ElevatorConstants.StateHeights.l1Height);
@@ -204,9 +181,11 @@ public class Elevator extends SubsystemBase {
                 setGoal(ElevatorConstants.StateHeights.l4Height);
                 break;
             case MAX:
-                setGoal(6);
+                setGoal(ElevatorConstants.ElevatorSpecs.maxHeightMeters);
                 break;
             case STOW:
+                setGoal(ElevatorConstants.ElevatorSpecs.baseHeight);
+                break;
             default:
                 setGoal(0);
                 break;
@@ -220,7 +199,7 @@ public class Elevator extends SubsystemBase {
     private void runState() {
         switch (state) {
             case STOP:
-                runStateStop();
+                stop();
                 break;
             default:
                 moveToGoal();
@@ -238,29 +217,25 @@ public class Elevator extends SubsystemBase {
         elevatorio.setPosition(firstState.position, ffVoltage);
     }
 
-    private void runStateStop() {
-        stop();
-    }
-
     public void stop() {
         elevatorio.setVoltage(0);
     }
 
     private void logData() {
-        currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-        positionMetersLog.set(data.positionMeters);
-        velocityMetersPerSecLog.set(data.velocityMetersPerSecond);
-        accelerationMetersPerSecSquaredLog.set(data.accelerationMetersPerSecondSquared);
+        Logger.recordOutput("subystems/elevator/Current Command", this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
 
-        leftAppliedVoltsLog.set(data.leftAppliedVolts);
-        rightAppliedVoltsLog.set(data.rightAppliedVolts);
-        leftCurrentAmpsLog.set(data.leftCurrentAmps);
-        rightCurrentAmpsLog.set(data.rightCurrentAmps);
-        leftTempCelciusLog.set(data.leftTempCelcius);
-        rightTempCelciusLog.set(data.rightTempCelcius);
+        Logger.recordOutput("subystems/elevator/postion", data.positionMeters);
+        Logger.recordOutput("subystems/elevator/velocity", data.velocityMetersPerSecond);
 
-        setpointVelocityLog.set(profile.getSetpoint().velocity);
-        setpointPositionLog.set(profile.getSetpoint().position);
+        Logger.recordOutput("subystems/elevator/acceleration", data.accelerationMetersPerSecondSquared);
+    
+        Logger.recordOutput("subsystems/elevator/input volts", ((data.leftAppliedVolts + data.rightAppliedVolts) / 2.0));
+        Logger.recordOutput("subsystems/elevator/input volts", data.leftAppliedVolts);
+        Logger.recordOutput("subsystems/elevator/input volts", data.rightAppliedVolts);
+        Logger.recordOutput("subsystems/elevator/input volts", data.leftCurrentAmps);
+        Logger.recordOutput("subsystems/elevator/input volts", data.rightCurrentAmps);
+        Logger.recordOutput("subsystems/elevator/input volts", data.leftTempCelcius);
+        Logger.recordOutput("subsystems/elevator/input volts", data.rightTempCelcius);
 
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
         SmartDashboard.putData("elevator mechanism", mech);
@@ -280,6 +255,10 @@ public class Elevator extends SubsystemBase {
                 getTransform3d(elevatorInnerStagePos).getRotation()));
         elevatorMiddleStage.set(new Pose3d(getTransform3d(elevatorMiddleStagePos).getTranslation(),
                 getTransform3d(elevatorMiddleStagePos).getRotation()));
+
+        profile = new ProfiledPIDController(kPData.get(), kIData.get(), kDData.get(),
+                new TrapezoidProfile.Constraints(maxVData.get(), maxAData.get()));
+        feedforward = new ElevatorFeedforward(kSData.get(), kGData.get(), kVData.get(), kAData.get());
     }
 
     private Transform3d getTransform3d(double pos) {

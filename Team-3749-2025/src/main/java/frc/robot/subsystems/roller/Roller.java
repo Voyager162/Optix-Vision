@@ -2,6 +2,8 @@ package frc.robot.subsystems.roller;
 
 import java.util.Map;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -10,7 +12,6 @@ import frc.robot.subsystems.roller.real.RollerSparkMax;
 import frc.robot.subsystems.roller.sim.RollerSim;
 import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.MotorData;
-import frc.robot.utils.ShuffleData;
 import frc.robot.utils.SysIdTuner;
 import frc.robot.Robot;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
@@ -24,13 +25,6 @@ public abstract class Roller extends SubsystemBase {
     private RollerStates rollerState;
     private SimpleMotorFeedforward rollerFF;
     private double lastKnownPosition = 0.0;
-
-    private LoggedTunableNumber rollerVelocityLog;
-    private LoggedTunableNumber rollerVoltageLog;
-    private LoggedTunableNumber rollerCurrentLog;
-    private ShuffleData<String> stateLog;
-    private LoggedTunableNumber rollerPositionLog;
-    private LoggedTunableNumber rollerLastKnownPositionLog;
 
     protected LoggedTunableNumber kv;
     protected LoggedTunableNumber ka;
@@ -61,13 +55,6 @@ public abstract class Roller extends SubsystemBase {
         String name = implementation.name();
         this.rollerFF = rollerFF;
         this.rollerState = RollerConstants.RollerStates.STOP;
-
-        rollerVelocityLog = new LoggedTunableNumber(getName() + "/" + name + " Velocity", 0.0);
-        rollerVoltageLog = new LoggedTunableNumber(getName() + "/" + name + " Voltage", 0.0);
-        rollerCurrentLog = new LoggedTunableNumber(getName() + "/" + name + " Current", 0.0);
-        stateLog = new ShuffleData<>(getName(), "State", RollerStates.STOP.name());
-        rollerPositionLog = new LoggedTunableNumber(getName() + "/" + name + " Position", 0.0);
-        rollerLastKnownPositionLog = new LoggedTunableNumber(getName() + "/" + name + " Last Known Position", 0.0);
 
         sysIdTuner = new SysIdTuner("roller " + name, config, this, rollerIO::setVoltage, motorData);
     }
@@ -130,12 +117,12 @@ public abstract class Roller extends SubsystemBase {
         rollerIO.updateData(rollerData);
         runRollerStates();
 
-        rollerVelocityLog.set(rollerData.rollerVelocityRadPerSec);
-        rollerVoltageLog.set(rollerData.rollerAppliedVolts);
-        rollerCurrentLog.set(rollerData.currentAmps);
-        rollerPositionLog.set(rollerData.rollerPositionRad);
-        rollerLastKnownPositionLog.set(lastKnownPosition);
-        stateLog.set(rollerState.name());
+        Logger.recordOutput("subsystems/roller/" + getName() + "/velocity", rollerData.rollerVelocityRadPerSec);
+        Logger.recordOutput("subsystems/roller/" + getName() + "/applied voltage", rollerData.rollerAppliedVolts);
+        Logger.recordOutput("subsystems/roller/" + getName() + "/current", rollerData.currentAmps);
+        Logger.recordOutput("subsystems/roller/" + getName() + "/position", rollerData.rollerPositionRad);
+        Logger.recordOutput("subsystems/roller/" + getName() + "/last known position", lastKnownPosition);
+        Logger.recordOutput("subsystems/roller/" + getName() + "/state", rollerState.name());
     }
 
 }

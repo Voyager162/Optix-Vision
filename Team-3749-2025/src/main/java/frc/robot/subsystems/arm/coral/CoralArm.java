@@ -1,14 +1,10 @@
 package frc.robot.subsystems.arm.coral;
 
 import frc.robot.Robot;
-import frc.robot.utils.ShuffleData;
 import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
-import frc.robot.utils.UtilityFunctions;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
@@ -31,10 +27,8 @@ import static edu.wpi.first.units.Units.*;
 import java.util.Map;
 import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
 import frc.robot.subsystems.arm.coral.sim.CoralArmSim;
-import frc.robot.utils.ShuffleData;
-import frc.robot.utils.UtilityFunctions;
 
-import static edu.wpi.first.units.Units.*;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * Subsystem class for the coral arm
@@ -46,18 +40,6 @@ public class CoralArm extends SubsystemBase {
     private CoralArmIO armIO;
     private ArmData data = new ArmData();
     private CoralArmConstants.ArmStates state = CoralArmConstants.ArmStates.STOPPED;
-
-    private ShuffleData<String> currentCommandLog = new ShuffleData<>(this.getName(), "current command", "None");
-    private LoggedTunableNumber positionUnitsLog = new LoggedTunableNumber(this.getName() + "/position units", 0.0);
-    private LoggedTunableNumber velocityUnitsLog = new LoggedTunableNumber(this.getName() + "/velocity units", 0.0);
-    private LoggedTunableNumber inputVoltsLog = new LoggedTunableNumber(this.getName() + "/input volts", 0.0);
-    private LoggedTunableNumber motorAppliedVoltsLog = new LoggedTunableNumber(this.getName() +
-            "/motor applied volts", 0.0);
-    private LoggedTunableNumber motorCurrentAmpsLog = new LoggedTunableNumber(this.getName() +
-            "/motor current amps", 0.0);
-    private LoggedTunableNumber motorTempCelciusLog = new LoggedTunableNumber(this.getName() +
-            "/motor temp celcius", 0.0);
-    private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
     private LoggedTunableNumber kG = new LoggedTunableNumber(this.getName() + "/kG", CoralArmConstants.kG);
     private LoggedTunableNumber kP = new LoggedTunableNumber(this.getName() + "/kP", CoralArmConstants.kP);
@@ -290,18 +272,19 @@ public class CoralArm extends SubsystemBase {
      */
     private void logData() {
         // Log various arm parameters to Shuffleboard
-        currentCommandLog.set(
+        Logger.recordOutput("subsystems/arms/coralArm/Current Command",
                 this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-        positionUnitsLog.set(data.positionUnits);
-        velocityUnitsLog.set(data.velocityUnits);
-        motorAppliedVoltsLog.set(data.motorAppliedVolts);
-        motorCurrentAmpsLog.set(data.motorCurrentAmps);
-        motorTempCelciusLog.set(data.motorTempCelcius);
+        Logger.recordOutput("subsystems/arms/coralArm/position", data.positionUnits);
+        Logger.recordOutput("subsystems/arms/coralArm/velocity", data.velocityUnits);
+        Logger.recordOutput("subsystems/arms/coralArm/input volts", data.inputVolts);
+        Logger.recordOutput("subsystems/arms/coralArm/applied volts", data.motorAppliedVolts);
+        Logger.recordOutput("subsystems/arms/coralArm/current amps", data.motorCurrentAmps);
+        Logger.recordOutput("subsystems/arms/coralArm/temperature", data.motorTempCelcius);
 
         // Update the visualization on the SmartDashboard with the arm's position
         armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
-        stateLog.set(state.name());
+        Logger.recordOutput("subsystems/arms/coralArm/state", state.name());
 
         // Logger.recordOutput("zeropose", zeroedComponentPose);
 
@@ -316,9 +299,14 @@ public class CoralArm extends SubsystemBase {
         CoralArmConstants.kA = kA.get();
         CoralArmConstants.maxVelocity = maxVelocity.get();
         CoralArmConstants.maxAcceleration = maxAcceleration.get();
+
+        profile = new ProfiledPIDController(CoralArmConstants.kP, CoralArmConstants.kI, CoralArmConstants.kD,
+                new TrapezoidProfile.Constraints(CoralArmConstants.maxVelocity, CoralArmConstants.maxAcceleration));
+        feedforward = new ArmFeedforward(CoralArmConstants.kS, CoralArmConstants.kG, CoralArmConstants.kV,
+                CoralArmConstants.kA);
     }
 
-/** Periodic method for updating arm behavior. */
+    /** Periodic method for updating arm behavior. */
     @Override
     public void periodic() {
 

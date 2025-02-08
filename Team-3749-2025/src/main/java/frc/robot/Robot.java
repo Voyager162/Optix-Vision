@@ -4,8 +4,8 @@
 
 package frc.robot;
 
+
 import edu.wpi.first.hal.AllianceStationID;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -13,13 +13,13 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
+
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.implementations.AlgaeRoller;
 import frc.robot.subsystems.roller.implementations.CoralRoller;
 import frc.robot.subsystems.roller.implementations.ScoringRoller;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.utils.LoggedTunableNumber;
-import frc.robot.utils.ShuffleData;
+import frc.robot.utils.MiscConstants;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -40,13 +40,6 @@ public class Robot extends LoggedRobot {
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
 
-  private LoggedTunableNumber batteryVoltageLog = new LoggedTunableNumber("/DS/battery voltage", 0.0);
-  private ShuffleData<Boolean> isBrownedOutLog = new ShuffleData<Boolean>("DS", "brownout", false);
-  private LoggedTunableNumber cpuTempLog = new LoggedTunableNumber("/DS/cpu temp", 0.0);
-  private LoggedTunableNumber CANUtilizationLog = new LoggedTunableNumber("DS/CAN utilizaition", 0.0);
-  private ShuffleData<String> radioStatusLog = new ShuffleData<String>("DS", "radio status", "kOff");
-  private ShuffleData<String> allianceLog = new ShuffleData<String>("DS", "alliance", "Red");
-  private ShuffleData<Boolean> FMSLog = new ShuffleData<Boolean>("DS", "FMS connected", false);
   private RobotContainer m_robotContainer;
   
   public Robot() {
@@ -69,7 +62,7 @@ public class Robot extends LoggedRobot {
 		}
 
 		// Set up data receivers & replay source
-		switch (Constants.currentMode) {
+		switch (MiscConstants.currentMode) {
 			case REAL:
 				// Running on a real robot, log to a USB stick ("/U/logs")
 				Logger.addDataReceiver(new WPILOGWriter());
@@ -107,6 +100,7 @@ public class Robot extends LoggedRobot {
     CommandScheduler.getInstance().run();
  
 
+  
   }
 
   @Override

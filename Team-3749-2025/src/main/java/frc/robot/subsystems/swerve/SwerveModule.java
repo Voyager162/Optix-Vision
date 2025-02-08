@@ -1,12 +1,12 @@
 package frc.robot.subsystems.swerve;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
-import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.SwerveConstants.ControlConstants;
 import frc.robot.subsystems.swerve.SwerveModuleIO.ModuleData;
-import frc.robot.utils.LoggedTunableNumber;
 
 /**
  * General class for swerve modules that interacts with the
@@ -27,23 +27,10 @@ public class SwerveModule {
     private SwerveModuleIO moduleIO;
 
     private double previousSetpointVelocity = 0;
-
-
-    private LoggedTunableNumber driveSpeed;
-    private LoggedTunableNumber drivePosition;
-    private LoggedTunableNumber driveAcceleration;
-    private LoggedTunableNumber driveTemp;
-    private LoggedTunableNumber driveVolts;
-    private LoggedTunableNumber driveCurrent;
-
-    private LoggedTunableNumber turningSpeed;
-    private LoggedTunableNumber turningPosition;
-    private LoggedTunableNumber turningTemp;
-    private LoggedTunableNumber turningVolts;
-    private LoggedTunableNumber turningCurrent;
+    private int index;
 
     public SwerveModule(int index, SwerveModuleIO SwerveModule) {
-
+        this.index = index;
         moduleIO = SwerveModule;
 
         if (index == 0) {
@@ -55,30 +42,6 @@ public class SwerveModule {
         } else if (index == 3) {
             name = "BR module";
         }
-        // Tab, name, data
-        driveSpeed = new LoggedTunableNumber("Swerve/" + name + "/drive speed",
-                moduleData.driveVelocityMPerSec);
-        drivePosition = new LoggedTunableNumber("Swerve/" + name + "/drive position",
-                moduleData.driveVelocityMPerSec);
-        driveAcceleration = new LoggedTunableNumber("Swerve/" + name + "/drive position",
-                moduleData.driveVelocityMPerSec);
-        driveTemp = new LoggedTunableNumber("Swerve/" + name + "/drive temp",
-                moduleData.driveVelocityMPerSec);
-        driveVolts = new LoggedTunableNumber("Swerve/" + name + "/drive volts",
-                moduleData.driveVelocityMPerSec);
-        driveCurrent = new LoggedTunableNumber("Swerve/" + name + "/drive current",
-                moduleData.driveVelocityMPerSec);
-
-        turningSpeed = new LoggedTunableNumber("Swerve/" + name + "/turning speed",
-                moduleData.driveVelocityMPerSec);
-        turningPosition = new LoggedTunableNumber("Swerve/" + name + "/turning position",
-                moduleData.driveVelocityMPerSec);
-        turningTemp = new LoggedTunableNumber("Swerve/" + name + "/turning temp",
-                moduleData.driveVelocityMPerSec);
-        turningVolts = new LoggedTunableNumber("Swerve/" + name + "/turning volts",
-                moduleData.driveVelocityMPerSec);
-        turningCurrent = new LoggedTunableNumber("Swerve/" + name + "/turning current",
-                moduleData.turnCurrentAmps);
 
         drivingFeedFordward = new SimpleMotorFeedforward(ControlConstants.kSDriving,
                 ControlConstants.kVDriving, ControlConstants.kADriving);
@@ -177,8 +140,8 @@ public class SwerveModule {
     }
 
     public void stop() {
-        // setDriveVoltage(0);
-        // setTurnVoltage(0);
+        setDriveVoltage(0);
+        setTurnVoltage(0);
     }
 
     public ModuleData getModuleData() {
@@ -189,18 +152,17 @@ public class SwerveModule {
     public void periodic() {
         moduleIO.updateData(moduleData);
         // // Logging
-        driveSpeed.set(moduleData.driveVelocityMPerSec);
-        drivePosition.set(moduleData.drivePositionM);
-        driveAcceleration.set(moduleData.driveAccelerationMPerSecSquared);
-        driveTemp.set(moduleData.driveTempCelcius);
-        driveVolts.set(moduleData.driveAppliedVolts);
-        driveCurrent.set(moduleData.driveCurrentAmps);
+        Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/drive velocity", moduleData.driveVelocityMPerSec);
+        Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/drive position", moduleData.drivePositionM);
+        Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/drive temperature", moduleData.driveTempCelcius);
+        Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/drive applied volts", moduleData.driveAppliedVolts);
+        Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/drive current amps", moduleData.driveCurrentAmps);
 
-        turningSpeed.set(moduleData.turnVelocityRadPerSec);
-        turningPosition.set(moduleData.turnPositionRad);
-        turningTemp.set(moduleData.turnTempCelcius);
-        turningVolts.set(moduleData.turnAppliedVolts);
-        turningCurrent.set(moduleData.turnCurrentAmps);
+        Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/turn velocity", moduleData.turnVelocityRadPerSec);
+        Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/turn position", moduleData.turnPositionRad);
+        Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/turn temperature", moduleData.turnTempCelcius);
+        Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/turn applied volts", moduleData.turnAppliedVolts);
+        Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/turn current amps", moduleData.turnCurrentAmps);
 
     }
 }

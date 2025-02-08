@@ -1,11 +1,6 @@
 package frc.robot.subsystems.swerve.sim;
-
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkBase.ControlType;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -55,10 +50,8 @@ public class SwerveModuleSim implements SwerveModuleIO {
     private double turnPositionRad = 0;
     private double driveAppliedVolts = 0.0;
     private double turnAppliedVolts = 0.0;
-    private int index;
 
-    public SwerveModuleSim(int index) {
-        this.index = index;
+    public SwerveModuleSim() {
         System.out.println("[Init] Creating ModuleIOSim");
 
         drivingPidController = new PIDController(ControlConstants.drivePID[2][0], ControlConstants.drivePID[2][1],

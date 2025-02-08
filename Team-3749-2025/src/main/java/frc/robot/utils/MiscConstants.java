@@ -1,5 +1,6 @@
 package frc.robot.utils;
 
+import edu.wpi.first.wpilibj.RobotBase;
 import com.revrobotics.spark.ClosedLoopSlot;
 
 /**
@@ -8,10 +9,18 @@ import com.revrobotics.spark.ClosedLoopSlot;
  * @author Noah Simon
  */
 public class MiscConstants {
+  public static final Mode simMode = Mode.REPLAY;
+  public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
-  public static enum RobotType {
+  public static enum Mode {
+    /** Running on a real robot. */
     REAL,
-    SIM
+
+    /** Running a physics simulator. */
+    SIM,
+
+    /** Replaying from a log file. */
+    REPLAY
   }
 
   public static final class SimConstants {
