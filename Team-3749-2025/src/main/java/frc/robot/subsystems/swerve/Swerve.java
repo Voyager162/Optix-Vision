@@ -154,10 +154,10 @@ public class Swerve extends SubsystemBase {
       "setpoint rotational acceleration",
       0.0);
 
-  private int currentPPSetpointIndex = 0;
+  private int currentPPSetpointIndex = 0; //what "index" do we currently want to go to for OTF
   private int currentPPApproachSetpointIndex = 0;
 
-  private boolean isOTF = false;
+  private boolean isOTF = false; //are we OTF driving rn
 
   public int getPPSetpointIndex()
   {
@@ -322,6 +322,8 @@ public class Swerve extends SubsystemBase {
 
   }
 
+  //this is only really relevant for testing purposes: as this is logged as endgoal position or smth like that
+  //shows what the end position will be like in advantage scope
   public void showSetpointEndGoal() {
     setpointGoalStateLog.set(
         new Double[] { getPPSetpoint().setpoint.getX(), getPPSetpoint().setpoint.getY(),
@@ -347,6 +349,8 @@ public class Swerve extends SubsystemBase {
    *       field
    */
 
+   //called by OTF, given the position and velocity at the points generated in the dynamic path: 
+   //calc the speeds and throw them into the speed
   public void followSample(Pose2d positions, Pose2d velocities) {
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         new ChassisSpeeds(
@@ -409,6 +413,7 @@ public class Swerve extends SubsystemBase {
     utilizeVision = utilize;
   }
 
+  //this is only used for testing, pressing B to cycle through all of the stuff
   public void cyclePPSetpoint() {
     currentPPSetpointIndex++;
     if(JoystickIO.buttonBoard.getScoringLocation()==ScoringLocation.L1 && 
@@ -431,18 +436,27 @@ public class Swerve extends SubsystemBase {
     return PPSetpoints.values()[currentPPSetpointIndex];
   }
 
+  //called when the button board is pressed with the (ppsetpoint)"index" the button is associated w to drive to
+
   public void startOnTheFly(int setpointIndex) {
     currentPPSetpointIndex = setpointIndex;
+
     if(JoystickIO.buttonBoard.getScoringLocation()==ScoringLocation.L1 && 
     currentPPSetpointIndex>=2&&currentPPSetpointIndex<=24 && currentPPSetpointIndex%2==0)
     {
       currentPPSetpointIndex++;
     }
+    //the ppsetpoints from 2 to 25 are the reef, and alternate between
+    //L234 (even index) //L1 (odd index == L234 index+1)
+    //if we're on l1, within the range, and on an equal index, add one to get to the L1 setpoint,
+    //this becomes problematic only when switching between l1-l4 on testing, should be ok on the real bot
+
     if(JoystickIO.buttonBoard.getScoringLocation()!=ScoringLocation.L1 && 
     currentPPSetpointIndex>=3&&currentPPSetpointIndex<=25 && currentPPSetpointIndex%2!=0)
     {
       currentPPSetpointIndex++;
     }
+    //js the same thing i said but L234 
     isOTF = true;
   }
 

@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
-import edu.wpi.first.wpilibj2.command.Command;
 
 public class ToPosConstants {
 
@@ -19,8 +18,10 @@ public class ToPosConstants {
     // private final double hexOffset = SwerveConstants.DriveConstants.trackWidth /
     // 2.0;
 
+    //alliance flipping the coordinates (im worried about this a little to be honest regarding what happens on the real robot)
     public static final ChoreoAllianceFlipUtil.Flipper flipper = ChoreoAllianceFlipUtil.getFlipper();
 
+    //given a pose on blue/red, switch it to red/blue
     public static Pose2d flipPose(Pose2d pose) {
         Translation2d translation = new Translation2d(flipper.flipX(pose.getX()), flipper.flipY(pose.getY()));
         Rotation2d rotation = new Rotation2d(flipper.flipHeading(pose.getRotation().getRadians()));
@@ -71,40 +72,66 @@ public class ToPosConstants {
 
         public static final double approachPointDistance = 0.6;
 
+        //on the reef,
+        //assume a vector that extends out of the front of the robot,
+        //to calc where it'd be if it drove "left, right, or backward" relative to what that vector considers forward,
+        //trig
         public static enum TrigDirection {
             LEFT,
             RIGHT,
             BACKWARD
         }
 
+        /**
+         * @param reefPose the center point of the side of the reef
+         * @param direction translate the position left, right, or backward
+         */
         public static Pose2d reefTrig(Pose2d reefPose, TrigDirection direction) {
-            double offsetMultiplier = 1;
-            double isBackwardOffset = 1;
+            double offsetMultiplier = 1; // 90*this value equal 土90 relative to og rotation
+
+            double isBackwardOffset = 1;// if we're going backward the dimensions of the right triangle are negative because it's backward
+
             double angleOffset = 90; // 90 for perpindicular
-            double distance = 6.5;
+            double distance = 6.5; //distance between branches, this variable as a whole is essentially the "hypotenuse" of the total shift
             switch (direction) {
                 case LEFT:
-                    offsetMultiplier = 1;
+                    offsetMultiplier = 1; 
                     break;
 
                 case RIGHT:
-                    offsetMultiplier = -1;
+                    offsetMultiplier = -1; 
                     break;
                 case BACKWARD:
-                    angleOffset = 0;
-                    distance=3;
-                    isBackwardOffset=-1;
+                    angleOffset = 0; 
+                    distance=3; // instead of moving 6.5 between pipes, move 3 inches away from the reef
+                    isBackwardOffset=-1; 
                 break;
             }
+
+            //fundamental idea:
+            //cos(x)hypotenuse = the amount of x to move / the x component of a right triangle
+            //sin(x)hypotenuse = amount of y to move
+
+            /*
+             * therefore,
+             * the change in x when moving left and right is 
+             * x + cos(currentrotation 土 90 based on left or right)(hypotenuse==6.5inches)
+             *  = how long x wise a 6.5inch line with respect totheta is
+             */
 
             double xSetup = reefPose.getX() + Math
                     .cos(Math.toRadians(reefPose.getRotation().getDegrees() + (90))) * Units.inchesToMeters(6.25);
             double ySetup = reefPose.getY() + Math
                     .sin(Math.toRadians(reefPose.getRotation().getDegrees() + (90))) * Units.inchesToMeters(6.25);
+            //6.25 is how far off our elevator thingymajig that drops coral off is, this offset happens first regardless
+            
 
             double newX = xSetup + Math
                     .cos(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))
                     * Units.inchesToMeters(distance) * isBackwardOffset;
+            //do whatever based on left right or backward using the same fundamental idea above
+            
+
             double newY = ySetup + Math
                     .sin(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))
                     * Units.inchesToMeters(distance) * isBackwardOffset;
@@ -195,7 +222,7 @@ public class ToPosConstants {
         public static Pose2d lSetpoint = reefTrig(reefCloseLeft, TrigDirection.RIGHT);
         public static Pose2d lL1 = reefTrig(rotatePose(lSetpoint, 90),TrigDirection.BACKWARD);
 
-        public static List<Pose2d> reefSides = List.of(
+        public static List<Pose2d> reefSides = List.of( //a list of the center points of each side
                 reefClose,
                 reefCloseRight,
                 reefCloseLeft,
@@ -203,6 +230,8 @@ public class ToPosConstants {
                 reefFarLeft,
                 reefFarRight);
 
+
+        //drive relative branches == when i press left or right bumper go to the closest one based on what the driver considers left or right
         public static HashMap<Pose2d, int[]> driveRelativeBranches = new HashMap<Pose2d, int[]>() {
             {
                 put(reefClose, new int[] { 2, 4 }); // L R
@@ -228,14 +257,14 @@ public class ToPosConstants {
         public static Pose2d lApproach = createApproachPoint(lSetpoint);
 
         public enum PPSetpoints {
-            CORALLEFT(coralLeft, coralLeft),
-            CORALRIGHT(coralRight, coralRight),
+            CORALLEFT(coralLeft, coralLeft), //ppsetpoint index 0
+            CORALRIGHT(coralRight, coralRight), //1
 
-            A(aSetpoint, aApproach),
-            AL1(aL1, aApproach),
+            A(aSetpoint, aApproach), //2
+            AL1(aL1, aApproach), //3
 
-            B(bSetpoint, bApproach),
-            BL1(bL1, bApproach),
+            B(bSetpoint, bApproach), //4
+            BL1(bL1, bApproach), //ok you can count but notice how the index of BL2 is always an odd number and is B's index+1
 
             C(cSetpoint, cApproach),
             CL1(cL1, cApproach),
@@ -267,7 +296,7 @@ public class ToPosConstants {
             L(lSetpoint, lApproach),
             LL1(lL1, lApproach),
 
-            REEFCLOSE(rotatePose(reefClose,90), createApproachPoint(reefClose)),
+            REEFCLOSE(rotatePose(reefClose,90), createApproachPoint(reefClose)), //26
             REEFCLOSELEFT(rotatePose(reefCloseLeft,90), createApproachPoint(reefCloseLeft)),
             REEFCLOSERIGHT(rotatePose(reefCloseRight,90), createApproachPoint(reefCloseRight)),
 
@@ -277,7 +306,6 @@ public class ToPosConstants {
 
             public Pose2d setpoint;
             public Pose2d approachPoint;
-            public Command onReachCommand;
 
             private PPSetpoints(Pose2d setpoint, Pose2d approachPoint) {
                 this.setpoint = setpoint;

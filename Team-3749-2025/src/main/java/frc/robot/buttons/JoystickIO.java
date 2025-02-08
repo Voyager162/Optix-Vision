@@ -157,6 +157,21 @@ public class JoystickIO {
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
         pilot.a().whileTrue(driveStraight);
 
+        /**
+         * otf related bindings:
+         * 
+         * Testing:
+         * x to activate the driving
+         * press b to move through all the setpoints
+         * left bumper to go to the nearest reef related branch based on driver perspective (left side)
+         * right bumper ^^^ but right
+         * 
+         * left dpad to switch l1, l2, l3, l4 (left up right down)
+         * press l1234 first, then press b to select, and then x
+         * 
+         * On the real bot:
+         * it'll all js be connected to the buttonboard
+         */
         pilot.x().onTrue(Commands.runOnce(()->Robot.swerve.setIsOTF(true)));
 
         pilot.leftBumper().onTrue(Commands.runOnce(()-> {ToPos.setSetpointByClosestReefBranch(true);Robot.swerve.setIsOTF(true);}));
@@ -171,16 +186,6 @@ public class JoystickIO {
         new Trigger(() -> Robot.swerve.getIsOTF()).whileTrue(onTheFly);
         bindButtonBoard();
         ToPosTriggers.createOTFTriggers();
-
-        // new Trigger(() -> Robot.swerve.isOTF).and(() -> UtilityFunctions.withinMargin(0.5,
-        //         Robot.swerve.getPose().getTranslation(), Robot.swerve.getPPSetpoint().setpoint.getTranslation())
-        //         ).onTrue(Robot.swerve.getSetpointReachedCommand());
-
-
-        // new Trigger(() -> Robot.swerve.isOTF).and(() -> UtilityFunctions.withinMargin(0.5,
-        //         Robot.swerve.getPose().getTranslation(), Robot.swerve.getPPSetpoint().setpoint.getTranslation())).onTrue(Commands.print("SCORE"));
-
-        // Example binding
 
         operator.a().onTrue(l1);
         operator.b().onTrue(intakeSource);
