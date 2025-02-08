@@ -40,7 +40,7 @@ public class SysIdTuner {
      * 
      * @param name      - name of the mechanism
      * @param subsystem - Subsystem you are characterizing
-     * @param io        - VoltageDriv
+     * @param io        - VoltageDrive
      */
     public SysIdTuner(String name, Subsystem subsystem, VoltageDrive io,
             Map<String, MotorData> motorData) {
@@ -86,10 +86,6 @@ public class SysIdTuner {
      */
     private void setLog(SysIdRoutineLog log) {
         motorData.forEach((motorName, data) -> {
-            // System.out.println("volts" + data.appliedVolts);
-            // System.out.println("pos" + data.position);
-            // System.out.println("vel" + data.velocity);
-            // System.out.println("acceleration" + data.acceleration);
             log.motor(motorName)
                     .voltage(Voltage.ofBaseUnits(data.appliedVolts, Volts))
                     .linearPosition(Meters.ofBaseUnits(data.position))
@@ -97,10 +93,7 @@ public class SysIdTuner {
                     .linearAcceleration(MetersPerSecondPerSecond.ofBaseUnits(data.acceleration));
         });
 
-        // log.motor("motor").voltage(Voltage.ofBaseUnits(appliedVolts, Volts));
-        // log.motor("motor").linearPosition(Meters.ofBaseUnits(position));
-        // log.motor("motor").linearVelocity(MetersPerSecond.ofBaseUnits(velocity));
-        // log.motor("motor").linearAcceleration(MetersPerSecondPerSecond.ofBaseUnits(acceleration));
+
     }
 
     /**
@@ -152,25 +145,3 @@ public class SysIdTuner {
                 .andThen(sysIdRoutine.dynamic(Direction.kForward).andThen(sysIdRoutine.dynamic(Direction.kReverse))));
     }
 }
-
-/*
- * // Motor data obj
- * Map<String, MotorData> motorData = Map.of(
- * "motor", new MotorData(
- * 0.0, // initial appliedVolts
- * 0.0, // initial position
- * 0.0, // initial velocity
- * 0.0 // initial acceleration
- * )
- * );
- * 
- * // Configuration, here are previously tested values
- * SysIdRoutine.Config config = new SysIdRoutine.Config(
- * Volts.per(Seconds).of(1.2), // Voltage ramp rate
- * Volts.of(12), // Max voltage
- * Seconds.of(10) // Test duration
- * );
- * 
- * // Instantiate SysIdTuner
- * sysIdTuner = new SysIdTuner(config, this, motorController, motorData);
- */
