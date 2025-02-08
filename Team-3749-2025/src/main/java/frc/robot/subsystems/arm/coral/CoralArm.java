@@ -3,10 +3,8 @@ package frc.robot.subsystems.arm.coral;
 import frc.robot.Robot;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
@@ -20,12 +18,9 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
 import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
 import frc.robot.subsystems.arm.coral.sim.CoralArmSim;
-import frc.robot.utils.ShuffleData;
-import frc.robot.utils.UtilityFunctions;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -261,6 +256,7 @@ public class CoralArm extends SubsystemBase {
                 this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
         positionUnitsLog.set(data.positionUnits);
         velocityUnitsLog.set(data.velocityUnits);
+        inputVoltsLog.set(data.inputVolts);
         motorAppliedVoltsLog.set(data.motorAppliedVolts);
         motorCurrentAmpsLog.set(data.motorCurrentAmps);
         motorTempCelciusLog.set(data.motorTempCelcius);

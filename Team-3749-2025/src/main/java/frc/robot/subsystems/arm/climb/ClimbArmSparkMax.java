@@ -8,7 +8,6 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
-import frc.robot.subsystems.arm.ClimbArmIO;
 import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
 
@@ -82,13 +81,13 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 		data.positionUnits = (frontMotor.getEncoder().getPosition() + backMotor.getEncoder().getVelocity()) / 2;
 		data.velocityUnits = velocity;
 		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
-		data.firstMotorCurrentAmps = frontMotor.getOutputCurrent();
-		data.secondMotorCurrentAmps = backMotor.getOutputCurrent();
+		data.frontMotorCurrentAmps = frontMotor.getOutputCurrent();
+		data.backMotorCurrentAmps = backMotor.getOutputCurrent();
 		data.inputVolts = inputVolts;
-		data.firstMotorAppliedVolts = frontMotor.getBusVoltage() * frontMotor.getAppliedOutput();
-		data.secondMotorAppliedVolts = backMotor.getBusVoltage() * backMotor.getAppliedOutput();
-		data.firstMotorTempCelcius = frontMotor.getMotorTemperature();
-		data.secondMotorTempCelcius = backMotor.getMotorTemperature();
+		data.frontMotorAppliedVolts = frontMotor.getBusVoltage() * frontMotor.getAppliedOutput();
+		data.backMotorAppliedVolts = backMotor.getBusVoltage() * backMotor.getAppliedOutput();
+		data.frontMotorTempCelcius = frontMotor.getMotorTemperature();
+		data.backMotorTempCelcius = backMotor.getMotorTemperature();
 	}
 
 	/**
