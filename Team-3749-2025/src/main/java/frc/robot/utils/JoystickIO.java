@@ -9,15 +9,10 @@ import frc.robot.Robot;
 
 import frc.robot.commands.arm.SetClimbArmState;
 import frc.robot.commands.arm.SetCoralArmState;
-import frc.robot.commands.elevator.SetElevatorState;
-import frc.robot.commands.roller.MaintainCommand;
-import frc.robot.commands.roller.RunCommand;
-import frc.robot.commands.roller.StopCommand;
+
 import frc.robot.commands.swerve.RotationialSysId;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
-import frc.robot.subsystems.arm.coral.CoralConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
-import frc.robot.subsystems.arm.climb.ClimbConstants;
 
 /**
  * Util class for button bindings
@@ -31,15 +26,6 @@ public class JoystickIO {
     private static final CommandXboxController pilot = new CommandXboxController(0);
     private static final CommandXboxController operator = new CommandXboxController(1);
 
-    private static final Command climbStow = new SetClimbArmState(Robot.climbArm, ClimbConstants.ArmStates.STOWED,
-    private static final Command climb = new SetClimbArmState(Robot.climbArm, ClimbConstants.ArmStates.CLIMB,
-            ClimbConstants.climbSetPoint_rad);
-    private static final Command coralHandOff = new SetCoralArmState(Robot.coralArm, CoralConstants.ArmStates.HAND_OFF,
-            CoralConstants.handOffSetPoint_rad);
-    private static final Command coralPickUp = new SetCoralArmState(Robot.coralArm,
-            CoralConstants.ArmStates.CORAL_PICKUP,
-            CoralConstants.coralPickUpSetPoint_rad);
-
     private static final RotationialSysId rotate1 = new RotationialSysId(
             Robot.swerve.getDriveSysIdTuner().sysIdQuasistatic(Direction.kForward), Robot.swerve);
     private static final RotationialSysId rotate2 = new RotationialSysId(
@@ -49,13 +35,8 @@ public class JoystickIO {
     private static final RotationialSysId rotate4 = new RotationialSysId(
             Robot.swerve.getDriveSysIdTuner().sysIdDynamic(Direction.kReverse), Robot.swerve);
 
-    private static final SetElevatorState l1 = new SetElevatorState(ElevatorStates.L1);
-    private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
-    private static final SetElevatorState l3 = new SetElevatorState(ElevatorStates.L3);
-    private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
-
     public JoystickIO() {
-    }*/
+    }
 
     public static void getButtonBindings() {
 
@@ -82,32 +63,34 @@ public class JoystickIO {
     public static void pilotAndOperatorBindings() {
         // gyro reset
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
-<<<<<<< HEAD
-        pilot.a().whileTrue(RunCommand);
-        pilot.b().whileTrue(MaintainCommand);
-        pilot.x().whileTrue(StopCommand);
+
 
         // Example binding
         // operator.a().whileTrue(new ExampleSubsystemCommand());
 
-        // operator.a().onTrue(Robot.climbArm.getSysIdTuner().runTests());
-        // operator.b().onTrue(Robot.coralArm.getSysIdTuner().runTests());
-        // operator.x().onTrue(Robot.elevator.getSysIdTuner().runTests());
+        // operator.a().whileTrue(Robot.climbArm.getSysIdTuner().runTests());
+        // operator.b().whileTrue(Robot.coralArm.getSysIdTuner().runTests());
+        // operator.x().whileTrue(Robot.elevator.getSysIdTuner().runTests());
 
-        // operator.a().onTrue(Robot.swerve.getRotationalSysIdTuner().runTests());
-        // operator.b().onTrue(Robot.swerve.getDriveSysIdTuner().runTests());
+        // operator.a().whileTrue(Robot.swerve.getRotationalSysIdTuner().runTests());
+        // operator.b().whileTrue(Robot.swerve.getDriveSysIdTuner().runTests());
 
-        // operator.a().onTrue(Robot.algaeRoller.getSysIdTuner().runTests());
-        // operator.b().onTrue(Robot.coralArm.getSysIdTuner().runTests());
-        // operator.x().onTrue(Robot.climbArm.getSysIdTuner().runTests());
+        // operator.a().whileTrue(Robot.algaeRoller.getSysIdTuner().runTests());
+        // operator.b().whileTrue(Robot.coralArm.getSysIdTuner().runTests());
+        // operator.x().whileTrue(Robot.climbArm.getSysIdTuner().runTests());
 
         // operator.a().onTrue(l1);
         // operator.b().onTrue(l2);
         // operator.x().onTrue(l3);
         // operator.y().onTrue(l4);
-=======
   
->>>>>>> origin/main
+
+        // operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(0)));
+        // operator.a().onTrue(Commands.run(() -> Robot.coralArm.setVoltage(0)));
+        // operator.a().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(0)));
+        // operator.a().onTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(0)));
+        // operator.a().onTrue(Commands.run(() -> Robot.coralRoller.setVoltage(0)));
+        // operator.a().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(0)));
     }
 
     public static void pilotBindings() {
