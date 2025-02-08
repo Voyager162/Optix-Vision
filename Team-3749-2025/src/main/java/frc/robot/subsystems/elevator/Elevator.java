@@ -123,6 +123,12 @@ public class Elevator extends SubsystemBase {
             case L4:
                 return UtilityFunctions.withinMargin(0.01, data.positionMeters,
                         ElevatorConstants.StateHeights.l4Height);
+            case MAX:
+                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
+                    ElevatorConstants.ElevatorSpecs.maxHeightMeters);
+            case STOW:
+                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
+                    ElevatorConstants.ElevatorSpecs.baseHeight);
             default:
                 return false;
         }
@@ -136,7 +142,7 @@ public class Elevator extends SubsystemBase {
         this.state = state;
         switch (state) {
             case STOP:
-                runStateStop();
+                stop();
                 break;
             case L1:
                 setGoal(ElevatorConstants.StateHeights.l1Height);
@@ -151,9 +157,11 @@ public class Elevator extends SubsystemBase {
                 setGoal(ElevatorConstants.StateHeights.l4Height);
                 break;
             case MAX:
-                setGoal(6);
+                setGoal(ElevatorConstants.ElevatorSpecs.maxHeightMeters);
                 break;
             case STOW:
+                setGoal(ElevatorConstants.ElevatorSpecs.baseHeight);
+                break;
             default:
                 setGoal(0);
                 break;
@@ -167,7 +175,7 @@ public class Elevator extends SubsystemBase {
     private void runState() {
         switch (state) {
             case STOP:
-                runStateStop();
+                stop();
                 break;
             default:
                 moveToGoal();
@@ -185,9 +193,6 @@ public class Elevator extends SubsystemBase {
         elevatorio.setPosition(firstState.position, ffVoltage);
     }
 
-    private void runStateStop() {
-        stop();
-    }
 
     public void stop() {
         elevatorio.setVoltage(0);
