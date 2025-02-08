@@ -25,7 +25,6 @@ import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorData;
 import frc.robot.subsystems.elevator.real.ElevatorSparkMax;
 import frc.robot.subsystems.elevator.sim.ElevatorSimulation;
-import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 
 /**
@@ -52,19 +51,6 @@ public class Elevator extends SubsystemBase {
             ElevatorConstants.ElevatorControl.kG,
             ElevatorConstants.ElevatorControl.kV,
             ElevatorConstants.ElevatorControl.kA);
-
-    private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
-    private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position", 0.0);
-    private ShuffleData<Double> velocityMetersPerSecLog = new ShuffleData<Double>("Elevator", "velocity", 0.0);
-    private ShuffleData<Double> accelerationMetersPerSecSquaredLog = new ShuffleData<Double>("Elevator", "acceleration",
-            0.0);
-
-    private ShuffleData<Double> leftAppliedVoltsLog = new ShuffleData<Double>("Elevator", "left applied volts", 0.0);
-    private ShuffleData<Double> rightAppliedVoltsLog = new ShuffleData<Double>("Elevator", "right applied volts", 0.0);
-    private ShuffleData<Double> leftCurrentAmpsLog = new ShuffleData<Double>("Elevator", "left current amps", 0.0);
-    private ShuffleData<Double> rightCurrentAmpsLog = new ShuffleData<Double>("Elevator", "right current amps", 0.0);
-    private ShuffleData<Double> leftTempCelciusLog = new ShuffleData<Double>("Elevator", "left temp celcius", 0.0);
-    private ShuffleData<Double> rightTempCelciusLog = new ShuffleData<Double>("Elevator", "right temp celcius", 0.0);;
 
     private Mechanism2d mech = new Mechanism2d(3, 3);
     private MechanismRoot2d root = mech.getRoot("elevator", 1, 0);
@@ -196,12 +182,12 @@ public class Elevator extends SubsystemBase {
 
         Logger.recordOutput("subystems/elevator/acceleration", data.accelerationMetersPerSecondSquared);
 
-        leftAppliedVoltsLog.set(data.leftAppliedVolts);
-        rightAppliedVoltsLog.set(data.rightAppliedVolts);
-        leftCurrentAmpsLog.set(data.leftCurrentAmps);
-        rightCurrentAmpsLog.set(data.rightCurrentAmps);
-        leftTempCelciusLog.set(data.leftTempCelcius);
-        rightTempCelciusLog.set(data.rightTempCelcius);
+        Logger.recordOutput("subystems/elevator/left applied volts", data.leftAppliedVolts);
+        Logger.recordOutput("subystems/elevator/right applied volts", data.rightAppliedVolts);
+        Logger.recordOutput("subystems/elevator/left current amps", data.leftCurrentAmps);
+        Logger.recordOutput("subystems/elevator/right current amps", data.rightCurrentAmps);
+        Logger.recordOutput("subystems/elevator/left temp celcius", data.leftTempCelcius);
+        Logger.recordOutput("subystems/elevator/right temp celcius", data.rightTempCelcius);
 
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
         SmartDashboard.putData("elevator mechanism", mech);

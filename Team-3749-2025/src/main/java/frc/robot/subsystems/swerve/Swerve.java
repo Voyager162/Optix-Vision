@@ -6,8 +6,6 @@ package frc.robot.subsystems.swerve;
 
 import choreo.util.ChoreoAllianceFlipUtil.Flipper;
 
-import java.lang.System.LoggerFinder;
-
 import org.littletonrobotics.junction.Logger;
 
 import choreo.trajectory.SwerveSample;
