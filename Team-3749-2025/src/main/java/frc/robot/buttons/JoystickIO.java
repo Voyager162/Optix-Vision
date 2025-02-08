@@ -8,6 +8,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Robot;
 
+import frc.robot.commands.arm.SetClimbArmState;
+import frc.robot.commands.arm.SetCoralArmState;
+
 
 import frc.robot.commands.swerve.SwerveDefaultCommand;
 
@@ -22,6 +25,7 @@ public class JoystickIO {
 
     private static final CommandXboxController pilot = new CommandXboxController(0);
     private static final CommandXboxController operator = new CommandXboxController(1);
+
     private static final ButtonBoard buttonBoard = new ButtonBoard();
 
     public JoystickIO() {
