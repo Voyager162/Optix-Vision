@@ -1,6 +1,7 @@
 package frc.robot.subsystems.arm.coral;
 
 import frc.robot.Robot;
+import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -17,10 +18,15 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
+import frc.robot.utils.LoggedTunableNumber;
+import frc.robot.utils.MotorData;
+import static edu.wpi.first.units.Units.*;
+
+import java.util.Map;
 import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
 import frc.robot.subsystems.arm.coral.sim.CoralArmSim;
-import static edu.wpi.first.units.Units.*;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -30,6 +36,37 @@ import org.littletonrobotics.junction.Logger;
  * @author Weston Gardner
  */
 public class CoralArm extends SubsystemBase {
+
+    private CoralArmIO armIO;
+    private ArmData data = new ArmData();
+    private CoralArmConstants.ArmStates state = CoralArmConstants.ArmStates.STOPPED;
+
+    private LoggedTunableNumber kG = new LoggedTunableNumber(this.getName() + "/kG", CoralArmConstants.kG);
+    private LoggedTunableNumber kP = new LoggedTunableNumber(this.getName() + "/kP", CoralArmConstants.kP);
+    private LoggedTunableNumber kI = new LoggedTunableNumber(this.getName() + "/kI", CoralArmConstants.kI);
+    private LoggedTunableNumber kD = new LoggedTunableNumber(this.getName() + "/kD", CoralArmConstants.kD);
+    private LoggedTunableNumber kS = new LoggedTunableNumber(this.getName() + "/kS", CoralArmConstants.kS);
+    private LoggedTunableNumber kV = new LoggedTunableNumber(this.getName() + "/kV", CoralArmConstants.kV);
+    private LoggedTunableNumber kA = new LoggedTunableNumber(this.getName() + "/kA", CoralArmConstants.kA);
+    private LoggedTunableNumber maxVelocity = new LoggedTunableNumber(this.getName() + "/max velocity",
+            CoralArmConstants.maxVelocity);
+    private LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(this.getName() + "/max acceleration",
+            CoralArmConstants.maxAcceleration);
+
+    private SysIdTuner sysIdTuner;
+
+    Map<String, MotorData> motorData = Map.of(
+            "arm_motor", new MotorData(
+                    data.appliedVolts,
+                    data.positionUnits,
+                    data.velocityUnits,
+                    data.accelerationUnits));
+
+    SysIdRoutine.Config config = new SysIdRoutine.Config(
+            Volts.per(Seconds).of(1), // Voltage ramp rate
+            Volts.of(4), // Max voltage
+            Seconds.of(4) // Test duration
+    );
 
     // Profiled PID Controller used only for the motion profile, PID within
     // implementation classes
@@ -45,14 +82,6 @@ public class CoralArm extends SubsystemBase {
             CoralArmConstants.kG,
             CoralArmConstants.kV,
             CoralArmConstants.kA);
-
-    // The I/O interface for controlling the arm's motors (either real hardware or
-    // simulated).
-    private CoralArmIO armIO;
-    // Stores the arm's current data (e.g., position, velocity, etc.).
-    private ArmData data = new ArmData();
-    // The current state of the arm (e.g., stopped, stowed).
-    private CoralArmConstants.ArmStates state = CoralArmConstants.ArmStates.STOPPED;
 
     private Mechanism2d mechanism2d = new Mechanism2d(3, 3);
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 1.8, .4);
@@ -158,6 +187,10 @@ public class CoralArm extends SubsystemBase {
         }
     }
 
+    public SysIdTuner getSysIdTuner() {
+        return sysIdTuner;
+    }
+
     private Angle getPitch() {
         return Angle.ofBaseUnits(data.positionUnits + Units.degreesToRadians(-55), Radians); // remove offset once coral
                                                                                              // arm code is fixed
@@ -250,20 +283,31 @@ public class CoralArm extends SubsystemBase {
         // Logger.recordOutput("zeropose", zeroedComponentPose);
 
         publisher.set(getPose3d());
+
+        CoralArmConstants.kG = kG.get();
+        CoralArmConstants.kP = kP.get();
+        CoralArmConstants.kI = kI.get();
+        CoralArmConstants.kD = kD.get();
+        CoralArmConstants.kS = kS.get();
+        CoralArmConstants.kV = kV.get();
+        CoralArmConstants.kA = kA.get();
+        CoralArmConstants.maxVelocity = maxVelocity.get();
+        CoralArmConstants.maxAcceleration = maxAcceleration.get();
     }
 
-    /**
-     * Periodic method called every loop to update the arm's behavior and log data.
-     */
+/** Periodic method for updating arm behavior. */
     @Override
     public void periodic() {
-        // Update the arm's data from the I/O interface
+
         armIO.updateData(data);
 
-        // Run the state logic based on the current arm state
         runState();
 
-        // Log the arm's data to Shuffleboard
         logData();
+
+        motorData.get("arm_motor").position = data.positionUnits;
+        motorData.get("arm_motor").acceleration = data.accelerationUnits;
+        motorData.get("arm_motor").velocity = data.velocityUnits;
+        motorData.get("arm_motor").appliedVolts = data.appliedVolts;
     }
 }

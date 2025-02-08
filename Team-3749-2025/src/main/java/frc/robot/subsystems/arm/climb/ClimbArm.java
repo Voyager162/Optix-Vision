@@ -1,5 +1,8 @@
 package frc.robot.subsystems.arm.climb;
 
+import frc.robot.Robot;
+import frc.robot.utils.SysIdTuner;
+import frc.robot.utils.UtilityFunctions;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -15,13 +18,15 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.arm.climb.ClimbArmIO.ArmData;
+import frc.robot.utils.LoggedTunableNumber;
+import frc.robot.utils.MotorData;
+import static edu.wpi.first.units.Units.*;
+
+import java.util.Map;
 import frc.robot.subsystems.arm.climb.real.ClimbArmSparkMax;
 import frc.robot.subsystems.arm.climb.sim.ClimbArmSim;
-import frc.robot.utils.UtilityFunctions;
-
-import static edu.wpi.first.units.Units.*;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -30,6 +35,7 @@ import org.littletonrobotics.junction.Logger;
  *
  * @author Weston Gardner
  */
+
 public class ClimbArm extends SubsystemBase {
 
 	private ProfiledPIDController profile = new ProfiledPIDController(
@@ -51,14 +57,41 @@ public class ClimbArm extends SubsystemBase {
 	private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
 	private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
 	private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Climb Arm", 24, 0));
+
+	private LoggedTunableNumber kG = new LoggedTunableNumber(this.getName() + "/kG", ClimbArmConstants.kG);
+	private LoggedTunableNumber kP = new LoggedTunableNumber(this.getName() + "/kP", ClimbArmConstants.kP);
+	private LoggedTunableNumber kI = new LoggedTunableNumber(this.getName() + "/kI", ClimbArmConstants.kI);
+	private LoggedTunableNumber kD = new LoggedTunableNumber(this.getName() + "/kD", ClimbArmConstants.kD);
+	private LoggedTunableNumber kS = new LoggedTunableNumber(this.getName() + "/kS", ClimbArmConstants.kS);
+	private LoggedTunableNumber kV = new LoggedTunableNumber(this.getName() + "/kV", ClimbArmConstants.kV);
+	private LoggedTunableNumber kA = new LoggedTunableNumber(this.getName() + "/kA", ClimbArmConstants.kA);
+	private LoggedTunableNumber maxVelocity = new LoggedTunableNumber(this.getName() + "/max velocity",
+			ClimbArmConstants.maxVelocity);
+	private LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(this.getName() + "/max acceleration",
+			ClimbArmConstants.maxAcceleration);
     StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
             .getStructTopic("ClimbArm Pose", Pose3d.struct).publish();
 	/**
 	 * Constructor for the CoralArm subsystem. Determines if simulation or real
 	 * hardware is used.
 	 */
-	public ClimbArm() {
 
+	private SysIdTuner sysIdTuner;
+
+	SysIdRoutine.Config config = new SysIdRoutine.Config(
+			Volts.per(Seconds).of(1), // Voltage ramp rate
+			Volts.of(4), // Max voltage
+			Seconds.of(4) // Test duration
+	);
+
+	Map<String, MotorData> motorData = Map.of(
+			"arm_motor", new MotorData(
+					data.appliedVolts,
+					data.positionUnits,
+					data.velocityUnits,
+					data.accelerationUnits));
+
+	public ClimbArm() {
 		if (Robot.isSimulation()) {
 
 			armIO = new ClimbArmSim();
@@ -67,12 +100,27 @@ public class ClimbArm extends SubsystemBase {
 			armIO = new ClimbArmSparkMax();
 		}
 		SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
+
+		sysIdTuner = new SysIdTuner("climb arm", getConfig(), this, armIO::setVoltage, getMotorData());
+	}
+
+	public Map<String, MotorData> getMotorData() {
+		return motorData;
+	}
+
+	public SysIdRoutine.Config getConfig() {
+		return config;
+	}
+
+	public SysIdTuner getSysIdTuner() {
+		System.out.println(sysIdTuner);
+		return sysIdTuner;
 	}
 
 	// GET FUNCTIONS
 
 	/**
-	 * @return the state the arm is in
+	 * @return the current arm state.
 	 */
 	public ClimbArmConstants.ArmStates getState() {
 		return state;
@@ -165,8 +213,6 @@ public class ClimbArm extends SubsystemBase {
 		profile.setGoal(setPoint);
 	}
 
-	// UTILITY FUNCTIONS
-
 	/**
 	 * stops the arm completely, for use in emergencies or on startup
 	 */
@@ -196,9 +242,7 @@ public class ClimbArm extends SubsystemBase {
 
 	// PERIODIC FUNCTIONS
 
-	/**
-	 * Runs the logic for the current arm state.
-	 */
+	/** Runs the logic for the current arm state. */
 	private void runState() {
 		switch (state) {
 			case STOPPED:
@@ -210,9 +254,7 @@ public class ClimbArm extends SubsystemBase {
 		}
 	}
 
-	/**
-	 * Logs data to Shuffleboard.
-	 */
+	/** Logs data to Shuffleboard. */
 	private void logData() {
 		Logger.recordOutput("subystems/climbArm/Current Command",
 				this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
@@ -230,6 +272,15 @@ public class ClimbArm extends SubsystemBase {
 
 		Logger.recordOutput("subsystems/climbArm/current state", state.name());
 
+		ClimbArmConstants.kG = kG.get();
+		ClimbArmConstants.kP = kP.get();
+		ClimbArmConstants.kI = kI.get();
+		ClimbArmConstants.kD = kD.get();
+		ClimbArmConstants.kS = kS.get();
+		ClimbArmConstants.kV = kV.get();
+		ClimbArmConstants.kA = kA.get();
+		ClimbArmConstants.maxVelocity = maxVelocity.get();
+		ClimbArmConstants.maxAcceleration = maxAcceleration.get();
         publisher.set(getPose3d());
 	}
 
@@ -244,5 +295,10 @@ public class ClimbArm extends SubsystemBase {
 		runState();
 
 		logData();
+
+		motorData.get("arm_motor").position = data.positionUnits;
+		motorData.get("arm_motor").acceleration = data.accelerationUnits;
+		motorData.get("arm_motor").velocity = data.velocityUnits;
+		motorData.get("arm_motor").appliedVolts = data.appliedVolts;
 	}
 }

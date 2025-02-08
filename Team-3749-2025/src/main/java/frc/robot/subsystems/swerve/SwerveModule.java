@@ -125,12 +125,12 @@ public class SwerveModule {
     }
 
     public void setDriveVoltage(double volts) {
-    moduleIO.setDriveVoltage(volts);
+        moduleIO.setDriveVoltage(volts);
 
     }
 
     public void setTurnVoltage(double volts) {
-    moduleIO.setTurnVoltage(volts);
+        moduleIO.setTurnVoltage(volts);
     }
 
     public void setBreakMode(boolean enabled) {

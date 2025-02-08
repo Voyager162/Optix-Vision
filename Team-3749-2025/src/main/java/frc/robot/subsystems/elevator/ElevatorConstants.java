@@ -30,15 +30,15 @@ public class ElevatorConstants {
     }
 
     public static class ElevatorControl {
-        public static final double kP = 0.02;
-        public static final double kI = 0.0;
-        public static final double kD = 0;
-        public static final double kS = 0;
-        public static final double kG = 2.2977;
-        public static final double kV = 2.35; // 12 - 2.3 / 4.139
-        public static final double kA = 0;
-        public static final double maxV = 4.139;
-        public static final double maxA = 3.988; // change in velocity / seconds
+        public static double kP = 0.02;
+        public static double kI = 0.0;
+        public static double kD = 0;
+        public static double kS = 0;
+        public static double kG = 2.2977;
+        public static double kV = 2.35; // 12 - 2.3 / 4.139
+        public static double kA = 0;
+        public static double maxV = 4.139;
+        public static double maxA = 3.988; // change in velocity / seconds
     }
 
     public enum ElevatorStates {
