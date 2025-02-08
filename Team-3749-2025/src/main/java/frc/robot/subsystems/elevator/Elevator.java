@@ -245,7 +245,7 @@ public class Elevator extends SubsystemBase {
     }
 
     private Transform3d getTransform3d(double pos) {
-        Transform3d transform = new Transform3d(-0.33, 0, pos, new Rotation3d(Angle.ofBaseUnits(0, Radians),
+        Transform3d transform = new Transform3d(0, 0, pos, new Rotation3d(Angle.ofBaseUnits(0, Radians),
                 Angle.ofBaseUnits(0, Radians), Angle.ofBaseUnits(0, Radians)));
         return transform;
     }

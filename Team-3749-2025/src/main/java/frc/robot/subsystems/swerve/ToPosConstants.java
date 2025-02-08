@@ -80,9 +80,7 @@ public class ToPosConstants {
             double distance = 0.4; 
             double offsetArm = Units.inchesToMeters(6.75); // Fixed arm offset to the left
             double offsetMultiplier = 1;
-            double forwardMagnitudeMultiplier = 1;
-            double angleOffset = 90; // 90 for perpendicular movement
-        
+            double angleOffset = 90; // 90 for perpindicular
             switch (direction) {
                 case LEFT:
                     offsetMultiplier = 1;
@@ -91,33 +89,27 @@ public class ToPosConstants {
                 case RIGHT:
                     offsetMultiplier = -1;
                     break;
-        
-                case FORWARD:
-                    angleOffset = 0;
-                    forwardMagnitudeMultiplier = 1.5;
-                    break;
-        
+
                 default:
                     System.out.println("Did not specify trig direction");
                     break;
             }
-        
-            // Offset calculations for movement
-            double xOffset = Math.cos(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier))) 
-                             * distance / forwardMagnitudeMultiplier;
-            double yOffset = Math.sin(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier))) 
-                             * distance / forwardMagnitudeMultiplier;
-        
-            // **Always apply arm offset to the left of the robot's heading**
-            double armXOffset = Math.cos(Math.toRadians(reefPose.getRotation().getDegrees() + 90)) * offsetArm;
-            double armYOffset = Math.sin(Math.toRadians(reefPose.getRotation().getDegrees() + 90)) * offsetArm;
-        
-            return new Pose2d(reefPose.getX() + xOffset + armXOffset, 
-                              reefPose.getY() + yOffset + armYOffset, 
-                              reefPose.getRotation());
-        }
-        
-        
+
+            double xSetup = reefPose.getX() + Math
+            .cos(Math.toRadians(reefPose.getRotation().getDegrees() + (90)))*Units.inchesToMeters(6.25);
+            double ySetup = reefPose.getY() + Math
+            .sin(Math.toRadians(reefPose.getRotation().getDegrees() + (90)))*Units.inchesToMeters(6.25);
+
+            double newX = xSetup + Math
+                    .cos(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))*Units.inchesToMeters(6.5);
+            double newY = ySetup + Math
+                    .sin(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))
+                    * Units.inchesToMeters(6.5);
+
+            
+            return new Pose2d(newX, newY, reefPose.getRotation());
+        };
+
         // Helper method to adjust Pose2d
         public static Pose2d adjustPose(double x, double y, double heading, boolean isCoralStation) {
             // Calculate offsets based only on robot length
