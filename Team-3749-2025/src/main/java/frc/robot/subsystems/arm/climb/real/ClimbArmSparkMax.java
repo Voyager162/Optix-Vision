@@ -3,10 +3,10 @@ package frc.robot.subsystems.arm.climb.real;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import edu.wpi.first.math.MathUtil;
-import frc.robot.subsystems.arm.ArmConstants;
 import frc.robot.subsystems.arm.climb.ClimbArmIO;
 import frc.robot.subsystems.arm.climb.ClimbArmConstants;
 import frc.robot.utils.OptixSpark;
+import frc.robot.utils.MiscConstants.MotorControllerConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
@@ -37,7 +37,7 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 		frontMotorLead = new OptixSpark(ClimbArmConstants.frontMotorId, OptixSpark.Type.SPARKMAX);
 		backMotorFollower = new OptixSpark(ClimbArmConstants.backMotorId, OptixSpark.Type.SPARKMAX);
 
-		frontMotorLead.setCurrentLimit(ArmConstants.NEOStallLimit, ArmConstants.NEOFreeLimit);
+		frontMotorLead.setCurrentLimit(MotorControllerConstants.standardStallLimit, MotorControllerConstants.standardFreeLimit);
 		frontMotorLead.setInverted(false);
 		frontMotorLead.setBrakeMode(true);
 		frontMotorLead.setPositionConversionFactor(1 / ClimbArmConstants.armGearing * 2 * Math.PI);

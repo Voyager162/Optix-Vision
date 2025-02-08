@@ -24,17 +24,10 @@ public class ScoringRoller extends Roller {
         maxAcceleration = new LoggedTunableNumber(getName() + "/maxAcceleration", RollerConstants.Scoring.maxAcceleration);
     }
 
-    public static PIDController velocityController() {
-        return new PIDController(RollerConstants.Scoring.kPVelocity, RollerConstants.Scoring.kIVelocity, RollerConstants.Scoring.kDVelocity);
-    }
-
     public static SimpleMotorFeedforward FF() {
         return new SimpleMotorFeedforward(RollerConstants.Scoring.kSVelocity, RollerConstants.Scoring.kVVelocity, RollerConstants.Scoring.kAVelocity);
     }
 
-    public static PIDController positionController() {
-        return new PIDController(RollerConstants.Scoring.kPPosition, RollerConstants.Scoring.kIPosition, RollerConstants.Scoring.kDPosition);
-    }
 
     @Override
     public void run() {

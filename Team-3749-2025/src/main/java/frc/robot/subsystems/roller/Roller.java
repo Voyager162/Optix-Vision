@@ -45,7 +45,7 @@ public abstract class Roller extends SubsystemBase {
     Map<String, MotorData> motorData = Map.of(
             "roller_motor", new MotorData(
                     rollerData.rollerAppliedVolts,
-                    rollerData.rollerPositionRotations,
+                    rollerData.rollerPositionRad,
                     rollerData.rollerVelocityRadPerSec,
                     0));
 

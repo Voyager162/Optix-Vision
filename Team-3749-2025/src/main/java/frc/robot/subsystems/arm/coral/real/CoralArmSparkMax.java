@@ -3,10 +3,12 @@ package frc.robot.subsystems.arm.coral.real;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import edu.wpi.first.math.MathUtil;
-import frc.robot.subsystems.arm.ArmConstants;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import frc.robot.subsystems.arm.coral.CoralArmIO;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
+import frc.robot.utils.MiscConstants;
 import frc.robot.utils.OptixSpark;
+import frc.robot.utils.MiscConstants.MotorControllerConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
@@ -33,7 +35,7 @@ public class CoralArmSparkMax implements CoralArmIO {
 
 		motor = new OptixSpark(CoralArmConstants.motorID, OptixSpark.Type.SPARKMAX);
 
-		motor.setCurrentLimit(ArmConstants.NEOStallLimit, ArmConstants.NEOFreeLimit);
+		motor.setCurrentLimit(MotorControllerConstants.standardStallLimit, MotorControllerConstants.standardFreeLimit);
 		motor.setInverted(false);
 		motor.setBrakeMode(true);
 		motor.setPositionConversionFactor(1 / CoralArmConstants.armGearing * 2 * Math.PI);
@@ -48,10 +50,9 @@ public class CoralArmSparkMax implements CoralArmIO {
 	}
 
 	@Override
-    public void setBrakeMode(boolean enabled) {
-        motor.setBrakeMode(enabled);
-    }
-
+	public void setBrakeMode(boolean enabled) {
+		motor.setBrakeMode(enabled);
+	}
 
 	/**
 	 * Takes in the data from ArmData and uses it to update the data on the position
@@ -83,10 +84,9 @@ public class CoralArmSparkMax implements CoralArmIO {
 		motor.setVoltage(inputVolts);
 	}
 
-	
-    @Override
-    public void setPosition(double setpointPositionRad, double feedforward) {
-        motor.setPositionControl(setpointPositionRad, feedforward);
-    }
+	@Override
+	public void setPosition(double setpointPositionRad, double feedforward) {
+		motor.setPositionControl(setpointPositionRad, feedforward);
+	}
 
 }
