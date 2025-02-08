@@ -22,7 +22,8 @@ import frc.robot.Robot;
 import frc.robot.commands.auto.AutoConstants;
 import frc.robot.commands.auto.AutoUtils;
 import frc.robot.subsystems.swerve.GyroIO.GyroData;
-import frc.robot.subsystems.swerve.SwerveConstants.DriveConstants;
+import frc.robot.subsystems.swerve.SwerveConstants.ControlConstants;
+import frc.robot.subsystems.swerve.SwerveConstants.DrivetrainConstants;
 import frc.robot.subsystems.swerve.real.*;
 import frc.robot.subsystems.swerve.sim.*;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -50,6 +51,7 @@ public class Swerve extends SubsystemBase {
   private GyroIO gyro;
   private GyroData gyroData = new GyroData();
 
+  // equivilant to a odometer, but also intakes vision
   private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
   private PIDController xController = new PIDController(AutoConstants.kPDrive, 0, AutoConstants.kDDrive);
@@ -60,7 +62,6 @@ public class Swerve extends SubsystemBase {
   private double velocity = 0;
   private double yaw;
 
-  // equivilant to a odometer, but also intakes vision
 
   public Swerve() {
 
@@ -68,7 +69,7 @@ public class Swerve extends SubsystemBase {
     if (Robot.isSimulation()) {
       gyro = new GyroSim();
       for (int i = 0; i < 4; i++) {
-        modules[i] = new SwerveModule(i, new SwerveModuleSim(i));
+        modules[i] = new SwerveModule(i, new SwerveModuleSim());
       }
     }
     // if real
@@ -82,7 +83,7 @@ public class Swerve extends SubsystemBase {
     }
     // pose estimator
     swerveDrivePoseEstimator = new SwerveDrivePoseEstimator(
-        DriveConstants.driveKinematics,
+        DrivetrainConstants.driveKinematics,
         new Rotation2d(0),
         new SwerveModulePosition[] {
             modules[0].getPosition(),
@@ -117,7 +118,7 @@ public class Swerve extends SubsystemBase {
       states[i] = modules[i].getState();
     }
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-        DriveConstants.driveKinematics.toChassisSpeeds(states),
+        DrivetrainConstants.driveKinematics.toChassisSpeeds(states),
         getRotation2d());
     return speeds;
   }
@@ -151,8 +152,8 @@ public class Swerve extends SubsystemBase {
    * @return Returns max speed to be achieved by the robot based on telop or auto
    */
   public double getMaxDriveSpeed() {
-    return DriverStation.isTeleopEnabled() ? SwerveConstants.DriveConstants.teleopMaxSpeedMetersPerSecond
-        : SwerveConstants.DriveConstants.autoMaxSpeedMetersPerSecond;
+    return DriverStation.isTeleopEnabled() ? ControlConstants.teleopMaxSpeedMetersPerSecond
+        : ControlConstants.autoMaxSpeedMetersPerSecond;
   }
 
   /**
@@ -160,8 +161,8 @@ public class Swerve extends SubsystemBase {
    *         or auto
    */
   public double getMaxAngularSpeed() {
-    return DriverStation.isTeleopEnabled() ? SwerveConstants.DriveConstants.teleopMaxAngularSpeedRadPerSecond
-        : SwerveConstants.DriveConstants.autoMaxAngularSpeedRadPerSecond;
+    return DriverStation.isTeleopEnabled() ? ControlConstants.teleopMaxAngularSpeedRadPerSecond
+        : ControlConstants.autoMaxAngularSpeedRadPerSecond;
   }
 
   public SwerveDrivePoseEstimator getPoseEstimator() {
@@ -177,7 +178,7 @@ public class Swerve extends SubsystemBase {
    */
   public void setChassisSpeeds(ChassisSpeeds chassisSpeeds) {
     // Convert chassis speeds to individual module states
-    SwerveModuleState[] moduleStates = DriveConstants.driveKinematics.toSwerveModuleStates(
+    SwerveModuleState[] moduleStates = DrivetrainConstants.driveKinematics.toSwerveModuleStates(
         chassisSpeeds);
     setModuleStates(moduleStates);
 
@@ -193,7 +194,7 @@ public class Swerve extends SubsystemBase {
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
         desiredStates,
-        DriveConstants.maxSpeedMetersPerSecond);
+        getMaxDriveSpeed());
 
     modules[0].setDesiredState(desiredStates[0]);
     modules[1].setDesiredState(desiredStates[1]);

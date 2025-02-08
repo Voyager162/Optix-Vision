@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
 import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
 import frc.robot.subsystems.arm.coral.sim.CoralArmSim;
-
 import static edu.wpi.first.units.Units.*;
 
 import org.littletonrobotics.junction.Logger;
