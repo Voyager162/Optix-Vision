@@ -29,7 +29,7 @@ public final class Constants {
 
   public static Mode getMode() {
     return switch (robotType) {
-      case DEVBOT, COMPBOT -> RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
+      case DEVBOT, COMPBOT -> RobotBase.isReal() ? Mode.REAL : Mode.SIM;
       case SIMBOT -> Mode.SIM;
     };
   }

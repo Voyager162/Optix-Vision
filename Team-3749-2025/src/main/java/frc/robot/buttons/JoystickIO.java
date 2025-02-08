@@ -138,6 +138,10 @@ public class JoystickIO {
         // operator.a().onTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(0)));
         // operator.a().onTrue(Commands.run(() -> Robot.coralRoller.setVoltage(0)));
         // operator.a().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(0)));
+        operator.a().onTrue(climbStow);
+        operator.b().onTrue(climb);
+        operator.x().onTrue(coralHandOff);
+        operator.y().onTrue(coralPickUp);
     }
 
     public static void pilotBindings() {

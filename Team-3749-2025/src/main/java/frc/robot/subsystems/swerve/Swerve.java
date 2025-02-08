@@ -515,9 +515,9 @@ public class Swerve extends SubsystemBase {
     Logger.recordOutput("/subsystems/swerve/desired states/module 4 position", desiredStates[7]);
 
     // odometry logging
-    Logger.recordOutput("/subsystesm/swerve/pose x", getPose().getX());
-    Logger.recordOutput("/subsystesm/swerve/pose y", getPose().getY());
-    Logger.recordOutput("/subsystesm/swerve/rotation", getPose().getRotation().getRadians());
+    Logger.recordOutput("/subsystems/swerve/pose x", getPose().getX());
+    Logger.recordOutput("/subsystems/swerve/pose y", getPose().getY());
+    Logger.recordOutput("/subsystems/swerve/rotation", getPose().getRotation().getRadians());
     Logger.recordOutput("/subsystems/swerve/utilize vision", utilizeVision);
 
     // gyro logging
@@ -534,7 +534,8 @@ public class Swerve extends SubsystemBase {
         getChassisSpeeds().vyMetersPerSecond);
     Logger.recordOutput("/subsystems/swerve/gyro rotation", (robotVelocity - velocity) / .02);
     Logger.recordOutput("/subsystems/swerve/gyro rotation", robotVelocity);
-    Logger.recordOutput("/subsystems/swerve/gyro rotation", this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
+    String currentCommand = this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName();
+    Logger.recordOutput("/subsystems/swerve/gyro rotation", currentCommand);
   }
 
   @Override

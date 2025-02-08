@@ -222,12 +222,12 @@ public class Elevator extends SubsystemBase {
     }
 
     private void logData() {
-        Logger.recordOutput("subystems/elevator/Current Command", this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
+        Logger.recordOutput("subsystems/elevator/Current Command", this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
 
-        Logger.recordOutput("subystems/elevator/postion", data.positionMeters);
-        Logger.recordOutput("subystems/elevator/velocity", data.velocityMetersPerSecond);
+        Logger.recordOutput("subsystems/elevator/postion", data.positionMeters);
+        Logger.recordOutput("subsystems/elevator/velocity", data.velocityMetersPerSecond);
 
-        Logger.recordOutput("subystems/elevator/acceleration", data.accelerationMetersPerSecondSquared);
+        Logger.recordOutput("subsystems/elevator/acceleration", data.accelerationMetersPerSecondSquared);
     
         Logger.recordOutput("subsystems/elevator/input volts", ((data.leftAppliedVolts + data.rightAppliedVolts) / 2.0));
         Logger.recordOutput("subsystems/elevator/input volts", data.leftAppliedVolts);
