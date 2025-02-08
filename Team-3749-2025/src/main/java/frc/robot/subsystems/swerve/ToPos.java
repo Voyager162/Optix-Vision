@@ -11,6 +11,8 @@ import com.pathplanner.lib.path.Waypoint;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Robot;
+import frc.robot.buttons.JoystickIO;
+import frc.robot.buttons.ButtonBoard.ScoringLocation;
 
 /**
  * This class generates dynamic paths for a robot to move from one pose to
@@ -41,7 +43,8 @@ public class ToPos {
         }
 
         if (initialPose.equals(finalPose) || initialPose.equals(approachPoint) || approachPoint.equals(finalPose)) {
-            // System.out.println("No movement required: Initial, approach, and final poses are the same.");
+            // System.out.println("No movement required: Initial, approach, and final poses
+            // are the same.");
             return null; // Prevents unnecessary movement
         }
 
@@ -59,7 +62,8 @@ public class ToPos {
 
         // 🚨 New Check: Ensure at least 2 waypoints before creating the path
         if (waypoints.size() < 2) {
-            // System.out.println("Error: Not enough waypoints to create a valid path. Returning null.");
+            // System.out.println("Error: Not enough waypoints to create a valid path.
+            // Returning null.");
             return null;
         }
 
@@ -344,7 +348,8 @@ public class ToPos {
             }
         }
         if (waypoints.size() < 2) {
-            // System.out.println("Warning: Too few waypoints left after cleaning. Restoring at least two.");
+            // System.out.println("Warning: Too few waypoints left after cleaning. Restoring
+            // at least two.");
             waypoints.clear();
             waypoints.add(new Waypoint(initialTranslation, initialTranslation, initialTranslation));
             waypoints.add(new Waypoint(finalTranslation, finalTranslation, finalTranslation));
@@ -410,24 +415,27 @@ public class ToPos {
             waypoints.remove(waypoints.size() - 2);
         }
     }
+
     /**
-     *  sets a setpoint closest to the reef 
-     * @param Is lefet  
-     *  
+     * sets a setpoint closest to the reef
+     * 
+     * @param Is lefet
+     * 
      */
 
-    public static void setSetpointByClosestReefBranch(boolean isLeftBranch)
-    {
+    public static void setSetpointByClosestReefBranch(boolean isLeftBranch) {
         int branchIndex = 1;
         if (isLeftBranch) {
             branchIndex = 0;
         }
+        int shouldOffsetForL1 = 0; //boolean naming convention for an integer (SEVERE TROLLING :imp:)
         Pose2d closestSide = Robot.swerve.getPose().nearest(ToPosConstants.Setpoints.reefSides);
-        for(Pose2d side : ToPosConstants.Setpoints.driveRelativeBranches.keySet())
-        {
-            if(closestSide.equals(side))
-            {
-                Robot.swerve.setPPSetpointIndex(ToPosConstants.Setpoints.driveRelativeBranches.get(side)[branchIndex]);
+        if (JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L1) {
+           shouldOffsetForL1=1;
+        }
+        for (Pose2d side : ToPosConstants.Setpoints.driveRelativeBranches.keySet()) {
+            if (closestSide.equals(side)) {
+                Robot.swerve.setPPSetpointIndex(ToPosConstants.Setpoints.driveRelativeBranches.get(side)[branchIndex]+shouldOffsetForL1);
                 break;
             }
         }

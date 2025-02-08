@@ -11,7 +11,6 @@ import frc.robot.Robot;
 import frc.robot.buttons.ButtonBoard.ScoringLocation;
 import frc.robot.commands.arm.SetClimbArmState;
 import frc.robot.commands.elevator.SetElevatorState;
-import frc.robot.commands.example.ExampleSubsystemCommand;
 import frc.robot.commands.integration.CoralIntakeSource;
 import frc.robot.commands.integration.Handoff;
 import frc.robot.commands.integration.IntakeFloor;
@@ -169,8 +168,7 @@ public class JoystickIO {
             Robot.swerve.showSetpointEndGoal();
         }));
 
-
-
+        new Trigger(() -> Robot.swerve.getIsOTF()).whileTrue(onTheFly);
         bindButtonBoard();
         ToPosTriggers.createOTFTriggers();
 
@@ -201,7 +199,7 @@ public class JoystickIO {
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
 
         // Example binding
-        pilot.a().whileTrue(new ExampleSubsystemCommand());
+        // pilot.a().whileTrue(new ExampleSubsystemCommand());
     }
 
     public static void simBindings() {

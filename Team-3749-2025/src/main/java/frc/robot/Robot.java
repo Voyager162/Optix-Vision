@@ -23,7 +23,6 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.arm.algae.AlgaeArm;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
-import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.subsystems.roller.implementations.AlgaeRoller;
 import frc.robot.subsystems.roller.implementations.CoralRoller;
 import frc.robot.subsystems.roller.implementations.ChuteRoller;
@@ -40,7 +39,6 @@ public class Robot extends TimedRobot {
   public static CoralRoller coralRoller = new CoralRoller();
   public static ChuteRoller chuteRoller = new ChuteRoller();
 
-  public static ExampleSubsystem subsystem = new ExampleSubsystem();
   public static Elevator elevator = new Elevator();
 
   public static AlgaeArm algaeArm = new AlgaeArm();
