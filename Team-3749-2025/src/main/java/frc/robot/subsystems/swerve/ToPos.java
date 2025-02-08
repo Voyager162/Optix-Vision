@@ -36,26 +36,32 @@ public class ToPos {
      */
     public PathPlannerPath generateDynamicPath(Pose2d initialPose, Pose2d approachPoint, Pose2d finalPose,
             double maxVelocity, double maxAcceleration, double maxAngularVelocity, double maxAngularAcceleration) {
-        if (initialPose == null) {
-            throw new IllegalArgumentException("Initial pose cannot be null!");
+        if (initialPose == null || finalPose == null || approachPoint == null) {
+            throw new IllegalArgumentException("Pose arguments cannot be null!");
         }
+
         if (initialPose.equals(finalPose) || initialPose.equals(approachPoint) || approachPoint.equals(finalPose)) {
-        System.out.println("No movement required: Initial, approach, and final poses are the same.");
-        return null; // Return no path
-    }
+            System.out.println("No movement required: Initial, approach, and final poses are the same.");
+            return null; // Prevents unnecessary movement
+        }
 
         List<Waypoint> waypoints = new ArrayList<>();
 
         waypoints.add(
                 new Waypoint(initialPose.getTranslation(), initialPose.getTranslation(), initialPose.getTranslation()));
         waypoints.addAll(generateDetourWaypoints(initialPose.getTranslation(), approachPoint.getTranslation()));
-
         waypoints.add(
                 new Waypoint(approachPoint.getTranslation(), finalPose.getTranslation(), finalPose.getTranslation()));
 
         removeRedundantWaypoints(waypoints, initialPose, finalPose);
         removeExtraStartVertex(waypoints);
         removeExtraEndVertex(waypoints);
+
+        // 🚨 New Check: Ensure at least 2 waypoints before creating the path
+        if (waypoints.size() < 2) {
+            System.out.println("Error: Not enough waypoints to create a valid path. Returning null.");
+            return null;
+        }
 
         return new PathPlannerPath(waypoints,
                 new PathConstraints(maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration), null,
@@ -300,26 +306,26 @@ public class ToPos {
      * @param fianlPose  The list of waypoints to be cleaned.
      */
 
-     private void removeRedundantWaypoints(List<Waypoint> waypoints, Pose2d initialPose, Pose2d finalPose) {
+    private void removeRedundantWaypoints(List<Waypoint> waypoints, Pose2d initialPose, Pose2d finalPose) {
         Translation2d initialTranslation = initialPose.getTranslation();
         Translation2d finalTranslation = finalPose.getTranslation();
         double distance = initialTranslation.getDistance(finalTranslation);
         double headingInit = initialPose.getRotation().getDegrees();
         double headingFinal = finalPose.getRotation().getDegrees();
-    
+
         System.out.println("All values for removing waypoints:");
         System.out.println("Distance: " + distance);
         System.out.println("Heading Initial: " + headingInit);
         System.out.println("Heading Final: " + headingFinal);
-    
+
         // Fix floating-point precision issue in heading difference
         double headingDifference = Math.abs((headingFinal - headingInit) % 360);
         if (headingDifference > 180) {
             headingDifference = 360 - headingDifference;
         }
-    
+
         System.out.println("Computed Heading Difference: " + headingDifference);
-    
+
         // Check if the heading difference is within ±20 degrees
         if (distance < 1.0 && headingDifference <= 20) {
             System.out.println("called");
@@ -327,7 +333,7 @@ public class ToPos {
                 waypoints.subList(1, waypoints.size() - 1).clear();
             }
         }
-    
+
         double threshold = 0.05; // Minimum distance between waypoints (5 cm).
         for (int i = 1; i < waypoints.size(); i++) {
             Translation2d current = waypoints.get(i).anchor();
@@ -337,8 +343,13 @@ public class ToPos {
                 i--; // Adjust index after removal.
             }
         }
+        if (waypoints.size() < 2) {
+            System.out.println("Warning: Too few waypoints left after cleaning. Restoring at least two.");
+            waypoints.clear();
+            waypoints.add(new Waypoint(initialTranslation, initialTranslation, initialTranslation));
+            waypoints.add(new Waypoint(finalTranslation, finalTranslation, finalTranslation));
+        }
     }
-    
 
     /**
      * Removes overshooting wrong start hexagon vertex
@@ -399,12 +410,16 @@ public class ToPos {
             waypoints.remove(waypoints.size() - 2);
         }
     }
+    /**
+     *  sets a setpoint closest to the reef 
+     * @param Is lefet  
+     *  
+     */
 
-    public static void setSetpointByClosestReefBranch(boolean isLeftBranch) //i am SO good at naming things
+    public static void setSetpointByClosestReefBranch(boolean isLeftBranch) // i am SO good at naming things
     {
         int branchIndex = 1;
-        if(isLeftBranch)
-        {
+        if (isLeftBranch) {
             branchIndex = 0;
         }
         Pose2d closestSide = Robot.swerve.getPose().nearest(ToPosConstants.Setpoints.reefSides);
