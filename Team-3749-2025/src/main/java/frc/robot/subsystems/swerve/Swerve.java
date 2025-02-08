@@ -19,7 +19,6 @@ import frc.robot.commands.auto.AutoUtils;
 import frc.robot.subsystems.swerve.GyroIO.GyroData;
 import frc.robot.subsystems.swerve.SwerveConstants.ControlConstants;
 import frc.robot.subsystems.swerve.SwerveConstants.DrivetrainConstants;
-import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.real.*;
 import frc.robot.subsystems.swerve.sim.*;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -47,6 +46,7 @@ public class Swerve extends SubsystemBase {
   private GyroIO gyro;
   private GyroData gyroData = new GyroData();
 
+  // equivilant to a odometer, but also intakes vision
   private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
   private PIDController xController = new PIDController(AutoConstants.kPDrive, 0, AutoConstants.kDDrive);
@@ -55,7 +55,6 @@ public class Swerve extends SubsystemBase {
 
   private boolean utilizeVision = true;
 
-  // equivilant to a odometer, but also intakes vision
 
   // Logging
   private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
@@ -149,7 +148,7 @@ public class Swerve extends SubsystemBase {
     if (Robot.isSimulation()) {
       gyro = new GyroSim();
       for (int i = 0; i < 4; i++) {
-        modules[i] = new SwerveModule(i, new SwerveModuleSim(i));
+        modules[i] = new SwerveModule(i, new SwerveModuleSim());
       }
     }
     // if real

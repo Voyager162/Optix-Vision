@@ -4,12 +4,9 @@ import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
@@ -60,7 +57,6 @@ public class Elevator extends SubsystemBase {
     private ShuffleData<Double> accelerationMetersPerSecSquaredLog = new ShuffleData<Double>("Elevator", "acceleration",
             0.0);
 
-    private ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Elevator", "input volts", 0.0);
     private ShuffleData<Double> leftAppliedVoltsLog = new ShuffleData<Double>("Elevator", "left applied volts", 0.0);
     private ShuffleData<Double> rightAppliedVoltsLog = new ShuffleData<Double>("Elevator", "right applied volts", 0.0);
     private ShuffleData<Double> leftCurrentAmpsLog = new ShuffleData<Double>("Elevator", "left current amps", 0.0);
@@ -90,11 +86,6 @@ public class Elevator extends SubsystemBase {
     }
 
     public ElevatorStates getState() {
-
-        StructPublisher<Pose3d> elevatorInnerStage = NetworkTableInstance.getDefault()
-                .getStructTopic("Elevator Inner Stage", Pose3d.struct).publish();
-        StructPublisher<Pose3d> elevatorMiddleStage = NetworkTableInstance.getDefault()
-                .getStructTopic("Elevator Middle Stage", Pose3d.struct).publish();
         return state;
     }
 
@@ -106,7 +97,7 @@ public class Elevator extends SubsystemBase {
         return data.velocityMetersPerSecond;
     }
 
-    // returns true when the state is reached
+    /** returns true when the state is reached */
     public boolean getIsStableState() {
         switch (state) {
             case L1:
@@ -123,10 +114,10 @@ public class Elevator extends SubsystemBase {
                         ElevatorConstants.StateHeights.l4Height);
             case MAX:
                 return UtilityFunctions.withinMargin(0.01, data.positionMeters,
-                    ElevatorConstants.ElevatorSpecs.maxHeightMeters);
+                        ElevatorConstants.ElevatorSpecs.maxHeightMeters);
             case STOW:
                 return UtilityFunctions.withinMargin(0.01, data.positionMeters,
-                    ElevatorConstants.ElevatorSpecs.baseHeight);
+                        ElevatorConstants.ElevatorSpecs.baseHeight);
             default:
                 return false;
         }
@@ -190,7 +181,6 @@ public class Elevator extends SubsystemBase {
 
         elevatorio.setPosition(firstState.position, ffVoltage);
     }
-
 
     public void stop() {
         elevatorio.setVoltage(0);
