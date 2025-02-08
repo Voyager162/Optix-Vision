@@ -410,6 +410,11 @@ public class ToPos {
             waypoints.remove(waypoints.size() - 2);
         }
     }
+    /**
+     *  sets a setpoint closest to the reef 
+     * @param Is lefet  
+     *  
+     */
 
     public static void setSetpointByClosestReefBranch(boolean isLeftBranch) // i am SO good at naming things
     {
