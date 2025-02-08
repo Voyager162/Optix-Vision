@@ -1,8 +1,15 @@
 package frc.robot.subsystems.swerve;
 
-import java.util.*;
-import com.pathplanner.lib.path.*;
-import edu.wpi.first.math.geometry.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Robot;
 
 /**
@@ -32,6 +39,10 @@ public class ToPos {
         if (initialPose == null) {
             throw new IllegalArgumentException("Initial pose cannot be null!");
         }
+        if (initialPose.equals(finalPose) || initialPose.equals(approachPoint) || approachPoint.equals(finalPose)) {
+        System.out.println("No movement required: Initial, approach, and final poses are the same.");
+        return null; // Return no path
+    }
 
         List<Waypoint> waypoints = new ArrayList<>();
 

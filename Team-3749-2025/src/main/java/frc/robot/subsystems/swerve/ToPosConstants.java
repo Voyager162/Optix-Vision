@@ -77,19 +77,21 @@ public class ToPosConstants {
         }
 
         public static Pose2d reefTrig(Pose2d reefPose, TrigDirection direction) {
+            double distance = 0.4; 
+            double offsetArm = Units.inchesToMeters(6.75); // Fixed arm offset to the left
             double offsetMultiplier = 1;
             double angleOffset = 90; // 90 for perpindicular
             switch (direction) {
                 case LEFT:
                     offsetMultiplier = 1;
                     break;
-
+        
                 case RIGHT:
                     offsetMultiplier = -1;
                     break;
 
                 default:
-                    System.out.println("did not specify trig direction");
+                    System.out.println("Did not specify trig direction");
                     break;
             }
 
@@ -116,19 +118,10 @@ public class ToPosConstants {
 
             // Adjust coordinates to align the robot’s front edge with the target
             if (isCoralStation) {
-                // if(DriverStationSim.getAllianceStationId().equals(AllianceStationID.Red1))
-                // {
-                // return flipPose(new Pose2d(x + offsetX, y + offsetY, new
-                // Rotation2d(heading)));
-                // }
                 return new Pose2d(x + offsetX, y + offsetY, new Rotation2d(heading));
 
             }
-            // if(DriverStationSim.getAllianceStationId().equals(AllianceStationID.Red1))
-            // {
-            // return flipPose(new Pose2d(x - offsetX, y - offsetY, new
-            // Rotation2d(heading)));
-            // }
+           
             return new Pose2d(x - offsetX, y - offsetY, new Rotation2d(heading));
         };
 
