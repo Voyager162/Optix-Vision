@@ -66,23 +66,6 @@ public class Elevator extends SubsystemBase {
             ElevatorConstants.ElevatorControl.kV,
             ElevatorConstants.ElevatorControl.kA);
 
-    private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
-    private LoggedTunableNumber positionMetersLog = new LoggedTunableNumber("Elevator/position", 0.0);
-    private LoggedTunableNumber velocityMetersPerSecLog = new LoggedTunableNumber("Elevator/velocity", 0.0);
-    private LoggedTunableNumber accelerationMetersPerSecSquaredLog = new LoggedTunableNumber("Elevator/acceleration",
-            0.0);
-
-    private LoggedTunableNumber inputVoltsLog = new LoggedTunableNumber("Elevator/input volts", 0.0);
-    private LoggedTunableNumber leftAppliedVoltsLog = new LoggedTunableNumber("Elevator/left applied volts", 0.0);
-    private LoggedTunableNumber rightAppliedVoltsLog = new LoggedTunableNumber("Elevator/right applied volts", 0.0);
-    private LoggedTunableNumber leftCurrentAmpsLog = new LoggedTunableNumber("Elevator/left current amps", 0.0);
-    private LoggedTunableNumber rightCurrentAmpsLog = new LoggedTunableNumber("Elevator/right current amps", 0.0);
-    private LoggedTunableNumber leftTempCelciusLog = new LoggedTunableNumber("Elevator/left temp celcius", 0.0);
-    private LoggedTunableNumber rightTempCelciusLog = new LoggedTunableNumber("Elevator/right temp celcius", 0.0);
-
-    private LoggedTunableNumber setpointVelocityLog = new LoggedTunableNumber("Elevator/setpoint velocity", 0.0);
-    private LoggedTunableNumber setpointPositionLog = new LoggedTunableNumber("Elevator/setpoint position", 0.0);
-
     private LoggedTunableNumber kPData = new LoggedTunableNumber("Elevator/kP",
             ElevatorConstants.ElevatorControl.kP);
     private LoggedTunableNumber kDData = new LoggedTunableNumber("Elevator/kD",
@@ -245,16 +228,14 @@ public class Elevator extends SubsystemBase {
         Logger.recordOutput("subystems/elevator/velocity", data.velocityMetersPerSecond);
 
         Logger.recordOutput("subystems/elevator/acceleration", data.accelerationMetersPerSecondSquared);
-
-        leftAppliedVoltsLog.set(data.leftAppliedVolts);
-        rightAppliedVoltsLog.set(data.rightAppliedVolts);
-        leftCurrentAmpsLog.set(data.leftCurrentAmps);
-        rightCurrentAmpsLog.set(data.rightCurrentAmps);
-        leftTempCelciusLog.set(data.leftTempCelcius);
-        rightTempCelciusLog.set(data.rightTempCelcius);
-
-        setpointVelocityLog.set(profile.getSetpoint().velocity);
-        setpointPositionLog.set(profile.getSetpoint().position);
+    
+        Logger.recordOutput("subsystems/elevator/input volts", ((data.leftAppliedVolts + data.rightAppliedVolts) / 2.0));
+        Logger.recordOutput("subsystems/elevator/input volts", data.leftAppliedVolts);
+        Logger.recordOutput("subsystems/elevator/input volts", data.rightAppliedVolts);
+        Logger.recordOutput("subsystems/elevator/input volts", data.leftCurrentAmps);
+        Logger.recordOutput("subsystems/elevator/input volts", data.rightCurrentAmps);
+        Logger.recordOutput("subsystems/elevator/input volts", data.leftTempCelcius);
+        Logger.recordOutput("subsystems/elevator/input volts", data.rightTempCelcius);
 
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
         SmartDashboard.putData("elevator mechanism", mech);
@@ -274,6 +255,10 @@ public class Elevator extends SubsystemBase {
                 getTransform3d(elevatorInnerStagePos).getRotation()));
         elevatorMiddleStage.set(new Pose3d(getTransform3d(elevatorMiddleStagePos).getTranslation(),
                 getTransform3d(elevatorMiddleStagePos).getRotation()));
+
+        profile = new ProfiledPIDController(kPData.get(), kIData.get(), kDData.get(),
+                new TrapezoidProfile.Constraints(maxVData.get(), maxAData.get()));
+        feedforward = new ElevatorFeedforward(kSData.get(), kGData.get(), kVData.get(), kAData.get());
     }
 
     private Transform3d getTransform3d(double pos) {

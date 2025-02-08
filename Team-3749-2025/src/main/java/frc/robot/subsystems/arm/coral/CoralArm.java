@@ -144,7 +144,13 @@ public class CoralArm extends SubsystemBase {
                 return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
                         CoralArmConstants.coralPickUpSetPoint_rad, data.positionUnits);
             case STOPPED:
-                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError, 0, data.velocityUnits); // Ensure velocity is near zero when stopped.
+                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError, 0, data.velocityUnits); // Ensure
+                                                                                                                   // velocity
+                                                                                                                   // is
+                                                                                                                   // near
+                                                                                                                   // zero
+                                                                                                                   // when
+                                                                                                                   // stopped.
             default:
                 return false; // Return false if the state is unrecognized.
         }
@@ -266,7 +272,7 @@ public class CoralArm extends SubsystemBase {
      */
     private void logData() {
         // Log various arm parameters to Shuffleboard
-        Logger.recordOutput("subsystems/arms/coralArm/Current Command", 
+        Logger.recordOutput("subsystems/arms/coralArm/Current Command",
                 this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
         Logger.recordOutput("subsystems/arms/coralArm/position", data.positionUnits);
         Logger.recordOutput("subsystems/arms/coralArm/velocity", data.velocityUnits);
@@ -293,9 +299,14 @@ public class CoralArm extends SubsystemBase {
         CoralArmConstants.kA = kA.get();
         CoralArmConstants.maxVelocity = maxVelocity.get();
         CoralArmConstants.maxAcceleration = maxAcceleration.get();
+
+        profile = new ProfiledPIDController(CoralArmConstants.kP, CoralArmConstants.kI, CoralArmConstants.kD,
+                new TrapezoidProfile.Constraints(CoralArmConstants.maxVelocity, CoralArmConstants.maxAcceleration));
+        feedforward = new ArmFeedforward(CoralArmConstants.kS, CoralArmConstants.kG, CoralArmConstants.kV,
+                CoralArmConstants.kA);
     }
 
-/** Periodic method for updating arm behavior. */
+    /** Periodic method for updating arm behavior. */
     @Override
     public void periodic() {
 

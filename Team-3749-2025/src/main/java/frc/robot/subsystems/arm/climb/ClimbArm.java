@@ -282,6 +282,10 @@ public class ClimbArm extends SubsystemBase {
 		ClimbArmConstants.maxVelocity = maxVelocity.get();
 		ClimbArmConstants.maxAcceleration = maxAcceleration.get();
         publisher.set(getPose3d());
+
+		profile = new ProfiledPIDController(ClimbArmConstants.kP, ClimbArmConstants.kI, ClimbArmConstants.kD,
+				new TrapezoidProfile.Constraints(ClimbArmConstants.maxVelocity, ClimbArmConstants.maxAcceleration));
+		feedforward = new ArmFeedforward(ClimbArmConstants.kS, ClimbArmConstants.kG, ClimbArmConstants.kV);
 	}
 
 	/**
