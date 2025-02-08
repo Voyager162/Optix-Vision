@@ -31,9 +31,9 @@ import frc.robot.Robot;
 import frc.robot.commands.auto.AutoConstants;
 import frc.robot.commands.auto.AutoUtils;
 import frc.robot.subsystems.swerve.GyroIO.GyroData;
-import frc.robot.subsystems.swerve.real.PigeonGyro;
 import frc.robot.subsystems.swerve.sim.GyroSim;
 import frc.robot.subsystems.swerve.sim.SwerveModuleSim;
+import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.MotorData;
 import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
@@ -90,6 +90,17 @@ public class Swerve extends SubsystemBase {
       Volts.of(12), // Max voltage
       Seconds.of(10) // Test duration
   );
+
+
+  private LoggedTunableNumber kPDriving = new LoggedTunableNumber("swerve/kP Drive", AutoConstants.kPDrive);
+  private LoggedTunableNumber kDDriving = new LoggedTunableNumber("swerve/kD Drive", AutoConstants.kDDrive);
+  private LoggedTunableNumber kPTurn = new LoggedTunableNumber("swerve/kP Turn controller", AutoConstants.kPTurn);
+  private LoggedTunableNumber kDTurn = new LoggedTunableNumber("swerve/kD Turn controller", AutoConstants.kDTurn);
+  private LoggedTunableNumber kVDriving = new LoggedTunableNumber("swerve/kvDrive", SwerveConstants.ControlConstants.kVDriving);
+  private LoggedTunableNumber kSDriving = new LoggedTunableNumber("swerve/kvDrive", SwerveConstants.ControlConstants.kSDriving);
+  private LoggedTunableNumber kADriving = new LoggedTunableNumber("swerve/kvDrive", SwerveConstants.ControlConstants.kADriving);
+  private LoggedTunableNumber maxVelocity = new LoggedTunableNumber("swerve/maxVelocity", SwerveConstants.ControlConstants.maxSpeedMetersPerSecond);
+  private LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("swerve/maxAcceleration", SwerveConstants.ControlConstants.maxAccelerationMetersPerSecondSquared);
 
   public Swerve() {
 
@@ -536,6 +547,16 @@ public class Swerve extends SubsystemBase {
     Logger.recordOutput("/subsystems/swerve/gyro rotation", robotVelocity);
     String currentCommand = this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName();
     Logger.recordOutput("/subsystems/swerve/gyro rotation", currentCommand);
+
+    AutoConstants.kPDrive = kPDriving.get();
+    AutoConstants.kDDrive = kDDriving.get();
+    AutoConstants.kPTurn = kPTurn.get();
+    AutoConstants.kDTurn = kDTurn.get();
+    SwerveConstants.ControlConstants.kVDriving = kVDriving.get();
+    SwerveConstants.ControlConstants.kSDriving = kSDriving.get();
+    SwerveConstants.ControlConstants.kADriving = kADriving.get();
+    SwerveConstants.ControlConstants.maxSpeedMetersPerSecond = maxVelocity.get();
+    SwerveConstants.ControlConstants.maxAccelerationMetersPerSecondSquared = maxAcceleration.get();
   }
 
   @Override

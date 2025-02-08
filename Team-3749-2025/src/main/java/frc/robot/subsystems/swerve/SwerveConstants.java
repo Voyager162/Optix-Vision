@@ -29,12 +29,12 @@ public class SwerveConstants {
 
                 // our FF values
 
-                public static final double kSDriving = 0.26;
-                public static final double kVDriving = 2.765;
-                public static final double kADriving = 0.0;
+                public static double kSDriving = 0.26;
+                public static double kVDriving = 2.765;
+                public static double kADriving = 0.0;
 
-                public static final double maxSpeedMetersPerSecond = 4.3;
-                public static final double maxAccelerationMetersPerSecondSquared = 3.3;
+                public static double maxSpeedMetersPerSecond = 4.3;
+                public static double maxAccelerationMetersPerSecondSquared = 3.3;
 
                 // teleop speed
                 public static final double teleopMaxSpeedReduction = 0; // If we can drive a little faster in telop
