@@ -30,7 +30,6 @@ import frc.robot.commands.auto.AutoUtils;
 import frc.robot.subsystems.swerve.GyroIO.GyroData;
 import frc.robot.subsystems.swerve.SwerveConstants.DriveConstants;
 import frc.robot.subsystems.swerve.real.PigeonGyro;
-import frc.robot.subsystems.swerve.real.SwerveModuleSparkMax;
 import frc.robot.subsystems.swerve.sim.GyroSim;
 import frc.robot.subsystems.swerve.sim.SwerveModuleSim;
 import frc.robot.utils.LoggedTunableNumber;
