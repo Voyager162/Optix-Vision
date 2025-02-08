@@ -92,9 +92,9 @@ public class JoystickIO {
         // operator.a().whileTrue(Robot.swerve.getRotationalSysIdTuner().runTests());
         // operator.b().whileTrue(Robot.swerve.getDriveSysIdTuner().runTests());
 
-        operator.a().whileTrue(Robot.algaeRoller.getSysIdTuner().runTests());
-        operator.b().whileTrue(Robot.coralRoller.getSysIdTuner().runTests());
-        operator.x().whileTrue(Robot.scoringRoller.getSysIdTuner().runTests());
+        // operator.a().whileTrue(Robot.algaeRoller.getSysIdTuner().runTests());
+        // operator.b().whileTrue(Robot.coralRoller.getSysIdTuner().runTests());
+        // operator.x().whileTrue(Robot.scoringRoller.getSysIdTuner().runTests());
 
         // operator.a().onTrue(l1);
         // operator.b().onTrue(l2);
