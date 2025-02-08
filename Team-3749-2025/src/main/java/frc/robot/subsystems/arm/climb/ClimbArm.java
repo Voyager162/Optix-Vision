@@ -315,5 +315,10 @@ public class ClimbArm extends SubsystemBase {
 		runState();
 
 		logData();
+
+		motorData.get("arm_motor").position = data.positionUnits;
+		motorData.get("arm_motor").acceleration = data.accelerationUnits;
+		motorData.get("arm_motor").velocity = data.velocityUnits;
+		motorData.get("arm_motor").appliedVolts = data.appliedVolts;
 	}
 }

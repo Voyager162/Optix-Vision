@@ -43,52 +43,48 @@ import static edu.wpi.first.units.Units.*;
  */
 public class CoralArm extends SubsystemBase {
 
+    private CoralArmIO armIO;
+    private ArmData data = new ArmData();
+    private CoralArmConstants.ArmStates state = CoralArmConstants.ArmStates.STOPPED;
 
+    private ShuffleData<String> currentCommandLog = new ShuffleData<>(this.getName(), "current command", "None");
+    private LoggedTunableNumber positionUnitsLog = new LoggedTunableNumber(this.getName() + "/position units", 0.0);
+    private LoggedTunableNumber velocityUnitsLog = new LoggedTunableNumber(this.getName() + "/velocity units", 0.0);
+    private LoggedTunableNumber inputVoltsLog = new LoggedTunableNumber(this.getName() + "/input volts", 0.0);
+    private LoggedTunableNumber motorAppliedVoltsLog = new LoggedTunableNumber(this.getName() +
+            "/motor applied volts", 0.0);
+    private LoggedTunableNumber motorCurrentAmpsLog = new LoggedTunableNumber(this.getName() +
+            "/motor current amps", 0.0);
+    private LoggedTunableNumber motorTempCelciusLog = new LoggedTunableNumber(this.getName() +
+            "/motor temp celcius", 0.0);
+    private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
-	private CoralArmIO armIO;
-	private ArmData data = new ArmData();
-	private CoralArmConstants.ArmStates state = CoralArmConstants.ArmStates.STOPPED;
+    private LoggedTunableNumber kG = new LoggedTunableNumber(this.getName() + "/kG", CoralArmConstants.kG);
+    private LoggedTunableNumber kP = new LoggedTunableNumber(this.getName() + "/kP", CoralArmConstants.kP);
+    private LoggedTunableNumber kI = new LoggedTunableNumber(this.getName() + "/kI", CoralArmConstants.kI);
+    private LoggedTunableNumber kD = new LoggedTunableNumber(this.getName() + "/kD", CoralArmConstants.kD);
+    private LoggedTunableNumber kS = new LoggedTunableNumber(this.getName() + "/kS", CoralArmConstants.kS);
+    private LoggedTunableNumber kV = new LoggedTunableNumber(this.getName() + "/kV", CoralArmConstants.kV);
+    private LoggedTunableNumber kA = new LoggedTunableNumber(this.getName() + "/kA", CoralArmConstants.kA);
+    private LoggedTunableNumber maxVelocity = new LoggedTunableNumber(this.getName() + "/max velocity",
+            CoralArmConstants.maxVelocity);
+    private LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(this.getName() + "/max acceleration",
+            CoralArmConstants.maxAcceleration);
 
-	private ShuffleData<String> currentCommandLog = new ShuffleData<>(this.getName(), "current command", "None");
-	private LoggedTunableNumber positionUnitsLog = new LoggedTunableNumber(this.getName() + "/position units", 0.0);
-	private LoggedTunableNumber velocityUnitsLog = new LoggedTunableNumber(this.getName() + "/velocity units", 0.0);
-	private LoggedTunableNumber inputVoltsLog = new LoggedTunableNumber(this.getName() + "/input volts", 0.0);
-	private LoggedTunableNumber motorAppliedVoltsLog = new LoggedTunableNumber(this.getName() +
-			"/motor applied volts", 0.0);
-	private LoggedTunableNumber motorCurrentAmpsLog = new LoggedTunableNumber(this.getName() +
-			"/motor current amps", 0.0);
-	private LoggedTunableNumber motorTempCelciusLog = new LoggedTunableNumber(this.getName() +
-			"/motor temp celcius", 0.0);
-	private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
+    private SysIdTuner sysIdTuner;
 
+    Map<String, MotorData> motorData = Map.of(
+            "arm_motor", new MotorData(
+                    data.appliedVolts,
+                    data.positionUnits,
+                    data.velocityUnits,
+                    data.accelerationUnits));
 
-	private LoggedTunableNumber kG = new LoggedTunableNumber(this.getName() + "/kG", CoralArmConstants.kG);
-	private LoggedTunableNumber kP = new LoggedTunableNumber(this.getName() + "/kP", CoralArmConstants.kP);
-	private LoggedTunableNumber kI = new LoggedTunableNumber(this.getName() + "/kI", CoralArmConstants.kI);
-	private LoggedTunableNumber kD = new LoggedTunableNumber(this.getName() + "/kD", CoralArmConstants.kD);
-	private LoggedTunableNumber kS = new LoggedTunableNumber(this.getName() + "/kS", CoralArmConstants.kS);
-	private LoggedTunableNumber kV = new LoggedTunableNumber(this.getName() + "/kV", CoralArmConstants.kV);
-	private LoggedTunableNumber kA = new LoggedTunableNumber(this.getName() + "/kA", CoralArmConstants.kA);
-	private LoggedTunableNumber maxVelocity = new LoggedTunableNumber(this.getName() + "/max velocity",
-			CoralArmConstants.maxVelocity);
-	private LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(this.getName() + "/max acceleration",
-			CoralArmConstants.maxAcceleration);
-
-	private SysIdTuner sysIdTuner;
-
-	Map<String, MotorData> motorData = Map.of(
-			"arm_motor", new MotorData(
-					data.appliedVolts,
-					data.positionUnits,
-					data.velocityUnits,
-					data.accelerationUnits));
-
-	SysIdRoutine.Config config = new SysIdRoutine.Config(
-			Volts.per(Seconds).of(1), // Voltage ramp rate
-			Volts.of(4), // Max voltage
-			Seconds.of(4) // Test duration
-	);
-
+    SysIdRoutine.Config config = new SysIdRoutine.Config(
+            Volts.per(Seconds).of(1), // Voltage ramp rate
+            Volts.of(4), // Max voltage
+            Seconds.of(4) // Test duration
+    );
 
     // Profiled PID Controller used only for the motion profile, PID within
     // implementation classes
@@ -104,7 +100,6 @@ public class CoralArm extends SubsystemBase {
             CoralArmConstants.kG,
             CoralArmConstants.kV,
             CoralArmConstants.kA);
-
 
     private Mechanism2d mechanism2d = new Mechanism2d(3, 3);
     private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 1.8, .4);
@@ -308,51 +303,30 @@ public class CoralArm extends SubsystemBase {
 
         publisher.set(getPose3d());
 
-
-
-
-    CoralArmConstants.kG = kG.get();
-    CoralArmConstants.kP = kP.get();
-    CoralArmConstants.kI = kI.get();
-    CoralArmConstants.kD = kD.get();
-    CoralArmConstants.kS = kS.get();
-    CoralArmConstants.kV = kV.get();
-    CoralArmConstants.kA = kA.get();
-    CoralArmConstants.maxVelocity = maxVelocity.get();
-    CoralArmConstants.maxAcceleration = maxAcceleration.get();
-}
-
-/** Periodic method for updating arm behavior. */
-@Override
-public void periodic() {
-
-    armIO.updateData(data);
-
-    runState();
-
-    logData();
-
-    getMotorData().get("arm_motor").position = data.positionUnits;
-    getMotorData().get("arm_motor").acceleration = data.accelerationUnits;
-    getMotorData().get("arm_motor").velocity = data.velocityUnits;
-    getMotorData().get("arm_motor").appliedVolts = data.appliedVolts;
-
-
-
+        CoralArmConstants.kG = kG.get();
+        CoralArmConstants.kP = kP.get();
+        CoralArmConstants.kI = kI.get();
+        CoralArmConstants.kD = kD.get();
+        CoralArmConstants.kS = kS.get();
+        CoralArmConstants.kV = kV.get();
+        CoralArmConstants.kA = kA.get();
+        CoralArmConstants.maxVelocity = maxVelocity.get();
+        CoralArmConstants.maxAcceleration = maxAcceleration.get();
     }
 
-    /**
-     * Periodic method called every loop to update the arm's behavior and log data.
-     */
+/** Periodic method for updating arm behavior. */
     @Override
     public void periodic() {
-        // Update the arm's data from the I/O interface
+
         armIO.updateData(data);
 
-        // Run the state logic based on the current arm state
         runState();
 
-        // Log the arm's data to Shuffleboard
         logData();
+
+        motorData.get("arm_motor").position = data.positionUnits;
+        motorData.get("arm_motor").acceleration = data.accelerationUnits;
+        motorData.get("arm_motor").velocity = data.velocityUnits;
+        motorData.get("arm_motor").appliedVolts = data.appliedVolts;
     }
 }
