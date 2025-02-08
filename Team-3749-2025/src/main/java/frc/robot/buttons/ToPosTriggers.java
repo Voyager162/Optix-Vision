@@ -55,15 +55,20 @@ public class ToPosTriggers {
     Robot.swerve.getPPSetpoint() == PPSetpoints.REEFCLOSELEFT || 
     Robot.swerve.getPPSetpoint() == PPSetpoints.REEFCLOSERIGHT;
 
+    //all of these suppliers are js, if these conditions are true basically
+
 
 
         private static boolean OTFWithinMargin() {
             return UtilityFunctions.withinMargin(ToPosConstants.Setpoints.approachPointDistance,
                     Robot.swerve.getPose().getTranslation(),
-                    Robot.swerve.getPPSetpoint().setpoint.getTranslation());
+                    Robot.swerve.getPPSetpoint().setpoint.getTranslation()); //if our bot is within a certain distance to the setpoint
         }
     
         public static void createOTFTriggers() {
+
+            //Trigger trigger(boolean condition)
+            //trigger.onTrue(command) (the condition is met, usually being within a certain distance to the selected point)
     
             Trigger coralStation = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
                 Boolean withinMargin = OTFWithinMargin();
@@ -78,7 +83,7 @@ public class ToPosTriggers {
             return withinMargin && isCoralReef && isL1;
         });
         coralReefL1.onTrue(new SetElevatorState(ElevatorStates.L1)); 
-        //insert roller code here i dont want to 
+        
 
         Trigger coralReefL2 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
             Boolean withinMargin = OTFWithinMargin();
