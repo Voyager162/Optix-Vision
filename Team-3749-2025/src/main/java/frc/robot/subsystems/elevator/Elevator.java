@@ -44,7 +44,7 @@ import static edu.wpi.first.units.Units.*;
  * @author Dhyan Soni
  * @author Andrew Ge
  */
-
+@SuppressWarnings("unused")
 public class Elevator extends SubsystemBase {
     private ElevatorIO elevatorio;
     private ElevatorData data = new ElevatorData();
