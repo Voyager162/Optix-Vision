@@ -34,6 +34,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return Autos.getSelectedCommand();
+    return Autos.getPrint();
   }
 }

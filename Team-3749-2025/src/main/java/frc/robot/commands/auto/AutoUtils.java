@@ -111,7 +111,6 @@ public class AutoUtils {
                 factory.resetOdometry(trajectoryName).andThen(
                         trajectoryCommand));
 
-        System.out.println(trajectory.getInitialPose().get());
         return Commands.print(trajectoryName).andThen(routine.cmd());
 
     }
