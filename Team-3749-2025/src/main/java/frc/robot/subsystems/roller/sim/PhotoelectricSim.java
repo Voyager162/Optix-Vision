@@ -40,70 +40,90 @@ public class PhotoelectricSim implements PhotoelectricIO {
     @Override
     public void updateData(PhotoelectricData data) {
         if (Robot.scoringRoller.getCurrentCommand() != null) {
-            if (scoreTimer == 999999999) { // Initialize timer only once per command
-                scoreTimer = -1;
-                System.out.println("please print");
-            }
-            
-            if (scoreTimer < 0) {  // Initialize timer only once per command
-                scoreTimer = Timer.getFPGATimestamp();
-            }
-
             switch(Robot.scoringRoller.getCurrentCommand().getName()) {
                 case "ScoreL234": 
-                if (Timer.getFPGATimestamp() - scoreTimer > 2) {
-                    sensing = false;
-                    if (scoreTimer != -1) {
-                        scoreTimer = 999999999;
-                    } 
-                }
+                    if (scoreTimer == 1000000000) {
+                        scoreTimer = -1;
+                    }
+
+                    if (scoreTimer < 0) {  
+                        scoreTimer = Timer.getFPGATimestamp();
+                    }
+
+                    if (Timer.getFPGATimestamp() - scoreTimer > 2) {
+                        sensing = false;
+                        scoreTimer = 1000000000;
+                    }
                 break;
                 case "IntakeSource": 
-                if (Timer.getFPGATimestamp() - scoreTimer > 2) {
-                    sensing = true;
-                    if (scoreTimer != -1) {
-                        scoreTimer = 999999999;
-                    } 
-                }
+                    if (scoreTimer == 1000000000) {
+                        scoreTimer = -1;
+                    }
+
+                    if (scoreTimer < 0) {  
+                        scoreTimer = Timer.getFPGATimestamp();
+                    }
+
+                    if (Timer.getFPGATimestamp() - scoreTimer > 2) {
+                        sensing = true;
+                        if (scoreTimer != -1) {
+                            scoreTimer = 1000000000;
+                        } 
+                    }
                 break;
             }
         }
         
         if (Robot.coralRoller.getCurrentCommand() != null) {
-            if (scoreTimer == 999999999) { // Initialize timer only once per command
-                scoreTimer = -1;
-            }
-            
-            if (scoreTimer < 0) {  // Initialize timer only once per command
-                scoreTimer = Timer.getFPGATimestamp();
-            }
-
             switch(Robot.coralRoller.getCurrentCommand().getName()) {
                 case "CoralIntakeSource": 
+                    if (scoreTimer == 1000000000) {
+                        scoreTimer = -1;
+                    }
+                    
+                    if (scoreTimer < 0) {  
+                        scoreTimer = Timer.getFPGATimestamp();
+                    }
+
                     if (Timer.getFPGATimestamp() - scoreTimer > 2) {
                         sensing = true;
                         if (scoreTimer != -1) {
-                            scoreTimer = 999999999;
+                            scoreTimer = 1000000000;
                         } 
                     }
                 break;
                 case "ScoreL1": 
+                    if (scoreTimer == 1000000000) {
+                        scoreTimer = -1;
+                    }
+                    
+                    if (scoreTimer < 0) {  
+                        scoreTimer = Timer.getFPGATimestamp();
+                    }
+
                     if (Timer.getFPGATimestamp() - scoreTimer > 2) {
                         sensing = false;
                         if (scoreTimer != -1) {
-                            scoreTimer = 999999999;
+                            scoreTimer = 1000000000;
                         } 
                     }
                 break;
                 case "IntakeFloor": 
+                    if (scoreTimer == 1000000000) {
+                        scoreTimer = -1;
+                    }
+                    
+                    if (scoreTimer < 0) {  
+                        scoreTimer = Timer.getFPGATimestamp();
+                    }
+
                     if (Timer.getFPGATimestamp() - scoreTimer > 2) {
                         sensing = true;
                         if (scoreTimer != -1) {
-                            scoreTimer = 999999999;
+                            scoreTimer = 1000000000;
                         } 
                     }
                 break;
-                
             }
         }
 
