@@ -211,6 +211,10 @@ public class CoralArm extends SubsystemBase {
         }
     }
 
+    public SysIdTuner getSysIdTuner() {
+        return sysIdTuner;
+    }
+
     private Angle getPitch() {
         return Angle.ofBaseUnits(data.positionUnits + Units.degreesToRadians(-55), Radians); // remove offset once coral
                                                                                              // arm code is fixed

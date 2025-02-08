@@ -41,7 +41,9 @@ public class CoralArmConstants {
 	public static double maxAcceleration = 4;
 
 	public static final double momentOfInertia = 0.775; // from last years MOI
+
 	public static final boolean simulateGravity = true;
+	public static final double stateMarginOfError = 0.01;
 
 	public enum ArmStates {
 		CORAL_PICKUP,

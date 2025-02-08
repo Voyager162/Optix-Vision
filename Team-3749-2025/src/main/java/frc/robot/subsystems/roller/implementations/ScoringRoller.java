@@ -1,6 +1,5 @@
 package frc.robot.subsystems.roller.implementations;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
@@ -14,12 +13,15 @@ public class ScoringRoller extends Roller {
     public ScoringRoller() {
         super(Implementations.SCORING, FF());
         this.rollerData = new RollerData();
-        kp = new LoggedTunableNumber(getName() + "/kP", RollerConstants.Scoring.kPVelocity);
-        ki = new LoggedTunableNumber(getName() + "/kI", RollerConstants.Scoring.kIVelocity);
-        kd = new LoggedTunableNumber(getName() + "/kD", RollerConstants.Scoring.kDVelocity);
+
+        ks = new LoggedTunableNumber(getName() + "/kS", RollerConstants.Scoring.kSVelocity);
         kv = new LoggedTunableNumber(getName() + "/kV", RollerConstants.Scoring.kVVelocity);
         ka = new LoggedTunableNumber(getName() + "/kA", RollerConstants.Scoring.kAVelocity);
-        ks = new LoggedTunableNumber(getName() + "/kS", RollerConstants.Scoring.kSVelocity);
+        
+        RollerConstants.Scoring.kSVelocity = ks.get();
+        RollerConstants.Scoring.kVVelocity = kv.get();
+        RollerConstants.Scoring.kAVelocity = ka.get();
+
         maxVelocity = new LoggedTunableNumber(getName() + "/maxVelocity", RollerConstants.Scoring.maxVelocity);
         maxAcceleration = new LoggedTunableNumber(getName() + "/maxAcceleration", RollerConstants.Scoring.maxAcceleration);
     }
@@ -27,7 +29,6 @@ public class ScoringRoller extends Roller {
     public static SimpleMotorFeedforward FF() {
         return new SimpleMotorFeedforward(RollerConstants.Scoring.kSVelocity, RollerConstants.Scoring.kVVelocity, RollerConstants.Scoring.kAVelocity);
     }
-
 
     @Override
     public void run() {

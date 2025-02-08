@@ -2,7 +2,6 @@ package frc.robot.subsystems.roller;
 
 import java.util.Map;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -32,9 +31,7 @@ public abstract class Roller extends SubsystemBase {
     private ShuffleData<String> stateLog;
     private LoggedTunableNumber rollerPositionLog;
     private LoggedTunableNumber rollerLastKnownPositionLog;
-    protected LoggedTunableNumber kp;
-    protected LoggedTunableNumber ki;
-    protected LoggedTunableNumber kd;
+
     protected LoggedTunableNumber kv;
     protected LoggedTunableNumber ka;
     protected LoggedTunableNumber ks;
