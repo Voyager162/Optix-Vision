@@ -1,6 +1,5 @@
 package frc.robot.subsystems.roller.implementations;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;

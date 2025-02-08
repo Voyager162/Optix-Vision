@@ -1,23 +1,8 @@
 package frc.robot.subsystems.roller.sim;
 
-import javax.sound.sampled.SourceDataLine;
-
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Robot;
-import frc.robot.commands.integration.CoralIntakeSource;
-import frc.robot.commands.integration.Handoff;
-import frc.robot.commands.integration.IntakeFloor;
-import frc.robot.commands.integration.IntakeSource;
-import frc.robot.commands.integration.KnockAlgae;
-import frc.robot.commands.integration.OuttakeCoral;
-import frc.robot.commands.integration.ScoreL1;
-import frc.robot.commands.integration.ScoreL234;
 import frc.robot.subsystems.roller.PhotoelectricIO;
-import frc.robot.subsystems.roller.implementations.ScoringRoller;
 
 public class PhotoelectricSim implements PhotoelectricIO { 
     private double scoreTimer = -1;

@@ -3,7 +3,6 @@ package frc.robot.subsystems.roller.implementations;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.commands.auto.Autos;
 import frc.robot.subsystems.roller.PhotoelectricIO;
@@ -13,7 +12,6 @@ import frc.robot.subsystems.roller.PhotoelectricIO.PhotoelectricData;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
 import frc.robot.subsystems.roller.RollerIO.RollerData;
 import frc.robot.subsystems.roller.real.JTVisiSight;
-// import frc.robot.subsystems.roller.sim.PhotoelectricSim;
 import frc.robot.subsystems.roller.sim.PhotoelectricSim;
 import frc.robot.utils.ShuffleData;
 
