@@ -62,7 +62,7 @@ public class SysIdTuner {
      * @param name      - name of the mechanism
      * @param config    - SysIdRoutine.Config object
      * @param subsystem - Subsystem you are characterizing
-     * @param io        - VoltageDriv
+     * @param io        - VoltageDrive
      */
     public SysIdTuner(String name, SysIdRoutine.Config config, Subsystem subsystem, VoltageDrive io,
             Map<String, MotorData> motorData) {
