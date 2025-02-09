@@ -5,18 +5,19 @@ import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
+
 /**
  * CoralIntakeSource command for intaking coral from source
  */
 public class CoralIntakeSource extends Command {
 
     public CoralIntakeSource() {
-        addRequirements(Robot.getAllSuperStructureSubsystems());
+        // ensures other commands do not infere while this is active
+        addRequirements(Robot.getAllSuperStructureSubsystems()); 
     }
 
     @Override
     public void initialize() {
-        // activeCoralIntakeSourceCommand = this;
         Robot.coralArm.setState(CoralArmConstants.ArmStates.SOURCE);
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.scoringRoller.setState(RollerStates.STOP);
@@ -29,13 +30,13 @@ public class CoralIntakeSource extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        System.out.println("end");
         Robot.coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
         Robot.coralRoller.setState(RollerStates.MAINTAIN);
     }
 
+    // command finishes when coralRoller has coral and command is being scheduled
     @Override
     public boolean isFinished() {
-        return Robot.coralRoller.hasPiece()&& this.isScheduled();
+        return Robot.coralRoller.hasPiece() && this.isScheduled();
     }
 }

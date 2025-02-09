@@ -12,10 +12,10 @@ import frc.robot.subsystems.arm.coral.CoralArmConstants;
  * 
  * @author Dhyan Soni
  */
-
 public class Handoff extends Command {
 
     public Handoff() {
+        // ensures other commands do not infere while this is active
         addRequirements(Robot.getAllSuperStructureSubsystems());
     }
 
@@ -42,6 +42,7 @@ public class Handoff extends Command {
         Robot.scoringRoller.setState(RollerStates.MAINTAIN);
     }
 
+    // command finishes when scoringRoller has coral and command is being scheduled
     @Override
     public boolean isFinished() {
         return Robot.scoringRoller.hasPiece() && this.isScheduled();

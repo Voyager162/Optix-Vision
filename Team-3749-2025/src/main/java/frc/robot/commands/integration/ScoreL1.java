@@ -6,14 +6,15 @@ import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
+
 /*
  * ScoreL1 command for scoring coral on L1 using coral arm
  */
 public class ScoreL1 extends Command {
 
     public ScoreL1() {
+        // ensures other commands do not infere while this is active
         addRequirements(Robot.getAllSuperStructureSubsystems());
-        
     }
 
     @Override
@@ -37,6 +38,7 @@ public class ScoreL1 extends Command {
         Robot.coralRoller.setState(RollerStates.STOP);
     }
 
+    // command finishes when coralRoller does not have coral and command is being scheduled
     @Override
     public boolean isFinished() {
         return !Robot.coralRoller.hasPiece() && this.isScheduled();

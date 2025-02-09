@@ -11,13 +11,14 @@ import frc.robot.subsystems.roller.RollerConstants;
 public class IntakeSource extends Command {
     
     public IntakeSource() {
+        // ensures other commands do not infere while this is active
         addRequirements(Robot.getAllSuperStructureSubsystems());
     }
 
     @Override
     public void initialize() {
         if (Robot.scoringRoller.hasPiece()) {
-            this.cancel();
+            this.cancel(); // cancels command if scoringRoller has coral initially
         }
         else {
             Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
@@ -36,6 +37,7 @@ public class IntakeSource extends Command {
         Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
     }
 
+    // command finishes when scoringRoller has coral and command is being scheduled
     @Override
     public boolean isFinished() {
         return Robot.scoringRoller.hasPiece() && this.isScheduled();

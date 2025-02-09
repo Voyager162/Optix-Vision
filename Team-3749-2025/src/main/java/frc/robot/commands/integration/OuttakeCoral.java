@@ -5,12 +5,14 @@ import frc.robot.Robot;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
+
 /*
  * OuttakeCoral command for shooting coral from coral arm
  */
 public class OuttakeCoral extends Command {
 
     public OuttakeCoral() {
+        // ensures other commands do not infere while this is active
         addRequirements(Robot.getAllSuperStructureSubsystems());
     }
 
@@ -34,6 +36,7 @@ public class OuttakeCoral extends Command {
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
     }
 
+    // command finishes when coralRoller does not have coral
     @Override
     public boolean isFinished() {
         return !Robot.coralRoller.hasPiece();
