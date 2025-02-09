@@ -29,6 +29,7 @@ public class LED extends SubsystemBase {
         LEDs.setLength(LEDBuffer.getLength());
         LEDs.setData(LEDBuffer);
         LEDs.start();
+        setBrightness(brightness);
         setLEDPattern(LEDPattern.WHITE);
     }
 
