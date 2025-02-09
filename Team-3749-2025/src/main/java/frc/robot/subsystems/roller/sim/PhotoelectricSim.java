@@ -4,12 +4,18 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Robot;
 import frc.robot.subsystems.roller.PhotoelectricIO;
 
+/**
+ * Simulation for Photoelectric sensor behavior in the roller subsystem
+ *
+ * @author Lilian Wu
+ */
 public class PhotoelectricSim implements PhotoelectricIO { 
     private double scoreTimer = -1;
     private boolean sensing;
-    // private boolean changedSensing;
+
     /**
-     * Should only be used for simulation implementation
+     * Sets sensing to an initial state before its updated. Based on hasPiece
+     * 
      * @param initialState 
      */
     @Override
@@ -18,7 +24,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
     }
 
     /**
-     * Updates the photoelectric data with the current state of the roller.
+     * Updates the photoelectric data with the current state of the roller
      * 
      * @param data the data to be updated
      */
@@ -37,7 +43,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
 
                     if (Timer.getFPGATimestamp() - scoreTimer > 2) {
                         sensing = false;
-                        scoreTimer = 1000000000;
+                        scoreTimer = 1000000000; // resets timer for next command
                     }
                 break;
                 case "IntakeSource": 
@@ -52,7 +58,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
                     if (Timer.getFPGATimestamp() - scoreTimer > 2) {
                         sensing = true;
                         if (scoreTimer != -1) {
-                            scoreTimer = 1000000000;
+                            scoreTimer = 1000000000; // resets timer for next command
                         } 
                     }
                 break;
@@ -73,7 +79,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
                     if (Timer.getFPGATimestamp() - scoreTimer > 2) {
                         sensing = true;
                         if (scoreTimer != -1) {
-                            scoreTimer = 1000000000;
+                            scoreTimer = 1000000000; // resets timer for next command
                         } 
                     }
                 break;
@@ -89,7 +95,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
                     if (Timer.getFPGATimestamp() - scoreTimer > 2) {
                         sensing = false;
                         if (scoreTimer != -1) {
-                            scoreTimer = 1000000000;
+                            scoreTimer = 1000000000; // resets timer for next command
                         } 
                     }
                 break;
@@ -105,7 +111,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
                     if (Timer.getFPGATimestamp() - scoreTimer > 2) {
                         sensing = true;
                         if (scoreTimer != -1) {
-                            scoreTimer = 1000000000;
+                            scoreTimer = 1000000000; // resets timer for next command
                         } 
                     }
                 break;
