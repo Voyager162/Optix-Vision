@@ -34,35 +34,34 @@ public class ToPosConstants {
         public static final double rotationTolerance = 10; // degrees
 
         // MAKE CONSTANTS
-        private static final double SAFE_MARGIN = .95; // Safety margin around the robot.
-        private static final double xComponenet = Math.cos(Math.toRadians(30));
-        private static final double yComponenet = Math.sin(Math.toRadians(30));
+        public static final double SAFE_MARGIN = .95; // Safety margin around the robot.
+        public static final double xComponent = Math.cos(Math.toRadians(30));
+        public static final double yComponent = Math.sin(Math.toRadians(30));
 
         private static Translation2d flipIfRed(Translation2d translation) {
-            // if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
-                // return new Translation2d(flipper.flipX(translation.getX()), flipper.flipY(translation.getY()));
-            // }
-            //i can't really do anything about this cause it will crash otherwise asi driverstation doesn't exist in context of sim
-            //uncomment this on the real bot though
+            if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+                return new Translation2d(flipper.flipX(translation.getX()), flipper.flipY(translation.getY()));
+            }
             return translation;
         }
+        
+        
         // Vertices of the hexagon, adjusted for safety margins.
 
-        public static List<Translation2d> HEXAGON_VERTICES = List.of(
-                flipIfRed(new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN)), // close
-                                                                                                                    // right
-                flipIfRed(new Translation2d(4.5, 3.039 - SAFE_MARGIN)), // middle right
-                flipIfRed(new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN)), // far
-                                                                                                                    // right
-                flipIfRed(new Translation2d(5.332 + xComponenet * SAFE_MARGIN, 4.480 + yComponenet * SAFE_MARGIN)), // far
-                                                                                                                    // left
-                flipIfRed(new Translation2d(4.5, 4.961 + SAFE_MARGIN)), // middle left
-                flipIfRed(new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 4.480 + yComponenet * SAFE_MARGIN)), // close
-                                                                                                                    // left
-                flipIfRed(new Translation2d(3.668 - xComponenet * SAFE_MARGIN, 3.520 - yComponenet * SAFE_MARGIN))); // close
-                                                                                                                     // right
-    }
-
+        public static List<Translation2d> getHexagonVertices() {
+         
+            return List.of(
+                flipIfRed(new Translation2d(3.668 - xComponent * SAFE_MARGIN, 3.520 - yComponent * SAFE_MARGIN)),
+                flipIfRed(new Translation2d(4.5, 3.039 - SAFE_MARGIN)),
+                flipIfRed(new Translation2d(5.332 + xComponent * SAFE_MARGIN, 3.520 - yComponent * SAFE_MARGIN)),
+                flipIfRed(new Translation2d(5.332 + xComponent * SAFE_MARGIN, 4.480 + yComponent * SAFE_MARGIN)),
+                flipIfRed(new Translation2d(4.5, 4.961 + SAFE_MARGIN)),
+                flipIfRed(new Translation2d(3.668 - xComponent * SAFE_MARGIN, 4.480 + yComponent * SAFE_MARGIN)),
+                flipIfRed(new Translation2d(3.668 - xComponent * SAFE_MARGIN, 3.520 - yComponent * SAFE_MARGIN))
+            );
+        }
+        }
+        
     public static final class PathPlannerConstants {
         public static final double maxVelocity = 0;
         public static final double maxAcceleration = 0;
@@ -312,27 +311,14 @@ public class ToPosConstants {
             private PPSetpoints(Pose2d setpoint, Pose2d approachPoint) {
                 this.setpoint = setpoint;
                 this.approachPoint = approachPoint;
-                // if (DriverStation.getAlliance().get().equals(Alliance.Red)) {
-                //     this.setpoint = flipPose(setpoint);
-                //     this.approachPoint = flipPose(approachPoint);
-                // } see line 42
-            }
+                if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+                    this.setpoint = flipPose(setpoint);
+                    this.approachPoint = flipPose(approachPoint);
+                }
 
         }
 
-        // public static final Pose2d a = new Pose2d(3.76, 3.49, new Rotation2d(0));
-        // public static final Pose2d b = new Pose2d(4.39, 4.93, new Rotation2d(0));
-        // public static final Pose2d c = new Pose2d( 5.22, 4.57, new Rotation2d(0));
-        // public static final Pose2d c = new Pose2d( 5.22, 4.57, new Rotation2d(0));
-        // public static final Pose2d d = new Pose2d(3.76, 3.49, new Rotation2d(0));
-        // public static final Pose2d e = new Pose2d(5.32, 3.67, new Rotation2d(0));
-        // public static final Pose2d f = new Pose2d(4.59, 3.13, new Rotation2d(0));
-        // these aren't reef letter id's just verticies of the hexagon
-
     }
 
-    public static final class Obstacles {
-
-    }
-
+}
 }

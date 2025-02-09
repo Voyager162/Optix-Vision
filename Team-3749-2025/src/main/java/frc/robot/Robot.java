@@ -76,7 +76,7 @@ public class Robot extends TimedRobot {
     FMSLog.set(DriverStation.isFMSAttached());
     // Publish hexagon points to NetworkTables
     List<Pose2d> hexagonPoses = new ArrayList<>();
-    for (Translation2d vertex : ToPosConstants.ReefVerticies.HEXAGON_VERTICES) {
+    for (Translation2d vertex : ToPosConstants.ReefVerticies.getHexagonVertices()) {
       hexagonPoses.add(new Pose2d(vertex, new Rotation2d()));
     }
 

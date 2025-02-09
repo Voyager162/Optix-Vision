@@ -40,11 +40,6 @@ public class JoystickIO {
     //private static final Command sample = new ExampleSubsystemCommand(); it was getting on my nerves seeing the warning
     private static final Command driveStraight = new DriveStraight();
     private static final Command onTheFly = new OnTheFly();
-    
-    // private static final SetElevatorState l1 = new SetElevatorState(ElevatorStates.L1);
-    // private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
-    // private static final SetElevatorState l3 = new SetElevatorState(ElevatorStates.L3);
-    // private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
 
     private final static GenericHID buttonBoardPlayer1 = new GenericHID(2);
     private final static GenericHID buttonBoardPlayer2 = new GenericHID(3);
