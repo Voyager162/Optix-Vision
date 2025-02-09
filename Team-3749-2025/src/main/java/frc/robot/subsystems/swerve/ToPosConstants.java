@@ -103,29 +103,31 @@ public class ToPosConstants {
             double angleOffset = 90; // 90 for perpindicular
             double distance = 6.5; // distance between branches, this variable as a whole is essentially the
                                    // "hypotenuse" of the total shift
-            double intialOffset = 6.25; //account for the distance from the arm
-            double intialAngleOffset = 90; //accounting for the first left and right shfit
+            double intialOffset = 6.25; // account for the distance from the arm
+            double intialAngleOffset = 90; // accounting for the first left and right shfit
             switch (direction) {
                 case LEFT:
-                    angleOffset=90;
+                    angleOffset = 90;
                     break;
 
                 case RIGHT:
-                    angleOffset=-90;
+                    angleOffset = -90;
                     break;
                 case BACKWARD:
                     distance = 3.5; // instead of moving 6.5 between pipes, move 3 inches away from the reef
-                    intialOffset=-6.5; //this takes in the l234 setpoint , so we can return to the center
-                    angleOffset =-90;
-                    intialAngleOffset=180;
+                    intialOffset = -6.5; // this takes in the l234 setpoint , so we can return to the center
+                    angleOffset = -90;
+                    intialAngleOffset = 180;
                     break;
             }
 
-                // Apply an initial 6.25-inch offset based on the robot's orientation
-            double xSetup = reefPose.getX() + Math.cos(Math.toRadians(reefPose.getRotation().getDegrees() + intialAngleOffset))
-                        * Units.inchesToMeters(intialOffset);
-            double ySetup = reefPose.getY() + Math.sin(Math.toRadians(reefPose.getRotation().getDegrees() + intialAngleOffset))
-                        * Units.inchesToMeters(intialOffset);
+            // Apply an initial 6.25-inch offset based on the robot's orientation
+            double xSetup = reefPose.getX()
+                    + Math.cos(Math.toRadians(reefPose.getRotation().getDegrees() + intialAngleOffset))
+                            * Units.inchesToMeters(intialOffset);
+            double ySetup = reefPose.getY()
+                    + Math.sin(Math.toRadians(reefPose.getRotation().getDegrees() + intialAngleOffset))
+                            * Units.inchesToMeters(intialOffset);
             // Adjust position based on movement direction (left, right, or backward)
             double newX = xSetup
                     + Math.cos(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset)))
@@ -348,16 +350,16 @@ public class ToPosConstants {
             // ======= Nearest Reef Side Setpoints =======
             // These are used to allow the robot to move toward the nearest reef side
             // based on driver input (e.g., moving left or right)
-            REEFCLOSE(rotatePose(reefClose, 90), createApproachPoint(reefClose)), // Move to center front reef
-            REEFCLOSELEFT(rotatePose(reefCloseLeft, 90), createApproachPoint(reefCloseLeft)), // Move to closest left
+            REEFCLOSE(rotatePose(reefClose, 180), createApproachPoint(reefClose)), // Move to center front reef
+            REEFCLOSELEFT(rotatePose(reefCloseLeft, 180), createApproachPoint(reefCloseLeft)), // Move to closest left
                                                                                               // reef
-            REEFCLOSERIGHT(rotatePose(reefCloseRight, 90), createApproachPoint(reefCloseRight)), // Move to closest
+            REEFCLOSERIGHT(rotatePose(reefCloseRight, 180), createApproachPoint(reefCloseRight)), // Move to closest
                                                                                                  // right reef
 
-            REEFFAR(rotatePose(reefFar, 90), createApproachPoint(reefFar)), // Move to center back reef
-            REEFFARLEFT(rotatePose(reefFarLeft, 90), createApproachPoint(reefFarLeft)), // Move to closest left back
+            REEFFAR(rotatePose(reefFar, 180), createApproachPoint(reefFar)), // Move to center back reef
+            REEFFARLEFT(rotatePose(reefFarLeft, 180), createApproachPoint(reefFarLeft)), // Move to closest left back
                                                                                         // reef
-            REEFFARRIGHT(rotatePose(reefFarRight, 90), createApproachPoint(reefFarRight)); // Move to closest right back
+            REEFFARRIGHT(rotatePose(reefFarRight, 180), createApproachPoint(reefFarRight)); // Move to closest right back
                                                                                            // reef
 
             // ======= Variables for Each Setpoint =======
