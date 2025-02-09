@@ -99,44 +99,40 @@ public class ToPosConstants {
          * @param direction translate the position left, right, or backward
          */
         public static Pose2d reefTrig(Pose2d reefPose, TrigDirection direction) {
-            double offsetMultiplier = 1; // 90*this value equal 土90 relative to og rotation
-
-            double isBackwardOffset = 1;// if we're going backward the dimensions of the right triangle are negative
-                                        // because it's backward
 
             double angleOffset = 90; // 90 for perpindicular
             double distance = 6.5; // distance between branches, this variable as a whole is essentially the
                                    // "hypotenuse" of the total shift
+            double intialOffset = 6.25; //account for the distance from the arm
+            double intialAngleOffset = 90; //accounting for the first left and right shfit
             switch (direction) {
                 case LEFT:
-                    offsetMultiplier = 1;
+                    angleOffset=90;
                     break;
 
                 case RIGHT:
-                    offsetMultiplier = -1;
+                    angleOffset=-90;
                     break;
                 case BACKWARD:
-                    distance = 3; // instead of moving 6.5 between pipes, move 3 inches away from the reef
-                    isBackwardOffset = -1;
+                    distance = 3.5; // instead of moving 6.5 between pipes, move 3 inches away from the reef
+                    intialOffset=-6.5; //this takes in the l234 setpoint , so we can return to the center
+                    angleOffset =-90;
+                    intialAngleOffset=180;
                     break;
             }
 
-            double xSetup = reefPose.getX();
-            double ySetup = reefPose.getY();
-            if (!direction.equals(TrigDirection.BACKWARD)) {
                 // Apply an initial 6.25-inch offset based on the robot's orientation
-                xSetup = reefPose.getX() + Math.cos(Math.toRadians(reefPose.getRotation().getDegrees() + 90))
-                        * Units.inchesToMeters(6.25);
-                ySetup = reefPose.getY() + Math.sin(Math.toRadians(reefPose.getRotation().getDegrees() + 90))
-                        * Units.inchesToMeters(6.25);
-            }
+            double xSetup = reefPose.getX() + Math.cos(Math.toRadians(reefPose.getRotation().getDegrees() + intialAngleOffset))
+                        * Units.inchesToMeters(intialOffset);
+            double ySetup = reefPose.getY() + Math.sin(Math.toRadians(reefPose.getRotation().getDegrees() + intialAngleOffset))
+                        * Units.inchesToMeters(intialOffset);
             // Adjust position based on movement direction (left, right, or backward)
             double newX = xSetup
-                    + Math.cos(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))
-                            * Units.inchesToMeters(distance) * isBackwardOffset;
+                    + Math.cos(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset)))
+                            * Units.inchesToMeters(distance);
             double newY = ySetup
-                    + Math.sin(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))
-                            * Units.inchesToMeters(distance) * isBackwardOffset;
+                    + Math.sin(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset)))
+                            * Units.inchesToMeters(distance);
 
             // Return the updated position with the same rotation
             return new Pose2d(newX, newY, reefPose.getRotation());
