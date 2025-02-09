@@ -1,5 +1,9 @@
 package frc.robot.subsystems.roller;
-
+/**
+ * IO for roller subsystem
+ * 
+ * @author Lilian Wu
+ */
 public interface RollerIO {
     public static class RollerData {
         public double rollerAppliedVolts = 0.0;

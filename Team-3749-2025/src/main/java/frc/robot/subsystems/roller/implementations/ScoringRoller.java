@@ -15,6 +15,11 @@ import frc.robot.subsystems.roller.real.JTVisiSight;
 import frc.robot.subsystems.roller.sim.PhotoelectricSim;
 import frc.robot.utils.ShuffleData;
 
+/**
+ * Scoring implementation of the roller subsystem
+ *
+ * @author Lilian Wu
+ */
 public class ScoringRoller extends Roller {
     private RollerData rollerData;
     private PhotoelectricData photoelectricData = new PhotoelectricData();
@@ -51,6 +56,9 @@ public class ScoringRoller extends Roller {
                 RollerConstants.Scoring.kDPosition);
     }
 
+    /**
+     * Implemetation of run method
+     */
     @Override
     public void run() {
         if (!rollerData.sensorTripped) {
@@ -60,6 +68,9 @@ public class ScoringRoller extends Roller {
         }
     }
 
+    /**
+     * Implemetation of score method
+     */
     @Override
     public void score() {
         setVelocity(RollerConstants.Scoring.scoreVelocity);
@@ -83,11 +94,14 @@ public class ScoringRoller extends Roller {
         hasPieceLog.set(hasPiece);
         setInitialStateLog.set(routineStarted);
 
+        // routineStarted is true when the routine begins in Autos 
         if (Autos.isRoutineStarted() && !routineStarted) { 
             routineStarted = true; 
-            photoelectricIO.setInitialState(true);
+            // sets initial state at the start of each routine
+            photoelectricIO.setInitialState(true); 
         }
         
+        // routineStarted is false when the routine ends in Autos 
         if (!Autos.isRoutineStarted() && routineStarted) {
             routineStarted = false;  
         }
@@ -96,7 +110,6 @@ public class ScoringRoller extends Roller {
             SmartDashboard.putString("scoring roller command", this.getCurrentCommand().getName());
         } else {
             SmartDashboard.putString("scoring roller command", "null");
-
         }
 
     }

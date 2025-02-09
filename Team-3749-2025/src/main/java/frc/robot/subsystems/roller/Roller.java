@@ -10,6 +10,11 @@ import frc.robot.Robot;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 
+/**
+ * Roller subsystem
+ *
+ * @author Lilian Wu
+ */
 public abstract class Roller extends SubsystemBase {
     private RollerIO rollerIO;
     private RollerData rollerData;
@@ -52,16 +57,16 @@ public abstract class Roller extends SubsystemBase {
     public void setVelocity(double velocityRadPerSec) {
         rollerIO.setVelocity(velocityRadPerSec, rollerFF.calculate(velocityRadPerSec));
     }
-    
-    // will add functionality later
-    public boolean isAlgaeRemoved() {
-        return false;
-    }
 
     public RollerStates getState() {
         return rollerState;
     }
 
+    /**
+     * Sets the roller state
+     * 
+     * Stores last position when the state is maintain
+     */
     public void setState(RollerStates rollerState) {
         this.rollerState = rollerState;
         if (rollerState == RollerConstants.RollerStates.MAINTAIN) {
@@ -88,10 +93,11 @@ public abstract class Roller extends SubsystemBase {
 
     public abstract void run();
 
+    /**
+     * Maintains the roller's last known position
+     */
     public void maintain() {
-
         rollerIO.setPosition(rollerData.rollerPositionRad, lastKnownPosition);
-
     }
 
     public void stop() {

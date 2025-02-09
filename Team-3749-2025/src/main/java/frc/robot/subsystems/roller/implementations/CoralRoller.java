@@ -14,6 +14,11 @@ import frc.robot.subsystems.roller.RollerIO.RollerData;
 import frc.robot.subsystems.roller.sim.PhotoelectricSim;
 import frc.robot.utils.ShuffleData;
 
+/**
+ * Coral implementation of the roller subsystem
+ *
+ * @author Lilian Wu
+ */
 public class CoralRoller extends Roller {
     private double lastVelocity = 0.0;
     private boolean hasPiece = true;
@@ -65,11 +70,17 @@ public class CoralRoller extends Roller {
         return hasPiece;
     }
 
+    /**
+     * Implemetation of run method
+     */
     @Override
     public void run() {
         setVelocity(RollerConstants.Coral.velocity);
     }
 
+    /**
+     * Implemetation of score method
+     */
     @Override
     public void score() {
         setVelocity(RollerConstants.Coral.scoreVelocity);
@@ -84,11 +95,14 @@ public class CoralRoller extends Roller {
         hasPieceLog.set(hasPiece);
         setInitialStateLog.set(routineStarted);
 
+        // routineStarted is true when the routine begins in Autos 
         if (Autos.isRoutineStarted() && !routineStarted) { 
             routineStarted = true; 
+            // sets initial state at the start of each routine
             photoelectricIO.setInitialState(true);
         }
         
+        // routineStarted is false when the routine ends in Autos 
         if (!Autos.isRoutineStarted() && routineStarted) {
             routineStarted = false;  
         }

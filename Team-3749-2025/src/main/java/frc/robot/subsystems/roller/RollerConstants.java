@@ -1,4 +1,9 @@
 package frc.robot.subsystems.roller;
+/**
+ * Constants for roller subsystem
+ * 
+ * @author Lilian Wu
+ */
 public class RollerConstants {
     public static final class Algae {
         public static final int motorId = 1;
