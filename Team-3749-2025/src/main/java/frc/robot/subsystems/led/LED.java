@@ -12,7 +12,7 @@ import frc.robot.subsystems.led.LEDConstants.LEDPattern;
 
 /**
  * 
- * LED subsystem, can be different colors (RED, BLUE, GREEN, YELLOW, RAINBOW,
+ * LED subsystem, can be different colors (RED, BLUE, GREEN, YELLOW,
  * WHITE, and NOTHING)
  * The LEDs are used to indicate when the robot does different actions
  */
@@ -93,18 +93,6 @@ public class LED extends SubsystemBase {
         }
     }
 
-    /**
-     * Sets the LED color to Rainbow.
-     * I think it might be easier to use LEDPattern.rainbow, but this works, too
-     */
-    private void setLEDRainbow() // requires a loop
-    {
-        hue++;
-        setLEDOneColorHSV(hue, 255, 255);
-        if (hue >= 350) {
-            hue = 0;
-        }
-    }
 
     /**
      * Takes in the parameter pattern to set the pattern of the LEDs
@@ -132,40 +120,8 @@ public class LED extends SubsystemBase {
     // runs every 0.02 sec
     @Override
     public void periodic() {
-        switch (this.currentPattern) {
-            case RED:
-                setLEDOneColorRGB(255, 0, 0);
-                break;
-
-            case BLUE:
-                setLEDOneColorRGB(0, 0, 255);
-                break;
-
-            case GREEN:
-                setLEDOneColorRGB(0, 255, 0);
-                break;
-
-            case YELLOW:
-                setLEDOneColorRGB(255, 255, 0);
-                break;
-
-            case RAINBOW:
-                setLEDRainbow();
-                break;
-
-            case WHITE:
-                setLEDOneColorRGB(255, 255, 255);
-                break;
-
-            case NOTHING:
-                setLEDOneColorRGB(0, 0, 0);
-                break;
-
-            default:
-                setLEDOneColorRGB(210, 105, 30);
-                System.out.println("LEDpattern missing case");
-                break;
-        }
+        
+        setLEDOneColorRGB(this.currentPattern.R, this.currentPattern.G, this.currentPattern.B);
         LEDs.setData(LEDBuffer);
 
     }
