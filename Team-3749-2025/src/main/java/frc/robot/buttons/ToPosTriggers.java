@@ -5,7 +5,6 @@ import java.util.function.BooleanSupplier;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.buttons.ButtonBoard.ScoringLocation;
-import frc.robot.commands.elevator.SetElevatorState;
 import frc.robot.commands.integration.IntakeSource;
 import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.ScoreL1;
@@ -118,7 +117,7 @@ public class ToPosTriggers {
                     isReefL1Supplier.getAsBoolean() &&
                     JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L1;
         });
-        coralReefL1.onTrue(new SetElevatorState(ElevatorStates.L1).andThen(new ScoreL1()));
+        coralReefL1.onTrue(new ScoreL1());
 
         // ======= Reef Level 2 Scoring Trigger =======
         Trigger coralReefL2 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
@@ -126,7 +125,7 @@ public class ToPosTriggers {
                     isReefSupplier.getAsBoolean() &&
                     JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L2;
         });
-        coralReefL2.onTrue(new SetElevatorState(ElevatorStates.L2).andThen(new ScoreL234(ElevatorStates.L2)));
+        coralReefL2.onTrue(new ScoreL234(ElevatorStates.L2));
 
         // ======= Reef Level 3 Scoring Trigger =======
         Trigger coralReefL3 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
@@ -134,7 +133,7 @@ public class ToPosTriggers {
                     isReefSupplier.getAsBoolean() &&
                     JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L3;
         });
-        coralReefL3.onTrue(new SetElevatorState(ElevatorStates.L3).andThen(new ScoreL234(ElevatorStates.L3)));
+        coralReefL3.onTrue(new ScoreL234(ElevatorStates.L3));
 
         // ======= Reef Level 4 Scoring Trigger =======
         Trigger coralReefL4 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
@@ -142,7 +141,7 @@ public class ToPosTriggers {
                     isReefSupplier.getAsBoolean() &&
                     JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L4;
         });
-        coralReefL4.onTrue(new SetElevatorState(ElevatorStates.L4).andThen(new ScoreL234(ElevatorStates.L4)));
+        coralReefL4.onTrue(new ScoreL234(ElevatorStates.L4));
 
         // ======= High Algae Knocking Trigger =======
         Trigger highAlgaeTrigger = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {

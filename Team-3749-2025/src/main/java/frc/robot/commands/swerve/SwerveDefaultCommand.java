@@ -67,6 +67,8 @@ public class SwerveDefaultCommand extends Command {
    if (Robot.swerve.getIsOTF()) {
      if ((Math.abs(linearMagnitude) > 0.2 || Math.abs(turningMagnitude) > 0.2)) {
        Robot.swerve.setIsOTF(false);
+       linearMagnitude=0;
+       turningMagnitude=0;
      } else {
        return;
      }

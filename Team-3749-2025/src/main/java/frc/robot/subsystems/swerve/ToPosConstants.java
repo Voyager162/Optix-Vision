@@ -121,12 +121,15 @@ public class ToPosConstants {
                     break;
             }
 
-            // Apply an initial 6.25-inch offset based on the robot's orientation
-            double xSetup = reefPose.getX() + Math.cos(Math.toRadians(reefPose.getRotation().getDegrees() + 90))
-                    * Units.inchesToMeters(6.25);
-            double ySetup = reefPose.getY() + Math.sin(Math.toRadians(reefPose.getRotation().getDegrees() + 90))
-                    * Units.inchesToMeters(6.25);
-
+            double xSetup = reefPose.getX();
+            double ySetup = reefPose.getY();
+            if (!direction.equals(TrigDirection.BACKWARD)) {
+                // Apply an initial 6.25-inch offset based on the robot's orientation
+                xSetup = reefPose.getX() + Math.cos(Math.toRadians(reefPose.getRotation().getDegrees() + 90))
+                        * Units.inchesToMeters(6.25);
+                ySetup = reefPose.getY() + Math.sin(Math.toRadians(reefPose.getRotation().getDegrees() + 90))
+                        * Units.inchesToMeters(6.25);
+            }
             // Adjust position based on movement direction (left, right, or backward)
             double newX = xSetup
                     + Math.cos(Math.toRadians(reefPose.getRotation().getDegrees() + (angleOffset * offsetMultiplier)))
