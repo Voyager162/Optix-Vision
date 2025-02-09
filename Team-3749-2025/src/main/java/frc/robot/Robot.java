@@ -6,14 +6,12 @@ package frc.robot;
 
 import java.util.ArrayList;
 import java.util.List;
-import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -147,14 +145,5 @@ public class Robot extends TimedRobot {
 
   @Override
   public void simulationInit() {
-    DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
-    //only use red1 and blue1 for nwo
-    //at the end of the day all we really care about given this is a sim is that you can do red and blue
-    //on real hardware this doesn't change a whole lot anyways if you're on red3 or red1
-    //only reason we'd care is for auto 
-    if(DriverStationSim.getAllianceStationId().equals(AllianceStationID.Red1))
-    {
-      swerve.setOdometry(ToPosConstants.flipPose(swerve.getPose()));
-    }
-  }
+}
 }

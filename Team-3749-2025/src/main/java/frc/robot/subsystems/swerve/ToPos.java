@@ -43,8 +43,6 @@ public class ToPos {
         }
 
         if (initialPose.equals(finalPose) || initialPose.equals(approachPoint) || approachPoint.equals(finalPose)) {
-            // System.out.println("No movement required: Initial, approach, and final poses
-            // are the same.");
             return null; // Prevents unnecessary movement
         }
 
@@ -62,8 +60,6 @@ public class ToPos {
 
         // 🚨 New Check: Ensure at least 2 waypoints before creating the path
         if (waypoints.size() < 2) {
-            // System.out.println("Error: Not enough waypoints to create a valid path.
-            // Returning null.");
             return null;
         }
 
@@ -89,9 +85,6 @@ public class ToPos {
         // Use the path direction to determine the best vertices
         int startVertexIndex = findClosestHexagonVertex(start, start, end);
         int endVertexIndex = findClosestHexagonVertex(end, start, end);
-
-        // System.out.println("Start: " + startVertexIndex + "\nEnd: " +
-        // endVertexIndex);
 
         // Calculate clockwise and counterclockwise distances based on # verticies
         // traveled
@@ -203,10 +196,10 @@ public class ToPos {
         // Step 2: Ensure consecutive vertices.
         // Adjust for wrap-around (consecutive vertices should form a hexagon edge).
         if (Math.abs(closestVertex1 - closestVertex2) != 1 &&
-                !(closestVertex1 == 0 && closestVertex2 == ToPosConstants.ReefVerticies.getHexagonVertices().size() - 2) &&
-                !(closestVertex2 == 0 && closestVertex1 == ToPosConstants.ReefVerticies.getHexagonVertices().size() - 2)) {
-
-            System.out.println("MATH MISTAKE: " + closestVertex1 + ", " + closestVertex2);
+                !(closestVertex1 == 0 && closestVertex2 == ToPosConstants.ReefVerticies.getHexagonVertices().size() - 2)
+                &&
+                !(closestVertex2 == 0
+                        && closestVertex1 == ToPosConstants.ReefVerticies.getHexagonVertices().size() - 2)) {
             closestVertex2 = (closestVertex1 + 1) % ToPosConstants.ReefVerticies.getHexagonVertices().size();
         }
 
@@ -317,22 +310,14 @@ public class ToPos {
         double headingInit = initialPose.getRotation().getDegrees();
         double headingFinal = finalPose.getRotation().getDegrees();
 
-        // System.out.println("All values for removing waypoints:");
-        // System.out.println("Distance: " + distance);
-        // System.out.println("Heading Initial: " + headingInit);
-        // System.out.println("Heading Final: " + headingFinal);
-
         // Fix floating-point precision issue in heading difference
         double headingDifference = Math.abs((headingFinal - headingInit) % 360);
         if (headingDifference > 180) {
             headingDifference = 360 - headingDifference;
         }
 
-        // System.out.println("Computed Heading Difference: " + headingDifference);
-
         // Check if the heading difference is within ±20 degrees
         if (distance < 1.0 && headingDifference <= 20) {
-            // System.out.println("called");
             if (waypoints.size() > 2) {
                 waypoints.subList(1, waypoints.size() - 1).clear();
             }
@@ -348,8 +333,6 @@ public class ToPos {
             }
         }
         if (waypoints.size() < 2) {
-            // System.out.println("Warning: Too few waypoints left after cleaning. Restoring
-            // at least two.");
             waypoints.clear();
             waypoints.add(new Waypoint(initialTranslation, initialTranslation, initialTranslation));
             waypoints.add(new Waypoint(finalTranslation, finalTranslation, finalTranslation));
@@ -396,20 +379,9 @@ public class ToPos {
 
         Translation2d finalVertexToEndVector = end.minus(finalVertex);
         Translation2d secondToFinalVertexToFinalVertexVector = finalVertex.minus(secondToFinalVertex);
-        // System.out.println("Vectors");
-        // System.out.println(finalVertexToEndVector.toString());
-        // System.out.println(secondToFinalVertexToFinalVertexVector);
 
         double endingAlignment = (finalVertexToEndVector.getX() * secondToFinalVertexToFinalVertexVector.getX()
                 + finalVertexToEndVector.getY() * secondToFinalVertexToFinalVertexVector.getY());
-        // System.out.println("alignment and size");
-        // System.out.println(endingAlignment);
-        // System.out.println(waypoints.size());
-        // System.out.println("waypoints");
-        // System.out.println(waypoints.get(waypoints.size() - 1).anchor().toString());
-        // System.out.println(waypoints.get(waypoints.size() - 2).anchor().toString());
-        // System.out.println(waypoints.get(waypoints.size() - 3).anchor().toString());
-        // System.out.println(waypoints.get(waypoints.size() - 4).anchor().toString());
         if (endingAlignment < 0) {
 
             waypoints.remove(waypoints.size() - 2);
@@ -428,14 +400,15 @@ public class ToPos {
         if (isLeftBranch) {
             branchIndex = 0;
         }
-        int shouldOffsetForL1 = 0; //boolean naming convention for an integer (SEVERE TROLLING :imp:)
+        int shouldOffsetForL1 = 0; // boolean naming convention for an integer (SEVERE TROLLING :imp:)
         Pose2d closestSide = Robot.swerve.getPose().nearest(ToPosConstants.Setpoints.reefSides);
         if (JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L1) {
-           shouldOffsetForL1=1;
+            shouldOffsetForL1 = 1;
         }
         for (Pose2d side : ToPosConstants.Setpoints.driveRelativeBranches.keySet()) {
             if (closestSide.equals(side)) {
-                Robot.swerve.setPPSetpointIndex(ToPosConstants.Setpoints.driveRelativeBranches.get(side)[branchIndex]+shouldOffsetForL1);
+                Robot.swerve.setPPSetpointIndex(
+                        ToPosConstants.Setpoints.driveRelativeBranches.get(side)[branchIndex] + shouldOffsetForL1);
                 break;
             }
         }

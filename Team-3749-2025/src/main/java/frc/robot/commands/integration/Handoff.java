@@ -40,12 +40,11 @@ public class Handoff extends Command {
         Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
         Robot.chuteRoller.setState(RollerStates.MAINTAIN);
-        // System.out.println("end");
+
     }
 
     @Override
     public boolean isFinished() {
-        // System.out.println("handoff hasPiece: " + Robot.chuteRoller.hasPiece());
         return Robot.chuteRoller.hasPiece();
     }
 }

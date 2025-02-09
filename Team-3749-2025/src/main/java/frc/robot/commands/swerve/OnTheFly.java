@@ -16,57 +16,74 @@ import frc.robot.subsystems.swerve.ToPos;
 import frc.robot.subsystems.swerve.ToPosConstants;
 import frc.robot.utils.UtilityFunctions;
 
+/**
+ * The `OnTheFly` command dynamically generates and follows a trajectory 
+ * from the robot's current position to a designated scoring or movement setpoint.
+ * It is responsible for real-time path planning and execution using PathPlanner.
+ */
 public class OnTheFly extends Command {
-    private PathPlannerTrajectory trajectory;
-    private final Timer timer = new Timer();
-    private final double positionTolerance = ToPosConstants.ReefVerticies.positionTolerance; // meters
-    private final double rotationTolerance = ToPosConstants.ReefVerticies.rotationTolerance; // degrees
-    // private PathPlannerTrajectoryState secondToLastWaypoint = null;
-    // private boolean hasTriggeredSecondLastAction = false;
+    private PathPlannerTrajectory trajectory; // The generated trajectory for movement
+    private final Timer timer = new Timer(); // Timer to track trajectory progress
+    private final double positionTolerance = ToPosConstants.ReefVerticies.positionTolerance; // Allowed position error (meters)
+    private final double rotationTolerance = ToPosConstants.ReefVerticies.rotationTolerance; // Allowed rotation error (degrees)
 
-    public OnTheFly() {
-    }
+    /**
+     * Constructs the OnTheFly command. 
+     * This command does not require any parameters as it dynamically determines the path.
+     */
+    public OnTheFly() {}
 
+    /**
+     * Initializes the trajectory generation process and starts the timer.
+     * If no valid path is generated, the command cancels itself.
+     */
     @Override
     public void initialize() {
         timer.reset();
         timer.start();
-        // hasTriggeredSecondLastAction = false; // Reset flag for each execution
 
+        // Create a new dynamic path generator
         ToPos toPos = new ToPos();
         PathPlannerPath path = toPos.generateDynamicPath(
-                Robot.swerve.getPose(),
-                Robot.swerve.getPPSetpoint().approachPoint,
-                Robot.swerve.getPPSetpoint().setpoint,
-                Robot.swerve.getMaxDriveSpeed(),
-                SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared,
-                Robot.swerve.getMaxAngularSpeed(),
-                SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared);
+                Robot.swerve.getPose(), // Current robot position
+                Robot.swerve.getPPSetpoint().approachPoint, // Intermediate approach point
+                Robot.swerve.getPPSetpoint().setpoint, // Final target position
+                Robot.swerve.getMaxDriveSpeed(), // Max driving speed
+                SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared, // Max acceleration
+                Robot.swerve.getMaxAngularSpeed(), // Max angular speed
+                SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared // Max angular acceleration
+        );
 
+        // If path generation fails, stop the command
         if (path == null) {
-            System.out.println("Error: Failed to generate path. Ending OnTheFly command.");
             Robot.swerve.setIsOTF(false); 
             this.cancel();
             return;
         }
 
         try {
+            // Generate the trajectory using the planned path and current robot state
             trajectory = path.generateTrajectory(
-                    Robot.swerve.getChassisSpeeds(),
-                    Robot.swerve.getRotation2d(),
-                    RobotConfig.fromGUISettings());
+                    Robot.swerve.getChassisSpeeds(), // Current velocity
+                    Robot.swerve.getRotation2d(), // Current rotation
+                    RobotConfig.fromGUISettings()); // PathPlanner robot config settings
 
             var states = trajectory.getStates();
             if (states.size() >= 2) {
-                // secondToLastWaypoint = states.get(states.size() - 2);
+                // Placeholder: Optionally store second-to-last waypoint
             }
         } catch (IOException | ParseException e) {
+            // If an error occurs during trajectory generation, stop execution
             e.printStackTrace();
             Robot.swerve.setIsOTF(false);
             this.cancel();
         }
     }
 
+    /**
+     * Continuously executes the trajectory-following logic.
+     * If the trajectory is invalid or the robot is not in OTF mode, the command cancels itself.
+     */
     @Override
     public void execute() {
         if (trajectory == null || !Robot.swerve.getIsOTF()) {
@@ -74,61 +91,55 @@ public class OnTheFly extends Command {
             return;
         }
 
+        // Get the current elapsed time in the trajectory
         double currentTime = timer.get();
-        PathPlannerTrajectoryState goalState = trajectory.sample(currentTime);
+        PathPlannerTrajectoryState goalState = trajectory.sample(currentTime); // Get the desired state at the current time
 
+        // Command the robot to follow the sampled trajectory state
         Robot.swerve.followSample(goalState.pose,
                 new Pose2d(
-                        goalState.fieldSpeeds.vxMetersPerSecond,
-                        goalState.fieldSpeeds.vyMetersPerSecond,
-                        new Rotation2d(goalState.fieldSpeeds.omegaRadiansPerSecond)));
+                        goalState.fieldSpeeds.vxMetersPerSecond, // X velocity
+                        goalState.fieldSpeeds.vyMetersPerSecond, // Y velocity
+                        new Rotation2d(goalState.fieldSpeeds.omegaRadiansPerSecond) // Angular velocity
+                )
+        );
 
-        // if (secondToLastWaypoint != null && !hasTriggeredSecondLastAction) {
-        //     System.out.println("Checking second-to-last waypoint...");
-        //     if (withinSetpointTolerance(secondToLastWaypoint.pose)) {
-        //         System.out.println("Triggering custom action at second-to-last waypoint!");
-        //         hasTriggeredSecondLastAction = true;
-        //         triggerCustomAction();
-        //     }
-        // }
-
+        // If the command is complete, stop execution
         if (isFinished()) {
             this.end(true);
             Robot.swerve.setIsOTF(false);
-            // Commands.run(()->Robot.swerve.getSetpointReachedCommand());
         }
     }
 
+    /**
+     * Stops the trajectory execution when the command ends.
+     *
+     * @param interrupted Indicates whether the command was interrupted.
+     */
     @Override
     public void end(boolean interrupted) {
         timer.stop();
     }
 
+    /**
+     * Determines if the trajectory is complete.
+     * The command finishes if the trajectory time has elapsed and the robot is within an acceptable error margin.
+     *
+     * @return true if the trajectory is complete and the robot is close enough to the target.
+     */
     @Override
     public boolean isFinished() {
         if (trajectory == null) {
-            return true;
+            return true; // No trajectory means nothing to follow
         }
-        boolean trajectoryComplete = timer.get() >= trajectory.getTotalTimeSeconds();
+
+        boolean trajectoryComplete = timer.get() >= trajectory.getTotalTimeSeconds(); // Check if the trajectory time has elapsed
         if (trajectoryComplete) {
             return UtilityFunctions.withinMargin(
-            new Pose2d(positionTolerance,positionTolerance,new Rotation2d(Math.toRadians(rotationTolerance))),
-            trajectory.getEndState().pose,
-            Robot.swerve.getPose());
+                new Pose2d(positionTolerance, positionTolerance, new Rotation2d(Math.toRadians(rotationTolerance))), // Allowed error margin
+                trajectory.getEndState().pose, // Final trajectory pose
+                Robot.swerve.getPose()); // Current robot pose
         }
         return false;
     }
-
-    // private boolean withinSetpointTolerance(Pose2d setpoint) {
-    //     double xError = Math.abs(setpoint.relativeTo(Robot.swerve.getPose()).getX());
-    //     double yError = Math.abs(setpoint.relativeTo(Robot.swerve.getPose()).getY());
-    //     double thetaError = setpoint.relativeTo(Robot.swerve.getPose()).getRotation().getDegrees();
-
-    //     return xError < positionTolerance && yError < positionTolerance && thetaError < rotationTolerance;
-    // }
-
-    // private void triggerCustomAction() {
-    //     System.out.println("Reached second-to-last waypoint! Running custom action...");
-     
-    // }
 }

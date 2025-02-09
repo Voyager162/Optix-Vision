@@ -33,12 +33,11 @@ public class IntakeSource extends Command {
     @Override
     public void end(boolean interrupted) {
         Robot.chuteRoller.setState(RollerConstants.RollerStates.MAINTAIN);
-        // System.out.println("intake source end");
+      
     }
 
     @Override
     public boolean isFinished() {
-        // System.out.println("intake source is finishing" + Robot.chuteRoller.hasPiece());
         return Robot.chuteRoller.hasPiece();
     }
 }
