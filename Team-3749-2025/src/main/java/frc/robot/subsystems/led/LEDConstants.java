@@ -17,6 +17,7 @@ public class LEDConstants {
         final int B;
 
         /**
+         * Takes in the parameters of R, G, and B to set the RGB color of a color in the enum
          * 
          * @param R
          * @param G

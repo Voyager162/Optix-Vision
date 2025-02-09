@@ -1,7 +1,6 @@
 package frc.robot.commands.integration;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArm;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.chute.Chute;
@@ -9,7 +8,6 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.roller.Roller;
-import frc.robot.subsystems.led.LEDConstants.LEDPattern;
 
 //works for l2-4 change name
 public class ScoreL234 extends Command {
@@ -59,15 +57,7 @@ public class ScoreL234 extends Command {
 
         if (elevator.getState() == state && elevator.getIsStableState()) {
             scoringRoller.setState(RollerConstants.RollerStates.SCORE);
-            Robot.led.setLEDPattern(LEDPattern.BLUE);
         }
-        if (!Robot.elevator.getIsStableState()) {
-            Robot.led.setLEDPattern(LEDPattern.YELLOW);
-        }
-        if (!Robot.coralArm.getIsStableState()) {
-            Robot.led.setLEDPattern(LEDPattern.YELLOW);
-        }
-
     }
 
     @Override
@@ -76,7 +66,6 @@ public class ScoreL234 extends Command {
         elevator.setState(ElevatorStates.STOP);
         scoringRoller.setState(RollerConstants.RollerStates.STOP);
         coralRoller.setState(RollerConstants.RollerStates.STOP);
-        Robot.led.setLEDPattern(LEDPattern.WHITE);
     }
 
     @Override

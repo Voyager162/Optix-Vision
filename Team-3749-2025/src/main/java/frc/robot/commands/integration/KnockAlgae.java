@@ -1,10 +1,8 @@
 package frc.robot.commands.integration;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Robot;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
-import frc.robot.subsystems.led.LEDConstants.LEDPattern;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
 
@@ -40,7 +38,6 @@ public class KnockAlgae extends Command {
     @Override
     public boolean isFinished() {
         if (elevator.getState() == state && elevator.getIsStableState()) {
-            Robot.led.setLEDPattern(LEDPattern.BLUE);
             return true;
         }
         return false; // change later to isAlgaeRemoved()

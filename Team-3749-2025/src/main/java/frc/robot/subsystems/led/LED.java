@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.led.LEDConstants.LEDPattern;
 
-
 /**
  * 
  * LED subsystem, can be different colors (RED, BLUE, GREEN, YELLOW,
@@ -25,15 +24,6 @@ public class LED extends SubsystemBase {
     private LEDPattern currentPattern = LEDPattern.WHITE;
     private int hue = 0;
     private double brightness = 1;
-
-    // public LED(Roller scoringRoller) {
-    //     LEDs.setLength(LEDBuffer.getLength());
-    //     LEDs.setData(LEDBuffer);
-    //     LEDs.start();
-    //     setBrightness(brightness);
-    //     setLEDPattern(LEDPattern.WHITE);
-    //     this.scoringRoller = scoringRoller;
-    // }
 
     /**
      * Takes the parameter of brightness to set the brightness of the LEDs
@@ -96,7 +86,6 @@ public class LED extends SubsystemBase {
         }
     }
 
-
     /**
      * Takes in the parameter pattern to set the pattern of the LEDs
      * If the pattern is WHITE and the battery voltage is less than 8, the
@@ -129,9 +118,9 @@ public class LED extends SubsystemBase {
 
         if (!Robot.elevator.getIsStableState() || !Robot.coralArm.getIsStableState()) {
             Robot.led.setLEDPattern(LEDPattern.YELLOW);
-        } else if (Robot.coralRoller.hasPiece()){
+        } else if (Robot.coralRoller.hasPiece()) {
             Robot.led.setLEDPattern(LEDPattern.BLUE);
-        } else if (Robot.scoringRoller.hasPiece()){
+        } else if (Robot.scoringRoller.hasPiece()) {
             Robot.led.setLEDPattern(LEDPattern.BLUE);
         } else {
             Robot.led.setLEDPattern(LEDPattern.BLUE);
