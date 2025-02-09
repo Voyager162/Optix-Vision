@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Robot;
 import frc.robot.buttons.JoystickIO;
+import frc.robot.buttons.ToPosTriggers;
 import frc.robot.buttons.ButtonBoard.ScoringLocation;
 
 /**
@@ -42,7 +43,8 @@ public class ToPos {
             throw new IllegalArgumentException("Pose arguments cannot be null!");
         }
 
-        if (initialPose.equals(finalPose) || initialPose.equals(approachPoint) || approachPoint.equals(finalPose)) {
+        if (initialPose.equals(finalPose) || initialPose.equals(approachPoint) || 
+        (approachPoint.equals(finalPose) && !ToPosTriggers.isCoralSupplier.getAsBoolean())) { //coral station approachpoint==finalpose only
             return null; // Prevents unnecessary movement
         }
 
@@ -60,6 +62,7 @@ public class ToPos {
 
         // 🚨 New Check: Ensure at least 2 waypoints before creating the path
         if (waypoints.size() < 2) {
+            System.out.println("epic waypoint size fail");
             return null;
         }
 

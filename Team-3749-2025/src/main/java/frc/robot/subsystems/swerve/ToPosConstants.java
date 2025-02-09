@@ -116,7 +116,6 @@ public class ToPosConstants {
                     offsetMultiplier = -1;
                     break;
                 case BACKWARD:
-                    angleOffset = 0;
                     distance = 3; // instead of moving 6.5 between pipes, move 3 inches away from the reef
                     isBackwardOffset = -1;
                     break;
