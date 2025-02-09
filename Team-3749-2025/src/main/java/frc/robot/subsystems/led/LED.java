@@ -25,6 +25,13 @@ public class LED extends SubsystemBase {
     private int hue = 0;
     private double brightness = 1;
 
+    public LED() {
+        LEDs.setLength(LEDBuffer.getLength());
+        LEDs.setData(LEDBuffer);
+        LEDs.start();
+        setLEDPattern(LEDPattern.WHITE);
+    }
+
     /**
      * Takes the parameter of brightness to set the brightness of the LEDs
      * 
