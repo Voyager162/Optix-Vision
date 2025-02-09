@@ -389,27 +389,31 @@ public class ToPos {
     }
 
     /**
-     * sets a setpoint closest to the reef
+     * Sets the setpoint to the closest reef branch, determining whether to move
+     * left or right.
+     * Adjusts the setpoint for Level 1 scoring if applicable.
      * 
-     * @param Is lefet
-     * 
+     * @param isLeftBranch If true, selects the left branch; otherwise, selects the
+     *                     right branch.
      */
-
     public static void setSetpointByClosestReefBranch(boolean isLeftBranch) {
-        int branchIndex = 1;
-        if (isLeftBranch) {
-            branchIndex = 0;
-        }
-        int shouldOffsetForL1 = 0; // boolean naming convention for an integer (SEVERE TROLLING :imp:)
+        int branchIndex = isLeftBranch ? 0 : 1; // Selects the left (0) or right (1) branch
+        int shouldOffsetForL1 = 0; // Offset for Level 1 scoring, default is 0
+
+        // Find the closest reef side to the robot's current position
         Pose2d closestSide = Robot.swerve.getPose().nearest(ToPosConstants.Setpoints.reefSides);
+
+        // If scoring at Level 1, adjust the offset accordingly
         if (JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L1) {
             shouldOffsetForL1 = 1;
         }
+
+        // Iterate through the reef branch mappings to set the correct setpoint
         for (Pose2d side : ToPosConstants.Setpoints.driveRelativeBranches.keySet()) {
             if (closestSide.equals(side)) {
                 Robot.swerve.setPPSetpointIndex(
                         ToPosConstants.Setpoints.driveRelativeBranches.get(side)[branchIndex] + shouldOffsetForL1);
-                break;
+                break; // Exit loop once the correct setpoint is found
             }
         }
     }
