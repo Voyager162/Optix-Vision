@@ -279,16 +279,5 @@ public class Elevator extends SubsystemBase {
         motorData.get("elevator_motor").acceleration = data.accelerationMetersPerSecondSquared;
         motorData.get("elevator_motor").velocity = data.velocityMetersPerSecond;
         motorData.get("elevator_motor").appliedVolts = (data.leftAppliedVolts + data.rightAppliedVolts) / 2.0;
-
-        // Map<String, MotorData> motorData = Map.of(
-        // "elevator_motor", new MotorData(
-        // (data.leftAppliedVolts + data.rightAppliedVolts) / 2.0,
-        // data.positionMeters,
-        // data.velocityMetersPerSecond,
-        // data.accelerationUnits));
-
-        // sysIdTuner = new SysIdTuner("elevator", config, this, elevatorio::setVoltage,
-        // motorData);
-        // pidController.setPID(kPData.get(),0,kDData.get())
     }
 }
