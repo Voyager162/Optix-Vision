@@ -41,12 +41,16 @@ public class Autos {
         return routineStarted;
     }
 
-    // Has routineStarted as true at the start of a routine
+    /**
+     * Has routineStarted as true at the start of a routine
+     */
     public static void startRoutineTracking() {
         routineStarted = true;
     }
 
-    // Has routineStarted as false at the end of a routine
+    /**
+     * Has routineStarted as false at the end of a routine
+     */
     public static void stopRoutineTracking() {
         routineStarted = false;
     }

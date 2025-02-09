@@ -39,7 +39,9 @@ public class KnockAlgae extends Command {
         Robot.algaeRoller.setState(RollerConstants.RollerStates.STOP);
     }
 
-    // command finishes when elevator reaches desired state and command is being scheduled
+    /**
+     * Command finishes when elevator reaches desired state and command is being scheduled
+     */
     @Override
     public boolean isFinished() {
         return Robot.elevator.getIsStableState() && this.isScheduled(); 

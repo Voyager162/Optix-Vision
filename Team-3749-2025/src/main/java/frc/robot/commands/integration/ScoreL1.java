@@ -38,7 +38,9 @@ public class ScoreL1 extends Command {
         Robot.coralRoller.setState(RollerStates.STOP);
     }
 
-    // command finishes when coralRoller does not have coral and command is being scheduled
+    /** 
+     * Command finishes when coralRoller does not have coral and command is being scheduled
+     */
     @Override
     public boolean isFinished() {
         return !Robot.coralRoller.hasPiece() && this.isScheduled();

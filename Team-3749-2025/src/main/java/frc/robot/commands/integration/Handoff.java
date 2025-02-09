@@ -42,7 +42,9 @@ public class Handoff extends Command {
         Robot.scoringRoller.setState(RollerStates.MAINTAIN);
     }
 
-    // command finishes when scoringRoller has coral and command is being scheduled
+    /** 
+     * Command finishes when scoringRoller has coral and command is being scheduled
+     */
     @Override
     public boolean isFinished() {
         return Robot.scoringRoller.hasPiece() && this.isScheduled();

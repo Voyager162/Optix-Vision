@@ -220,6 +220,13 @@ public class AutoUtils {
 
     }
 
+    /**
+     * Returns a command to score at L1 when the robot is approaching the end of the
+     * given trajectory
+     * 
+     * @param trajectory
+     * @return
+     */
     public static Command addScoreL1(AutoTrajectory trajectory) {
         Pose2d endingPose2d = getFinalPose2d(trajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
@@ -254,18 +261,6 @@ public class AutoUtils {
 
     }
 
-    public static Command addIntakeCoralArm(AutoTrajectory trajectory) {
-        Pose2d endingPose2d = getFinalPose2d(trajectory);
-
-        if (DriverStation.getAlliance().get() == Alliance.Red) {
-            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
-        }
-        Command intakeCoralArm = new CoralIntakeSource();
-
-        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(intakeCoralArm);
-        return intakeCoralArm;
-    }
-
     public static Command addKnockAlgae(AutoTrajectory trajectory) {
         Pose2d endingPose2d = getFinalPose2d(trajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
@@ -281,6 +276,13 @@ public class AutoUtils {
 
     }
 
+    /**
+     * A command to intake from station using coral arm when the robot is approaching the end of the
+     * given trajectory
+     * 
+     * @param trajectory
+     * @return
+     */
     public static Command addCoralIntakeSource(AutoTrajectory trajectory) {
         Pose2d endingPose2d = getFinalPose2d(trajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing

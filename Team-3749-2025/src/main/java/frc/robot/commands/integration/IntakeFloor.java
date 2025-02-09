@@ -35,7 +35,9 @@ public class IntakeFloor extends Command {
         Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
     }
 
-    // command finishes when coralRoller has coral and command is being scheduled
+    /**
+     * Command finishes when coralRoller has coral and command is being scheduled
+     */
     @Override
     public boolean isFinished() {
         return Robot.coralRoller.hasPiece() && this.isScheduled();

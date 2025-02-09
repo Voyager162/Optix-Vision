@@ -36,7 +36,9 @@ public class OuttakeCoral extends Command {
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
     }
 
-    // command finishes when coralRoller does not have coral
+    /**
+     * Command finishes when coralRoller does not have coral
+     */
     @Override
     public boolean isFinished() {
         return !Robot.coralRoller.hasPiece();
