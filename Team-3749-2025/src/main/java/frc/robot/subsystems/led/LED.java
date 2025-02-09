@@ -122,18 +122,18 @@ public class LED extends SubsystemBase {
     public void periodic() {
 
         setLEDOneColorRGB(this.currentPattern.R, this.currentPattern.G, this.currentPattern.B);
-        LEDs.setData(LEDBuffer);
 
         if (!Robot.elevator.getIsStableState() || !Robot.coralArm.getIsStableState()) {
             Robot.led.setLEDPattern(LEDPattern.YELLOW);
         } else if (Robot.coralRoller.hasPiece()) {
             Robot.led.setLEDPattern(LEDPattern.BLUE);
         } else if (Robot.scoringRoller.hasPiece()) {
-            Robot.led.setLEDPattern(LEDPattern.BLUE);
+            Robot.led.setLEDPattern(LEDPattern.GREEN);
         } else {
-            Robot.led.setLEDPattern(LEDPattern.BLUE);
+            Robot.led.setLEDPattern(LEDPattern.WHITE);
         }
 
+        LEDs.setData(LEDBuffer);
     }
 
     /***
