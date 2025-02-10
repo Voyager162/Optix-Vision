@@ -93,16 +93,6 @@ public class Swerve extends SubsystemBase {
   private LoggedTunableNumber kDDriving = new LoggedTunableNumber("swerve/kD Drive", AutoConstants.kDDrive);
   private LoggedTunableNumber kPTurn = new LoggedTunableNumber("swerve/kP Turn controller", AutoConstants.kPTurn);
   private LoggedTunableNumber kDTurn = new LoggedTunableNumber("swerve/kD Turn controller", AutoConstants.kDTurn);
-  private LoggedTunableNumber kVDriving = new LoggedTunableNumber("swerve/kvDrive",
-      SwerveConstants.ControlConstants.kVDriving);
-  private LoggedTunableNumber kSDriving = new LoggedTunableNumber("swerve/kvDrive",
-      SwerveConstants.ControlConstants.kSDriving);
-  private LoggedTunableNumber kADriving = new LoggedTunableNumber("swerve/kvDrive",
-      SwerveConstants.ControlConstants.kADriving);
-  private LoggedTunableNumber maxVelocity = new LoggedTunableNumber("swerve/maxVelocity",
-      SwerveConstants.ControlConstants.maxSpeedMetersPerSecond);
-  private LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("swerve/maxAcceleration",
-      SwerveConstants.ControlConstants.maxAccelerationMetersPerSecondSquared);
 
   public Swerve() {
 
@@ -547,11 +537,6 @@ public class Swerve extends SubsystemBase {
     AutoConstants.kDDrive = kDDriving.get();
     AutoConstants.kPTurn = kPTurn.get();
     AutoConstants.kDTurn = kDTurn.get();
-    SwerveConstants.ControlConstants.kVDriving = kVDriving.get();
-    SwerveConstants.ControlConstants.kSDriving = kSDriving.get();
-    SwerveConstants.ControlConstants.kADriving = kADriving.get();
-    SwerveConstants.ControlConstants.maxSpeedMetersPerSecond = maxVelocity.get();
-    SwerveConstants.ControlConstants.maxAccelerationMetersPerSecondSquared = maxAcceleration.get();
   }
 
   @Override

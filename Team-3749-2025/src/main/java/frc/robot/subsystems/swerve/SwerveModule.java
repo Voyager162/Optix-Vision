@@ -21,7 +21,7 @@ public class SwerveModule {
     private String name;
     private SwerveModuleState desiredState = new SwerveModuleState();
 
-    private final SimpleMotorFeedforward drivingFeedFordward;
+    private SimpleMotorFeedforward drivingFeedFordward;
 
     private ModuleData moduleData = new ModuleData();
     private SwerveModuleIO moduleIO;
@@ -43,8 +43,8 @@ public class SwerveModule {
             name = "BR module";
         }
 
-        drivingFeedFordward = new SimpleMotorFeedforward(ControlConstants.kSDriving,
-                ControlConstants.kVDriving, ControlConstants.kADriving);
+        drivingFeedFordward = new SimpleMotorFeedforward(ControlConstants.kSDriving.get(),
+                ControlConstants.kVDriving.get(), ControlConstants.kADriving.get());
     }
 
     public String getName() {
@@ -171,6 +171,8 @@ public class SwerveModule {
                 moduleData.turnAppliedVolts);
         Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/turn current amps",
                 moduleData.turnCurrentAmps);
+        drivingFeedFordward = new SimpleMotorFeedforward(ControlConstants.kSDriving.get(),
+                ControlConstants.kVDriving.get(), ControlConstants.kADriving.get());
 
     }
 }

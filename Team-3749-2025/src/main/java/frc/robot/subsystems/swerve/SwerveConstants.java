@@ -3,6 +3,7 @@ package frc.robot.subsystems.swerve;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import frc.robot.utils.LoggedTunableNumber;
 
 /**
  * All constants for the swerve subsystem and swerve modules
@@ -29,22 +30,22 @@ public class SwerveConstants {
 
                 // our FF values
 
-                public static double kSDriving = 0.26;
-                public static double kVDriving = 2.765;
-                public static double kADriving = 0.0;
+                public static LoggedTunableNumber kSDriving = new LoggedTunableNumber("subsystems/swerve/kSDriving", 0.26);
+                public static LoggedTunableNumber kVDriving = new LoggedTunableNumber("subsystems/swerve/kVDriving", 2.765);
+                public static LoggedTunableNumber kADriving = new LoggedTunableNumber("subsystems/swerve/kADriving", 0.0);
 
-                public static double maxSpeedMetersPerSecond = 4.3;
-                public static double maxAccelerationMetersPerSecondSquared = 3.3;
+                public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("subsystems/swerve/maxVelocity", 4.3);
+                public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("subsystems/swerve/maxAcceleration", 3.3);
 
                 // teleop speed
                 public static final double teleopMaxSpeedReduction = 0; // If we can drive a little faster in telop
                 // we may as well
-                public static final double teleopMaxSpeedMetersPerSecond = maxSpeedMetersPerSecond
+                public static final double teleopMaxSpeedMetersPerSecond = maxVelocity.get()
                                 * (1 - teleopMaxSpeedReduction);
 
                 // auto speed
                 public static final double autoMaxSpeedReduction = 0;
-                public static final double autoMaxSpeedMetersPerSecond = maxSpeedMetersPerSecond
+                public static final double autoMaxSpeedMetersPerSecond = maxVelocity.get()
                                 * (1 - autoMaxSpeedReduction);
 
                 public static final double maxAngularSpeedRadiansPerSecond = 12.162;
