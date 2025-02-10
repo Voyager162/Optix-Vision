@@ -52,7 +52,6 @@ public class Elevator extends SubsystemBase {
             ElevatorConstants.ElevatorControl.kA);
 
     private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
-    private ShuffleData<String> currentStateLog = new ShuffleData<String>("Elevator", "elevator states", "None");
     private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position", 0.0);
     private ShuffleData<Double> velocityMetersPerSecLog = new ShuffleData<Double>("Elevator", "velocity", 0.0);
     private ShuffleData<Double> accelerationMetersPerSecSquaredLog = new ShuffleData<Double>("Elevator", "acceleration",
@@ -105,11 +104,11 @@ public class Elevator extends SubsystemBase {
                 return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.l1Height,
                         data.positionMeters);
             case L2:
-                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.l2Height,
-                        data.positionMeters);
+                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
+                        ElevatorConstants.StateHeights.l2Height);
             case L3:
-                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.l3Height,
-                        data.positionMeters);
+                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
+                        ElevatorConstants.StateHeights.l3Height);
             case L4:
                 return UtilityFunctions.withinMargin(0.01, data.positionMeters,
                         ElevatorConstants.StateHeights.l4Height);
@@ -145,9 +144,6 @@ public class Elevator extends SubsystemBase {
                 break;
             case L4:
                 setGoal(ElevatorConstants.StateHeights.l4Height);
-                break;
-            case SOURCE:
-                setGoal(ElevatorConstants.StateHeights.sourceHeight);
                 break;
             case MAX:
                 setGoal(ElevatorConstants.ElevatorSpecs.maxHeightMeters);
@@ -187,12 +183,11 @@ public class Elevator extends SubsystemBase {
     }
 
     public void stop() {
-        elevatorio.setVoltage(ElevatorConstants.ElevatorControl.kGSim);
+        elevatorio.setVoltage(0);
     }
 
     private void logData() {
         currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-        currentStateLog.set(getState().name());
         positionMetersLog.set(data.positionMeters);
         velocityMetersPerSecLog.set(data.velocityMetersPerSecond);
         accelerationMetersPerSecSquaredLog.set(data.accelerationMetersPerSecondSquared);

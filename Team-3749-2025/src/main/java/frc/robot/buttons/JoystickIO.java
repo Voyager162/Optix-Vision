@@ -8,26 +8,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Robot;
 
-<<<<<<< HEAD:Team-3749-2025/src/main/java/frc/robot/buttons/JoystickIO.java
-=======
-import frc.robot.commands.integration.Handoff;
-import frc.robot.commands.integration.IntakeFloor;
-import frc.robot.commands.integration.IntakeSource;
-import frc.robot.commands.integration.KnockAlgae;
-import frc.robot.commands.integration.OuttakeCoral;
-import frc.robot.commands.integration.ScoreL1;
-import frc.robot.commands.integration.ScoreL234;
-import frc.robot.commands.roller.MaintainCommand;
-import frc.robot.commands.roller.RunCommand;
-import frc.robot.commands.roller.StopCommand;
->>>>>>> led:Team-3749-2025/src/main/java/frc/robot/utils/JoystickIO.java
 
 import frc.robot.commands.swerve.SwerveDefaultCommand;
-<<<<<<< HEAD:Team-3749-2025/src/main/java/frc/robot/buttons/JoystickIO.java
-=======
-import frc.robot.subsystems.arm.coral.CoralArmConstants.ArmStates;
-import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
->>>>>>> led:Team-3749-2025/src/main/java/frc/robot/utils/JoystickIO.java
 
 /**
  * Util class for button bindings
@@ -40,29 +22,7 @@ public class JoystickIO {
 
     private static final CommandXboxController pilot = new CommandXboxController(0);
     private static final CommandXboxController operator = new CommandXboxController(1);
-<<<<<<< HEAD:Team-3749-2025/src/main/java/frc/robot/buttons/JoystickIO.java
     private static final ButtonBoard buttonBoard = new ButtonBoard();
-=======
-    private static final Command DriveStraight = new DriveStraight();
-    private static final Command MaintainCommand = new MaintainCommand();
-    private static final Command RunCommand = new RunCommand();
-    private static final Command StopCommand = new StopCommand();
-
-
-    private static final SetElevatorState l1 = new SetElevatorState(ElevatorStates.L1);
-    private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
-    private static final SetElevatorState l3 = new SetElevatorState(ElevatorStates.L3);
-    private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
-    private static final SetElevatorState stow = new SetElevatorState(ElevatorStates.STOW);
-
-    private static final KnockAlgae knockAlgae = new KnockAlgae(Robot.elevator, Robot.algaeRoller, ElevatorStates.L2);
-    private static final Handoff handoff = new Handoff(Robot.chute, Robot.coralArm, Robot.elevator, Robot.coralRoller);
-    private static final IntakeFloor intakeFloor = new IntakeFloor(Robot.coralArm, Robot.coralRoller);
-    private static final IntakeSource intakeSource = new IntakeSource(Robot.scoringRoller, Robot.elevator, Robot.chute);
-    private static final OuttakeCoral outtakeCoral = new OuttakeCoral(Robot.coralArm, Robot.coralRoller);
-    private static final ScoreL1 scoreL1 = new ScoreL1(Robot.coralArm, Robot.coralRoller, ArmStates.L1);
-    private static final ScoreL234 scoreL234 = new ScoreL234 (Robot.chute, Robot.coralArm, Robot.elevator, Robot.coralRoller, Robot.scoringRoller, ElevatorStates.L4);
->>>>>>> led:Team-3749-2025/src/main/java/frc/robot/utils/JoystickIO.java
 
     public JoystickIO() {
     }
@@ -103,7 +63,6 @@ public class JoystickIO {
         buttonBoard.buttonl3.onTrue(Commands.runOnce(() -> System.out.println("3, 1")));
         buttonBoard.buttonl4.onTrue(Commands.runOnce(() -> System.out.println("3, 2")));
 
-<<<<<<< HEAD:Team-3749-2025/src/main/java/frc/robot/buttons/JoystickIO.java
         buttonBoard.buttonRightSource.onTrue(Commands.runOnce(() -> System.out.println("1, 4")));
         buttonBoard.buttonLeftSource.onTrue(Commands.runOnce(() -> System.out.println("1, 7")));
 
@@ -126,13 +85,6 @@ public class JoystickIO {
         buttonBoard.buttonPlayer1Start.onTrue(Commands.runOnce(() -> System.out.println("1, 8")));
 
   
-=======
-        operator.a().onTrue(handoff);
-        operator.b().onTrue(scoreL1);
-        operator.x().onTrue(intakeFloor);
-        operator.y().onTrue(outtakeCoral);
-
->>>>>>> led:Team-3749-2025/src/main/java/frc/robot/utils/JoystickIO.java
     }
 
     public static void pilotBindings() {

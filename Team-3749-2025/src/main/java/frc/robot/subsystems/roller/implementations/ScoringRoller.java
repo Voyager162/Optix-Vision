@@ -35,9 +35,4 @@ public class ScoringRoller extends Roller {
             setVoltage(0.0);
         }
     }
-
-    @Override
-    public void score() {
-        setVelocity(RollerConstants.Scoring.scoreVelocity);
-    }
 }
