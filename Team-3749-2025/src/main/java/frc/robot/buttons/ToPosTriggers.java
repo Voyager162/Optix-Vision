@@ -102,6 +102,7 @@ public class ToPosTriggers {
      * reaches certain locations.
      */
     public static void createOTFTriggers() {
+        
 
         // ======= Coral Station Trigger =======
         // Activates intake when the robot reaches the coral station.

@@ -25,6 +25,8 @@ import frc.robot.commands.swerve.SwerveDefaultCommand;
 import frc.robot.subsystems.arm.climb.ClimbConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.swerve.ToPos;
+import frc.robot.utils.MiscConstants;
+import frc.robot.utils.MiscConstants.ControllerConstants;
 
 /**
  * Util class for button bindings
@@ -37,7 +39,8 @@ public class JoystickIO {
     private static final CommandXboxController pilot = new CommandXboxController(0);
     private static final CommandXboxController operator = new CommandXboxController(1);
     public static final ButtonBoard buttonBoard = new ButtonBoard();
-    //private static final Command sample = new ExampleSubsystemCommand(); it was getting on my nerves seeing the warning
+    // private static final Command sample = new ExampleSubsystemCommand(); it was
+    // getting on my nerves seeing the warning
     private static final Command driveStraight = new DriveStraight();
     private static final Command onTheFly = new OnTheFly();
 
@@ -72,7 +75,7 @@ public class JoystickIO {
     private final static JoystickButton buttonAlgaeKnockoff = new JoystickButton(buttonBoardPlayer1, 19);
     private final static JoystickButton buttonUtilityA = new JoystickButton(buttonBoardPlayer1, 20);
     private final static JoystickButton buttonUtilityB = new JoystickButton(buttonBoardPlayer1, 21);
-    //now this is just TOO much trolling who put this buttonUtilityA here
+    // now this is just TOO much trolling who put this buttonUtilityA here
 
     private static final SetElevatorState l1 = new SetElevatorState(ElevatorStates.L1);
     private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
@@ -120,8 +123,7 @@ public class JoystickIO {
         setDefaultCommands();
     }
 
-    public static void bindButtonBoard()
-    {
+    public static void bindButtonBoard() {
         buttonLeftSource.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(0)));
         buttonRightSource.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(1)));
         buttonReefZoneA.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(2)));
@@ -158,7 +160,8 @@ public class JoystickIO {
          * Testing:
          * x to activate the driving
          * press b to move through all the setpoints
-         * left bumper to go to the nearest reef related branch based on driver perspective (left side)
+         * left bumper to go to the nearest reef related branch based on driver
+         * perspective (left side)
          * right bumper ^^^ but right
          * 
          * left dpad to switch l1, l2, l3, l4 (left up right down)
@@ -167,10 +170,16 @@ public class JoystickIO {
          * On the real bot:
          * it'll all js be connected to the buttonboard
          */
-        pilot.x().onTrue(Commands.runOnce(()->Robot.swerve.setIsOTF(true)));
+        pilot.x().onTrue(Commands.runOnce(() -> Robot.swerve.setIsOTF(true)));
 
-        pilot.leftBumper().onTrue(Commands.runOnce(()-> {ToPos.setSetpointByClosestReefBranch(true);Robot.swerve.setIsOTF(true);}));
-        pilot.rightBumper().onTrue(Commands.runOnce(()-> {ToPos.setSetpointByClosestReefBranch(false);Robot.swerve.setIsOTF(true);}));
+        pilot.leftBumper().onTrue(Commands.runOnce(() -> {
+            ToPos.setSetpointByClosestReefBranch(true);
+            Robot.swerve.setIsOTF(true);
+        }));
+        pilot.rightBumper().onTrue(Commands.runOnce(() -> {
+            ToPos.setSetpointByClosestReefBranch(false);
+            Robot.swerve.setIsOTF(true);
+        }));
 
         pilot.b().onTrue(Commands.runOnce(() -> {
             Robot.swerve.setIsOTF(false);
@@ -178,7 +187,22 @@ public class JoystickIO {
             Robot.swerve.showSetpointEndGoal();
         }));
 
-        new Trigger(() -> Robot.swerve.getIsOTF()).whileTrue(onTheFly);
+        pilot.y().onTrue(Commands.runOnce(() -> {
+            Robot.swerve.setIsOTF(false);
+            Robot.swerve.setPPSetpointIndex(0);
+            Robot.swerve.showSetpointEndGoal();
+        }));
+        
+        new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
+        new Trigger(() -> {
+            if (Math.abs(pilot.getLeftX()) > ControllerConstants.deadband
+                    || Math.abs(pilot.getLeftY()) > ControllerConstants.deadband
+                    || Math.abs(pilot.getRightX()) > ControllerConstants.deadband) {
+                return true;
+            }
+            return false;
+        }).onTrue(Commands.runOnce(() -> Robot.swerve.setIsOTF(false)));
+
         bindButtonBoard();
         ToPosTriggers.createOTFTriggers();
 
@@ -192,7 +216,6 @@ public class JoystickIO {
         pilot.povRight().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L3)));
         pilot.povDown().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L4)));
     }
-
 
     public static void pilotBindings() {
         // gyro reset
@@ -231,8 +254,7 @@ public class JoystickIO {
                         new SwerveDefaultCommand(
                                 () -> pilot.getLeftX(),
                                 () -> pilot.getLeftY(),
-                                () -> pilot.getRightX()
-                                ));
+                                () -> pilot.getRightX()));
     }
 
 }

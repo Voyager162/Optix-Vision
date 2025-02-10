@@ -17,21 +17,30 @@ import frc.robot.subsystems.swerve.ToPosConstants;
 import frc.robot.utils.UtilityFunctions;
 
 /**
- * The `OnTheFly` command dynamically generates and follows a trajectory 
- * from the robot's current position to a designated scoring or movement setpoint.
- * It is responsible for real-time path planning and execution using PathPlanner.
+ * The `OnTheFly` command dynamically generates and follows a trajectory
+ * from the robot's current position to a designated scoring or movement
+ * setpoint.
+ * It is responsible for real-time path planning and execution using
+ * PathPlanner.
  */
 public class OnTheFly extends Command {
     private PathPlannerTrajectory trajectory; // The generated trajectory for movement
     private final Timer timer = new Timer(); // Timer to track trajectory progress
-    private final double positionTolerance = ToPosConstants.ReefVerticies.positionTolerance; // Allowed position error (meters)
-    private final double rotationTolerance = ToPosConstants.ReefVerticies.rotationTolerance; // Allowed rotation error (degrees)
+    private final double positionTolerance = ToPosConstants.ReefVerticies.positionTolerance; // Allowed position error
+                                                                                             // (meters)
+    private final double rotationTolerance = ToPosConstants.ReefVerticies.rotationTolerance; // Allowed rotation error
+                                                                                             // (degrees)
+
+    private Pose2d endpoint = new Pose2d();
 
     /**
-     * Constructs the OnTheFly command. 
-     * This command does not require any parameters as it dynamically determines the path.
+     * Constructs the OnTheFly command.
+     * This command does not require any parameters as it dynamically determines the
+     * path.
      */
-    public OnTheFly() {}
+    public OnTheFly() {
+        addRequirements(Robot.swerve);
+    }
 
     /**
      * Initializes the trajectory generation process and starts the timer.
@@ -41,6 +50,8 @@ public class OnTheFly extends Command {
     public void initialize() {
         timer.reset();
         timer.start();
+
+        endpoint = Robot.swerve.getPPSetpoint().setpoint;
 
         // Create a new dynamic path generator
         ToPos toPos = new ToPos();
@@ -56,7 +67,7 @@ public class OnTheFly extends Command {
 
         // If path generation fails, stop the command
         if (path == null) {
-            Robot.swerve.setIsOTF(false); 
+            Robot.swerve.setIsOTF(false);
             this.cancel();
             return;
         }
@@ -82,7 +93,8 @@ public class OnTheFly extends Command {
 
     /**
      * Continuously executes the trajectory-following logic.
-     * If the trajectory is invalid or the robot is not in OTF mode, the command cancels itself.
+     * If the trajectory is invalid or the robot is not in OTF mode, the command
+     * cancels itself.
      */
     @Override
     public void execute() {
@@ -93,7 +105,8 @@ public class OnTheFly extends Command {
 
         // Get the current elapsed time in the trajectory
         double currentTime = timer.get();
-        PathPlannerTrajectoryState goalState = trajectory.sample(currentTime); // Get the desired state at the current time
+        PathPlannerTrajectoryState goalState = trajectory.sample(currentTime); // Get the desired state at the current
+                                                                               // time
 
         // Command the robot to follow the sampled trajectory state
         Robot.swerve.followSample(goalState.pose,
@@ -101,14 +114,8 @@ public class OnTheFly extends Command {
                         goalState.fieldSpeeds.vxMetersPerSecond, // X velocity
                         goalState.fieldSpeeds.vyMetersPerSecond, // Y velocity
                         new Rotation2d(goalState.fieldSpeeds.omegaRadiansPerSecond) // Angular velocity
-                )
-        );
+                ));
 
-        // If the command is complete, stop execution
-        if (isFinished()) {
-            this.end(true);
-            Robot.swerve.setIsOTF(false);
-        }
     }
 
     /**
@@ -119,13 +126,16 @@ public class OnTheFly extends Command {
     @Override
     public void end(boolean interrupted) {
         timer.stop();
+        Robot.swerve.setIsOTF(false);
     }
 
     /**
      * Determines if the trajectory is complete.
-     * The command finishes if the trajectory time has elapsed and the robot is within an acceptable error margin.
+     * The command finishes if the trajectory time has elapsed and the robot is
+     * within an acceptable error margin.
      *
-     * @return true if the trajectory is complete and the robot is close enough to the target.
+     * @return true if the trajectory is complete and the robot is close enough to
+     *         the target.
      */
     @Override
     public boolean isFinished() {
@@ -133,12 +143,11 @@ public class OnTheFly extends Command {
             return true; // No trajectory means nothing to follow
         }
 
-        boolean trajectoryComplete = timer.get() >= trajectory.getTotalTimeSeconds(); // Check if the trajectory time has elapsed
-        if (trajectoryComplete) {
-            return UtilityFunctions.withinMargin(
-                new Pose2d(positionTolerance, positionTolerance, new Rotation2d(Math.toRadians(rotationTolerance))), // Allowed error margin
-                trajectory.getEndState().pose, // Final trajectory pose
-                Robot.swerve.getPose()); // Current robot pose
+        if (!Robot.swerve.getIsOTF()) {
+            return true;
+        }
+        if (!Robot.swerve.getPPSetpoint().setpoint.equals(endpoint)) {
+            return true;
         }
         return false;
     }
