@@ -16,7 +16,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.arm.climb.ClimbArmIO.ArmData;
-import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.MotorData;
 import static edu.wpi.first.units.Units.*;
 
@@ -37,18 +36,8 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 public class ClimbArm extends SubsystemBase {
 
-	private ProfiledPIDController profile = new ProfiledPIDController(
-			0, 0, 0,
-			new TrapezoidProfile.Constraints(
-					ClimbArmConstants.maxVelocity,
-					ClimbArmConstants.maxAcceleration));
-
-	private ArmFeedforward feedforward = new ArmFeedforward(
-			ClimbArmConstants.kS,
-			ClimbArmConstants.kG,
-			ClimbArmConstants.kV,
-			ClimbArmConstants.kA);
-
+	private ProfiledPIDController profile;
+	private ArmFeedforward feedforward;
 	private ClimbArmIO armIO;
 	private ArmData data = new ArmData();
 	private ClimbArmConstants.ArmStates state = ClimbArmConstants.ArmStates.STOPPED;
@@ -57,17 +46,6 @@ public class ClimbArm extends SubsystemBase {
 	private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
 	private LoggedMechanismLigament2d armLigament = armRoot.append(new LoggedMechanismLigament2d("Climb Arm", 24, 0));
 
-	private LoggedTunableNumber kG = new LoggedTunableNumber(this.getName() + "/kG", ClimbArmConstants.kG);
-	private LoggedTunableNumber kP = new LoggedTunableNumber(this.getName() + "/kP", ClimbArmConstants.kP);
-	private LoggedTunableNumber kI = new LoggedTunableNumber(this.getName() + "/kI", ClimbArmConstants.kI);
-	private LoggedTunableNumber kD = new LoggedTunableNumber(this.getName() + "/kD", ClimbArmConstants.kD);
-	private LoggedTunableNumber kS = new LoggedTunableNumber(this.getName() + "/kS", ClimbArmConstants.kS);
-	private LoggedTunableNumber kV = new LoggedTunableNumber(this.getName() + "/kV", ClimbArmConstants.kV);
-	private LoggedTunableNumber kA = new LoggedTunableNumber(this.getName() + "/kA", ClimbArmConstants.kA);
-	private LoggedTunableNumber maxVelocity = new LoggedTunableNumber(this.getName() + "/max velocity",
-			ClimbArmConstants.maxVelocity);
-	private LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(this.getName() + "/max acceleration",
-			ClimbArmConstants.maxAcceleration);
 	StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
 			.getStructTopic("ClimbArm Pose", Pose3d.struct).publish();
 	/**
@@ -269,20 +247,11 @@ public class ClimbArm extends SubsystemBase {
 
 		Logger.recordOutput("subsystems/climbArm/current state", state.name());
 
-		ClimbArmConstants.kG = kG.get();
-		ClimbArmConstants.kP = kP.get();
-		ClimbArmConstants.kI = kI.get();
-		ClimbArmConstants.kD = kD.get();
-		ClimbArmConstants.kS = kS.get();
-		ClimbArmConstants.kV = kV.get();
-		ClimbArmConstants.kA = kA.get();
-		ClimbArmConstants.maxVelocity = maxVelocity.get();
-		ClimbArmConstants.maxAcceleration = maxAcceleration.get();
 		publisher.set(getPose3d());
 
-		profile = new ProfiledPIDController(ClimbArmConstants.kP, ClimbArmConstants.kI, ClimbArmConstants.kD,
-				new TrapezoidProfile.Constraints(ClimbArmConstants.maxVelocity, ClimbArmConstants.maxAcceleration));
-		feedforward = new ArmFeedforward(ClimbArmConstants.kS, ClimbArmConstants.kG, ClimbArmConstants.kV);
+		profile = new ProfiledPIDController(ClimbArmConstants.kP.get(), ClimbArmConstants.kI.get(), ClimbArmConstants.kD.get(),
+				new TrapezoidProfile.Constraints(ClimbArmConstants.maxVelocity.get(), ClimbArmConstants.maxAcceleration.get()));
+		feedforward = new ArmFeedforward(ClimbArmConstants.kS.get(), ClimbArmConstants.kG.get(), ClimbArmConstants.kV.get());
 
 		Logger.recordOutput("subsystems/arms/climb/Climb Arm Mechanism", mechanism2d);
 	}

@@ -43,7 +43,7 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 		frontMotorLead.setBrakeMode(true);
 		frontMotorLead.setPositionConversionFactor(1 / ClimbArmConstants.armGearing * 2 * Math.PI);
 		frontMotorLead.setVelocityConversionFactor(1 / ClimbArmConstants.armGearing * 2 * Math.PI / 60.0);
-		frontMotorLead.setPID(ClimbArmConstants.kP, ClimbArmConstants.kI, ClimbArmConstants.kD, ClosedLoopSlot.kSlot0);
+		frontMotorLead.setPID(ClimbArmConstants.kP.get(), ClimbArmConstants.kI.get(), ClimbArmConstants.kD.get(), ClosedLoopSlot.kSlot0);
 
 		backMotorFollower.applyConfig(frontMotorLead.getConfig());
 		backMotorFollower.setInverted(true);

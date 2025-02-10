@@ -1,6 +1,7 @@
 package frc.robot.subsystems.arm.climb;
 
 import edu.wpi.first.math.util.Units;
+import frc.robot.utils.LoggedTunableNumber;
 
 /**
  * Constants file for the climb arm subsystem
@@ -25,20 +26,21 @@ public class ClimbArmConstants {
 	public static final double armMass_kg = 8.44;
 	public static final double armGearing = 255;
 
-	public static double maxVelocity = 0.0;
-	public static double maxAcceleration = 0.0;
 
 	public static final double momentOfInertia = 0.775;
 
 	// control values
-	public static double kP = 15;
-	public static double kI = 0.0;
-	public static double kD = 0.0;
-
-	public static double kG = 0.50738;
-	public static double kS = 0.0;
-	public static double kA = 0.0;
-	public static double kV = 0.0;
+	public static LoggedTunableNumber kG = new LoggedTunableNumber("/subsystems/arms/climbArm/kG", 0.50738);
+	public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/arms/climbArm/kP", 15);
+	public static LoggedTunableNumber kI = new LoggedTunableNumber("/subsystems/arms/climbArm/kP" + "/kI", 0);
+	public static LoggedTunableNumber kD = new LoggedTunableNumber("/subsystems/arms/climbArm/kD", 0);
+	public static LoggedTunableNumber kS = new LoggedTunableNumber("/subsystems/arms/climbArm/kS", 0);
+	public static LoggedTunableNumber kV = new LoggedTunableNumber("/subsystems/arms/climbArm/kV", 0);
+	public static LoggedTunableNumber kA = new LoggedTunableNumber("/subsystems/arms/climbArm/kA", 0);
+	public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/arms/climbArm/max velocity",
+			0);
+	public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("/subsystems/arms/climbArm/max acceleration",
+			0);
 
 	// setpoints
 	public static final double stowSetPoint_rad = 0;
