@@ -35,6 +35,7 @@ import frc.robot.subsystems.swerve.sim.GyroSim;
 import frc.robot.subsystems.swerve.sim.SwerveModuleSim;
 import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.MotorData;
+import frc.robot.utils.ShuffleData;
 import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
 import frc.robot.subsystems.swerve.SwerveConstants.ControlConstants;
@@ -103,6 +104,21 @@ public class Swerve extends SubsystemBase {
       SwerveConstants.ControlConstants.maxSpeedMetersPerSecond);
   private LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("swerve/maxAcceleration",
       SwerveConstants.ControlConstants.maxAccelerationMetersPerSecondSquared);
+
+  private ShuffleData<Double[]> odometryLog = new ShuffleData<Double[]>(
+      this.getName(),
+      "odometry",
+      new Double[] { 0.0, 0.0, 0.0});
+
+  private ShuffleData<Double[]> realStatesLog = new ShuffleData<Double[]>(
+      this.getName(),
+      "real states",
+      new Double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
+
+  private ShuffleData<Double[]> desiredStatesLog = new ShuffleData<Double[]>(
+      this.getName(),
+      "desired states",
+      new Double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
 
   public Swerve() {
 
@@ -517,27 +533,15 @@ public class Swerve extends SubsystemBase {
         modules[3].getDesiredState().speedMetersPerSecond
     };
 
-    Logger.recordOutput("/subsystems/swerve/real states/module 1 angle", realStates[0]);
-    Logger.recordOutput("/subsystems/swerve/real states/module 2 position", realStates[1]);
-    Logger.recordOutput("/subsystems/swerve/real states/module 2 angle", realStates[2]);
-    Logger.recordOutput("/subsystems/swerve/real states/module 2 position", realStates[3]);
-    Logger.recordOutput("/subsystems/swerve/real states/module 3 angle", realStates[4]);
-    Logger.recordOutput("/subsystems/swerve/real states/module 3 position", realStates[5]);
-    Logger.recordOutput("/subsystems/swerve/real states/module 4 angle", realStates[6]);
-    Logger.recordOutput("/subsystems/swerve/real states/module 4 position", realStates[7]);
-    Logger.recordOutput("/subsystems/swerve/desired states/module 1 angle", desiredStates[0]);
-    Logger.recordOutput("/subsystems/swerve/desired states/module 2 position", desiredStates[1]);
-    Logger.recordOutput("/subsystems/swerve/desired states/module 2 angle", desiredStates[2]);
-    Logger.recordOutput("/subsystems/swerve/desired states/module 2 position", desiredStates[3]);
-    Logger.recordOutput("/subsystems/swerve/desired states/module 3 angle", desiredStates[4]);
-    Logger.recordOutput("/subsystems/swerve/desired states/module 3 position", desiredStates[5]);
-    Logger.recordOutput("/subsystems/swerve/desired states/module 4 angle", desiredStates[6]);
-    Logger.recordOutput("/subsystems/swerve/desired states/module 4 position", desiredStates[7]);
-
+    realStatesLog.set(realStates);
+    desiredStatesLog.set(desiredStates);
     // odometry logging
-    Logger.recordOutput("/subsystems/swerve/pose x", getPose().getX());
-    Logger.recordOutput("/subsystems/swerve/pose y", getPose().getY());
-    Logger.recordOutput("/subsystems/swerve/rotation", getPose().getRotation().getRadians());
+    odometryLog.set(
+        new Double[] {
+            getPose().getX(),
+            getPose().getY(),
+            getPose().getRotation().getRadians()
+        });
     Logger.recordOutput("/subsystems/swerve/utilize vision", utilizeVision);
 
     // gyro logging
