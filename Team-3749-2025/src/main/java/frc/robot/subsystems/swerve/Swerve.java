@@ -89,10 +89,10 @@ public class Swerve extends SubsystemBase {
       Seconds.of(10) // Test duration
   );
 
-  private LoggedTunableNumber kPDriving = new LoggedTunableNumber("swerve/kP Drive", AutoConstants.kPDrive);
-  private LoggedTunableNumber kDDriving = new LoggedTunableNumber("swerve/kD Drive", AutoConstants.kDDrive);
-  private LoggedTunableNumber kPTurn = new LoggedTunableNumber("swerve/kP Turn controller", AutoConstants.kPTurn);
-  private LoggedTunableNumber kDTurn = new LoggedTunableNumber("swerve/kD Turn controller", AutoConstants.kDTurn);
+  private LoggedTunableNumber kPDriving = new LoggedTunableNumber("/subsystems/swerve/kP Drive", AutoConstants.kPDrive);
+  private LoggedTunableNumber kDDriving = new LoggedTunableNumber("/subsystems/swerve/kD Drive", AutoConstants.kDDrive);
+  private LoggedTunableNumber kPTurn = new LoggedTunableNumber("/subsystems/swerve/kP Turn controller", AutoConstants.kPTurn);
+  private LoggedTunableNumber kDTurn = new LoggedTunableNumber("/subsystems/swerve/kD Turn controller", AutoConstants.kDTurn);
 
   public Swerve() {
 
