@@ -531,7 +531,7 @@ public class Swerve extends SubsystemBase {
     Logger.recordOutput("/subsystems/swerve/gyro rotation", (robotVelocity - velocity) / .02);
     Logger.recordOutput("/subsystems/swerve/gyro rotation", robotVelocity);
     String currentCommand = this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName();
-    Logger.recordOutput("/subsystems/swerve/gyro rotation", currentCommand);
+    Logger.recordOutput("/subsystems/swerve/current command", currentCommand);
 
     AutoConstants.kPDrive = kPDriving.get();
     AutoConstants.kDDrive = kDDriving.get();
