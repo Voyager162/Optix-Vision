@@ -13,8 +13,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.ToPos;
-import frc.robot.subsystems.swerve.ToPosConstants;
-import frc.robot.utils.UtilityFunctions;
 
 /**
  * The `OnTheFly` command dynamically generates and follows a trajectory
@@ -26,10 +24,6 @@ import frc.robot.utils.UtilityFunctions;
 public class OnTheFly extends Command {
     private PathPlannerTrajectory trajectory; // The generated trajectory for movement
     private final Timer timer = new Timer(); // Timer to track trajectory progress
-    private final double positionTolerance = ToPosConstants.ReefVerticies.positionTolerance; // Allowed position error
-                                                                                             // (meters)
-    private final double rotationTolerance = ToPosConstants.ReefVerticies.rotationTolerance; // Allowed rotation error
-                                                                                             // (degrees)
 
     private Pose2d endpoint = new Pose2d();
 
@@ -139,16 +133,6 @@ public class OnTheFly extends Command {
      */
     @Override
     public boolean isFinished() {
-        if (trajectory == null) {
-            return true; // No trajectory means nothing to follow
-        }
-
-        if (!Robot.swerve.getIsOTF()) {
-            return true;
-        }
-        if (!Robot.swerve.getPPSetpoint().setpoint.equals(endpoint)) {
-            return true;
-        }
-        return false;
+        return trajectory == null || !Robot.swerve.getIsOTF() || !Robot.swerve.getPPSetpoint().setpoint.equals(endpoint);
     }
 }
