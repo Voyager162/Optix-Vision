@@ -231,7 +231,7 @@ public class ClimbArm extends SubsystemBase {
 
 	/** Logs data to Shuffleboard. */
 	private void logData() {
-		Logger.recordOutput("subsystems/climbArm/Current Command",
+		Logger.recordOutput("subsystems/arms/climbArm/Current Command",
 				this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
 		Logger.recordOutput("subsystems/arms/climbArm/position", data.positionUnits);
 		Logger.recordOutput("subsystems/arms/climbArm/velocity", data.velocityUnits);
@@ -245,7 +245,7 @@ public class ClimbArm extends SubsystemBase {
 
 		armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
-		Logger.recordOutput("subsystems/climbArm/current state", state.name());
+		Logger.recordOutput("subsystems/arms/climbArm/current state", state.name());
 
 		publisher.set(getPose3d());
 
@@ -253,7 +253,7 @@ public class ClimbArm extends SubsystemBase {
 				new TrapezoidProfile.Constraints(ClimbArmConstants.maxVelocity.get(), ClimbArmConstants.maxAcceleration.get()));
 		feedforward = new ArmFeedforward(ClimbArmConstants.kS.get(), ClimbArmConstants.kG.get(), ClimbArmConstants.kV.get());
 
-		Logger.recordOutput("subsystems/arms/climb/Climb Arm Mechanism", mechanism2d);
+		Logger.recordOutput("subsystems/arms/climbArm/Climb Arm Mechanism", mechanism2d);
 	}
 
 	/**
