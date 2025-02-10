@@ -1,6 +1,7 @@
 package frc.robot.subsystems.arm.coral;
 
 import edu.wpi.first.math.util.Units;
+import frc.robot.utils.LoggedTunableNumber;
 
 /**
  * Constants file for the climb arm subsystem
@@ -24,21 +25,22 @@ public class CoralArmConstants {
 													// the mass feature
 	public static final double armGearing = 40;
 
-	public static double kP = 2;
-	public static double kI = 0.0;
-	public static double kD = 0.0;
-
-	public static double kG = 1.454056;
-	public static double kS = 0.0;
-	public static double kA = 0.0;
-	public static double kV = 1.5;
+	// control values
+	public static LoggedTunableNumber kG = new LoggedTunableNumber("/subsystems/arms/climbArm/kG", 0.5);
+	public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/arms/climbArm/kP", 15);
+	public static LoggedTunableNumber kI = new LoggedTunableNumber("/subsystems/arms/climbArm/kP" + "/kI", 0);
+	public static LoggedTunableNumber kD = new LoggedTunableNumber("/subsystems/arms/climbArm/kD", 0);
+	public static LoggedTunableNumber kS = new LoggedTunableNumber("/subsystems/arms/climbArm/kS", 0);
+	public static LoggedTunableNumber kV = new LoggedTunableNumber("/subsystems/arms/climbArm/kV", 0);
+	public static LoggedTunableNumber kA = new LoggedTunableNumber("/subsystems/arms/climbArm/kA", 0);
+	public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/arms/climbArm/max velocity",
+			0);
+	public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("/subsystems/arms/climbArm/max acceleration",
+			0);
 
 	public static final double stowSetPoint_rad = 70 * Math.PI / 180; // 70, 1.2217304764
 	public static final double handOffSetPoint_rad = 40 * Math.PI / 180; // 40
 	public static final double coralPickUpSetPoint_rad = 175 * Math.PI / 180; // 175, 3.05432619099
-
-	public static double maxVelocity = 5;
-	public static double maxAcceleration = 4;
 
 	public static final double momentOfInertia = 0.775; // from last years MOI
 

@@ -16,7 +16,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
-import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.MotorData;
 import static edu.wpi.first.units.Units.*;
 
@@ -40,18 +39,6 @@ public class CoralArm extends SubsystemBase {
     private ArmData data = new ArmData();
     private CoralArmConstants.ArmStates state = CoralArmConstants.ArmStates.STOPPED;
 
-    private LoggedTunableNumber kG = new LoggedTunableNumber(this.getName() + "/kG", CoralArmConstants.kG);
-    private LoggedTunableNumber kP = new LoggedTunableNumber(this.getName() + "/kP", CoralArmConstants.kP);
-    private LoggedTunableNumber kI = new LoggedTunableNumber(this.getName() + "/kI", CoralArmConstants.kI);
-    private LoggedTunableNumber kD = new LoggedTunableNumber(this.getName() + "/kD", CoralArmConstants.kD);
-    private LoggedTunableNumber kS = new LoggedTunableNumber(this.getName() + "/kS", CoralArmConstants.kS);
-    private LoggedTunableNumber kV = new LoggedTunableNumber(this.getName() + "/kV", CoralArmConstants.kV);
-    private LoggedTunableNumber kA = new LoggedTunableNumber(this.getName() + "/kA", CoralArmConstants.kA);
-    private LoggedTunableNumber maxVelocity = new LoggedTunableNumber(this.getName() + "/max velocity",
-            CoralArmConstants.maxVelocity);
-    private LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(this.getName() + "/max acceleration",
-            CoralArmConstants.maxAcceleration);
-
     private SysIdTuner sysIdTuner;
 
     Map<String, MotorData> motorData = Map.of(
@@ -72,15 +59,15 @@ public class CoralArm extends SubsystemBase {
     private ProfiledPIDController profile = new ProfiledPIDController(
             0, 0, 0,
             new TrapezoidProfile.Constraints( // Constraints on velocity and acceleration
-                    CoralArmConstants.maxVelocity,
-                    CoralArmConstants.maxAcceleration));
+                    CoralArmConstants.maxVelocity.get(),
+                    CoralArmConstants.maxAcceleration.get()));
 
     // Arm feedforward to calculate the necessary voltage for the arm's movement.
     private ArmFeedforward feedforward = new ArmFeedforward(
-            CoralArmConstants.kS,
-            CoralArmConstants.kG,
-            CoralArmConstants.kV,
-            CoralArmConstants.kA);
+            CoralArmConstants.kS.get(),
+            CoralArmConstants.kG.get(),
+            CoralArmConstants.kV.get(),
+            CoralArmConstants.kA.get());
 
     private LoggedMechanism2d mechanism2d = new LoggedMechanism2d(3, 3);
     private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 1.8, .4);
@@ -286,20 +273,11 @@ public class CoralArm extends SubsystemBase {
 
         publisher.set(getPose3d());
 
-        CoralArmConstants.kG = kG.get();
-        CoralArmConstants.kP = kP.get();
-        CoralArmConstants.kI = kI.get();
-        CoralArmConstants.kD = kD.get();
-        CoralArmConstants.kS = kS.get();
-        CoralArmConstants.kV = kV.get();
-        CoralArmConstants.kA = kA.get();
-        CoralArmConstants.maxVelocity = maxVelocity.get();
-        CoralArmConstants.maxAcceleration = maxAcceleration.get();
 
-        profile = new ProfiledPIDController(CoralArmConstants.kP, CoralArmConstants.kI, CoralArmConstants.kD,
-                new TrapezoidProfile.Constraints(CoralArmConstants.maxVelocity, CoralArmConstants.maxAcceleration));
-        feedforward = new ArmFeedforward(CoralArmConstants.kS, CoralArmConstants.kG, CoralArmConstants.kV,
-                CoralArmConstants.kA);
+        profile = new ProfiledPIDController(CoralArmConstants.kP.get(), CoralArmConstants.kI.get(), CoralArmConstants.kD.get(),
+                new TrapezoidProfile.Constraints(CoralArmConstants.maxVelocity.get(), CoralArmConstants.maxAcceleration.get()));
+        feedforward = new ArmFeedforward(CoralArmConstants.kS.get(), CoralArmConstants.kG.get(), CoralArmConstants.kV.get(),
+                CoralArmConstants.kA.get());
 
         Logger.recordOutput("subsystems/arms/coralArm/coral arm mechanism", mechanism2d);
     }
