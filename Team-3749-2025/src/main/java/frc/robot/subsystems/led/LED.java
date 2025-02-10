@@ -117,6 +117,14 @@ public class LED extends SubsystemBase {
         return currentPattern;
     }
 
+    /***
+     * 
+     * @param setBrightness value from 1 - 0 for brightness
+     */
+    public void setBrightness(double setBrightness) {
+        brightness = setBrightness;
+    }
+
     // runs every 0.02 sec
     @Override
     public void periodic() {
@@ -136,11 +144,4 @@ public class LED extends SubsystemBase {
         LEDs.setData(LEDBuffer);
     }
 
-    /***
-     * 
-     * @param setBrightness value from 1 - 0 for brightness
-     */
-    public void setBrightness(double setBrightness) {
-        brightness = setBrightness;
-    }
 }
