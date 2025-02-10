@@ -35,7 +35,6 @@ import frc.robot.subsystems.swerve.sim.GyroSim;
 import frc.robot.subsystems.swerve.sim.SwerveModuleSim;
 import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.MotorData;
-import frc.robot.utils.ShuffleData;
 import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
 import frc.robot.subsystems.swerve.SwerveConstants.ControlConstants;
@@ -104,21 +103,6 @@ public class Swerve extends SubsystemBase {
       SwerveConstants.ControlConstants.maxSpeedMetersPerSecond);
   private LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("swerve/maxAcceleration",
       SwerveConstants.ControlConstants.maxAccelerationMetersPerSecondSquared);
-
-  private ShuffleData<Double[]> odometryLog = new ShuffleData<Double[]>(
-      this.getName(),
-      "odometry",
-      new Double[] { 0.0, 0.0, 0.0});
-
-  private ShuffleData<Double[]> realStatesLog = new ShuffleData<Double[]>(
-      this.getName(),
-      "real states",
-      new Double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
-
-  private ShuffleData<Double[]> desiredStatesLog = new ShuffleData<Double[]>(
-      this.getName(),
-      "desired states",
-      new Double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
 
   public Swerve() {
 
@@ -510,7 +494,7 @@ public class Swerve extends SubsystemBase {
    */
   private void logData() {
     // logging of our module states
-    Double[] realStates = {
+    double[] realStates = {
         modules[0].getState().angle.getRadians(),
         modules[0].getState().speedMetersPerSecond,
         modules[1].getState().angle.getRadians(),
@@ -522,7 +506,7 @@ public class Swerve extends SubsystemBase {
     };
 
     // SmartDashboard.puTarr("Swerve: Real States",realSwerveModuleStates);
-    Double[] desiredStates = {
+    double[] desiredStates = {
         modules[0].getDesiredState().angle.getRadians(),
         modules[0].getDesiredState().speedMetersPerSecond,
         modules[1].getDesiredState().angle.getRadians(),
@@ -533,15 +517,13 @@ public class Swerve extends SubsystemBase {
         modules[3].getDesiredState().speedMetersPerSecond
     };
 
-    realStatesLog.set(realStates);
-    desiredStatesLog.set(desiredStates);
-    // odometry logging
-    odometryLog.set(
-        new Double[] {
-            getPose().getX(),
-            getPose().getY(),
-            getPose().getRotation().getRadians()
-        });
+    Logger.recordOutput("/subsystems/swerve/real states", realStates);
+    Logger.recordOutput("/subsystems/swerve/desired states", desiredStates);
+    double[] odometry = {
+        getPose().getX(),
+        getPose().getY(),
+        getPose().getRotation().getRadians()};
+    Logger.recordOutput("/subsystems/swerve/odometry", odometry);
     Logger.recordOutput("/subsystems/swerve/utilize vision", utilizeVision);
 
     // gyro logging

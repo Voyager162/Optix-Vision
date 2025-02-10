@@ -98,12 +98,12 @@ public class JoystickIO {
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
         
         // Checking voltage for all subsystems
-        // operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(0)));
-        // operator.a().onTrue(Commands.run(() -> Robot.coralArm.setVoltage(0)));
-        // operator.a().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(0)));
-        // operator.a().onTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(0)));
-        // operator.a().onTrue(Commands.run(() -> Robot.coralRoller.setVoltage(0)));
-        // operator.a().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(0)));
+        operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.b().onTrue(Commands.run(() -> Robot.coralArm.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.x().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.y().onTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.leftBumper().onTrue(Commands.run(() -> Robot.coralRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.rightBumper().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
 
         // Climb, Coral, Elevator SysId
         // operator.a().whileTrue(Robot.climbArm.getSysIdTuner().runTests());

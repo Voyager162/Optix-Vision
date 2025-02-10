@@ -25,6 +25,7 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+import frc.robot.utils.LoggedTunableNumber;
 
 public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
@@ -38,6 +39,7 @@ public class Robot extends LoggedRobot {
 
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
+  public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("/subsystems/setVoltage", 0);
 
   private RobotContainer m_robotContainer;
 
