@@ -88,31 +88,31 @@ public class JoystickIO {
 
         // Example binding
         // operator.a().whileTrue(new ExampleSubsystemCommand());
-        buttonBoard.buttonl1.onTrue(Commands.runOnce(() -> System.out.println("1, 5")));
-        buttonBoard.buttonl2.onTrue(Commands.runOnce(() -> System.out.println("1, 6")));
-        buttonBoard.buttonl3.onTrue(Commands.runOnce(() -> System.out.println("3, 1")));
-        buttonBoard.buttonl4.onTrue(Commands.runOnce(() -> System.out.println("3, 2")));
+        // buttonBoard.buttonl1.onTrue(Commands.runOnce(() -> System.out.println("1, 5")));
+        // buttonBoard.buttonl2.onTrue(Commands.runOnce(() -> System.out.println("1, 6")));
+        // buttonBoard.buttonl3.onTrue(Commands.runOnce(() -> System.out.println("3, 1")));
+        // buttonBoard.buttonl4.onTrue(Commands.runOnce(() -> System.out.println("3, 2")));
 
-        buttonBoard.buttonRightSource.onTrue(Commands.runOnce(() -> System.out.println("1, 4")));
-        buttonBoard.buttonLeftSource.onTrue(Commands.runOnce(() -> System.out.println("1, 7")));
+        // buttonBoard.buttonRightSource.onTrue(Commands.runOnce(() -> System.out.println("1, 4")));
+        // buttonBoard.buttonLeftSource.onTrue(Commands.runOnce(() -> System.out.println("1, 7")));
 
-        buttonBoard.buttonReefZoneA.onTrue(Commands.runOnce(() -> System.out.println("3, 6")));
-        buttonBoard.buttonReefZoneB.onTrue(Commands.runOnce(() -> System.out.println("2, 5")));
-        buttonBoard.buttonReefZoneC.onTrue(Commands.runOnce(() -> System.out.println("2, 6")));
-        buttonBoard.buttonReefZoneD.onTrue(Commands.runOnce(() -> System.out.println("3, 3")));
-        buttonBoard.buttonReefZoneE.onTrue(Commands.runOnce(() -> System.out.println("3, 4")));
-        buttonBoard.buttonReefZoneF.onTrue(Commands.runOnce(() -> System.out.println("2, 8")));
-        buttonBoard.buttonReefZoneG.onTrue(Commands.runOnce(() -> System.out.println("2, 7")));
-        buttonBoard.buttonReefZoneH.onTrue(Commands.runOnce(() -> System.out.println("2, 4")));
-        buttonBoard.buttonReefZoneI.onTrue(Commands.runOnce(() -> System.out.println("2, 3")));
-        buttonBoard.buttonReefZoneJ.onTrue(Commands.runOnce(() -> System.out.println("2, 2")));
-        buttonBoard.buttonReefZoneK.onTrue(Commands.runOnce(() -> System.out.println("2, 1")));
-        buttonBoard.buttonReefZoneL.onTrue(Commands.runOnce(() -> System.out.println("3, 5")));
+        // buttonBoard.buttonReefZoneA.onTrue(Commands.runOnce(() -> System.out.println("3, 6")));
+        // buttonBoard.buttonReefZoneB.onTrue(Commands.runOnce(() -> System.out.println("2, 5")));
+        // buttonBoard.buttonReefZoneC.onTrue(Commands.runOnce(() -> System.out.println("2, 6")));
+        // buttonBoard.buttonReefZoneD.onTrue(Commands.runOnce(() -> System.out.println("3, 3")));
+        // buttonBoard.buttonReefZoneE.onTrue(Commands.runOnce(() -> System.out.println("3, 4")));
+        // buttonBoard.buttonReefZoneF.onTrue(Commands.runOnce(() -> System.out.println("2, 8")));
+        // buttonBoard.buttonReefZoneG.onTrue(Commands.runOnce(() -> System.out.println("2, 7")));
+        // buttonBoard.buttonReefZoneH.onTrue(Commands.runOnce(() -> System.out.println("2, 4")));
+        // buttonBoard.buttonReefZoneI.onTrue(Commands.runOnce(() -> System.out.println("2, 3")));
+        // buttonBoard.buttonReefZoneJ.onTrue(Commands.runOnce(() -> System.out.println("2, 2")));
+        // buttonBoard.buttonReefZoneK.onTrue(Commands.runOnce(() -> System.out.println("2, 1")));
+        // buttonBoard.buttonReefZoneL.onTrue(Commands.runOnce(() -> System.out.println("3, 5")));
 
-        buttonBoard.buttonAlgaeKnockoff.onTrue(Commands.runOnce(() -> System.out.println("1, 3")));
-        buttonBoard.buttonUtilityA.onTrue(Commands.runOnce(() -> System.out.println("1, 1")));
-        buttonBoard.buttonUtilityB.onTrue(Commands.runOnce(() -> System.out.println("1, 2")));
-        buttonBoard.buttonPlayer1Start.onTrue(Commands.runOnce(() -> System.out.println("1, 8")));
+        // buttonBoard.buttonAlgaeKnockoff.onTrue(Commands.runOnce(() -> System.out.println("1, 3")));
+        // buttonBoard.buttonUtilityA.onTrue(Commands.runOnce(() -> System.out.println("1, 1")));
+        // buttonBoard.buttonUtilityB.onTrue(Commands.runOnce(() -> System.out.println("1, 2")));
+        // buttonBoard.buttonPlayer1Start.onTrue(Commands.runOnce(() -> System.out.println("1, 8")));
 
         // operator.a().whileTrue(Robot.climbArm.getSysIdTuner().runTests());
         // operator.b().whileTrue(Robot.coralArm.getSysIdTuner().runTests());
@@ -130,16 +130,17 @@ public class JoystickIO {
         // operator.x().onTrue(l3);
         // operator.y().onTrue(l4);
 
+        // operator.a().onTrue(climbStow);
+        // operator.b().onTrue(climb);
+        // operator.x().onTrue(coralHandOff);
+        // operator.y().onTrue(coralPickUp);
+
         // operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(0)));
         // operator.a().onTrue(Commands.run(() -> Robot.coralArm.setVoltage(0)));
         // operator.a().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(0)));
         // operator.a().onTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(0)));
         // operator.a().onTrue(Commands.run(() -> Robot.coralRoller.setVoltage(0)));
         // operator.a().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(0)));
-        operator.a().onTrue(climbStow);
-        operator.b().onTrue(climb);
-        operator.x().onTrue(coralHandOff);
-        operator.y().onTrue(coralPickUp);
     }
 
     public static void pilotBindings() {
