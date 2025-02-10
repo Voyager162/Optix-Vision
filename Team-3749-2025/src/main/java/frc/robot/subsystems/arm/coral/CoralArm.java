@@ -13,10 +13,6 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
@@ -29,6 +25,9 @@ import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
 import frc.robot.subsystems.arm.coral.sim.CoralArmSim;
 
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 /**
  * Subsystem class for the coral arm
@@ -83,10 +82,10 @@ public class CoralArm extends SubsystemBase {
             CoralArmConstants.kV,
             CoralArmConstants.kA);
 
-    private Mechanism2d mechanism2d = new Mechanism2d(3, 3);
-    private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 1.8, .4);
-    private MechanismLigament2d armLigament = armRoot
-            .append(new MechanismLigament2d("Coral Arm", CoralArmConstants.armLength_meters, 0));
+    private LoggedMechanism2d mechanism2d = new LoggedMechanism2d(3, 3);
+    private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 1.8, .4);
+    private LoggedMechanismLigament2d armLigament = armRoot
+            .append(new LoggedMechanismLigament2d("Coral Arm", CoralArmConstants.armLength_meters, 0));
 
     private StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
             .getStructTopic("CoralArm Pose", Pose3d.struct).publish();
@@ -105,9 +104,6 @@ public class CoralArm extends SubsystemBase {
             // If running on real hardware, use SparkMax motors for the arm.
             armIO = new CoralArmSparkMax();
         }
-
-        // Add the arm visualization to the SmartDashboard
-        SmartDashboard.putData("Coral Arm Mechanism", mechanism2d);
     }
 
     // GET FUNCTIONS
@@ -304,6 +300,8 @@ public class CoralArm extends SubsystemBase {
                 new TrapezoidProfile.Constraints(CoralArmConstants.maxVelocity, CoralArmConstants.maxAcceleration));
         feedforward = new ArmFeedforward(CoralArmConstants.kS, CoralArmConstants.kG, CoralArmConstants.kV,
                 CoralArmConstants.kA);
+
+        Logger.recordOutput("subsystems/arms/coralArm/coral arm mechanism", mechanism2d);
     }
 
     /** Periodic method for updating arm behavior. */

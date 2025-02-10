@@ -5,6 +5,9 @@ import java.util.function.Consumer;
 import static edu.wpi.first.units.Units.Radians;
 
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -85,10 +88,10 @@ public class Elevator extends SubsystemBase {
     private LoggedTunableNumber maxAData = new LoggedTunableNumber("Elevator/maxA",
             ElevatorConstants.ElevatorControl.maxA);
 
-    private Mechanism2d mech = new Mechanism2d(3, 3);
-    private MechanismRoot2d root = mech.getRoot("elevator", 1, 0);
-    private MechanismLigament2d elevatorMech = root
-            .append(new MechanismLigament2d("elevator", ElevatorConstants.ElevatorSpecs.baseHeight, 90));
+    private LoggedMechanism2d mech = new LoggedMechanism2d(3, 3);
+    private LoggedMechanismRoot2d root = mech.getRoot("elevator", 1, 0);
+    private LoggedMechanismLigament2d elevatorMech = root
+            .append(new LoggedMechanismLigament2d("elevator", ElevatorConstants.ElevatorSpecs.baseHeight, 90));
 
     // SysID
     Map<String, MotorData> motorData = Map.of(
@@ -240,7 +243,6 @@ public class Elevator extends SubsystemBase {
         Logger.recordOutput("subsystems/elevator/input volts", data.rightTempCelcius);
 
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
-        SmartDashboard.putData("elevator mechanism", mech);
 
         ElevatorConstants.ElevatorControl.kP = kPData.get();
         ElevatorConstants.ElevatorControl.kD = kDData.get();
@@ -261,6 +263,7 @@ public class Elevator extends SubsystemBase {
         profile = new ProfiledPIDController(kPData.get(), kIData.get(), kDData.get(),
                 new TrapezoidProfile.Constraints(maxVData.get(), maxAData.get()));
         feedforward = new ElevatorFeedforward(kSData.get(), kGData.get(), kVData.get(), kAData.get());
+        Logger.recordOutput("subsystems/elevator/elevator mechanism", mech);
     }
 
     private Transform3d getTransform3d(double pos) {

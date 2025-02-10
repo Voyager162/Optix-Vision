@@ -13,10 +13,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.arm.climb.ClimbArmIO.ArmData;
@@ -29,6 +25,9 @@ import frc.robot.subsystems.arm.climb.real.ClimbArmSparkMax;
 import frc.robot.subsystems.arm.climb.sim.ClimbArmSim;
 
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 /**
  * Subsystem class for the climb arm
@@ -54,9 +53,9 @@ public class ClimbArm extends SubsystemBase {
 	private ArmData data = new ArmData();
 	private ClimbArmConstants.ArmStates state = ClimbArmConstants.ArmStates.STOPPED;
 
-	private Mechanism2d mechanism2d = new Mechanism2d(60, 60);
-	private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
-	private MechanismLigament2d armLigament = armRoot.append(new MechanismLigament2d("Climb Arm", 24, 0));
+	private LoggedMechanism2d mechanism2d = new LoggedMechanism2d(60, 60);
+	private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
+	private LoggedMechanismLigament2d armLigament = armRoot.append(new LoggedMechanismLigament2d("Climb Arm", 24, 0));
 
 	private LoggedTunableNumber kG = new LoggedTunableNumber(this.getName() + "/kG", ClimbArmConstants.kG);
 	private LoggedTunableNumber kP = new LoggedTunableNumber(this.getName() + "/kP", ClimbArmConstants.kP);
@@ -99,7 +98,6 @@ public class ClimbArm extends SubsystemBase {
 		} else {
 			armIO = new ClimbArmSparkMax();
 		}
-		SmartDashboard.putData("Climb Arm Mechanism", mechanism2d);
 
 		sysIdTuner = new SysIdTuner("climb arm", getConfig(), this, armIO::setVoltage, getMotorData());
 	}
@@ -285,6 +283,8 @@ public class ClimbArm extends SubsystemBase {
 		profile = new ProfiledPIDController(ClimbArmConstants.kP, ClimbArmConstants.kI, ClimbArmConstants.kD,
 				new TrapezoidProfile.Constraints(ClimbArmConstants.maxVelocity, ClimbArmConstants.maxAcceleration));
 		feedforward = new ArmFeedforward(ClimbArmConstants.kS, ClimbArmConstants.kG, ClimbArmConstants.kV);
+
+		Logger.recordOutput("subsystems/arms/climb/Climb Arm Mechanism", mechanism2d);
 	}
 
 	/**
