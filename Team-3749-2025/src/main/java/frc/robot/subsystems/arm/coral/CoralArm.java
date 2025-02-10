@@ -56,19 +56,8 @@ public class CoralArm extends SubsystemBase {
 
     // Profiled PID Controller used only for the motion profile, PID within
     // implementation classes
-    private ProfiledPIDController profile = new ProfiledPIDController(
-            0, 0, 0,
-            new TrapezoidProfile.Constraints( // Constraints on velocity and acceleration
-                    CoralArmConstants.maxVelocity.get(),
-                    CoralArmConstants.maxAcceleration.get()));
-
-    // Arm feedforward to calculate the necessary voltage for the arm's movement.
-    private ArmFeedforward feedforward = new ArmFeedforward(
-            CoralArmConstants.kS.get(),
-            CoralArmConstants.kG.get(),
-            CoralArmConstants.kV.get(),
-            CoralArmConstants.kA.get());
-
+    private ProfiledPIDController profile;
+    private ArmFeedforward feedforward;
     private LoggedMechanism2d mechanism2d = new LoggedMechanism2d(3, 3);
     private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 1.8, .4);
     private LoggedMechanismLigament2d armLigament = armRoot

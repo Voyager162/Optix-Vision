@@ -2,7 +2,6 @@ package frc.robot.subsystems.elevator;
 
 import java.util.Map;
 import java.util.function.Consumer;
-import static edu.wpi.first.units.Units.Radians;
 
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
@@ -56,37 +55,9 @@ public class Elevator extends SubsystemBase {
     static Consumer<Voltage> setVolts;
     static Consumer<SysIdRoutineLog> log;
 
-    private ProfiledPIDController profile = new ProfiledPIDController(
-            0,
-            0,
-            0,
-            new TrapezoidProfile.Constraints(ElevatorConstants.ElevatorControl.maxV,
-                    ElevatorConstants.ElevatorControl.maxA));
+    private ProfiledPIDController profile;
 
-    private ElevatorFeedforward feedforward = new ElevatorFeedforward(
-            ElevatorConstants.ElevatorControl.kS,
-            ElevatorConstants.ElevatorControl.kG,
-            ElevatorConstants.ElevatorControl.kV,
-            ElevatorConstants.ElevatorControl.kA);
-
-    private LoggedTunableNumber kPData = new LoggedTunableNumber("Elevator/kP",
-            ElevatorConstants.ElevatorControl.kP);
-    private LoggedTunableNumber kDData = new LoggedTunableNumber("Elevator/kD",
-            ElevatorConstants.ElevatorControl.kD);
-    private LoggedTunableNumber kVData = new LoggedTunableNumber("Elevator/kV",
-            ElevatorConstants.ElevatorControl.kV);
-    private LoggedTunableNumber kAData = new LoggedTunableNumber("Elevator/kA",
-            ElevatorConstants.ElevatorControl.kA);
-    private LoggedTunableNumber kGData = new LoggedTunableNumber("Elevator/kG",
-            ElevatorConstants.ElevatorControl.kG);
-    private LoggedTunableNumber kSData = new LoggedTunableNumber("Elevator/kS",
-            ElevatorConstants.ElevatorControl.kS);
-    private LoggedTunableNumber kIData = new LoggedTunableNumber("Elevator/kI",
-            ElevatorConstants.ElevatorControl.kI);
-    private LoggedTunableNumber maxVData = new LoggedTunableNumber("Elevator/maxV",
-            ElevatorConstants.ElevatorControl.maxV);
-    private LoggedTunableNumber maxAData = new LoggedTunableNumber("Elevator/maxA",
-            ElevatorConstants.ElevatorControl.maxA);
+    private ElevatorFeedforward feedforward;
 
     private LoggedMechanism2d mech = new LoggedMechanism2d(3, 3);
     private LoggedMechanismRoot2d root = mech.getRoot("elevator", 1, 0);
@@ -244,15 +215,6 @@ public class Elevator extends SubsystemBase {
 
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
 
-        ElevatorConstants.ElevatorControl.kP = kPData.get();
-        ElevatorConstants.ElevatorControl.kD = kDData.get();
-        ElevatorConstants.ElevatorControl.kV = kVData.get();
-        ElevatorConstants.ElevatorControl.kA = kAData.get();
-        ElevatorConstants.ElevatorControl.kG = kGData.get();
-        ElevatorConstants.ElevatorControl.kS = kSData.get();
-        ElevatorConstants.ElevatorControl.kI = kIData.get();
-        ElevatorConstants.ElevatorControl.maxV = maxVData.get();
-        ElevatorConstants.ElevatorControl.maxA = maxAData.get();
         elevatorInnerStagePos = data.positionMeters / 2;
         elevatorMiddleStagePos = data.positionMeters - Units.inchesToMeters(1);
         elevatorInnerStage.set(new Pose3d(getTransform3d(elevatorInnerStagePos).getTranslation(),
@@ -260,9 +222,13 @@ public class Elevator extends SubsystemBase {
         elevatorMiddleStage.set(new Pose3d(getTransform3d(elevatorMiddleStagePos).getTranslation(),
                 getTransform3d(elevatorMiddleStagePos).getRotation()));
 
-        profile = new ProfiledPIDController(kPData.get(), kIData.get(), kDData.get(),
-                new TrapezoidProfile.Constraints(maxVData.get(), maxAData.get()));
-        feedforward = new ElevatorFeedforward(kSData.get(), kGData.get(), kVData.get(), kAData.get());
+        profile = new ProfiledPIDController(ElevatorConstants.ElevatorControl.kP.get(),
+                ElevatorConstants.ElevatorControl.kI.get(), ElevatorConstants.ElevatorControl.kD.get(),
+                new TrapezoidProfile.Constraints(ElevatorConstants.ElevatorControl.maxVelocity.get(),
+                        ElevatorConstants.ElevatorControl.maxAcceleration.get()));
+        feedforward = new ElevatorFeedforward(ElevatorConstants.ElevatorControl.kS.get(),
+                ElevatorConstants.ElevatorControl.kG.get(), ElevatorConstants.ElevatorControl.kV.get(),
+                ElevatorConstants.ElevatorControl.kA.get());
         Logger.recordOutput("subsystems/elevator/elevator mechanism", mech);
     }
 
