@@ -244,6 +244,10 @@ public class CoralArm extends SubsystemBase {
         }
     }
 
+    public boolean hasPiece(){
+        return false;
+    }
+
     /**
      * Logs the arm's data to Shuffleboard for monitoring. This is useful for
      * debugging and analysis.

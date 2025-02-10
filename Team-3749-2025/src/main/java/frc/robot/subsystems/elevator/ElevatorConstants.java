@@ -47,6 +47,7 @@ public class ElevatorConstants {
         L2,
         L3,
         L4,
+        SOURCE,
         MAX,
         STOW
     }

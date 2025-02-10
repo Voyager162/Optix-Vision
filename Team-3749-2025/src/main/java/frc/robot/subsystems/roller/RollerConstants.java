@@ -41,6 +41,7 @@ public class RollerConstants {
         public static final double kDPosition = 10.0;
 
         public static final double velocity = 7.0;
+        public static final double scoreVelocity = -7.0;
     }
     public static final class Scoring {
         public static final int motorId = 21; 
@@ -62,12 +63,14 @@ public class RollerConstants {
         public static final double kDPosition = 10.0;
 
         public static final double velocity = 10.0;
+        public static final double scoreVelocity = -10.0;
     }
     
     public enum RollerStates {
         RUN,
         MAINTAIN,
-        STOP
+        STOP,
+        SCORE
     }
 
     public enum Implementations {
