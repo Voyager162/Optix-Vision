@@ -2,20 +2,20 @@ package frc.robot.commands.roller;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
+import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 
-public class StopCommand extends Command {
-    private static RollerStates targetState = RollerStates.STOP;
+public class RunRoller extends Command {
+    private static RollerStates targetState = RollerStates.RUN;
+    private Roller roller;
 
-    public StopCommand() {
-
+    public RunRoller(Roller roller) {
+        this.roller = roller;
     }
 
     @Override
     public void initialize() {
-        Robot.algaeRoller.setState(targetState);
-        Robot.coralRoller.setState(targetState);
-        Robot.scoringRoller.setState(targetState);
+        roller.setState(targetState);
     }
 
     @Override
