@@ -25,14 +25,16 @@ public class ScoreL234 extends Command {
             Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
             Robot.chuteRoller.setState(RollerConstants.RollerStates.MAINTAIN);
             Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
-        } else if (Robot.coralRoller.hasPiece()) {
+            return;
+        }
+        if (Robot.coralRoller.hasPiece()) {
             Robot.elevator.setState(ElevatorStates.STOW);
             Robot.coralArm.setState(CoralConstants.ArmStates.HAND_OFF);
             Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
             Robot.chuteRoller.setState(RollerConstants.RollerStates.INTAKE);
-        } else {
-            this.cancel();
+            return;
         }
+            this.cancel();
     }
 
     @Override

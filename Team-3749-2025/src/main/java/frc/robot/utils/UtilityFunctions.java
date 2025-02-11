@@ -18,10 +18,8 @@ public class UtilityFunctions {
 
         if (DriverStation.getAlliance().isEmpty()) {
             return isRed;
-        } else {
-            isRed = DriverStation.getAlliance().get() == Alliance.Red;
-        }
-        return isRed;
+        } 
+        return DriverStation.getAlliance().get() == Alliance.Red;
     }
 
     /***

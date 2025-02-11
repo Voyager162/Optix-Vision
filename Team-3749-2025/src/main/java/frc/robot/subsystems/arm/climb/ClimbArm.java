@@ -2,7 +2,6 @@ package frc.robot.subsystems.arm.climb;
 
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.coral.CoralConstants;
 import frc.robot.subsystems.arm.sim.ArmSim;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
