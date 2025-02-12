@@ -274,7 +274,7 @@ public class ToPosConstants {
             {
                 put(reefClose, new int[] { 2, 4 }); // Left and right options from reefClose
                 put(reefCloseLeft, new int[] { 22, 24 }); // Left and right options from reefCloseLeft
-                put(reefCloseRight, new int[] { 7, 8 }); // Left and right options from reefCloseRight
+                put(reefCloseRight, new int[] { 6, 8 }); // Left and right options from reefCloseRight
                 put(reefFarRight, new int[] { 12, 10 }); // Left and right options from reefFarRight
                 put(reefFar, new int[] { 16, 14 }); // Left and right options from reefFar
                 put(reefFarLeft, new int[] { 20, 18 }); // Left and right options from reefFarLeft
