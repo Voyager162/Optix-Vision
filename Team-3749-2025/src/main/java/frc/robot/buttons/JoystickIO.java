@@ -25,7 +25,6 @@ import frc.robot.commands.swerve.SwerveDefaultCommand;
 import frc.robot.subsystems.arm.climb.ClimbConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.swerve.ToPos;
-import frc.robot.utils.MiscConstants;
 import frc.robot.utils.MiscConstants.ControllerConstants;
 
 /**
@@ -143,7 +142,6 @@ public class JoystickIO {
         buttonl3.onTrue(l3);
         buttonl4.onTrue(l4);
         buttonAlgaeKnockoff.onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.ALGAE)));
-
     }
 
     /**
@@ -188,10 +186,9 @@ public class JoystickIO {
         }));
 
         pilot.y().onTrue(Commands.runOnce(() -> {
-            Robot.swerve.setIsOTF(false);
-            Robot.swerve.setPPSetpointIndex(0);
-            Robot.swerve.showSetpointEndGoal();
-        }));
+            buttonBoard.setScoringLocation(ScoringLocation.ALGAE);
+            Robot.swerve.startOnTheFly(12);
+        })); //y is for testing only for now: so this command will always change
         
         new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
         new Trigger(() -> {

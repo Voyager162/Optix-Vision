@@ -436,10 +436,27 @@ public class Swerve extends SubsystemBase {
     return PPSetpoints.values()[currentPPSetpointIndex];
   }
 
+  private void getClosestSideFromSetpoint() {
+    Pose2d closestSide = getPPSetpoint().setpoint.nearest(ToPosConstants.Setpoints.reefSides);
+    // Iterate through the reef branch mappings to set the correct setpoint
+    for (Pose2d side : ToPosConstants.Setpoints.driveRelativeBranches.keySet()) {
+        if (closestSide.equals(side)) {
+              setPPSetpointIndex(ToPosConstants.Setpoints.driveRelativeBranches.get(side)[2]);
+        }
+    }
+}
+
+
   //called when the button board is pressed with the (ppsetpoint)"index" the button is associated w to drive to
 
   public void startOnTheFly(int setpointIndex) {
     currentPPSetpointIndex = setpointIndex;
+
+    if(JoystickIO.buttonBoard.getScoringLocation()==ScoringLocation.ALGAE && 
+    currentPPSetpointIndex>=2&&currentPPSetpointIndex<=25)
+    {
+      getClosestSideFromSetpoint();
+    }
 
     if(JoystickIO.buttonBoard.getScoringLocation()==ScoringLocation.L1 && 
     currentPPSetpointIndex>=2&&currentPPSetpointIndex<=24 && currentPPSetpointIndex%2==0)

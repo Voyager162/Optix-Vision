@@ -272,12 +272,12 @@ public class ToPosConstants {
          */
         public static HashMap<Pose2d, int[]> driveRelativeBranches = new HashMap<Pose2d, int[]>() {
             {
-                put(reefClose, new int[] { 2, 4 }); // Left and right options from reefClose
-                put(reefCloseLeft, new int[] { 22, 24 }); // Left and right options from reefCloseLeft
-                put(reefCloseRight, new int[] { 6, 8 }); // Left and right options from reefCloseRight
-                put(reefFarRight, new int[] { 12, 10 }); // Left and right options from reefFarRight
-                put(reefFar, new int[] { 16, 14 }); // Left and right options from reefFar
-                put(reefFarLeft, new int[] { 20, 18 }); // Left and right options from reefFarLeft
+                put(reefClose, new int[] { 2, 4, 26 }); // Left and right options from reefClose
+                put(reefCloseLeft, new int[] { 22, 24, 27 }); // Left and right options from reefCloseLeft
+                put(reefCloseRight, new int[] { 6, 8, 28 }); // Left and right options from reefCloseRight
+                put(reefFarRight, new int[] { 12, 10,31 }); // Left and right options from reefFarRight
+                put(reefFar, new int[] { 16, 14,29 }); // Left and right options from reefFar
+                put(reefFarLeft, new int[] { 20, 18,30 }); // Left and right options from reefFarLeft
             }
         };
 
