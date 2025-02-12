@@ -31,7 +31,8 @@ public class Photonvision implements VisionIO {
             poseEstimator.setPrimaryStrategy(PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR);
             poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
-            // redundant, but why not (setting the correct apriltag size/model and correct field layout)
+            // redundant, but why not (setting the correct apriltag size/model and correct
+            // field layout)
             poseEstimator.setTagModel(TargetModel.kAprilTag36h11);
             poseEstimator.setFieldTags(VisionConstants.aprilTagFieldLayout);
         }
@@ -111,7 +112,7 @@ public class Photonvision implements VisionIO {
                     VisionConstants.StandardDeviations.TwoTag.xy,
                     VisionConstants.StandardDeviations.TwoTag.thetaRads));
         }
-        if(result.getTargets().size() > 2) {
+        if (result.getTargets().size() > 2) {
             poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(VisionConstants.StandardDeviations.ManyTag.xy,
                     VisionConstants.StandardDeviations.ManyTag.xy,
                     VisionConstants.StandardDeviations.ManyTag.thetaRads));

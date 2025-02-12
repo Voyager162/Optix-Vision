@@ -12,7 +12,7 @@ import frc.robot.commands.auto.AutoUtils;
 import frc.robot.commands.auto.Autos;
 
 public class RobotContainer {
-  
+
   // private final setstate stop = new setstate(ElevatorStates.STOP);
   public RobotContainer() {
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -24,7 +24,7 @@ public class RobotContainer {
     // robot setup
     JoystickIO.getButtonBindings();
     AutoUtils.initAuto();
-    
+
   }
 
   public Command getAutonomousCommand() {

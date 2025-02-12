@@ -2,9 +2,11 @@ package frc.robot.subsystems.elevator;
 
 import java.util.Map;
 import java.util.function.Consumer;
-import static edu.wpi.first.units.Units.Radians;
 
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -53,42 +55,14 @@ public class Elevator extends SubsystemBase {
     static Consumer<Voltage> setVolts;
     static Consumer<SysIdRoutineLog> log;
 
-    private ProfiledPIDController profile = new ProfiledPIDController(
-            0,
-            0,
-            0,
-            new TrapezoidProfile.Constraints(ElevatorConstants.ElevatorControl.maxV,
-                    ElevatorConstants.ElevatorControl.maxA));
+    private ProfiledPIDController profile;
 
-    private ElevatorFeedforward feedforward = new ElevatorFeedforward(
-            ElevatorConstants.ElevatorControl.kS,
-            ElevatorConstants.ElevatorControl.kG,
-            ElevatorConstants.ElevatorControl.kV,
-            ElevatorConstants.ElevatorControl.kA);
+    private ElevatorFeedforward feedforward;
 
-    private LoggedTunableNumber kPData = new LoggedTunableNumber("Elevator/kP",
-            ElevatorConstants.ElevatorControl.kP);
-    private LoggedTunableNumber kDData = new LoggedTunableNumber("Elevator/kD",
-            ElevatorConstants.ElevatorControl.kD);
-    private LoggedTunableNumber kVData = new LoggedTunableNumber("Elevator/kV",
-            ElevatorConstants.ElevatorControl.kV);
-    private LoggedTunableNumber kAData = new LoggedTunableNumber("Elevator/kA",
-            ElevatorConstants.ElevatorControl.kA);
-    private LoggedTunableNumber kGData = new LoggedTunableNumber("Elevator/kG",
-            ElevatorConstants.ElevatorControl.kG);
-    private LoggedTunableNumber kSData = new LoggedTunableNumber("Elevator/kS",
-            ElevatorConstants.ElevatorControl.kS);
-    private LoggedTunableNumber kIData = new LoggedTunableNumber("Elevator/kI",
-            ElevatorConstants.ElevatorControl.kI);
-    private LoggedTunableNumber maxVData = new LoggedTunableNumber("Elevator/maxV",
-            ElevatorConstants.ElevatorControl.maxV);
-    private LoggedTunableNumber maxAData = new LoggedTunableNumber("Elevator/maxA",
-            ElevatorConstants.ElevatorControl.maxA);
-
-    private Mechanism2d mech = new Mechanism2d(3, 3);
-    private MechanismRoot2d root = mech.getRoot("elevator", 1, 0);
-    private MechanismLigament2d elevatorMech = root
-            .append(new MechanismLigament2d("elevator", ElevatorConstants.ElevatorSpecs.baseHeight, 90));
+    private LoggedMechanism2d mech = new LoggedMechanism2d(3, 3);
+    private LoggedMechanismRoot2d root = mech.getRoot("elevator", 1, 0);
+    private LoggedMechanismLigament2d elevatorMech = root
+            .append(new LoggedMechanismLigament2d("elevator", ElevatorConstants.ElevatorSpecs.baseHeight, 90));
 
     // SysID
     Map<String, MotorData> motorData = Map.of(
@@ -222,14 +196,16 @@ public class Elevator extends SubsystemBase {
     }
 
     private void logData() {
-        Logger.recordOutput("subsystems/elevator/Current Command", this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
+        Logger.recordOutput("subsystems/elevator/Current Command",
+                this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
 
         Logger.recordOutput("subsystems/elevator/postion", data.positionMeters);
         Logger.recordOutput("subsystems/elevator/velocity", data.velocityMetersPerSecond);
 
         Logger.recordOutput("subsystems/elevator/acceleration", data.accelerationMetersPerSecondSquared);
-    
-        Logger.recordOutput("subsystems/elevator/input volts", ((data.leftAppliedVolts + data.rightAppliedVolts) / 2.0));
+
+        Logger.recordOutput("subsystems/elevator/input volts",
+                ((data.leftAppliedVolts + data.rightAppliedVolts) / 2.0));
         Logger.recordOutput("subsystems/elevator/input volts", data.leftAppliedVolts);
         Logger.recordOutput("subsystems/elevator/input volts", data.rightAppliedVolts);
         Logger.recordOutput("subsystems/elevator/input volts", data.leftCurrentAmps);
@@ -238,17 +214,7 @@ public class Elevator extends SubsystemBase {
         Logger.recordOutput("subsystems/elevator/input volts", data.rightTempCelcius);
 
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
-        SmartDashboard.putData("elevator mechanism", mech);
 
-        ElevatorConstants.ElevatorControl.kP = kPData.get();
-        ElevatorConstants.ElevatorControl.kD = kDData.get();
-        ElevatorConstants.ElevatorControl.kV = kVData.get();
-        ElevatorConstants.ElevatorControl.kA = kAData.get();
-        ElevatorConstants.ElevatorControl.kG = kGData.get();
-        ElevatorConstants.ElevatorControl.kS = kSData.get();
-        ElevatorConstants.ElevatorControl.kI = kIData.get();
-        ElevatorConstants.ElevatorControl.maxV = maxVData.get();
-        ElevatorConstants.ElevatorControl.maxA = maxAData.get();
         elevatorInnerStagePos = data.positionMeters / 2;
         elevatorMiddleStagePos = data.positionMeters - Units.inchesToMeters(1);
         elevatorInnerStage.set(new Pose3d(getTransform3d(elevatorInnerStagePos).getTranslation(),
@@ -256,9 +222,14 @@ public class Elevator extends SubsystemBase {
         elevatorMiddleStage.set(new Pose3d(getTransform3d(elevatorMiddleStagePos).getTranslation(),
                 getTransform3d(elevatorMiddleStagePos).getRotation()));
 
-        profile = new ProfiledPIDController(kPData.get(), kIData.get(), kDData.get(),
-                new TrapezoidProfile.Constraints(maxVData.get(), maxAData.get()));
-        feedforward = new ElevatorFeedforward(kSData.get(), kGData.get(), kVData.get(), kAData.get());
+        profile = new ProfiledPIDController(ElevatorConstants.ElevatorControl.kP.get(),
+                ElevatorConstants.ElevatorControl.kI.get(), ElevatorConstants.ElevatorControl.kD.get(),
+                new TrapezoidProfile.Constraints(ElevatorConstants.ElevatorControl.maxVelocity.get(),
+                        ElevatorConstants.ElevatorControl.maxAcceleration.get()));
+        feedforward = new ElevatorFeedforward(ElevatorConstants.ElevatorControl.kS.get(),
+                ElevatorConstants.ElevatorControl.kG.get(), ElevatorConstants.ElevatorControl.kV.get(),
+                ElevatorConstants.ElevatorControl.kA.get());
+        Logger.recordOutput("subsystems/elevator/elevator mechanism", mech);
     }
 
     private Transform3d getTransform3d(double pos) {
@@ -270,23 +241,12 @@ public class Elevator extends SubsystemBase {
     @Override
     public void periodic() {
         elevatorio.updateData(data);
-        runState();
+        // runState();
         logData();
 
         motorData.get("elevator_motor").position = data.positionMeters;
         motorData.get("elevator_motor").acceleration = data.accelerationMetersPerSecondSquared;
         motorData.get("elevator_motor").velocity = data.velocityMetersPerSecond;
         motorData.get("elevator_motor").appliedVolts = (data.leftAppliedVolts + data.rightAppliedVolts) / 2.0;
-
-        // Map<String, MotorData> motorData = Map.of(
-        // "elevator_motor", new MotorData(
-        // (data.leftAppliedVolts + data.rightAppliedVolts) / 2.0,
-        // data.positionMeters,
-        // data.velocityMetersPerSecond,
-        // data.accelerationUnits));
-
-        // sysIdTuner = new SysIdTuner("elevator", config, this, elevatorio::setVoltage,
-        // motorData);
-        // pidController.setPID(kPData.get(),0,kDData.get())
     }
 }

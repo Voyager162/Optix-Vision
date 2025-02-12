@@ -101,13 +101,13 @@ public class SwerveModuleSpark implements SwerveModuleIO {
     /** Enable or disable brake mode on the drive motor. */
     @Override
     public void setDriveBrakeMode(boolean enable) {
-        drive.setBrakeMode(enable);
+        // drive.setBrakeMode(enable);
     }
 
     /** Enable or disable brake mode on the turn motor. */
     @Override
     public void setTurningBrakeMode(boolean enable) {
-        turn.setBrakeMode(enable);
+        // turn.setBrakeMode(enable);
     }
 
 }

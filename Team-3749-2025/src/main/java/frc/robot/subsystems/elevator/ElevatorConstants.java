@@ -1,4 +1,5 @@
 package frc.robot.subsystems.elevator;
+import frc.robot.utils.LoggedTunableNumber;
 
 /**
  * Elevator constants
@@ -21,24 +22,24 @@ public class ElevatorConstants {
 
         public static final double baseHeight = Units.feetToMeters(3.25);
 
-        public static int[] motorIds = { 15, 16 };
+        public static int[] motorIds = { 19, 20 };
         public static boolean[] motorInverted = { false, true };
-
-
 
         public static int zeroOffset = 0;
     }
 
     public static class ElevatorControl {
-        public static double kP = 0.02;
-        public static double kI = 0.0;
-        public static double kD = 0;
-        public static double kS = 0;
-        public static double kG = 2.2977;
-        public static double kV = 2.35; // 12 - 2.3 / 4.139
-        public static double kA = 0;
-        public static double maxV = 4.139;
-        public static double maxA = 3.988; // change in velocity / seconds
+        public static LoggedTunableNumber kG = new LoggedTunableNumber("/subsystems/elevator/kG", 2.2977);
+        public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/elevator/kP", 0.02);
+        public static LoggedTunableNumber kI = new LoggedTunableNumber("/subsystems/elevator/kI", 0);
+        public static LoggedTunableNumber kD = new LoggedTunableNumber("/subsystems/elevator/kD", 0);
+        public static LoggedTunableNumber kS = new LoggedTunableNumber("/subsystems/elevator/kS", 0);
+        public static LoggedTunableNumber kV = new LoggedTunableNumber("/subsystems/elevator/kV", 2.35);
+        public static LoggedTunableNumber kA = new LoggedTunableNumber("/subsystems/elevator/kA", 0);
+        public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/elevator/max velocity",
+        4.139);
+        public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("/subsystems/elevator/max acceleration",
+        3.988);
     }
 
     public enum ElevatorStates {

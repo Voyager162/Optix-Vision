@@ -11,7 +11,10 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.RobotBase;
 
-/** This class contains global configuration describing the current robot and runtime mode. */
+/**
+ * This class contains global configuration describing the current robot and
+ * runtime mode.
+ */
 public final class Constants {
   public static final double loopPeriodSecs = 0.02;
   private static RobotType robotType = RobotType.DEVBOT;

@@ -44,7 +44,7 @@ public class CoralArmSparkMax implements CoralArmIO {
 
 		motor.setPosition(absolutePos);
 
-		motor.setPID(CoralArmConstants.kP, CoralArmConstants.kI, CoralArmConstants.kD, ClosedLoopSlot.kSlot0);
+		motor.setPID(CoralArmConstants.kP.get(), CoralArmConstants.kI.get(), CoralArmConstants.kD.get(), ClosedLoopSlot.kSlot0);
 	}
 
 	@Override

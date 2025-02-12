@@ -16,8 +16,8 @@ import frc.robot.utils.MiscConstants.SimConstants;
 public class ClimbArmSim implements ClimbArmIO {
 
 	private SingleJointedArmSim armSim;
-	private PIDController controller = new PIDController(ClimbArmConstants.kP, ClimbArmConstants.kI,
-			ClimbArmConstants.kD);
+	private PIDController controller = new PIDController(ClimbArmConstants.kP.get(), ClimbArmConstants.kI.get(),
+			ClimbArmConstants.kD.get());
 
 	private double inputVolts = 0;
 	private double previousVelocity = 0;

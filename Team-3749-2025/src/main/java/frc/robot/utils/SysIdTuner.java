@@ -93,7 +93,6 @@ public class SysIdTuner {
                     .linearAcceleration(MetersPerSecondPerSecond.ofBaseUnits(data.acceleration));
         });
 
-
     }
 
     /**

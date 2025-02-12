@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.swerve.Swerve;
 
-public class RotationialSysId extends Command{
+public class RotationialSysId extends Command {
     Command tuner;
     Swerve swerve;
     private final Timer timer = new Timer();
@@ -28,11 +28,11 @@ public class RotationialSysId extends Command{
     public void execute() {
         swerve.setRotation();
 
-        if(swerve.getRotated() && timer.hasElapsed(1)){
+        if (swerve.getRotated() && timer.hasElapsed(1)) {
             startSysId = true;
         }
 
-        if(startSysId)
+        if (startSysId)
             tuner.schedule();
 
     }
@@ -47,4 +47,3 @@ public class RotationialSysId extends Command{
         return false;
     }
 }
-
