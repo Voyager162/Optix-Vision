@@ -36,8 +36,9 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 public class ClimbArm extends SubsystemBase {
 
-	private ProfiledPIDController profile;
-	private ArmFeedforward feedforward;
+	private ProfiledPIDController profile = new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(
+			ClimbArmConstants.maxVelocity.get(), ClimbArmConstants.maxAcceleration.get()));
+	private ArmFeedforward feedforward = new ArmFeedforward(ClimbArmConstants.kS.get(), ClimbArmConstants.kG.get(), ClimbArmConstants.kV.get());
 	private ClimbArmIO armIO;
 	private ArmData data = new ArmData();
 	private ClimbArmConstants.ArmStates state = ClimbArmConstants.ArmStates.STOPPED;
@@ -236,7 +237,7 @@ public class ClimbArm extends SubsystemBase {
 		motorData.get("arm_motor").acceleration = data.accelerationUnits;
 		motorData.get("arm_motor").velocity = data.velocityUnits;
 		motorData.get("arm_motor").appliedVolts = data.appliedVolts;
-		
+
 		Logger.recordOutput("subsystems/arms/climbArm/Current Command",
 				this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
 		Logger.recordOutput("subsystems/arms/climbArm/position", data.positionUnits);
@@ -254,10 +255,6 @@ public class ClimbArm extends SubsystemBase {
 		Logger.recordOutput("subsystems/arms/climbArm/current state", state.name());
 
 		publisher.set(getPose3d());
-
-		profile = new ProfiledPIDController(ClimbArmConstants.kP.get(), ClimbArmConstants.kI.get(), ClimbArmConstants.kD.get(),
-				new TrapezoidProfile.Constraints(ClimbArmConstants.maxVelocity.get(), ClimbArmConstants.maxAcceleration.get()));
-		feedforward = new ArmFeedforward(ClimbArmConstants.kS.get(), ClimbArmConstants.kG.get(), ClimbArmConstants.kV.get());
 
 		Logger.recordOutput("subsystems/arms/climbArm/Climb Arm Mechanism", mechanism2d);
 	}

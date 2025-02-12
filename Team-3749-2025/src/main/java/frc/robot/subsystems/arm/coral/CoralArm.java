@@ -56,8 +56,10 @@ public class CoralArm extends SubsystemBase {
 
     // Profiled PID Controller used only for the motion profile, PID within
     // implementation classes
-    private ProfiledPIDController profile;
-    private ArmFeedforward feedforward;
+    private ProfiledPIDController profile = new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(
+            CoralArmConstants.maxVelocity.get(), CoralArmConstants.maxAcceleration.get()));
+    private ArmFeedforward feedforward = new ArmFeedforward(CoralArmConstants.kS.get(), CoralArmConstants.kG.get(),
+            CoralArmConstants.kV.get());
     private LoggedMechanism2d mechanism2d = new LoggedMechanism2d(3, 3);
     private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 1.8, .4);
     private LoggedMechanismLigament2d armLigament = armRoot
@@ -116,13 +118,8 @@ public class CoralArm extends SubsystemBase {
                 return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
                         CoralArmConstants.coralPickUpSetPoint_rad, data.positionUnits);
             case STOPPED:
-                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError, 0, data.velocityUnits); // Ensure
-                                                                                                                   // velocity
-                                                                                                                   // is
-                                                                                                                   // near
-                                                                                                                   // zero
-                                                                                                                   // when
-                                                                                                                   // stopped.
+                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError, 0, data.velocityUnits); 
+                // ensure velocity is near zero when stopped
             default:
                 return false; // Return false if the state is unrecognized.
         }
@@ -170,8 +167,8 @@ public class CoralArm extends SubsystemBase {
     }
 
     private Angle getPitch() {
-        return Angle.ofBaseUnits(data.positionUnits + Units.degreesToRadians(-55), Radians); // remove offset once coral
-                                                                                             // arm code is fixed
+        return Angle.ofBaseUnits(data.positionUnits + Units.degreesToRadians(-55), Radians);
+        // remove offsest once coral arm code is fixed
     }
 
     private Pose3d getPose3d() {
@@ -243,6 +240,11 @@ public class CoralArm extends SubsystemBase {
      * debugging and analysis.
      */
     private void logData() {
+        motorData.get("arm_motor").position = data.positionUnits;
+        motorData.get("arm_motor").acceleration = data.accelerationUnits;
+        motorData.get("arm_motor").velocity = data.velocityUnits;
+        motorData.get("arm_motor").appliedVolts = data.appliedVolts;
+
         // Log various arm parameters to Shuffleboard
         Logger.recordOutput("subsystems/arms/coralArm/Current Command",
                 this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
@@ -262,12 +264,6 @@ public class CoralArm extends SubsystemBase {
 
         publisher.set(getPose3d());
 
-
-        profile = new ProfiledPIDController(CoralArmConstants.kP.get(), CoralArmConstants.kI.get(), CoralArmConstants.kD.get(),
-                new TrapezoidProfile.Constraints(CoralArmConstants.maxVelocity.get(), CoralArmConstants.maxAcceleration.get()));
-        feedforward = new ArmFeedforward(CoralArmConstants.kS.get(), CoralArmConstants.kG.get(), CoralArmConstants.kV.get(),
-                CoralArmConstants.kA.get());
-
         Logger.recordOutput("subsystems/arms/coralArm/coral arm mechanism", mechanism2d);
     }
 
@@ -277,13 +273,8 @@ public class CoralArm extends SubsystemBase {
 
         armIO.updateData(data);
 
-        // runState();
+        runState();
 
         logData();
-
-        motorData.get("arm_motor").position = data.positionUnits;
-        motorData.get("arm_motor").acceleration = data.accelerationUnits;
-        motorData.get("arm_motor").velocity = data.velocityUnits;
-        motorData.get("arm_motor").appliedVolts = data.appliedVolts;
     }
 }
