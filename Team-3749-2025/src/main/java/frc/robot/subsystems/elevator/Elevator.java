@@ -241,7 +241,7 @@ public class Elevator extends SubsystemBase {
     @Override
     public void periodic() {
         elevatorio.updateData(data);
-        runState();
+        // runState();
         logData();
 
         motorData.get("elevator_motor").position = data.positionMeters;

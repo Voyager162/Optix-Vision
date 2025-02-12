@@ -140,6 +140,7 @@ public class ClimbArm extends SubsystemBase {
 	 * @param volts
 	 */
 	public void setVoltage(double volts) {
+		System.out.println(volts);
 		armIO.setVoltage(volts);
 	}
 
@@ -264,7 +265,7 @@ public class ClimbArm extends SubsystemBase {
 
 		armIO.updateData(data);
 
-		runState();
+		// runState();
 
 		logData();
 

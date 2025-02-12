@@ -230,7 +230,7 @@ public class OptixSpark {
     public void setInverted(boolean inverted) {
         motorConfig.inverted(inverted);
         motor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-
+ 
     }
 
     public void setBrakeMode(boolean isBrakeMode) {

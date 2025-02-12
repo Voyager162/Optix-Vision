@@ -277,7 +277,7 @@ public class CoralArm extends SubsystemBase {
 
         armIO.updateData(data);
 
-        runState();
+        // runState();
 
         logData();
 
