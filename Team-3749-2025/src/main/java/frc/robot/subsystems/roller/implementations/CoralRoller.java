@@ -51,7 +51,7 @@ public class CoralRoller extends Roller {
     public boolean getIsStableState() {
         double currentVelocity = data.rollerVelocityRadPerSec;
         double velocityChange = Math.abs(currentVelocity - lastVelocity);
-        double velocityChangeThreshold = 0.5; // placeholder
+        double velocityChangeThreshold = 0.05; // placeholder
         return velocityChange < velocityChangeThreshold;
     }
 
