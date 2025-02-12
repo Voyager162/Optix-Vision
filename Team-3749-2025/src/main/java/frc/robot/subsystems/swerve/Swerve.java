@@ -416,6 +416,11 @@ public class Swerve extends SubsystemBase {
   //this is only used for testing, pressing B to cycle through all of the stuff
   public void cyclePPSetpoint() {
     currentPPSetpointIndex++;
+    if(JoystickIO.buttonBoard.getScoringLocation()==ScoringLocation.ALGAE && 
+    currentPPSetpointIndex>=2&&currentPPSetpointIndex<=25)
+    {
+      setSetpointToClosestSideToSetpoint();
+    }
     if(JoystickIO.buttonBoard.getScoringLocation()==ScoringLocation.L1 && 
     currentPPSetpointIndex>=2&&currentPPSetpointIndex<=24 && currentPPSetpointIndex%2==0)
     {
@@ -436,7 +441,7 @@ public class Swerve extends SubsystemBase {
     return PPSetpoints.values()[currentPPSetpointIndex];
   }
 
-  private void getClosestSideFromSetpoint() {
+  private void setSetpointToClosestSideToSetpoint() {
     Pose2d closestSide = getPPSetpoint().setpoint.nearest(ToPosConstants.Setpoints.reefSides);
     // Iterate through the reef branch mappings to set the correct setpoint
     for (Pose2d side : ToPosConstants.Setpoints.driveRelativeBranches.keySet()) {
@@ -455,7 +460,7 @@ public class Swerve extends SubsystemBase {
     if(JoystickIO.buttonBoard.getScoringLocation()==ScoringLocation.ALGAE && 
     currentPPSetpointIndex>=2&&currentPPSetpointIndex<=25)
     {
-      getClosestSideFromSetpoint();
+      setSetpointToClosestSideToSetpoint();
     }
 
     if(JoystickIO.buttonBoard.getScoringLocation()==ScoringLocation.L1 && 

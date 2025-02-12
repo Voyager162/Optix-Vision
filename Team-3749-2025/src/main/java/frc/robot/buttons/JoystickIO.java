@@ -74,7 +74,6 @@ public class JoystickIO {
     private final static JoystickButton buttonAlgaeKnockoff = new JoystickButton(buttonBoardPlayer1, 19);
     private final static JoystickButton buttonUtilityA = new JoystickButton(buttonBoardPlayer1, 20);
     private final static JoystickButton buttonUtilityB = new JoystickButton(buttonBoardPlayer1, 21);
-    // now this is just TOO much trolling who put this buttonUtilityA here
 
     private static final SetElevatorState l1 = new SetElevatorState(ElevatorStates.L1);
     private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
@@ -187,7 +186,6 @@ public class JoystickIO {
 
         pilot.y().onTrue(Commands.runOnce(() -> {
             buttonBoard.setScoringLocation(ScoringLocation.ALGAE);
-            Robot.swerve.startOnTheFly(12);
         })); //y is for testing only for now: so this command will always change
         
         new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
