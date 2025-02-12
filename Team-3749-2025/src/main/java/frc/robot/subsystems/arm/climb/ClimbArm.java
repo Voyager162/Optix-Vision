@@ -232,6 +232,11 @@ public class ClimbArm extends SubsystemBase {
 
 	/** Logs data to Shuffleboard. */
 	private void logData() {
+		motorData.get("arm_motor").position = data.positionUnits;
+		motorData.get("arm_motor").acceleration = data.accelerationUnits;
+		motorData.get("arm_motor").velocity = data.velocityUnits;
+		motorData.get("arm_motor").appliedVolts = data.appliedVolts;
+		
 		Logger.recordOutput("subsystems/arms/climbArm/Current Command",
 				this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
 		Logger.recordOutput("subsystems/arms/climbArm/position", data.positionUnits);
@@ -265,13 +270,8 @@ public class ClimbArm extends SubsystemBase {
 
 		armIO.updateData(data);
 
-		// runState();
+		runState();
 
 		logData();
-
-		motorData.get("arm_motor").position = data.positionUnits;
-		motorData.get("arm_motor").acceleration = data.accelerationUnits;
-		motorData.get("arm_motor").velocity = data.velocityUnits;
-		motorData.get("arm_motor").appliedVolts = data.appliedVolts;
 	}
 }
