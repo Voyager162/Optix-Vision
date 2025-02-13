@@ -15,7 +15,6 @@ import frc.robot.commands.arm.SetCoralArmState;
 import frc.robot.commands.elevator.SetElevatorState;
 import frc.robot.commands.roller.MaintainCommand;
 import frc.robot.commands.roller.RunRoller;
-import frc.robot.commands.swerve.RotationialSysId;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
 import frc.robot.subsystems.arm.climb.ClimbArmConstants;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
