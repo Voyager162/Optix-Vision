@@ -55,6 +55,9 @@ public class SwerveModuleSpark implements SwerveModuleIO {
                     MotorControllerConstants.slots[i]);
         }
 
+        drive.applyConfig();
+        turn.applyConfig();
+
         absoluteEncoder = new CANcoder(MotorConstants.absoluteEncoderIds[index]);
         absoluteEncoderOffsetRad = Units.degreesToRadians(MotorConstants.absoluteEncoderOffsetDeg[index]);
         turn.setPosition(absoluteEncoder.getPosition().getValueAsDouble() * 2 * Math.PI - absoluteEncoderOffsetRad);

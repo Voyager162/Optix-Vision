@@ -50,10 +50,13 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 
 		absoluteEncoder = frontMotorLead.getAbsoluteEncoder();
 		absolutePos = absoluteEncoder.getPosition();
+		backMotorFollower.setFollow(frontMotorLead);
+
+		frontMotorLead.applyConfig();
+		backMotorFollower.applyConfig();
 
 		frontMotorLead.setPosition(absolutePos);
 		backMotorFollower.setPosition(absolutePos);
-		backMotorFollower.setFollow(frontMotorLead);
 
 	}
 

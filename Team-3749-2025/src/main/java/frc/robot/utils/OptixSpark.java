@@ -24,7 +24,7 @@ public class OptixSpark {
     private SparkBase motor;
     private SparkClosedLoopController controller;
     private ClosedLoopConfig controllerConfig = new ClosedLoopConfig();
-    private SparkMaxConfig motorConfig = new SparkMaxConfig();
+    private SparkBaseConfig motorConfig = new SparkMaxConfig();
     private EncoderConfig encoderConfig = new EncoderConfig();
     private Function<Double, Double> wrapping = (input) -> input;
     private BiFunction<Double, Double, Boolean> deadband = (input, setpoint) -> false;
@@ -67,7 +67,7 @@ public class OptixSpark {
         return motor.getMotorTemperature();
     }
 
-    public SparkMaxConfig getConfig() {
+    public SparkBaseConfig getConfig() {
         return motorConfig;
     }
 
@@ -138,6 +138,11 @@ public class OptixSpark {
 
     }
 
+    /**
+     * Within this margin of 0, motor will run with PID constants of 0
+     * 
+     * @param deadband
+     */
     public void setPositionDeadband(double deadband) {
         this.deadband = (input, setpoint) -> {
             if (input < setpoint + deadband) {
@@ -157,7 +162,6 @@ public class OptixSpark {
         encoderConfig.positionConversionFactor(factor);
 
         motorConfig.apply(encoderConfig);
-        motor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     }
 
@@ -170,13 +174,16 @@ public class OptixSpark {
         encoderConfig.positionConversionFactor(factor);
 
         motorConfig.apply(encoderConfig);
-        motor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     }
 
-    public void setCurrentLimit(double stallLimit, double freeLimit) {
-        motorConfig.smartCurrentLimit(30, 50);
-        motor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+    /**
+     * 
+     * @param stallLimit
+     * @param freeLimit
+     */
+    public void setCurrentLimit(int stallLimit, int freeLimit) {
+        motorConfig.smartCurrentLimit(stallLimit, freeLimit);
 
     }
 
@@ -192,7 +199,6 @@ public class OptixSpark {
     public void setPID(double p, double i, double d, ClosedLoopSlot slot) {
         controllerConfig.pid(p, i, d, slot);
         motorConfig.apply(controllerConfig);
-        motor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     }
 
@@ -223,14 +229,12 @@ public class OptixSpark {
 
         controllerConfig.positionWrappingInputRange(min, max);
         motorConfig.apply(controllerConfig);
-        motor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     }
 
     public void setInverted(boolean inverted) {
         motorConfig.inverted(inverted);
-        motor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
- 
+
     }
 
     public void setBrakeMode(boolean isBrakeMode) {
@@ -239,16 +243,28 @@ public class OptixSpark {
         } else {
             motorConfig.idleMode(IdleMode.kCoast);
         }
-        motor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
 
     }
 
     public void setFollow(OptixSpark spark) {
         motorConfig.follow(spark.getSpark());
-        motor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     }
 
+    /**
+     * Configure motor with internal settings applied
+     */
+    public void applyConfig() {
+        motor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
+    }
+
+    /**
+     * Configure motor with external settings applied
+     * 
+     * @param config
+     */
     public void applyConfig(SparkBaseConfig config) {
+        motorConfig = config;
         motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
     }
 
