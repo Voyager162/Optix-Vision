@@ -39,20 +39,6 @@ public class CoralArm extends SubsystemBase {
     private ArmData data = new ArmData();
     private CoralArmConstants.ArmStates state = CoralArmConstants.ArmStates.STOPPED;
 
-    private SysIdTuner sysIdTuner;
-
-    Map<String, MotorData> motorData = Map.of(
-            "arm_motor", new MotorData(
-                    data.appliedVolts,
-                    data.positionUnits,
-                    data.velocityUnits,
-                    data.accelerationUnits));
-
-    SysIdRoutine.Config config = new SysIdRoutine.Config(
-            Volts.per(Seconds).of(1), // Voltage ramp rate
-            Volts.of(4), // Max voltage
-            Seconds.of(4) // Test duration
-    );
 
     // Profiled PID Controller used only for the motion profile, PID within
     // implementation classes
@@ -162,10 +148,6 @@ public class CoralArm extends SubsystemBase {
         }
     }
 
-    public SysIdTuner getSysIdTuner() {
-        return sysIdTuner;
-    }
-
     private Angle getPitch() {
         return Angle.ofBaseUnits(data.positionUnits + Units.degreesToRadians(-55), Radians);
         // remove offsest once coral arm code is fixed
@@ -240,10 +222,6 @@ public class CoralArm extends SubsystemBase {
      * debugging and analysis.
      */
     private void logData() {
-        motorData.get("arm_motor").position = data.positionUnits;
-        motorData.get("arm_motor").acceleration = data.accelerationUnits;
-        motorData.get("arm_motor").velocity = data.velocityUnits;
-        motorData.get("arm_motor").appliedVolts = data.appliedVolts;
 
         // Log various arm parameters to Shuffleboard
         Logger.recordOutput("subsystems/arms/coralArm/Current Command",

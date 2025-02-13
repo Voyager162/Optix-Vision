@@ -33,15 +33,6 @@ public class JoystickIO {
     private static final CommandXboxController pilot = new CommandXboxController(0);
     private static final CommandXboxController operator = new CommandXboxController(1);
 
-    private static final RotationialSysId rotate1 = new RotationialSysId(
-            Robot.swerve.getDriveSysIdTuner().sysIdQuasistatic(Direction.kForward), Robot.swerve);
-    private static final RotationialSysId rotate2 = new RotationialSysId(
-            Robot.swerve.getDriveSysIdTuner().sysIdQuasistatic(Direction.kReverse), Robot.swerve);
-    private static final RotationialSysId rotate3 = new RotationialSysId(
-            Robot.swerve.getDriveSysIdTuner().sysIdDynamic(Direction.kForward), Robot.swerve);
-    private static final RotationialSysId rotate4 = new RotationialSysId(
-            Robot.swerve.getDriveSysIdTuner().sysIdDynamic(Direction.kReverse), Robot.swerve);
-
     private static final Command climbStow = new SetClimbArmState(Robot.climbArm, ClimbArmConstants.ArmStates.STOWED,
             ClimbArmConstants.stowSetPoint_rad);
     private static final Command climb = new SetClimbArmState(Robot.climbArm, ClimbArmConstants.ArmStates.CLIMB,
@@ -105,19 +96,6 @@ public class JoystickIO {
         operator.leftBumper().onTrue(Commands.run(() -> Robot.coralRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
         operator.rightBumper().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
 
-        // Climb, Coral, Elevator SysId
-        // operator.a().whileTrue(Robot.climbArm.getSysIdTuner().runTests());
-        // operator.b().whileTrue(Robot.coralArm.getSysIdTuner().runTests());
-        // operator.x().whileTrue(Robot.elevator.getSysIdTuner().runTests());
-
-        // Swerve SysId
-        // operator.a().whileTrue(Robot.swerve.getRotationalSysIdTuner().runTests());
-        // operator.b().whileTrue(Robot.swerve.getDriveSysIdTuner().runTests());
-
-        // Roller SysId
-        // operator.a().whileTrue(Robot.algaeRoller.getSysIdTuner().runTests());
-        // operator.b().whileTrue(Robot.coralRoller.getSysIdTuner().runTests());
-        // operator.x().whileTrue(Robot.scoringRoller.getSysIdTuner().runTests());
 
         // All elevator stages
         // operator.a().onTrue(l1);

@@ -32,21 +32,8 @@ public abstract class Roller extends SubsystemBase {
     protected LoggedTunableNumber maxVelocity;
     protected LoggedTunableNumber maxAcceleration;
 
-    // SysID
-    Map<String, MotorData> motorData = Map.of(
-            "roller_motor", new MotorData(
-                    rollerData.rollerAppliedVolts,
-                    rollerData.rollerPositionRad,
-                    rollerData.rollerVelocityRadPerSec,
-                    0));
+    
 
-    private SysIdRoutine.Config config = new SysIdRoutine.Config(
-            Volts.per(Seconds).of(1), // Voltage ramp rate
-            Volts.of(12), // Max voltage
-            Seconds.of(12) // Test duration
-    );
-
-    private SysIdTuner sysIdTuner;
 
     public Roller(Implementations implementation, SimpleMotorFeedforward rollerFF) {
         rollerIO = Robot.isSimulation() ? new RollerSim(implementation)
@@ -56,11 +43,6 @@ public abstract class Roller extends SubsystemBase {
         this.rollerFF = rollerFF;
         this.rollerState = RollerConstants.RollerStates.STOP;
 
-        sysIdTuner = new SysIdTuner("roller " + name, config, this, rollerIO::setVoltage, motorData);
-    }
-
-    public SysIdTuner getSysIdTuner() {
-        return sysIdTuner;
     }
 
     public RollerIO getRollerIO() {

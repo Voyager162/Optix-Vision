@@ -51,8 +51,6 @@ public class Elevator extends SubsystemBase {
     private ElevatorData data = new ElevatorData();
     private ElevatorStates state = ElevatorStates.STOP;
 
-    static Consumer<Voltage> setVolts;
-    static Consumer<SysIdRoutineLog> log;
 
     private ProfiledPIDController profile = new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(
             ElevatorConstants.ElevatorControl.maxVelocity.get(),
@@ -67,21 +65,6 @@ public class Elevator extends SubsystemBase {
     private LoggedMechanismLigament2d elevatorMech = root
             .append(new LoggedMechanismLigament2d("elevator", ElevatorConstants.ElevatorSpecs.baseHeight, 90));
 
-    // SysID
-    Map<String, MotorData> motorData = Map.of(
-            "elevator_motor", new MotorData(
-                    (data.leftAppliedVolts + data.rightAppliedVolts) / 2.0,
-                    data.positionMeters,
-                    data.velocityMetersPerSecond,
-                    data.accelerationMetersPerSecondSquared));
-
-    private SysIdRoutine.Config config = new SysIdRoutine.Config(
-            Volts.per(Seconds).of(1), // Voltage ramp rate
-            Volts.of(7), // Max voltage
-            Seconds.of(4) // Test duration
-    );
-
-    private SysIdTuner sysIdTuner;
     private double elevatorInnerStagePos;
     private double elevatorMiddleStagePos;
 
@@ -96,12 +79,8 @@ public class Elevator extends SubsystemBase {
         } else {
             elevatorio = new ElevatorSparkMax();
         }
-        sysIdTuner = new SysIdTuner("elevator", config, this, elevatorio::setVoltage, motorData);
     }
 
-    public SysIdTuner getSysIdTuner() {
-        return sysIdTuner;
-    }
 
     public ElevatorStates getState() {
         return state;
@@ -199,11 +178,7 @@ public class Elevator extends SubsystemBase {
     }
 
     private void logData() {
-        motorData.get("elevator_motor").position = data.positionMeters;
-        motorData.get("elevator_motor").acceleration = data.accelerationMetersPerSecondSquared;
-        motorData.get("elevator_motor").velocity = data.velocityMetersPerSecond;
-        motorData.get("elevator_motor").appliedVolts = (data.leftAppliedVolts + data.rightAppliedVolts) / 2.0;
-        
+ 
         Logger.recordOutput("subsystems/elevator/Current Command",
                 this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
 

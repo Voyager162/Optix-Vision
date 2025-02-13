@@ -75,19 +75,6 @@ public class Swerve extends SubsystemBase {
   private double velocity = 0;
   private double yaw;
 
-  private SysIdTuner driveSysIdTuner;
-  private SysIdTuner turningSysIdTuner;
-  private SysIdTuner rotationalSysIdTuner;
-
-  private Map<String, MotorData> driveMotorData;
-  private Map<String, MotorData> turningMotorData;
-  private Map<String, MotorData> rotationalMotorData;
-
-  SysIdRoutine.Config config = new SysIdRoutine.Config(
-      Volts.per(Seconds).of(1.2), // Voltage ramp rate
-      Volts.of(12), // Max voltage
-      Seconds.of(10) // Test duration
-  );
 
   private LoggedTunableNumber kPDriving = new LoggedTunableNumber("/subsystems/swerve/kP Drive", AutoConstants.kPDrive);
   private LoggedTunableNumber kDDriving = new LoggedTunableNumber("/subsystems/swerve/kD Drive", AutoConstants.kDDrive);
@@ -128,45 +115,7 @@ public class Swerve extends SubsystemBase {
             VisionConstants.StandardDeviations.PreMatch.xy,
             VisionConstants.StandardDeviations.PreMatch.thetaRads));
 
-    driveMotorData = Map.of("drive_left",
-        new MotorData(
-            modules[0].getModuleData().driveAppliedVolts,
-            modules[0].getModuleData().drivePositionM,
-            modules[0].getModuleData().driveVelocityMPerSec,
-            modules[0].getModuleData().driveAccelerationMPerSecSquared));
-
-    turningMotorData = Map.of("turning_left",
-        new MotorData(
-            modules[0].getModuleData().turnAppliedVolts,
-            modules[0].getModuleData().turnPositionRad,
-            modules[0].getModuleData().turnVelocityRadPerSec,
-            0));
-
-    rotationalMotorData = Map.of("drive_left",
-        new MotorData(
-            modules[0].getModuleData().driveAppliedVolts,
-            modules[0].getModuleData().drivePositionM,
-            modules[0].getModuleData().driveVelocityMPerSec,
-            modules[0].getModuleData().driveAccelerationMPerSecSquared));
-
-    driveSysIdTuner = new SysIdTuner("drive", config, this, (volts) -> {
-      for (int i = 0; i < 4; i++) {
-        modules[i].setDriveVoltage(volts);
-      }
-    }, driveMotorData);
-
-    turningSysIdTuner = new SysIdTuner("turn", config, this, (volts) -> {
-      for (int i = 0; i < 4; i++) {
-        modules[i].setTurnVoltage(volts);
-      }
-    }, turningMotorData);
-
-    rotationalSysIdTuner = new SysIdTuner("rotate", config, this, (volts) -> {
-      for (int i = 0; i < 4; i++) {
-        modules[i].setDriveVoltage(volts);
-      }
-    }, rotationalMotorData);
-
+  
     turnController.enableContinuousInput(-Math.PI, Math.PI);
 
     // put us on the field with a default orientation
@@ -176,17 +125,7 @@ public class Swerve extends SubsystemBase {
 
   }
 
-  public SysIdTuner getDriveSysIdTuner() {
-    return driveSysIdTuner;
-  }
-
-  public SysIdTuner getTurningSysIdTuner() {
-    return turningSysIdTuner;
-  }
-
-  public SysIdTuner getRotationalSysIdTuner() {
-    return rotationalSysIdTuner;
-  }
+  
 
   public boolean getRotated() {
     return UtilityFunctions.withinMargin(0.01, modules[0].getModuleData().turnPositionRad,
@@ -551,20 +490,5 @@ public class Swerve extends SubsystemBase {
 
     logData();
 
-    driveMotorData.get("drive_left").appliedVolts = modules[0].getModuleData().driveAppliedVolts;
-    driveMotorData.get("drive_left").position = modules[0].getModuleData().drivePositionM;
-    driveMotorData.get("drive_left").velocity = modules[0].getModuleData().driveVelocityMPerSec;
-    driveMotorData.get("drive_left").acceleration = modules[0].getModuleData().driveAccelerationMPerSecSquared;
-
-    turningMotorData.get("turning_left").appliedVolts = modules[0].getModuleData().turnAppliedVolts;
-    turningMotorData.get("turning_left").position = modules[0].getModuleData().turnPositionRad;
-    turningMotorData.get("turning_left").velocity = modules[0].getModuleData().turnVelocityRadPerSec;
-    turningMotorData.get("turning_left").acceleration = 0;
-
-    rotationalMotorData.get("drive_left").appliedVolts = modules[0].getModuleData().driveAppliedVolts;
-    rotationalMotorData.get("drive_left").position = modules[0].getModuleData().drivePositionM;
-    rotationalMotorData.get("drive_left").velocity = modules[0].getModuleData().driveVelocityMPerSec / 0.533;
-    rotationalMotorData.get("drive_left").acceleration = modules[0].getModuleData().driveAccelerationMPerSecSquared
-        / 0.533;
   }
 }

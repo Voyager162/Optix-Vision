@@ -1,7 +1,6 @@
 package frc.robot.subsystems.arm.climb;
 
 import frc.robot.Robot;
-import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -14,7 +13,6 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.arm.climb.ClimbArmIO.ArmData;
 import frc.robot.utils.MotorData;
 import static edu.wpi.first.units.Units.*;
@@ -49,18 +47,8 @@ public class ClimbArm extends SubsystemBase {
 
 	StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
 			.getStructTopic("ClimbArm Pose", Pose3d.struct).publish();
-	/**
-	 * Constructor for the CoralArm subsystem. Determines if simulation or real
-	 * hardware is used.
-	 */
 
-	private SysIdTuner sysIdTuner;
 
-	SysIdRoutine.Config config = new SysIdRoutine.Config(
-			Volts.per(Seconds).of(1), // Voltage ramp rate
-			Volts.of(4), // Max voltage
-			Seconds.of(4) // Test duration
-	);
 
 	Map<String, MotorData> motorData = Map.of(
 			"arm_motor", new MotorData(
@@ -78,21 +66,12 @@ public class ClimbArm extends SubsystemBase {
 			armIO = new ClimbArmSparkMax();
 		}
 
-		sysIdTuner = new SysIdTuner("climb arm", getConfig(), this, armIO::setVoltage, getMotorData());
 	}
 
 	public Map<String, MotorData> getMotorData() {
 		return motorData;
 	}
 
-	public SysIdRoutine.Config getConfig() {
-		return config;
-	}
-
-	public SysIdTuner getSysIdTuner() {
-		System.out.println(sysIdTuner);
-		return sysIdTuner;
-	}
 
 	// GET FUNCTIONS
 
