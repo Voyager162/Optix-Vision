@@ -8,17 +8,17 @@ import frc.robot.subsystems.roller.RollerConstants.Implementations;
 public class AlgaeRoller extends Roller {
 
     public AlgaeRoller() {
-        super(Implementations.ALGAE, FF()); 
+        super(Implementations.ALGAE, FF());
     }
 
     public static SimpleMotorFeedforward FF() {
-        return new SimpleMotorFeedforward(RollerConstants.Algae.kSVelocity, RollerConstants.Algae.kVVelocity, RollerConstants.Algae.kAVelocity);
+        return new SimpleMotorFeedforward(RollerConstants.Algae.kSVelocity.get(), RollerConstants.Algae.kVVelocity.get(),
+                RollerConstants.Algae.kAVelocity.get());
     }
-
 
     @Override
     public void run() {
         setVelocity(RollerConstants.Algae.velocity);
     }
-    
+
 }

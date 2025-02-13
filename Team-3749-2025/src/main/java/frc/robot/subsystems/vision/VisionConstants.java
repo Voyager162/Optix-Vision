@@ -10,7 +10,7 @@ import edu.wpi.first.math.util.Units;
 
 public class VisionConstants {
 
-        public class RejectionRequirements{
+        public class RejectionRequirements {
                 public static final double maxLatencySec = 0.25;
                 public static final double maxSingleTagDistanceMeters = 2;
         }
@@ -21,14 +21,17 @@ public class VisionConstants {
                         public static final double xy = 0.001;
                         public static final double thetaRads = 0.0002;
                 }
+
                 public class OneTag {
                         public static final double xy = Math.hypot(0.015, 0.033);
                         public static final double thetaRads = Units.degreesToRadians(7);
                 }
+
                 public class TwoTag {
                         public static final double xy = Math.hypot(0.005, 0.008);
                         public static final double thetaRads = Units.degreesToRadians(2);
                 }
+
                 public class ManyTag {
                         public static final double xy = Math.hypot(0.002, 0.003);
                         public static final double thetaRads = Units.degreesToRadians(2);

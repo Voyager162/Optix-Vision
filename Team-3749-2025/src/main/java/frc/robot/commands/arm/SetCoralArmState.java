@@ -30,8 +30,8 @@ public class SetCoralArmState extends Command {
 
     @Override
     public boolean isFinished() {
-        
+
         return arm.getIsStableState();
-        
+
     }
 }

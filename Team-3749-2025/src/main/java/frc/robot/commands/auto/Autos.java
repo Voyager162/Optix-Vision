@@ -66,7 +66,7 @@ public class Autos {
      * @return "Split Routine" Command
      */
     public static Command getSplitRoutine() {
-        
+
         // becomes AutoRoutine
         AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("split routine");
         // loop.trajectory, or the new name
@@ -90,19 +90,20 @@ public class Autos {
      * @param factory the AutoFactory from AutoUtils
      * @return "Straight" Command
      */
-    public static Command getStraight(){
+    public static Command getStraight() {
         return AutoUtils.getSingleTrajectory("Straight");
 
     }
 
     public static Command getChairGame() {
-       return AutoUtils.getSingleTrajectory("Chair Game");
+        return AutoUtils.getSingleTrajectory("Chair Game");
 
     }
+
     public static Command getScore_Pick() {
         return AutoUtils.getSingleTrajectory("Score and Pick Note");
- 
-     }
+
+    }
 
     public static Command get1Piece() {
         return AutoUtils.getSingleTrajectory("1-r3");
