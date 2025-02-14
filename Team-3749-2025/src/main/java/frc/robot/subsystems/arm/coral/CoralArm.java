@@ -50,8 +50,8 @@ public class CoralArm extends SubsystemBase {
 
     SysIdRoutine.Config config = new SysIdRoutine.Config(
             Volts.per(Seconds).of(1), // Voltage ramp rate
-            Volts.of(4), // Max voltage
-            Seconds.of(4) // Test duration
+            Volts.of(8), // Max voltage
+            Seconds.of(8) // Test duration
     );
 
     // Profiled PID Controller used only for the motion profile, PID within
@@ -80,6 +80,8 @@ public class CoralArm extends SubsystemBase {
             // If running on real hardware, use SparkMax motors for the arm.
             armIO = new CoralArmSparkMax();
         }
+
+		sysIdTuner = new SysIdTuner("climb arm", config, this, armIO::setVoltage, motorData);
     }
 
     // GET FUNCTIONS

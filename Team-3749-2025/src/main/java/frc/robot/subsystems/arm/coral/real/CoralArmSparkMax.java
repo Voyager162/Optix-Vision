@@ -34,7 +34,7 @@ public class CoralArmSparkMax implements CoralArmIO {
 		motor = new OptixSpark(CoralArmConstants.motorID, OptixSpark.Type.SPARKMAX);
 
 		motor.setCurrentLimit(MotorControllerConstants.standardStallLimit, MotorControllerConstants.standardFreeLimit);
-		motor.setInverted(false);
+		motor.setInverted(true);
 		motor.setBrakeMode(true);
 		motor.setPositionConversionFactor(1 / CoralArmConstants.armGearing * 2 * Math.PI);
 		motor.setVelocityConversionFactor(1 / CoralArmConstants.armGearing * 2 * Math.PI / 60.0);

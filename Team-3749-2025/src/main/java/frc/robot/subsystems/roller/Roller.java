@@ -118,6 +118,11 @@ public abstract class Roller extends SubsystemBase {
         rollerIO.updateData(rollerData);
         runRollerStates();
 
+        motorData.get("roller_motor").velocity = rollerData.rollerVelocityRadPerSec;
+        motorData.get("roller_motor").position = rollerData.rollerPositionRad;
+        motorData.get("roller_motor").acceleration = rollerData.rollerVelocityRadPerSec;
+        motorData.get("roller_motor").appliedVolts = rollerData.rollerAppliedVolts;
+
         Logger.recordOutput("subsystems/roller/" + getName() + "/velocity", rollerData.rollerVelocityRadPerSec);
         Logger.recordOutput("subsystems/roller/" + getName() + "/applied voltage", rollerData.rollerAppliedVolts);
         Logger.recordOutput("subsystems/roller/" + getName() + "/current", rollerData.currentAmps);

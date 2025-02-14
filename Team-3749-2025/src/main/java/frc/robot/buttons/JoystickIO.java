@@ -95,29 +95,31 @@ public class JoystickIO {
      */
     public static void pilotAndOperatorBindings() {
         // gyro reset
-        pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
+        // pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
         
-        // Checking voltage for all subsystems
-        operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(Robot.subsystemVoltageSetter.get())));
-        operator.b().onTrue(Commands.run(() -> Robot.coralArm.setVoltage(Robot.subsystemVoltageSetter.get())));
-        operator.x().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(Robot.subsystemVoltageSetter.get())));
-        operator.y().onTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
-        operator.leftBumper().onTrue(Commands.run(() -> Robot.coralRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
-        operator.rightBumper().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
+        // // Checking voltage for all subsystems
+        // operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(Robot.subsystemVoltageSetter.get())));
+        // operator.b().onTrue(Commands.run(() -> Robot.coralArm.setVoltage(Robot.subsystemVoltageSetter.get())));
+        // operator.x().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(Robot.subsystemVoltageSetter.get())));
+        // operator.y().onTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
+        // operator.leftBumper().onTrue(Commands.run(() -> Robot.coralRoller.setVoltage(Robot.subsystemVoltageSetter.get()))).onFalse(Commands.runOnce(() -> Robot.coralRoller.stop()));
+        // operator.rightBumper().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
 
         // Climb, Coral, Elevator SysId
         // operator.a().whileTrue(Robot.climbArm.getSysIdTuner().runTests());
         // operator.b().whileTrue(Robot.coralArm.getSysIdTuner().runTests());
         // operator.x().whileTrue(Robot.elevator.getSysIdTuner().runTests());
 
-        // Swerve SysId
+        // Swerve SysId[]
         // operator.a().whileTrue(Robot.swerve.getRotationalSysIdTuner().runTests());
         // operator.b().whileTrue(Robot.swerve.getDriveSysIdTuner().runTests());
 
         // Roller SysId
-        // operator.a().whileTrue(Robot.algaeRoller.getSysIdTuner().runTests());
-        // operator.b().whileTrue(Robot.coralRoller.getSysIdTuner().runTests());
-        // operator.x().whileTrue(Robot.scoringRoller.getSysIdTuner().runTests());
+        // operator.a().onTrue(Robot.algaeRoller.getSysIdTuner().runTests());
+        operator.b().onTrue(Robot.coralRoller.getSysIdTuner().runTests());
+        operator.x().onTrue(Robot.scoringRoller.getSysIdTuner().runTests());
+
+        // operator.y().whileTrue(Commands.runOnce(()->Robot.coralRoller.setVoltage(6))).onFalse(Commands.runOnce(null, null))
 
         // All elevator stages
         // operator.a().onTrue(l1);
