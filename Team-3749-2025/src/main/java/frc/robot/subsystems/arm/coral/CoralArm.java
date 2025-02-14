@@ -82,7 +82,7 @@ public class CoralArm extends SubsystemBase {
             armIO = new CoralArmSparkMax();
         }
 
-		sysIdTuner = new SysIdTuner("climb arm", config, this, armIO::setVoltage, motorData, Type.ROTATIONAL);
+		sysIdTuner = new SysIdTuner("coral arm", config, this, armIO::setVoltage, motorData, Type.ROTATIONAL);
     }
 
     // GET FUNCTIONS
@@ -230,7 +230,7 @@ public class CoralArm extends SubsystemBase {
      * Runs the logic for the current arm state. This is called periodically to
      * update the arm's behavior.
      */
-    private void runState() {
+    public void runState() {
         switch (state) {
             case STOPPED:
                 stop(); // If the arm is stopped, we stop it.

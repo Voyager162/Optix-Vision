@@ -57,14 +57,14 @@ public class ClimbArm extends SubsystemBase {
 	private SysIdTuner sysIdTuner;
 
 	SysIdRoutine.Config config = new SysIdRoutine.Config(
-			Volts.per(Seconds).of(1.5), // Voltage ramp rate
-			Volts.of(2), // Max voltage
-			Seconds.of(2.5) // Test duration
+			Volts.per(Seconds).of(1), // Voltage ramp rate
+			Volts.of(12), // Max voltage
+			Seconds.of(12) // Test duration
 	);
 
 	Map<String, MotorData> motorData = Map.of(
 			"arm_motor", new MotorData(
-					data.appliedVolts,
+					(data.frontMotorAppliedVolts + data.backMotorAppliedVolts) / 2,
 					data.positionRad,
 					data.velocityRadPerSec,
 					data.accelerationUnits));
@@ -169,7 +169,7 @@ public class ClimbArm extends SubsystemBase {
 		}
 	}
 
-	public void setBrakeMode(boolean setMode){
+	public void setBrakeMode(boolean setMode) {
 		armIO.setBrakeMode(setMode);
 	}
 
@@ -224,7 +224,7 @@ public class ClimbArm extends SubsystemBase {
 	// PERIODIC FUNCTIONS
 
 	/** Runs the logic for the current arm state. */
-	private void runState() {
+	public void runState() {
 		switch (state) {
 			case STOPPED:
 				stop();
@@ -255,9 +255,12 @@ public class ClimbArm extends SubsystemBase {
 
 		publisher.set(getPose3d());
 
-		profile = new ProfiledPIDController(ClimbArmConstants.kP.get(), ClimbArmConstants.kI.get(), ClimbArmConstants.kD.get(),
-				new TrapezoidProfile.Constraints(ClimbArmConstants.maxVelocity.get(), ClimbArmConstants.maxAcceleration.get()));
-		feedforward = new ArmFeedforward(ClimbArmConstants.kS.get(), ClimbArmConstants.kG.get(), ClimbArmConstants.kV.get());
+		profile = new ProfiledPIDController(ClimbArmConstants.kP.get(), ClimbArmConstants.kI.get(),
+				ClimbArmConstants.kD.get(),
+				new TrapezoidProfile.Constraints(ClimbArmConstants.maxVelocity.get(),
+						ClimbArmConstants.maxAcceleration.get()));
+		feedforward = new ArmFeedforward(ClimbArmConstants.kS.get(), ClimbArmConstants.kG.get(),
+				ClimbArmConstants.kV.get());
 
 		Logger.recordOutput("subsystems/arms/climbArm/Climb Arm Mechanism", mechanism2d);
 	}
@@ -277,6 +280,6 @@ public class ClimbArm extends SubsystemBase {
 		motorData.get("arm_motor").position = data.positionRad;
 		motorData.get("arm_motor").acceleration = data.accelerationUnits;
 		motorData.get("arm_motor").velocity = data.velocityRadPerSec;
-		motorData.get("arm_motor").appliedVolts = data.appliedVolts;
+		motorData.get("arm_motor").appliedVolts = (data.frontMotorAppliedVolts + data.backMotorAppliedVolts) / 2;
 	}
 }

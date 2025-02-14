@@ -102,9 +102,7 @@ public class SysIdTuner {
                         .linearVelocity(MetersPerSecond.ofBaseUnits(data.velocity))
                         .linearAcceleration(MetersPerSecondPerSecond.ofBaseUnits(data.acceleration));
             });
-
         } else {
-
             motorData.forEach((motorName, data) -> {
                 log.motor(motorName)
                         .voltage(Voltage.ofBaseUnits(data.appliedVolts, Volts))

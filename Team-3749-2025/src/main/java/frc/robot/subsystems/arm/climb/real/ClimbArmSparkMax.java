@@ -1,7 +1,5 @@
 package frc.robot.subsystems.arm.climb.real;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import edu.wpi.first.math.MathUtil;
