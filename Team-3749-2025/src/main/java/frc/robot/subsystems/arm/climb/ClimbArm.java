@@ -56,9 +56,9 @@ public class ClimbArm extends SubsystemBase {
 	private SysIdTuner sysIdTuner;
 
 	SysIdRoutine.Config config = new SysIdRoutine.Config(
-			Volts.per(Seconds).of(1), // Voltage ramp rate
-			Volts.of(4), // Max voltage
-			Seconds.of(4) // Test duration
+			Volts.per(Seconds).of(3), // Voltage ramp rate
+			Volts.of(2), // Max voltage
+			Seconds.of(1) // Test duration
 	);
 
 	Map<String, MotorData> motorData = Map.of(
@@ -166,6 +166,10 @@ public class ClimbArm extends SubsystemBase {
 				stop();
 				break;
 		}
+	}
+
+	public void setBrakeMode(boolean setMode){
+		armIO.setBrakeMode(setMode);
 	}
 
 	private Angle getPitch() {

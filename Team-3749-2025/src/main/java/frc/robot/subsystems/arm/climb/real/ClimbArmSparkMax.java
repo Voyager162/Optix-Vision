@@ -39,21 +39,23 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 
 		frontMotorLead.setCurrentLimit(MotorControllerConstants.standardStallLimit,
 				MotorControllerConstants.standardFreeLimit);
-		frontMotorLead.setInverted(false);
+		frontMotorLead.setInverted(true);
 		frontMotorLead.setBrakeMode(true);
 		frontMotorLead.setPositionConversionFactor(1 / ClimbArmConstants.armGearing * 2 * Math.PI);
 		frontMotorLead.setVelocityConversionFactor(1 / ClimbArmConstants.armGearing * 2 * Math.PI / 60.0);
 		frontMotorLead.setPID(ClimbArmConstants.kP.get(), ClimbArmConstants.kI.get(), ClimbArmConstants.kD.get(), ClosedLoopSlot.kSlot0);
 
+		frontMotorLead.applyConfig();
 		backMotorFollower.applyConfig(frontMotorLead.getConfig());
-		backMotorFollower.setInverted(true);
-
-		absoluteEncoder = frontMotorLead.getAbsoluteEncoder();
-		absolutePos = absoluteEncoder.getPosition();
+		backMotorFollower.setInverted(false);
+		
+		backMotorFollower.applyConfig();
+		
+				absoluteEncoder = frontMotorLead.getAbsoluteEncoder();
+				absolutePos = absoluteEncoder.getPosition();
 
 		frontMotorLead.setPosition(absolutePos);
 		backMotorFollower.setPosition(absolutePos);
-		backMotorFollower.setFollow(frontMotorLead);
 
 	}
 
@@ -96,10 +98,12 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 		inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
 		inputVolts = MathUtil.clamp(volts, -12, 12);
 		frontMotorLead.setVoltage(inputVolts);
+		backMotorFollower.setVoltage(inputVolts);
 	}
 
 	@Override
 	public void setPosition(double setpointPositionRad, double feedforward) {
 		frontMotorLead.setPositionControl(setpointPositionRad, feedforward);
+		backMotorFollower.setPositionControl(setpointPositionRad, feedforward);
 	}
 }

@@ -104,6 +104,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledInit() {
     swerve.setBreakMode(false);
+    climbArm.setBrakeMode(false);
   }
 
   @Override
@@ -113,6 +114,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledExit() {
     swerve.setBreakMode(true);
+    climbArm.setBrakeMode(true);
   }
 
   @Override
@@ -137,7 +139,6 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
   }
 
   @Override

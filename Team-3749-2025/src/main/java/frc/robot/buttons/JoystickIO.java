@@ -106,7 +106,7 @@ public class JoystickIO {
         // operator.rightBumper().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
 
         // Climb, Coral, Elevator SysId
-        // operator.a().whileTrue(Robot.climbArm.getSysIdTuner().runTests());
+        operator.a().whileTrue(Robot.climbArm.getSysIdTuner().runTests());
         // operator.b().whileTrue(Robot.coralArm.getSysIdTuner().runTests());
         // operator.x().whileTrue(Robot.elevator.getSysIdTuner().runTests());
 
@@ -116,8 +116,8 @@ public class JoystickIO {
 
         // Roller SysId
         // operator.a().onTrue(Robot.algaeRoller.getSysIdTuner().runTests());
-        operator.b().onTrue(Robot.coralRoller.getSysIdTuner().runTests());
-        operator.x().onTrue(Robot.scoringRoller.getSysIdTuner().runTests());
+        // operator.b().onTrue(Robot.coralRoller.getSysIdTuner().runTests());
+        // operator.x().onTrue(Robot.scoringRoller.getSysIdTuner().runTests());
 
         // operator.y().whileTrue(Commands.runOnce(()->Robot.coralRoller.setVoltage(6))).onFalse(Commands.runOnce(null, null))
 
