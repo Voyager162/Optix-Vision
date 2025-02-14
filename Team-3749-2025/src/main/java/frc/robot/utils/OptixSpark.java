@@ -171,7 +171,7 @@ public class OptixSpark {
      * @param factor
      */
     public void setVelocityConversionFactor(double factor) {
-        encoderConfig.positionConversionFactor(factor);
+        encoderConfig.velocityConversionFactor(factor);
 
         motorConfig.apply(encoderConfig);
 

@@ -44,8 +44,11 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 				MotorControllerConstants.standardFreeLimit);
 		frontMotor.setInverted(true);
 		frontMotor.setBrakeMode(false);
-		frontMotor.setVelocityConversionFactor(1 / ClimbArmConstants.armGearing *
-				2 * Math.PI / 60.0);
+
+
+		frontMotor.setVelocityConversionFactor((1 / ClimbArmConstants.armGearing) *
+				(2 * Math.PI / 60.0));
+
 		frontMotor.setPID(ClimbArmConstants.kP.get(), ClimbArmConstants.kI.get(), ClimbArmConstants.kD.get(),
 				ClosedLoopSlot.kSlot0);
 
@@ -75,7 +78,7 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 	@Override
 	public void updateData(ArmData data) {
 		previousVelocity = velocity;
-		velocity = (frontMotor.getVelocity() + backMotor.getVelocity()) / 2;
+		velocity = (frontMotor.getVelocity() + backMotor.getVelocity())/2;
 		data.positionRad = getPosition();
 		data.velocityRadPerSec = velocity;
 		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
