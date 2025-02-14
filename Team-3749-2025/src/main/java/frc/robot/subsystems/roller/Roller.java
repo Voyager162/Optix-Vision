@@ -13,6 +13,7 @@ import frc.robot.subsystems.roller.sim.RollerSim;
 import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.MotorData;
 import frc.robot.utils.SysIdTuner;
+import frc.robot.utils.SysIdTuner.Type;
 import frc.robot.Robot;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
@@ -56,7 +57,7 @@ public abstract class Roller extends SubsystemBase {
         this.rollerFF = rollerFF;
         this.rollerState = RollerConstants.RollerStates.STOP;
 
-        sysIdTuner = new SysIdTuner("roller " + name, config, this, rollerIO::setVoltage, motorData);
+        sysIdTuner = new SysIdTuner("roller " + name, config, this, rollerIO::setVoltage, motorData, Type.ROTATIONAL);
     }
 
     public SysIdTuner getSysIdTuner() {

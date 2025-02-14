@@ -37,6 +37,7 @@ import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.MotorData;
 import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
+import frc.robot.utils.SysIdTuner.Type;
 import frc.robot.subsystems.swerve.SwerveConstants.ControlConstants;
 import frc.robot.subsystems.swerve.SwerveConstants.DrivetrainConstants;
 import frc.robot.subsystems.swerve.real.*;
@@ -153,19 +154,19 @@ public class Swerve extends SubsystemBase {
       for (int i = 0; i < 4; i++) {
         modules[i].setDriveVoltage(volts);
       }
-    }, driveMotorData);
+    }, driveMotorData, Type.LINEAR);
 
     turningSysIdTuner = new SysIdTuner("turn", config, this, (volts) -> {
       for (int i = 0; i < 4; i++) {
         modules[i].setTurnVoltage(volts);
       }
-    }, turningMotorData);
+    }, turningMotorData, Type.ROTATIONAL);
 
     rotationalSysIdTuner = new SysIdTuner("rotate", config, this, (volts) -> {
       for (int i = 0; i < 4; i++) {
         modules[i].setDriveVoltage(volts);
       }
-    }, rotationalMotorData);
+    }, rotationalMotorData, Type.ROTATIONAL);
 
     turnController.enableContinuousInput(-Math.PI, Math.PI);
 

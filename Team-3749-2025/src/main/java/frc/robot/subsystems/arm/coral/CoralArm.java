@@ -3,6 +3,7 @@ package frc.robot.subsystems.arm.coral;
 import frc.robot.Robot;
 import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
+import frc.robot.utils.SysIdTuner.Type;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
@@ -81,7 +82,7 @@ public class CoralArm extends SubsystemBase {
             armIO = new CoralArmSparkMax();
         }
 
-		sysIdTuner = new SysIdTuner("climb arm", config, this, armIO::setVoltage, motorData);
+		sysIdTuner = new SysIdTuner("climb arm", config, this, armIO::setVoltage, motorData, Type.ROTATIONAL);
     }
 
     // GET FUNCTIONS

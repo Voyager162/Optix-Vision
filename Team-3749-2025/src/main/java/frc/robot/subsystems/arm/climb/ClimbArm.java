@@ -3,6 +3,7 @@ package frc.robot.subsystems.arm.climb;
 import frc.robot.Robot;
 import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
+import frc.robot.utils.SysIdTuner.Type;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -56,9 +57,9 @@ public class ClimbArm extends SubsystemBase {
 	private SysIdTuner sysIdTuner;
 
 	SysIdRoutine.Config config = new SysIdRoutine.Config(
-			Volts.per(Seconds).of(3), // Voltage ramp rate
+			Volts.per(Seconds).of(1.5), // Voltage ramp rate
 			Volts.of(2), // Max voltage
-			Seconds.of(1.5) // Test duration
+			Seconds.of(2.5) // Test duration
 	);
 
 	Map<String, MotorData> motorData = Map.of(
@@ -77,7 +78,7 @@ public class ClimbArm extends SubsystemBase {
 			armIO = new ClimbArmSparkMax();
 		}
 
-		sysIdTuner = new SysIdTuner("climb arm", getConfig(), this, armIO::setVoltage, getMotorData());
+		sysIdTuner = new SysIdTuner("climb arm", getConfig(), this, armIO::setVoltage, getMotorData(), Type.ROTATIONAL);
 	}
 
 	public Map<String, MotorData> getMotorData() {

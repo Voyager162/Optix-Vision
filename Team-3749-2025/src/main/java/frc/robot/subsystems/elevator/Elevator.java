@@ -37,6 +37,7 @@ import frc.robot.utils.ShuffleData;
 import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.MotorData;
 import frc.robot.utils.UtilityFunctions;
+import frc.robot.utils.SysIdTuner.Type;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -93,7 +94,7 @@ public class Elevator extends SubsystemBase {
         } else {
             elevatorio = new ElevatorSparkMax();
         }
-        sysIdTuner = new SysIdTuner("elevator", config, this, elevatorio::setVoltage, motorData);
+        sysIdTuner = new SysIdTuner("elevator", config, this, elevatorio::setVoltage, motorData, Type.LINEAR);
     }
 
     public SysIdTuner getSysIdTuner() {
