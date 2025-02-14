@@ -14,6 +14,7 @@ public class ClimbArmConstants {
 	public static final int frontMotorId = 17;
 	public static final int backMotorId = 18;
 	public static final int numMotors = 2;
+	public static final double absoluteEncoderOffsetRad = 6.13-Math.PI*0.5;
 
 	// arm specifications
 	public static final int armLength_inches = 16;
@@ -24,7 +25,7 @@ public class ClimbArmConstants {
 	public static final int armStartingAngle_degrees = 0;
 
 	public static final double armMass_kg = 8.44;
-	public static final double armGearing = 255;
+	public static final double armGearing = 125;
 
 
 	public static final double momentOfInertia = 0.775;

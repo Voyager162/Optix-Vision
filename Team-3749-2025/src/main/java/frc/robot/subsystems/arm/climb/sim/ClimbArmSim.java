@@ -60,8 +60,8 @@ public class ClimbArmSim implements ClimbArmIO {
 		armSim.update(0.02);
 		previousVelocity = velocity;
 		velocity = armSim.getVelocityRadPerSec();
-		data.positionUnits = armSim.getAngleRads();
-		data.velocityUnits = velocity;
+		data.positionRad = armSim.getAngleRads();
+		data.velocityRadPerSec = velocity;
 		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
 
 		data.inputVolts = inputVolts;

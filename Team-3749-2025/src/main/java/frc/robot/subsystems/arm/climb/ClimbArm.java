@@ -58,14 +58,14 @@ public class ClimbArm extends SubsystemBase {
 	SysIdRoutine.Config config = new SysIdRoutine.Config(
 			Volts.per(Seconds).of(3), // Voltage ramp rate
 			Volts.of(2), // Max voltage
-			Seconds.of(1) // Test duration
+			Seconds.of(1.5) // Test duration
 	);
 
 	Map<String, MotorData> motorData = Map.of(
 			"arm_motor", new MotorData(
 					data.appliedVolts,
-					data.positionUnits,
-					data.velocityUnits,
+					data.positionRad,
+					data.velocityRadPerSec,
 					data.accelerationUnits));
 
 	public ClimbArm() {
@@ -106,7 +106,7 @@ public class ClimbArm extends SubsystemBase {
 	 * @return the current arm position.
 	 */
 	public double getPositionRad() {
-		return data.positionUnits;
+		return data.positionRad;
 	}
 
 	/**
@@ -117,16 +117,16 @@ public class ClimbArm extends SubsystemBase {
 		switch (state) {
 			case STOWED:
 				return UtilityFunctions.withinMargin(ClimbArmConstants.stateMarginOfError,
-						ClimbArmConstants.stowSetPoint_rad, data.positionUnits);
+						ClimbArmConstants.stowSetPoint_rad, data.positionRad);
 			case PREPARE_FOR_CLIMB:
 				return UtilityFunctions.withinMargin(ClimbArmConstants.stateMarginOfError,
 						ClimbArmConstants.PrepareForClimbSetPoint_rad,
-						data.positionUnits);
+						data.positionRad);
 			case CLIMB:
 				return UtilityFunctions.withinMargin(ClimbArmConstants.stateMarginOfError,
-						ClimbArmConstants.climbSetPoint_rad, data.positionUnits);
+						ClimbArmConstants.climbSetPoint_rad, data.positionRad);
 			case STOPPED:
-				return UtilityFunctions.withinMargin(ClimbArmConstants.stateMarginOfError, 0, data.velocityUnits);
+				return UtilityFunctions.withinMargin(ClimbArmConstants.stateMarginOfError, 0, data.velocityRadPerSec);
 			default:
 				return false;
 		}
@@ -173,7 +173,7 @@ public class ClimbArm extends SubsystemBase {
 	}
 
 	private Angle getPitch() {
-		return Angle.ofBaseUnits(-data.positionUnits + Units.degreesToRadians(0), Radians); // remove offset once climb
+		return Angle.ofBaseUnits(-data.positionRad + Units.degreesToRadians(0), Radians); // remove offset once climb
 																							// arm code is fixed
 	}
 
@@ -238,8 +238,8 @@ public class ClimbArm extends SubsystemBase {
 	private void logData() {
 		Logger.recordOutput("subsystems/arms/climbArm/Current Command",
 				this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-		Logger.recordOutput("subsystems/arms/climbArm/position", data.positionUnits);
-		Logger.recordOutput("subsystems/arms/climbArm/velocity", data.velocityUnits);
+		Logger.recordOutput("subsystems/arms/climbArm/position", data.positionRad);
+		Logger.recordOutput("subsystems/arms/climbArm/velocity", data.velocityRadPerSec);
 		Logger.recordOutput("subsystems/arms/climbArm/input volts", data.inputVolts);
 		Logger.recordOutput("subsystems/arms/climbArm/frontMotor/applied volts", data.frontMotorAppliedVolts);
 		Logger.recordOutput("subsystems/arms/climbArm/backMotor/applied volts", data.backMotorAppliedVolts);
@@ -248,7 +248,7 @@ public class ClimbArm extends SubsystemBase {
 		Logger.recordOutput("subsystems/arms/climbArm/frontMotor/temperature", data.frontMotorTempCelcius);
 		Logger.recordOutput("subsystems/arms/climbArm/backMotor/temperature", data.backMotorTempCelcius);
 
-		armLigament.setAngle(Math.toDegrees(data.positionUnits));
+		armLigament.setAngle(Math.toDegrees(data.positionRad));
 
 		Logger.recordOutput("subsystems/arms/climbArm/current state", state.name());
 
@@ -273,9 +273,9 @@ public class ClimbArm extends SubsystemBase {
 
 		logData();
 
-		motorData.get("arm_motor").position = data.positionUnits;
+		motorData.get("arm_motor").position = data.positionRad;
 		motorData.get("arm_motor").acceleration = data.accelerationUnits;
-		motorData.get("arm_motor").velocity = data.velocityUnits;
+		motorData.get("arm_motor").velocity = data.velocityRadPerSec;
 		motorData.get("arm_motor").appliedVolts = data.appliedVolts;
 	}
 }
