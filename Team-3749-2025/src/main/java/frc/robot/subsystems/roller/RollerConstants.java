@@ -8,7 +8,7 @@ public class RollerConstants {
         public static final boolean inverted = false;
 
         public static final double momentOfInertia = 0.04;
-        public static final double gearRatio = 1.0;
+        public static final double gearRatio = 3.0;
         public static final double measurementNoise = 0.0;
 
         public static LoggedTunableNumber kPVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kPVelocity", 10.0);
@@ -40,8 +40,8 @@ public class RollerConstants {
         public static LoggedTunableNumber kIVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kIVelocity", 0.0);
         public static LoggedTunableNumber kDVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kDVelocity", 0.0);
         public static LoggedTunableNumber kSVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kSVelocity", 0.0);
-        public static LoggedTunableNumber kVVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kVVelocity", 0.02);
-        public static LoggedTunableNumber kAVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kAVelocity", 0.0);
+        public static LoggedTunableNumber kVVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kVVelocity", 0.061);
+        public static LoggedTunableNumber kAVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kAVelocity", 0.04);
 
         public static LoggedTunableNumber kPPosition = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kPPosition", 15.0);
         public static LoggedTunableNumber kIPosition = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kIPosition", 0.0);
@@ -50,7 +50,7 @@ public class RollerConstants {
         public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/maxVelocity", 0.0);
         public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("/subsystems/rollers/coralRoller/maxAcceleration", 0.0);
 
-        public static final double velocity = 5.0;
+        public static final double velocity = 100.0;
 
     }
 

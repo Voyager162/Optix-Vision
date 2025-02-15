@@ -58,6 +58,8 @@ public class RollerSparkMax implements RollerIO {
                 MotorControllerConstants.relaxedFreeLimit);
         rollerMotor.setBrakeMode(true);
 
+        rollerMotor.applyConfig();
+
     }
 
     @Override
@@ -70,6 +72,9 @@ public class RollerSparkMax implements RollerIO {
         data.rollerAppliedVolts = rollerMotor.getAppliedVolts();
         data.rollerVelocityRadPerSec = rollerMotor.getVelocity();
         data.rollerTempCelcius = rollerMotor.getTemperature();
+        data.currentAmps = rollerMotor.getCurrent();
+        data.rollerPositionRad = rollerMotor.getPosition();
+        
     }
 
     @Override

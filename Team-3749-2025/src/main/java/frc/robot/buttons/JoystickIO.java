@@ -102,7 +102,7 @@ public class JoystickIO {
         // operator.b().onTrue(Commands.run(() -> Robot.coralArm.setVoltage(Robot.subsystemVoltageSetter.get())));
         // operator.x().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(Robot.subsystemVoltageSetter.get())));
         // operator.y().onTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
-        // operator.leftBumper().onTrue(Commands.run(() -> Robot.coralRoller.setVoltage(Robot.subsystemVoltageSetter.get()))).onFalse(Commands.runOnce(() -> Robot.coralRoller.stop()));
+        operator.leftBumper().onTrue(Commands.run(() -> Robot.coralRoller.setVoltage(Robot.subsystemVoltageSetter.get()))).onFalse(Commands.runOnce(() -> Robot.coralRoller.stop()));
         // operator.rightBumper().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
 
         // Climb, Coral, Elevator SysId
@@ -133,7 +133,8 @@ public class JoystickIO {
 
         // Run
         // operator.a().whileTrue(algaeRun);
-        // operator.b().whileTrue(coralRun);
+        operator.b().onTrue(coralRun);
+        // operator.y().onTrue()
         // operator.x().whileTrue(scoringRun);
 
         // Maintain
