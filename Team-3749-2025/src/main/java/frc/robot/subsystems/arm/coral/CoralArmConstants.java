@@ -23,7 +23,7 @@ public class CoralArmConstants {
 
 	public static final double armMass_kg = 1.132; // from cad, I highlighted all of the components on the arm and used
 													// the mass feature
-	public static final double armGearing = 40;
+	public static final double armGearing = 45;
 
 	// control values
 	public static LoggedTunableNumber kG = new LoggedTunableNumber("/subsystems/arms/coralArm/kG", 0.5);
