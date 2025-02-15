@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.arm.climb.ClimbArmIO;
 import frc.robot.subsystems.arm.climb.ClimbArmConstants;
@@ -24,7 +25,6 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 
 	private SparkAbsoluteEncoder absoluteEncoder;
 	private double absolutePos;
-
 	private double inputVolts = 0;
 	private double previousVelocity = 0;
 	private double velocity = 0;
@@ -47,9 +47,6 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 
 		frontMotor.setVelocityConversionFactor((1 / ClimbArmConstants.armGearing) *
 				(2 * Math.PI / 60.0));
-
-		frontMotor.setPID(ClimbArmConstants.kP.get(), ClimbArmConstants.kI.get(), ClimbArmConstants.kD.get(),
-				ClosedLoopSlot.kSlot0);
 		// frontMotor.setControlEncoder(FeedbackSensor.kAbsoluteEncoder);
 		frontMotor.setPositionWrapping(0, 1);
 		frontMotor.applyConfig();
@@ -105,14 +102,15 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 		backMotor.setVoltage(inputVolts);
 	}
 
-	@Override
-	public void setPosition(double setpointPositionRad, double feedforward) {
-		SmartDashboard.putNumber("abs pos", absoluteEncoder.getPosition());
-		setpointPositionRad -= Math.PI / 2;
-		SmartDashboard.putNumber("setpoint rad pid", setpointPositionRad);
-		frontMotor.setPositionControl(setpointPositionRad / (2 * Math.PI), feedforward);
-		backMotor.setPositionControl(setpointPositionRad / (2 * Math.PI), feedforward);
-	}
+	// @Override
+	// public void setPosition(double setpointPositionRad, double feedforward) {
+	// 	SmartDashboard.putNumber("abs pos", absoluteEncoder.getPosition());
+	// 	setpointPositionRad -= Math.PI / 2;
+	// 	SmartDashboard.putNumber("setpoint rad pid", setpointPositionRad);
+	// 	frontMotor.setVoltage(feedforward + PIDController);
+	// 	frontMotor.setPositionControl(setpointPositionRad / (2 * Math.PI), feedforward);
+	// 	backMotor.setPositionControl(setpointPositionRad / (2 * Math.PI), feedforward);
+	// }
 
 	private double getPosition() {
 		absolutePos = (absoluteEncoder.getPosition() * 2 * Math.PI) + Math.PI / 2;
