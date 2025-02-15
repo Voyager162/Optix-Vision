@@ -51,7 +51,7 @@ public class CoralArmSim implements CoralArmIO {
 		armSim.update(0.02);
 		previousVelocity = velocity;
 		velocity = armSim.getVelocityRadPerSec();
-		data.positionUnits = armSim.getAngleRads();
+		data.positionRad = armSim.getAngleRads();
 		data.velocityUnits = velocity;
 		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
 

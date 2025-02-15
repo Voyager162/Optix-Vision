@@ -238,6 +238,11 @@ public class OptixSpark {
 
     }
 
+    public void setAbsoluteEncoderInverted(boolean inverted){
+        motorConfig.absoluteEncoder.inverted(inverted);
+
+    }
+
     public void setBrakeMode(boolean isBrakeMode) {
         if (isBrakeMode) {
             motorConfig.idleMode(IdleMode.kBrake);

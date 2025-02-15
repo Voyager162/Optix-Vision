@@ -13,6 +13,7 @@ public class CoralArmConstants {
 	// motor specifications
 	public static final int motorID = 16;
 	public static final int numMotors = 1;
+	public static final double absoluteEncoderOffsetRad = 0.595;
 
 	public static final double armLength_inches = 17.796; // from cad max length of arm
 	public static final double armLength_meters = Units.inchesToMeters(armLength_inches);
@@ -26,21 +27,21 @@ public class CoralArmConstants {
 	public static final double armGearing = 45;
 
 	// control values
-	public static LoggedTunableNumber kG = new LoggedTunableNumber("/subsystems/arms/coralArm/kG", 0.5);
-	public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/arms/coralArm/kP", 15);
+	public static LoggedTunableNumber kG = new LoggedTunableNumber("/subsystems/arms/coralArm/kG", 0.365);
+	public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/arms/coralArm/kP", 0);
 	public static LoggedTunableNumber kI = new LoggedTunableNumber("/subsystems/arms/coralArm/kP" + "/kI", 0);
 	public static LoggedTunableNumber kD = new LoggedTunableNumber("/subsystems/arms/coralArm/kD", 0);
-	public static LoggedTunableNumber kS = new LoggedTunableNumber("/subsystems/arms/coralArm/kS", 0);
-	public static LoggedTunableNumber kV = new LoggedTunableNumber("/subsystems/arms/coralArm/kV", 0);
-	public static LoggedTunableNumber kA = new LoggedTunableNumber("/subsystems/arms/coralArm/kA", 0);
+	public static LoggedTunableNumber kS = new LoggedTunableNumber("/subsystems/arms/coralArm/kS", 0.135);
+	public static LoggedTunableNumber kV = new LoggedTunableNumber("/subsystems/arms/coralArm/kV", 0.85);
+	public static LoggedTunableNumber kA = new LoggedTunableNumber("/subsystems/arms/coralArm/kA", 0.4);
 	public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/arms/coralArm/max velocity",
-			0);
+			6);
 	public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("/subsystems/arms/coralArm/max acceleration",
-			0);
+			10);
 
-	public static final double stowSetPoint_rad = 70 * Math.PI / 180; // 70, 1.2217304764
-	public static final double handOffSetPoint_rad = 40 * Math.PI / 180; // 40
-	public static final double coralPickUpSetPoint_rad = 175 * Math.PI / 180; // 175, 3.05432619099
+	public static final double stowSetPoint_rad = 2.51; // 70, 1.2217304764
+	public static final double handOffSetPoint_rad = 2.51; // 40
+	public static final double coralPickUpSetPoint_rad = -0.57; // 175, 3.05432619099
 
 	public static final double momentOfInertia = 0.775; // from last years MOI
 
