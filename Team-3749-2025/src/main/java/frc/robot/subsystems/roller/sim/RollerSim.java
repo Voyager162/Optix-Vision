@@ -18,8 +18,6 @@ public class RollerSim implements RollerIO {
     private double momentOfInertia;
     private double gearRatio;
     private double measurementNoise;
-    private PIDController positionController;
-    private PIDController velocityController;
 
     private double velocity = 0;
     private double position = 0;
@@ -30,22 +28,16 @@ public class RollerSim implements RollerIO {
                 momentOfInertia = RollerConstants.Algae.momentOfInertia;
                 gearRatio = RollerConstants.Algae.gearRatio;
                 measurementNoise = RollerConstants.Algae.measurementNoise;
-                positionController = new PIDController(Algae.kPPosition.get(), Algae.kIPosition.get(), Algae.kDPosition.get());
-                velocityController = new PIDController(Algae.kPVelocity.get(), Algae.kIVelocity.get(), Algae.kDVelocity.get());
                 break;
             case CORAL:
                 momentOfInertia = RollerConstants.Coral.momentOfInertia;
                 gearRatio = RollerConstants.Coral.gearRatio;
                 measurementNoise = RollerConstants.Coral.measurementNoise;
-                positionController = new PIDController(Coral.kPPosition.get(), Coral.kIPosition.get(), Coral.kDPosition.get());
-                velocityController = new PIDController(Coral.kPVelocity.get(), Coral.kIVelocity.get(), Coral.kDVelocity.get());
                 break;
             case SCORING:
                 momentOfInertia = RollerConstants.Scoring.momentOfInertia;
                 gearRatio = RollerConstants.Scoring.gearRatio;
                 measurementNoise = RollerConstants.Scoring.measurementNoise;
-                positionController = new PIDController(Scoring.kPPosition.get(), Scoring.kIPosition.get(), Scoring.kDPosition.get());
-                velocityController = new PIDController(Scoring.kPVelocity.get(), Scoring.kIVelocity.get(), Scoring.kDVelocity.get());
                 break;
         }
 
@@ -74,14 +66,4 @@ public class RollerSim implements RollerIO {
         rollerMotor.setInputVoltage(rollerVolts);
     }
 
-    @Override
-    public void setVelocity(double setpointVelocity, double feedforward) {
-        rollerMotor.setInputVoltage(feedforward + velocityController.calculate(velocity, setpointVelocity));
-    }
-
-    @Override
-    public void setPosition(double setpointPosition, double feedforward) {
-        rollerMotor.setInputVoltage(feedforward + positionController.calculate(position, setpointPosition));
-
-    }
 }

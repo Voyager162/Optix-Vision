@@ -17,25 +17,23 @@ import frc.robot.utils.LoggedTunableNumber;
 public class SwerveConstants {
 
         public static final class ControlConstants {
-                public static final double[][] turnPID = new double[][] {
-                                { 8, 0, 0 }, // large error position
-                                { 12, 0, 0 }, // small error position
-                                { 0, 0, 0 }, // deadband error position
-                                { 0, 0, 0 } }; //
-                public static final double[][] drivePID = new double[][] {
-                                { 0, 0, 0 }, // small error position
-                                { 0, 0, 0 }, // large error position
-                                { 0.27, 0, 0 }, // no slow velocity control
-                                { 0.27, 0, 0 } }; // no fast velocity control
-
+                public static final double[] turnPID = new double[] {
+                                3.75, 0, 0 };
+                public static final double[] drivePID = new double[] {
+                                0.27, 0, 0 };
                 // our FF values
 
-                public static LoggedTunableNumber kSDriving = new LoggedTunableNumber("subsystems/swerve/kSDriving", 0.26);
-                public static LoggedTunableNumber kVDriving = new LoggedTunableNumber("subsystems/swerve/kVDriving", 2.765);
-                public static LoggedTunableNumber kADriving = new LoggedTunableNumber("subsystems/swerve/kADriving", 0.0);
+                public static LoggedTunableNumber kSDriving = new LoggedTunableNumber("subsystems/swerve/kSDriving",
+                                0.26);
+                public static LoggedTunableNumber kVDriving = new LoggedTunableNumber("subsystems/swerve/kVDriving",
+                                2.765);
+                public static LoggedTunableNumber kADriving = new LoggedTunableNumber("subsystems/swerve/kADriving",
+                                0.0);
 
-                public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("subsystems/swerve/maxVelocity", 4.3);
-                public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("subsystems/swerve/maxAcceleration", 3.3);
+                public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("subsystems/swerve/maxVelocity",
+                                4.3);
+                public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
+                                "subsystems/swerve/maxAcceleration", 3.3);
 
                 // teleop speed
                 public static final double teleopMaxSpeedReduction = 0; // If we can drive a little faster in telop
@@ -89,7 +87,7 @@ public class SwerveConstants {
                                 false
                 };
                 public static final double[] absoluteEncoderOffsetDeg = {
-                                49.733,67.208,276.509,21.715
+                                49.733, 67.208, 276.509, 21.715
                 };
 
         }
