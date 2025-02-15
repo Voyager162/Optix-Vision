@@ -16,6 +16,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -248,6 +249,11 @@ public class OptixSpark {
 
     public void setFollow(OptixSpark spark) {
         motorConfig.follow(spark.getSpark());
+    }
+
+    public void setControlEncoder(FeedbackSensor sensor){
+        controllerConfig.feedbackSensor(sensor);
+        motorConfig.apply(controllerConfig);
     }
 
     /**

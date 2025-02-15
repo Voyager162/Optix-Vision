@@ -2,6 +2,8 @@ package frc.robot.subsystems.arm.climb.real;
 
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.arm.climb.ClimbArmIO;
@@ -43,13 +45,13 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 		frontMotor.setInverted(true);
 		frontMotor.setBrakeMode(false);
 
-
 		frontMotor.setVelocityConversionFactor((1 / ClimbArmConstants.armGearing) *
 				(2 * Math.PI / 60.0));
 
 		frontMotor.setPID(ClimbArmConstants.kP.get(), ClimbArmConstants.kI.get(), ClimbArmConstants.kD.get(),
 				ClosedLoopSlot.kSlot0);
-
+		// frontMotor.setControlEncoder(FeedbackSensor.kAbsoluteEncoder);
+		frontMotor.setPositionWrapping(0, 1);
 		frontMotor.applyConfig();
 		backMotor.applyConfig(frontMotor.getConfig());
 		backMotor.setInverted(false);
@@ -76,7 +78,7 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 	@Override
 	public void updateData(ArmData data) {
 		previousVelocity = velocity;
-		velocity = (frontMotor.getVelocity() + backMotor.getVelocity())/2;
+		velocity = (frontMotor.getVelocity() + backMotor.getVelocity()) / 2;
 		data.positionRad = getPosition();
 		data.velocityRadPerSec = velocity;
 		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
@@ -105,17 +107,17 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 
 	@Override
 	public void setPosition(double setpointPositionRad, double feedforward) {
-		frontMotor.setPositionControl(setpointPositionRad, feedforward);
-		backMotor.setPositionControl(setpointPositionRad, feedforward);
+		SmartDashboard.putNumber("abs pos", absoluteEncoder.getPosition());
+		setpointPositionRad -= Math.PI / 2;
+		SmartDashboard.putNumber("setpoint rad pid", setpointPositionRad);
+		frontMotor.setPositionControl(setpointPositionRad / (2 * Math.PI), feedforward);
+		backMotor.setPositionControl(setpointPositionRad / (2 * Math.PI), feedforward);
 	}
 
 	private double getPosition() {
-		absolutePos = absoluteEncoder.getPosition() * 2 * Math.PI - ClimbArmConstants.absoluteEncoderOffsetRad;
-		while (absolutePos < 0) {
-			absolutePos += 2 * Math.PI;
-		}
-		while (absolutePos > 2 * Math.PI) {
-			absolutePos -= 2 * Math.PI;
+		absolutePos = (absoluteEncoder.getPosition() * 2 * Math.PI) + Math.PI / 2;
+		while (absolutePos > Math.PI * 2) {
+			absolutePos -= Math.PI / 2;
 		}
 		return absolutePos;
 	}

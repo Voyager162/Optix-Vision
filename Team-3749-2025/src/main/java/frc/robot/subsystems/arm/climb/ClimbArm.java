@@ -87,7 +87,7 @@ public class ClimbArm extends SubsystemBase {
 				new TrapezoidProfile.Constraints(ClimbArmConstants.maxVelocity.get(),
 						ClimbArmConstants.maxAcceleration.get()));
 		setState(state);
-					}
+	}
 
 	public Map<String, MotorData> getMotorData() {
 		return motorData;
@@ -209,20 +209,19 @@ public class ClimbArm extends SubsystemBase {
 	 */
 	private void moveToGoal() {
 		// Get setpoint from the PID controller
-		// State firstState = profile.getSetpoint();
-		// SmartDashboard.putNumber("setpoint pos", firstState.position);
-		// SmartDashboard.putNumber("setpoint vel", firstState.velocity);
-		// // Calculate PID voltage based on the current position
-		// profile.calculate(getPositionRad());
+		State firstState = profile.getSetpoint();
+		SmartDashboard.putNumber("setpoint pos", firstState.position);
+		SmartDashboard.putNumber("setpoint vel", firstState.velocity);
+		// Calculate PID voltage based on the current position
+		profile.calculate(getPositionRad());
 
-		// State nextState = profile.getSetpoint();
+		State nextState = profile.getSetpoint();
 
-		// // Calculate feedforward voltage
-		// double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
-		// SmartDashboard.putNumber("ff output", ffVoltage);
+		// Calculate feedforward voltage
+		double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
+		SmartDashboard.putNumber("ff output", ffVoltage);
 		// Set the voltage for the arm motor (combine PID and feedforward)
-		// armIO.setPosition(firstState.position, ffVoltage);
-		armIO.setVoltage(ClimbArmConstants.kG.get() * Math.cos(data.positionRad));
+		armIO.setPosition(firstState.position, ffVoltage);
 	}
 
 	// PERIODIC FUNCTIONS
@@ -272,7 +271,7 @@ public class ClimbArm extends SubsystemBase {
 
 		armIO.updateData(data);
 
-		runState();
+		// runState();
 
 		logData();
 
