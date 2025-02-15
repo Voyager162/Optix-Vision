@@ -41,18 +41,18 @@ public class ScoringRoller extends Roller {
     }
 
     public static PIDController velocityController() {
-        return new PIDController(RollerConstants.Scoring.kPVelocity, RollerConstants.Scoring.kIVelocity,
-                RollerConstants.Scoring.kDVelocity);
+        return new PIDController(RollerConstants.Scoring.kPVelocity.get(), RollerConstants.Scoring.kIVelocity.get(),
+                RollerConstants.Scoring.kDVelocity.get());
     }
 
     public static SimpleMotorFeedforward FF() {
-        return new SimpleMotorFeedforward(RollerConstants.Scoring.kSVelocity, RollerConstants.Scoring.kVVelocity,
-                RollerConstants.Scoring.kAVelocity);
+        return new SimpleMotorFeedforward(RollerConstants.Scoring.kSVelocity.get(), RollerConstants.Scoring.kVVelocity.get(),
+                RollerConstants.Scoring.kAVelocity.get());
     }
 
     public static PIDController positionController() {
-        return new PIDController(RollerConstants.Scoring.kPPositio.get, RollerConstants.Scoring.kIPosition,
-                RollerConstants.Scoring.kDPosition);
+        return new PIDController(RollerConstants.Scoring.kPPosition.get(), RollerConstants.Scoring.kIPosition.get(),
+                RollerConstants.Scoring.kDPosition.get());
     }
 
     /**

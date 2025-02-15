@@ -95,6 +95,8 @@ public class CoralRoller extends Roller {
         photoelectricIO.updateData(photoelectricData);
         hasPiece = photoelectricData.sensing;
 
+        hasPieceLog
+
         // routineStarted is true when the routine begins in Autos 
         if (Autos.isRoutineStarted() && !routineStarted) { 
             routineStarted = true; 
