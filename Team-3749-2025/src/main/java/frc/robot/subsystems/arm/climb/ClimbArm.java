@@ -213,7 +213,7 @@ public class ClimbArm extends SubsystemBase {
 		SmartDashboard.putNumber("setpoint pos", firstState.position);
 		SmartDashboard.putNumber("setpoint vel", firstState.velocity);
 		// Calculate PID voltage based on the current position
-		profile.calculate(getPositionRad());
+		double pidVoltage = profile.calculate(getPositionRad());
 
 		State nextState = profile.getSetpoint();
 
@@ -221,7 +221,8 @@ public class ClimbArm extends SubsystemBase {
 		double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
 		SmartDashboard.putNumber("ff output", ffVoltage);
 		// Set the voltage for the arm motor (combine PID and feedforward)
-		armIO.setPosition(firstState.position, ffVoltage);
+		double volts = ffVoltage + pidVoltage;
+		armIO.setVoltage(volts);
 	}
 
 	// PERIODIC FUNCTIONS
