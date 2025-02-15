@@ -32,5 +32,4 @@ public interface RollerIO {
     
     public default void setPosition(double setpointVelocity, double feedforward) {
     }
-
 }

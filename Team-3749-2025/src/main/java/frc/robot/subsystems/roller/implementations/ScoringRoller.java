@@ -62,7 +62,7 @@ public class ScoringRoller extends Roller {
     @Override
     public void run() {
         if (!rollerData.sensorTripped) {
-            setVelocity(RollerConstants.Scoring.velocity);
+            setVelocity(RollerConstants.Scoring.scoreVelocity);
         } else {
             setVoltage(0.0);
         }
@@ -71,7 +71,6 @@ public class ScoringRoller extends Roller {
     /**
      * Implemetation of score method
      */
-    @Override
     public void score() {
         setVelocity(RollerConstants.Scoring.scoreVelocity);
     }

@@ -31,7 +31,6 @@ public class AlgaeRoller extends Roller {
     /**
      * Implemetation of score method
      */
-     @Override
     public void score() {
     }
 }

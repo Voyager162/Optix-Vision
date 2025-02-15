@@ -115,10 +115,8 @@ public class SwerveModuleSim implements SwerveModuleIO {
     @Override
     public void setDriveVoltage(double volts) {
 
-        driveAppliedVolts = MathUtil.clamp(volts, -DriveConstants.maxMotorVolts,
-                DriveConstants.maxMotorVolts);
-        // System.out.println(Integer.toString(index) + ": " + driveAppliedVolts);
-        // driveAppliedVolts = Math.copySign(12,driveAppliedVolts);
+        driveAppliedVolts = MathUtil.clamp(volts, -MotorControllerConstants.maxMotorVolts,
+                MotorControllerConstants.maxMotorVolts);
         driveSim.setInputVoltage(driveAppliedVolts);
     }
 

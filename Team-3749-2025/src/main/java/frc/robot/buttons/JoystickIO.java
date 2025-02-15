@@ -9,18 +9,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Robot;
 
 
-import frc.robot.commands.integration.CoralIntakeSource;
-import frc.robot.commands.integration.Handoff;
-import frc.robot.commands.integration.IntakeFloor;
-import frc.robot.commands.integration.IntakeSource;
-import frc.robot.commands.integration.KnockAlgae;
-import frc.robot.commands.integration.OuttakeCoral;
-import frc.robot.commands.integration.ScoreL1;
-import frc.robot.commands.integration.ScoreL234;
-
-import frc.robot.commands.swerve.SwerveDefaultCommand;
-import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
-
 import frc.robot.commands.swerve.SwerveDefaultCommand;
 
 /**
@@ -34,19 +22,6 @@ public class JoystickIO {
 
     private static final CommandXboxController pilot = new CommandXboxController(0);
     private static final CommandXboxController operator = new CommandXboxController(1);
-
-
-    private static final KnockAlgae knockAlgaeLow = new KnockAlgae(ElevatorStates.ALGAE_LOW);
-    private static final KnockAlgae knockAlgaeHigh = new KnockAlgae(ElevatorStates.ALGAE_HIGH);
-    private static final Handoff handoff = new Handoff();
-    private static final IntakeFloor intakeFloor = new IntakeFloor();
-    private static final IntakeSource intakeSource = new IntakeSource();
-    private static final CoralIntakeSource coralIntakeSource = new CoralIntakeSource();
-    private static final OuttakeCoral outtakeCoral = new OuttakeCoral();
-    private static final ScoreL1 scoreL1 = new ScoreL1();
-    private static final ScoreL234 scoreL4 = new ScoreL234(ElevatorStates.L4);
-
-    // private static final SetArmState climbArm = new Set
     private static final ButtonBoard buttonBoard = new ButtonBoard();
 
     public JoystickIO() {
@@ -88,13 +63,6 @@ public class JoystickIO {
         buttonBoard.buttonl3.onTrue(Commands.runOnce(() -> System.out.println("3, 1")));
         buttonBoard.buttonl4.onTrue(Commands.runOnce(() -> System.out.println("3, 2")));
 
-        operator.a().onTrue(handoff);
-        operator.b().onTrue(intakeFloor);
-        operator.x().onTrue(intakeSource);
-        operator.y().onTrue(scoreL4);
-
-        pilot.a().onTrue(knockAlgaeHigh);
-        pilot.b().onTrue(scoreL1);
         buttonBoard.buttonRightSource.onTrue(Commands.runOnce(() -> System.out.println("1, 4")));
         buttonBoard.buttonLeftSource.onTrue(Commands.runOnce(() -> System.out.println("1, 7")));
 
