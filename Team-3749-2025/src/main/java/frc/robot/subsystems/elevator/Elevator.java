@@ -95,6 +95,14 @@ public class Elevator extends SubsystemBase {
             elevatorio = new ElevatorSparkMax();
         }
         sysIdTuner = new SysIdTuner("elevator", config, this, elevatorio::setVoltage, motorData, Type.LINEAR);
+
+        profile = new ProfiledPIDController(ElevatorConstants.ElevatorControl.kP.get(),
+                ElevatorConstants.ElevatorControl.kI.get(), ElevatorConstants.ElevatorControl.kD.get(),
+                new TrapezoidProfile.Constraints(ElevatorConstants.ElevatorControl.maxVelocity.get(),
+                        ElevatorConstants.ElevatorControl.maxAcceleration.get()));
+        feedforward = new ElevatorFeedforward(ElevatorConstants.ElevatorControl.kS.get(),
+                ElevatorConstants.ElevatorControl.kG.get(), ElevatorConstants.ElevatorControl.kV.get(),
+                ElevatorConstants.ElevatorControl.kA.get());
     }
 
     public SysIdTuner getSysIdTuner() {
@@ -184,12 +192,11 @@ public class Elevator extends SubsystemBase {
 
     private void moveToGoal() {
         State firstState = profile.getSetpoint();
-        profile.calculate(getPositionMeters());
+        double PID = profile.calculate(getPositionMeters());
 
         State nextState = profile.getSetpoint();
         double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
-
-        elevatorio.setPosition(firstState.position, ffVoltage);
+        elevatorio.setVoltage(ffVoltage + PID);
     }
 
     public void stop() {
@@ -223,13 +230,6 @@ public class Elevator extends SubsystemBase {
         elevatorMiddleStage.set(new Pose3d(getTransform3d(elevatorMiddleStagePos).getTranslation(),
                 getTransform3d(elevatorMiddleStagePos).getRotation()));
 
-        profile = new ProfiledPIDController(ElevatorConstants.ElevatorControl.kP.get(),
-                ElevatorConstants.ElevatorControl.kI.get(), ElevatorConstants.ElevatorControl.kD.get(),
-                new TrapezoidProfile.Constraints(ElevatorConstants.ElevatorControl.maxVelocity.get(),
-                        ElevatorConstants.ElevatorControl.maxAcceleration.get()));
-        feedforward = new ElevatorFeedforward(ElevatorConstants.ElevatorControl.kS.get(),
-                ElevatorConstants.ElevatorControl.kG.get(), ElevatorConstants.ElevatorControl.kV.get(),
-                ElevatorConstants.ElevatorControl.kA.get());
         Logger.recordOutput("subsystems/elevator/elevator mechanism", mech);
     }
 
