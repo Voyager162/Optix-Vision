@@ -9,6 +9,7 @@ import frc.robot.subsystems.roller.RollerConstants.Implementations;
 import frc.robot.subsystems.roller.RollerIO.RollerData;
 
 public class ScoringRoller extends Roller {
+    @SuppressWarnings("unused")
     private RollerData rollerData;
 
     public ScoringRoller() {

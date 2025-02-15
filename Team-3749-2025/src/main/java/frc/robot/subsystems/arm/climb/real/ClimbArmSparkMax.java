@@ -1,11 +1,8 @@
 package frc.robot.subsystems.arm.climb.real;
 
-import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.arm.climb.ClimbArmIO;
 import frc.robot.subsystems.arm.climb.ClimbArmConstants;
@@ -101,16 +98,6 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 		frontMotor.setVoltage(inputVolts);
 		backMotor.setVoltage(inputVolts);
 	}
-
-	// @Override
-	// public void setPosition(double setpointPositionRad, double feedforward) {
-	// 	SmartDashboard.putNumber("abs pos", absoluteEncoder.getPosition());
-	// 	setpointPositionRad -= Math.PI / 2;
-	// 	SmartDashboard.putNumber("setpoint rad pid", setpointPositionRad);
-	// 	frontMotor.setVoltage(feedforward + PIDController);
-	// 	frontMotor.setPositionControl(setpointPositionRad / (2 * Math.PI), feedforward);
-	// 	backMotor.setPositionControl(setpointPositionRad / (2 * Math.PI), feedforward);
-	// }
 
 	private double getPosition() {
 		absolutePos = (absoluteEncoder.getPosition() * 2 * Math.PI) + Math.PI / 2;

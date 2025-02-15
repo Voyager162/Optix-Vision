@@ -1,27 +1,21 @@
 package frc.robot.subsystems.arm.coral;
 
 import frc.robot.Robot;
-import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
-import frc.robot.utils.SysIdTuner.Type;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
-import frc.robot.utils.MotorData;
 import static edu.wpi.first.units.Units.*;
 
-import java.util.Map;
 import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
 import frc.robot.subsystems.arm.coral.sim.CoralArmSim;
 
@@ -40,21 +34,6 @@ public class CoralArm extends SubsystemBase {
     private CoralArmIO armIO;
     private ArmData data = new ArmData();
     private CoralArmConstants.ArmStates state = CoralArmConstants.ArmStates.STOWED;
-
-    private SysIdTuner sysIdTuner;
-
-    Map<String, MotorData> motorData = Map.of(
-            "arm_motor", new MotorData(
-                    data.appliedVolts,
-                    data.positionRad,
-                    data.velocityUnits,
-                    data.accelerationUnits));
-
-    SysIdRoutine.Config config = new SysIdRoutine.Config(
-            Volts.per(Seconds).of(1), // Voltage ramp rate
-            Volts.of(8), // Max voltage
-            Seconds.of(8) // Test duration
-    );
 
     // Profiled PID Controller used only for the motion profile, PID within
     // implementation classes
@@ -90,7 +69,6 @@ public class CoralArm extends SubsystemBase {
                 CoralArmConstants.kV.get(),
                 CoralArmConstants.kA.get());
 
-        sysIdTuner = new SysIdTuner("coral arm", config, this, armIO::setVoltage, motorData, Type.ROTATIONAL);
         setState(state);
     }
 
@@ -134,7 +112,7 @@ public class CoralArm extends SubsystemBase {
                                                                                                                    // near
                                                                                                                    // zero
                                                                                                                    // when
-                                                                                                                   // stopped.
+                                                                                                                   // stopped
             default:
                 return false; // Return false if the state is unrecognized.
         }
@@ -181,10 +159,6 @@ public class CoralArm extends SubsystemBase {
         }
     }
 
-    public SysIdTuner getSysIdTuner() {
-        return sysIdTuner;
-    }
-
     private Angle getPitch() {
         return Angle.ofBaseUnits(data.positionRad + Units.degreesToRadians(-55), Radians); // remove offset once coral
                                                                                            // arm code is fixed
@@ -227,18 +201,13 @@ public class CoralArm extends SubsystemBase {
         State firstState = profile.getSetpoint();
 
         // Calculate the PID control voltage based on the arm's current position
-        profile.calculate(getPositionRad());
-
-        State nextState = profile.getSetpoint(); // Get the next state of the setpoint
-
+        double pidVoltage = profile.calculate(getPositionRad());
         // Calculate the feedforward voltage based on velocity
         double ffVoltage = feedforward.calculate(getPositionRad(), firstState.velocity);
-        SmartDashboard.putNumber("FF", ffVoltage);
+
         // Apply the combined PID and feedforward voltages to the arm
-        armIO.setPosition(firstState.position, ffVoltage);
-        SmartDashboard.putNumber("goal coral", profile.getGoal().position);
-        SmartDashboard.putNumber("setpoint pos coral", firstState.position);
-        SmartDashboard.putNumber("setpoint vel coral", firstState.velocity);
+        double volts = ffVoltage + pidVoltage;
+        armIO.setVoltage(volts);
 
     }
 
@@ -295,10 +264,5 @@ public class CoralArm extends SubsystemBase {
         runState();
 
         logData();
-
-        motorData.get("arm_motor").position = data.positionRad;
-        motorData.get("arm_motor").acceleration = data.accelerationUnits;
-        motorData.get("arm_motor").velocity = data.velocityUnits;
-        motorData.get("arm_motor").appliedVolts = data.appliedVolts;
     }
 }

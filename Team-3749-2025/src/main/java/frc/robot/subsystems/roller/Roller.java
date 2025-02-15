@@ -26,6 +26,7 @@ public abstract class Roller extends SubsystemBase {
     private RollerData rollerData = new RollerData();
     private RollerStates rollerState;
     private SimpleMotorFeedforward rollerFF;
+    @SuppressWarnings("unused")
     private PIDController positionController;
     private PIDController velocityController;
 

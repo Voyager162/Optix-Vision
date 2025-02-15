@@ -1,14 +1,12 @@
 package frc.robot.subsystems.swerve.sim;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.subsystems.swerve.SwerveModuleIO;
-import frc.robot.subsystems.swerve.SwerveConstants.ControlConstants;
 import frc.robot.subsystems.swerve.SwerveConstants.DrivetrainConstants;
 import frc.robot.subsystems.swerve.SwerveConstants.MotorConstants;
 import frc.robot.utils.MiscConstants.MotorControllerConstants;
@@ -45,8 +43,6 @@ public class SwerveModuleSim implements SwerveModuleIO {
             0.0 // Optional noise in sensor measurements
     );
 
-    private final PIDController turningPidController;
-    private final PIDController drivingPidController;
 
     private double turnPositionRad = 0;
     private double driveAppliedVolts = 0.0;
@@ -54,13 +50,6 @@ public class SwerveModuleSim implements SwerveModuleIO {
 
     public SwerveModuleSim() {
         System.out.println("[Init] Creating ModuleIOSim");
-
-        drivingPidController = new PIDController(ControlConstants.drivePID[2][0], ControlConstants.drivePID[2][1],
-                ControlConstants.drivePID[2][2]);
-
-        turningPidController = new PIDController(ControlConstants.turnPID[0][0], ControlConstants.turnPID[0][1],
-                ControlConstants.turnPID[0][2]);
-        turningPidController.enableContinuousInput(0, 2 * Math.PI);
 
     }
 
@@ -96,20 +85,6 @@ public class SwerveModuleSim implements SwerveModuleIO {
         data.turnAppliedVolts = turnAppliedVolts;
         data.turnCurrentAmps = Math.abs(turnSim.getCurrentDrawAmps());
         data.turnTempCelcius = 0;
-
-    }
-
-    @Override
-    public void setDriveVelocity(double setpointVelocity, double feedforward) {
-        double feedback = drivingPidController.calculate(getDriveVelocityMetersPerSec(), setpointVelocity);
-        setDriveVoltage(feedback + feedforward);
-
-    }
-
-    @Override
-    public void setTurnPosition(double setpointPosition, double feedforward) {
-        double feedback = turningPidController.calculate(turnPositionRad, setpointPosition);
-        setTurnVoltage(feedback + feedforward);
 
     }
 
