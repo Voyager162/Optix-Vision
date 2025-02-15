@@ -11,6 +11,7 @@ import frc.robot.subsystems.roller.RollerConstants.Implementations;
  * @author Lilian Wu
  */
 public class AlgaeRoller extends Roller {
+
     public AlgaeRoller() {
         super(Implementations.ALGAE, FF()); 
     }

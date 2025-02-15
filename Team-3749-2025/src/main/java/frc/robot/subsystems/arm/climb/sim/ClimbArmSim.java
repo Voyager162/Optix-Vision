@@ -5,7 +5,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.subsystems.arm.climb.ClimbArmIO;
-import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.arm.climb.ClimbArmConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
 

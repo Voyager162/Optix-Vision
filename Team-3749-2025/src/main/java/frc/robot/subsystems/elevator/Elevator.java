@@ -4,12 +4,9 @@ import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
@@ -61,7 +58,6 @@ public class Elevator extends SubsystemBase {
             0.0);
     private ShuffleData<String> stateLog = new ShuffleData<String>("Elevator", "State", state.name());
 
-    private ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Elevator", "input volts", 0.0);
     private ShuffleData<Double> leftAppliedVoltsLog = new ShuffleData<Double>("Elevator", "left applied volts", 0.0);
     private ShuffleData<Double> rightAppliedVoltsLog = new ShuffleData<Double>("Elevator", "right applied volts", 0.0);
     private ShuffleData<Double> leftCurrentAmpsLog = new ShuffleData<Double>("Elevator", "left current amps", 0.0);
@@ -91,11 +87,6 @@ public class Elevator extends SubsystemBase {
     }
 
     public ElevatorStates getState() {
-
-        StructPublisher<Pose3d> elevatorInnerStage = NetworkTableInstance.getDefault()
-                .getStructTopic("Elevator Inner Stage", Pose3d.struct).publish();
-        StructPublisher<Pose3d> elevatorMiddleStage = NetworkTableInstance.getDefault()
-                .getStructTopic("Elevator Middle Stage", Pose3d.struct).publish();
         return state;
     }
 
@@ -107,7 +98,7 @@ public class Elevator extends SubsystemBase {
         return data.velocityMetersPerSecond;
     }
 
-    // returns true when the state is reached
+    /** returns true when the state is reached */
     public boolean getIsStableState() {
         switch (state) {
             case L1:
@@ -122,6 +113,12 @@ public class Elevator extends SubsystemBase {
             case L4:
                 return UtilityFunctions.withinMargin(0.01, data.positionMeters,
                         ElevatorConstants.StateHeights.l4Height);
+            case MAX:
+                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
+                        ElevatorConstants.ElevatorSpecs.maxHeightMeters);
+            case STOW:
+                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
+                        ElevatorConstants.ElevatorSpecs.baseHeight);
             default:
                 return false;
         }
@@ -135,7 +132,7 @@ public class Elevator extends SubsystemBase {
         this.state = state;
         switch (state) {
             case STOP:
-                runStateStop();
+                stop();
                 break;
             case L1:
                 setGoal(ElevatorConstants.StateHeights.l1Height);
@@ -150,9 +147,11 @@ public class Elevator extends SubsystemBase {
                 setGoal(ElevatorConstants.StateHeights.l4Height);
                 break;
             case MAX:
-                setGoal(6);
+                setGoal(ElevatorConstants.ElevatorSpecs.maxHeightMeters);
                 break;
             case STOW:
+                setGoal(ElevatorConstants.ElevatorSpecs.baseHeight);
+                break;
             default:
                 setGoal(0);
                 break;
@@ -166,7 +165,7 @@ public class Elevator extends SubsystemBase {
     private void runState() {
         switch (state) {
             case STOP:
-                runStateStop();
+                stop();
                 break;
             default:
                 moveToGoal();
@@ -182,10 +181,6 @@ public class Elevator extends SubsystemBase {
         double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
 
         elevatorio.setPosition(firstState.position, ffVoltage);
-    }
-
-    private void runStateStop() {
-        stop();
     }
 
     public void stop() {

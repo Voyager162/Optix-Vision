@@ -3,10 +3,8 @@ package frc.robot.subsystems.arm.coral;
 import frc.robot.Robot;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
@@ -23,12 +21,12 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
 import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
 import frc.robot.subsystems.arm.coral.sim.CoralArmSim;
 import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
+import static edu.wpi.first.units.Units.*;
 
 /**
  * Subsystem class for the coral arm
@@ -64,7 +62,6 @@ public class CoralArm extends SubsystemBase {
     private ShuffleData<String> currentCommandLog = new ShuffleData<>(this.getName(), "current command", "None");
     private ShuffleData<Double> positionUnitsLog = new ShuffleData<>(this.getName(), "position units", 0.0);
     private ShuffleData<Double> velocityUnitsLog = new ShuffleData<>(this.getName(), "velocity units", 0.0);
-    private ShuffleData<Double> inputVoltsLog = new ShuffleData<>(this.getName(), "input volts", 0.0);
     private ShuffleData<Double> motorAppliedVoltsLog = new ShuffleData<>(this.getName(),
             "first motor applied volts", 0.0);
     private ShuffleData<Double> motorCurrentAmpsLog = new ShuffleData<>(this.getName(),

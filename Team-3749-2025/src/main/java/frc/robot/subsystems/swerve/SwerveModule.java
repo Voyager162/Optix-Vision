@@ -3,7 +3,7 @@ package frc.robot.subsystems.swerve;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
-import frc.robot.subsystems.swerve.SwerveConstants.ModuleConstants;
+import frc.robot.subsystems.swerve.SwerveConstants.ControlConstants;
 import frc.robot.subsystems.swerve.SwerveModuleIO.ModuleData;
 import frc.robot.utils.ShuffleData;
 
@@ -26,7 +26,6 @@ public class SwerveModule {
     private SwerveModuleIO moduleIO;
 
     private double previousSetpointVelocity = 0;
-
 
     private ShuffleData<Double> driveSpeed;
     private ShuffleData<Double> drivePosition;
@@ -76,8 +75,8 @@ public class SwerveModule {
         turningCurrent = new ShuffleData<>("Swerve/" + name, "turning current",
                 moduleData.turnCurrentAmps);
 
-        drivingFeedFordward = new SimpleMotorFeedforward(ModuleConstants.kSDriving,
-                ModuleConstants.kVDriving, ModuleConstants.kADriving);
+        drivingFeedFordward = new SimpleMotorFeedforward(ControlConstants.kSDriving,
+                ControlConstants.kVDriving, ControlConstants.kADriving);
     }
 
     public String getName() {
@@ -144,7 +143,6 @@ public class SwerveModule {
         previousSetpointVelocity = speedMetersPerSecond;
 
         double feedforward = drivingFeedFordward.calculate(speedMetersPerSecond, setpointAcceleration);
-        
 
         moduleIO.setDriveVelocity(speedMetersPerSecond, feedforward);
 
@@ -158,14 +156,14 @@ public class SwerveModule {
         moduleIO.setTurnPosition(positionRad, 0);
     }
 
-    // public void setDriveVoltage(double volts) {
-    //     moduleIO.setDriveVoltage(volts);
+    public void setDriveVoltage(double volts) {
+    moduleIO.setDriveVoltage(volts);
 
-    // }
+    }
 
-    // public void setTurnVoltage(double volts) {
-    //     moduleIO.setTurnVoltage(volts);
-    // }
+    public void setTurnVoltage(double volts) {
+    moduleIO.setTurnVoltage(volts);
+    }
 
     public void setBreakMode(boolean enabled) {
         moduleIO.setDriveBrakeMode(enabled);
@@ -174,8 +172,8 @@ public class SwerveModule {
     }
 
     public void stop() {
-        // setDriveVoltage(0);
-        // setTurnVoltage(0);
+        setDriveVoltage(0);
+        setTurnVoltage(0);
     }
 
     public ModuleData getModuleData() {

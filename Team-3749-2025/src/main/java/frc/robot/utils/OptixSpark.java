@@ -32,6 +32,7 @@ public class OptixSpark {
     /**
      * 
      * @param id motor ID
+     * 
      */
     public OptixSpark(int id, Type type) {
         if (type == Type.SPARKFLEX) {

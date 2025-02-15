@@ -15,6 +15,7 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
 
+import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.implementations.AlgaeRoller;
 import frc.robot.subsystems.roller.implementations.CoralRoller;
 import frc.robot.subsystems.roller.implementations.ScoringRoller;

@@ -1,9 +1,11 @@
-package frc.robot.utils;
+package frc.robot.buttons;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Robot;
 
 
@@ -16,11 +18,9 @@ import frc.robot.commands.integration.OuttakeCoral;
 import frc.robot.commands.integration.ScoreL1;
 import frc.robot.commands.integration.ScoreL234;
 
-
-import frc.robot.commands.swerve.DriveStraight;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
-import frc.robot.commands.swerve.DriveStraight;
+
 import frc.robot.commands.swerve.SwerveDefaultCommand;
 
 /**
@@ -29,11 +29,11 @@ import frc.robot.commands.swerve.SwerveDefaultCommand;
  * @author Rohin Sood
  * @author Noah Simon
  */
+@SuppressWarnings("unused")
 public class JoystickIO {
 
     private static final CommandXboxController pilot = new CommandXboxController(0);
     private static final CommandXboxController operator = new CommandXboxController(1);
-    private static final Command DriveStraight = new DriveStraight();
 
 
     private static final KnockAlgae knockAlgaeLow = new KnockAlgae(ElevatorStates.ALGAE_LOW);
@@ -47,6 +47,7 @@ public class JoystickIO {
     private static final ScoreL234 scoreL4 = new ScoreL234(ElevatorStates.L4);
 
     // private static final SetArmState climbArm = new Set
+    private static final ButtonBoard buttonBoard = new ButtonBoard();
 
     public JoystickIO() {
     }
@@ -79,9 +80,13 @@ public class JoystickIO {
     public static void pilotAndOperatorBindings() {
         // gyro reset
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
-
-        // Example binding 
+ 
+        // Example binding
         // operator.a().whileTrue(new ExampleSubsystemCommand());
+        buttonBoard.buttonl1.onTrue(Commands.runOnce(() -> System.out.println("1, 5")));
+        buttonBoard.buttonl2.onTrue(Commands.runOnce(() -> System.out.println("1, 6")));
+        buttonBoard.buttonl3.onTrue(Commands.runOnce(() -> System.out.println("3, 1")));
+        buttonBoard.buttonl4.onTrue(Commands.runOnce(() -> System.out.println("3, 2")));
 
         operator.a().onTrue(handoff);
         operator.b().onTrue(intakeFloor);
@@ -90,6 +95,27 @@ public class JoystickIO {
 
         pilot.a().onTrue(knockAlgaeHigh);
         pilot.b().onTrue(scoreL1);
+        buttonBoard.buttonRightSource.onTrue(Commands.runOnce(() -> System.out.println("1, 4")));
+        buttonBoard.buttonLeftSource.onTrue(Commands.runOnce(() -> System.out.println("1, 7")));
+
+        buttonBoard.buttonReefZoneA.onTrue(Commands.runOnce(() -> System.out.println("3, 6")));
+        buttonBoard.buttonReefZoneB.onTrue(Commands.runOnce(() -> System.out.println("2, 5")));
+        buttonBoard.buttonReefZoneC.onTrue(Commands.runOnce(() -> System.out.println("2, 6")));
+        buttonBoard.buttonReefZoneD.onTrue(Commands.runOnce(() -> System.out.println("3, 3")));
+        buttonBoard.buttonReefZoneE.onTrue(Commands.runOnce(() -> System.out.println("3, 4")));
+        buttonBoard.buttonReefZoneF.onTrue(Commands.runOnce(() -> System.out.println("2, 8")));
+        buttonBoard.buttonReefZoneG.onTrue(Commands.runOnce(() -> System.out.println("2, 7")));
+        buttonBoard.buttonReefZoneH.onTrue(Commands.runOnce(() -> System.out.println("2, 4")));
+        buttonBoard.buttonReefZoneI.onTrue(Commands.runOnce(() -> System.out.println("2, 3")));
+        buttonBoard.buttonReefZoneJ.onTrue(Commands.runOnce(() -> System.out.println("2, 2")));
+        buttonBoard.buttonReefZoneK.onTrue(Commands.runOnce(() -> System.out.println("2, 1")));
+        buttonBoard.buttonReefZoneL.onTrue(Commands.runOnce(() -> System.out.println("3, 5")));
+
+        buttonBoard.buttonAlgaeKnockoff.onTrue(Commands.runOnce(() -> System.out.println("1, 3")));
+        buttonBoard.buttonUtilityA.onTrue(Commands.runOnce(() -> System.out.println("1, 1")));
+        buttonBoard.buttonUtilityB.onTrue(Commands.runOnce(() -> System.out.println("1, 2")));
+        buttonBoard.buttonPlayer1Start.onTrue(Commands.runOnce(() -> System.out.println("1, 8")));
+
   
     }
 
