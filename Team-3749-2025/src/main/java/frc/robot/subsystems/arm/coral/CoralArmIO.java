@@ -34,9 +34,6 @@ public interface CoralArmIO {
 	public default void setVoltage(double volts) {
 	};
 
-	public default void setPosition(double setpointPositionRad, double feedforward) {
-	}
-
 	/**
 	 * Enable or disable brake mode on the motor.
 	 * 

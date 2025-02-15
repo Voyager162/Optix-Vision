@@ -1,7 +1,6 @@
 package frc.robot.subsystems.arm.climb.sim;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.subsystems.arm.climb.ClimbArmIO;
@@ -16,8 +15,6 @@ import frc.robot.utils.MiscConstants.SimConstants;
 public class ClimbArmSim implements ClimbArmIO {
 
 	private SingleJointedArmSim armSim;
-	private PIDController controller = new PIDController(ClimbArmConstants.kP.get(), ClimbArmConstants.kI.get(),
-			ClimbArmConstants.kD.get());
 
 	private double inputVolts = 0;
 	private double previousVelocity = 0;
@@ -25,15 +22,6 @@ public class ClimbArmSim implements ClimbArmIO {
 
 	/**
 	 * creates a new arm simulation motor form the single jointed arm class
-	 * 
-	 * @param numMotors
-	 * @param gearing
-	 * @param momentOfInertia
-	 * @param length_meters
-	 * @param minAngle_degrees
-	 * @param maxAngle_degrees
-	 * @param simulateGravity
-	 * @param startingAngle_Degrees
 	 */
 	public ClimbArmSim() {
 
@@ -85,10 +73,5 @@ public class ClimbArmSim implements ClimbArmIO {
 		inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
 		inputVolts = MathUtil.clamp(volts, -12, 12);
 		armSim.setInputVoltage(inputVolts);
-	}
-
-	@Override
-	public void setPosition(double setpointPositionRad, double feedforward) {
-		setVoltage(controller.calculate(armSim.getAngleRads(), setpointPositionRad) + feedforward);
 	}
 }

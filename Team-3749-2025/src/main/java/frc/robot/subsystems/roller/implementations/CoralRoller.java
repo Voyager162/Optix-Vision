@@ -25,6 +25,11 @@ public class CoralRoller extends Roller {
 
     @Override
     public void run() {
-        setVelocity(RollerConstants.Coral.velocity);
+        setVelocity(RollerConstants.Coral.intakeVelocity.get());
+    }
+
+    @Override
+    public void outtake() {
+        setVelocity(RollerConstants.Coral.outtakeVelocity.get());
     }
 }

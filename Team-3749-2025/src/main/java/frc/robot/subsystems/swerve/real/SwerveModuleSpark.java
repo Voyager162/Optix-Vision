@@ -4,7 +4,6 @@ import frc.robot.utils.OptixSpark;
 import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.swerve.SwerveModuleIO;
-import frc.robot.subsystems.swerve.SwerveConstants.ControlConstants;
 import frc.robot.subsystems.swerve.SwerveConstants.DrivetrainConstants;
 import frc.robot.subsystems.swerve.SwerveConstants.MotorConstants;
 import frc.robot.utils.MiscConstants.MotorControllerConstants;

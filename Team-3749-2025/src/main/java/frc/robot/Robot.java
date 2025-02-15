@@ -39,7 +39,7 @@ public class Robot extends LoggedRobot {
 
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
-  public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("/subsystems/setVoltage", -8);
+  public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("/subsystems/setVoltage", 8);
 
   private RobotContainer m_robotContainer;
 

@@ -26,6 +26,7 @@ public abstract class Roller extends SubsystemBase {
     private RollerData rollerData = new RollerData();
     private RollerStates rollerState;
     private SimpleMotorFeedforward rollerFF;
+    @SuppressWarnings("unused")
     private PIDController positionController;
     private PIDController velocityController;
 
@@ -36,7 +37,6 @@ public abstract class Roller extends SubsystemBase {
     protected LoggedTunableNumber ks;
     protected LoggedTunableNumber maxVelocity;
     protected LoggedTunableNumber maxAcceleration;
-
     // SysID
     Map<String, MotorData> motorData = Map.of(
             "roller_motor", new MotorData(
@@ -93,6 +93,7 @@ public abstract class Roller extends SubsystemBase {
     }
 
     public void setState(RollerStates rollerState) {
+        System.out.println(rollerState.name());
         this.rollerState = rollerState;
         if (rollerState == RollerConstants.RollerStates.MAINTAIN) {
             lastKnownPosition = rollerData.rollerPositionRad;
@@ -110,9 +111,12 @@ public abstract class Roller extends SubsystemBase {
             case STOP:
                 stop();
                 break;
+            case OUTTAKE:
+                outtake();
+                break;
         }
     }
-
+    public abstract void outtake();
     public abstract void run();
 
     public void maintain() {
@@ -141,6 +145,7 @@ public abstract class Roller extends SubsystemBase {
         Logger.recordOutput("subsystems/roller/" + getName() + "/position", rollerData.rollerPositionRad);
         Logger.recordOutput("subsystems/roller/" + getName() + "/last known position", lastKnownPosition);
         Logger.recordOutput("subsystems/roller/" + getName() + "/state", rollerState.name());
+        Logger.recordOutput("subsystems/roller/" + getName() + "/acceleration", rollerData.acceleration);
     }
 
 }

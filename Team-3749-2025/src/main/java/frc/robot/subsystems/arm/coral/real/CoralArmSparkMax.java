@@ -1,6 +1,5 @@
 package frc.robot.subsystems.arm.coral.real;
 
-import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
@@ -47,14 +46,9 @@ public class CoralArmSparkMax implements CoralArmIO {
 
 
 		motor.setPosition(absolutePos);
-
-		motor.setPID(CoralArmConstants.kP.get(), CoralArmConstants.kI.get(), CoralArmConstants.kD.get(),
-				ClosedLoopSlot.kSlot0);
 		motor.setPositionWrapping(-Math.PI, Math.PI);
 		motor.setControlEncoder(FeedbackSensor.kAbsoluteEncoder);
-		motor.applyConfig()
-		
-		;
+		motor.applyConfig();
 	}
 
 	@Override
@@ -90,11 +84,6 @@ public class CoralArmSparkMax implements CoralArmIO {
 		double inputVolts = MathUtil.applyDeadband(volts, 0.05);
 		inputVolts = MathUtil.clamp(volts, -12, 12);
 		motor.setVoltage(inputVolts);
-	}
-
-	@Override
-	public void setPosition(double setpointPositionRad, double feedforward) {
-		motor.setPositionControl(setpointPositionRad / (Math.PI / 2), feedforward);
 	}
 
 	private double getPosition() {

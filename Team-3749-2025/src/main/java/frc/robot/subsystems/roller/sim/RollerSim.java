@@ -1,16 +1,12 @@
 package frc.robot.subsystems.roller.sim;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import frc.robot.subsystems.roller.RollerConstants;
-import frc.robot.subsystems.roller.RollerConstants.Algae;
-import frc.robot.subsystems.roller.RollerConstants.Coral;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
-import frc.robot.subsystems.roller.RollerConstants.Scoring;
 import frc.robot.subsystems.roller.RollerIO;
 
 public class RollerSim implements RollerIO {
