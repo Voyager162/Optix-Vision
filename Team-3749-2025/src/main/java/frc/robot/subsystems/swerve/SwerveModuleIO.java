@@ -11,6 +11,7 @@ public interface SwerveModuleIO {
   public static class ModuleData {
     public double drivePositionM = 0.0;
     public double driveVelocityMPerSec = 0.0;
+    public double driveAccelerationMPerSecSquared = 0.0;
     public double driveAppliedVolts = 0.0;
     public double driveCurrentAmps = 0.0;
     public double driveTempCelcius = 0.0;
@@ -26,7 +27,7 @@ public interface SwerveModuleIO {
 
   }
 
-  public default void setDriveVelocity(double setpointVelocity,double feedforward) {
+  public default void setDriveVelocity(double setpointVelocity, double feedforward) {
 
   }
 

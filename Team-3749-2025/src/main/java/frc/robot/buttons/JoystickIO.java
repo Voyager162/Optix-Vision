@@ -4,12 +4,21 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Robot;
 
-
+import frc.robot.commands.arm.SetClimbArmState;
+import frc.robot.commands.arm.SetCoralArmState;
+import frc.robot.commands.elevator.SetElevatorState;
+import frc.robot.commands.roller.MaintainCommand;
+import frc.robot.commands.roller.RunRoller;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
+import frc.robot.subsystems.arm.climb.ClimbArmConstants;
+import frc.robot.subsystems.arm.coral.CoralArmConstants;
+import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 
 /**
  * Util class for button bindings
@@ -22,14 +31,36 @@ public class JoystickIO {
 
     private static final CommandXboxController pilot = new CommandXboxController(0);
     private static final CommandXboxController operator = new CommandXboxController(1);
-    private static final ButtonBoard buttonBoard = new ButtonBoard();
+
+    private static final Command climbStow = new SetClimbArmState(Robot.climbArm, ClimbArmConstants.ArmStates.STOWED,
+            ClimbArmConstants.stowSetPoint_rad);
+    private static final Command climb = new SetClimbArmState(Robot.climbArm, ClimbArmConstants.ArmStates.CLIMB,
+            ClimbArmConstants.climbSetPoint_rad);
+    private static final Command coralHandOff = new SetCoralArmState(Robot.coralArm,
+            CoralArmConstants.ArmStates.HAND_OFF,
+            CoralArmConstants.handOffSetPoint_rad);
+    private static final Command coralPickUp = new SetCoralArmState(Robot.coralArm,
+            CoralArmConstants.ArmStates.CORAL_PICKUP,
+            CoralArmConstants.coralPickUpSetPoint_rad);
+
+    private static final SetElevatorState l1 = new SetElevatorState(ElevatorStates.L1);
+    private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
+    private static final SetElevatorState l3 = new SetElevatorState(ElevatorStates.L3);
+    private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
+
+    private static final RunRoller algaeRun = new RunRoller(Robot.algaeRoller);
+    private static final RunRoller coralRun = new RunRoller(Robot.coralRoller);
+    private static final RunRoller scoringRun = new RunRoller(Robot.scoringRoller);
+
+    private static final MaintainCommand algaeMaintain = new MaintainCommand(Robot.algaeRoller);
+    private static final MaintainCommand coralMaintain = new MaintainCommand(Robot.coralRoller);
+    private static final MaintainCommand scoringMaintain = new MaintainCommand(Robot.scoringRoller);
+
+    private static ButtonBoard buttonBoard = new ButtonBoard();
 
     public JoystickIO() {
     }
 
-    /**
-     * Calls binding methods according to the joysticks connected
-     */
     public static void getButtonBindings() {
 
         if (DriverStation.isJoystickConnected(1)) {
@@ -55,36 +86,37 @@ public class JoystickIO {
     public static void pilotAndOperatorBindings() {
         // gyro reset
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
- 
-        // Example binding
-        // operator.a().whileTrue(new ExampleSubsystemCommand());
-        buttonBoard.buttonl1.onTrue(Commands.runOnce(() -> System.out.println("1, 5")));
-        buttonBoard.buttonl2.onTrue(Commands.runOnce(() -> System.out.println("1, 6")));
-        buttonBoard.buttonl3.onTrue(Commands.runOnce(() -> System.out.println("3, 1")));
-        buttonBoard.buttonl4.onTrue(Commands.runOnce(() -> System.out.println("3, 2")));
+        
+        // Checking voltage for all subsystems
+        operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.b().onTrue(Commands.run(() -> Robot.coralArm.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.x().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.y().onTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.leftBumper().onTrue(Commands.run(() -> Robot.coralRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.rightBumper().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
 
-        buttonBoard.buttonRightSource.onTrue(Commands.runOnce(() -> System.out.println("1, 4")));
-        buttonBoard.buttonLeftSource.onTrue(Commands.runOnce(() -> System.out.println("1, 7")));
 
-        buttonBoard.buttonReefZoneA.onTrue(Commands.runOnce(() -> System.out.println("3, 6")));
-        buttonBoard.buttonReefZoneB.onTrue(Commands.runOnce(() -> System.out.println("2, 5")));
-        buttonBoard.buttonReefZoneC.onTrue(Commands.runOnce(() -> System.out.println("2, 6")));
-        buttonBoard.buttonReefZoneD.onTrue(Commands.runOnce(() -> System.out.println("3, 3")));
-        buttonBoard.buttonReefZoneE.onTrue(Commands.runOnce(() -> System.out.println("3, 4")));
-        buttonBoard.buttonReefZoneF.onTrue(Commands.runOnce(() -> System.out.println("2, 8")));
-        buttonBoard.buttonReefZoneG.onTrue(Commands.runOnce(() -> System.out.println("2, 7")));
-        buttonBoard.buttonReefZoneH.onTrue(Commands.runOnce(() -> System.out.println("2, 4")));
-        buttonBoard.buttonReefZoneI.onTrue(Commands.runOnce(() -> System.out.println("2, 3")));
-        buttonBoard.buttonReefZoneJ.onTrue(Commands.runOnce(() -> System.out.println("2, 2")));
-        buttonBoard.buttonReefZoneK.onTrue(Commands.runOnce(() -> System.out.println("2, 1")));
-        buttonBoard.buttonReefZoneL.onTrue(Commands.runOnce(() -> System.out.println("3, 5")));
+        // All elevator stages
+        // operator.a().onTrue(l1);
+        // operator.b().onTrue(l2);
+        // operator.x().onTrue(l3);
+        // operator.y().onTrue(l4);
 
-        buttonBoard.buttonAlgaeKnockoff.onTrue(Commands.runOnce(() -> System.out.println("1, 3")));
-        buttonBoard.buttonUtilityA.onTrue(Commands.runOnce(() -> System.out.println("1, 1")));
-        buttonBoard.buttonUtilityB.onTrue(Commands.runOnce(() -> System.out.println("1, 2")));
-        buttonBoard.buttonPlayer1Start.onTrue(Commands.runOnce(() -> System.out.println("1, 8")));
+        // Climb + Coral Arms
+        // operator.a().onTrue(climbStow);
+        // operator.b().onTrue(climb);
+        // operator.x().onTrue(coralHandOff);
+        // operator.y().onTrue(coralPickUp);
 
-  
+        // Run
+        // operator.a().whileTrue(algaeRun);
+        // operator.b().whileTrue(coralRun);
+        // operator.x().whileTrue(scoringRun);
+
+        // Maintain
+        // operator.a().whileTrue(algaeMaintain);
+        // operator.b().whileTrue(coralMaintain);
+        // operator.x().whileTrue(scoringMaintain);
     }
 
     public static void pilotBindings() {

@@ -13,7 +13,6 @@ import frc.robot.subsystems.roller.RollerConstants.Implementations;
 import frc.robot.subsystems.roller.RollerIO.RollerData;
 import frc.robot.subsystems.roller.real.JTVisiSight;
 import frc.robot.subsystems.roller.sim.PhotoelectricSim;
-import frc.robot.utils.ShuffleData;
 
 /**
  * Scoring implementation of the roller subsystem
@@ -52,7 +51,7 @@ public class ScoringRoller extends Roller {
     }
 
     public static PIDController positionController() {
-        return new PIDController(RollerConstants.Scoring.kPPosition, RollerConstants.Scoring.kIPosition,
+        return new PIDController(RollerConstants.Scoring.kPPositio.get, RollerConstants.Scoring.kIPosition,
                 RollerConstants.Scoring.kDPosition);
     }
 

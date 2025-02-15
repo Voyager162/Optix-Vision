@@ -40,22 +40,22 @@ public class RollerSim implements RollerIO {
                 momentOfInertia = RollerConstants.Algae.momentOfInertia;
                 gearRatio = RollerConstants.Algae.gearRatio;
                 measurementNoise = RollerConstants.Algae.measurementNoise;
-                positionController = new PIDController(Algae.kPPosition, Algae.kIPosition, Algae.kDPosition);
-                velocityController = new PIDController(Algae.kPVelocity, Algae.kIVelocity, Algae.kDVelocity);
+                positionController = new PIDController(Algae.kPPosition.get(), Algae.kIPosition.get(), Algae.kDPosition.get());
+                velocityController = new PIDController(Algae.kPVelocity.get(), Algae.kIVelocity.get(), Algae.kDVelocity.get());
                 break;
             case CORAL:
                 momentOfInertia = RollerConstants.Coral.momentOfInertia;
                 gearRatio = RollerConstants.Coral.gearRatio;
                 measurementNoise = RollerConstants.Coral.measurementNoise;
-                positionController = new PIDController(Coral.kPPosition, Coral.kIPosition, Coral.kDPosition);
-                velocityController = new PIDController(Coral.kPVelocity, Coral.kIVelocity, Coral.kDVelocity);
+                positionController = new PIDController(Coral.kPPosition.get(), Coral.kIPosition.get(), Coral.kDPosition.get());
+                velocityController = new PIDController(Coral.kPVelocity.get(), Coral.kIVelocity.get(), Coral.kDVelocity.get());
                 break;
             case SCORING:
                 momentOfInertia = RollerConstants.Scoring.momentOfInertia;
                 gearRatio = RollerConstants.Scoring.gearRatio;
                 measurementNoise = RollerConstants.Scoring.measurementNoise;
-                positionController = new PIDController(Scoring.kPPosition, Scoring.kIPosition, Scoring.kDPosition);
-                velocityController = new PIDController(Scoring.kPVelocity, Scoring.kIVelocity, Scoring.kDVelocity);
+                positionController = new PIDController(Scoring.kPPosition.get(), Scoring.kIPosition.get(), Scoring.kDPosition.get());
+                velocityController = new PIDController(Scoring.kPVelocity.get(), Scoring.kIVelocity.get(), Scoring.kDVelocity.get());
                 break;
         }
 

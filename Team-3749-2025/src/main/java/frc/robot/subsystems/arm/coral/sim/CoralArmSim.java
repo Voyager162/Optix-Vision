@@ -19,20 +19,11 @@ public class CoralArmSim implements CoralArmIO {
 
 	private double inputVolts = 0;
 	private double previousVelocity = 0;
-	private PIDController controller = new PIDController(CoralArmConstants.kP, CoralArmConstants.kI,
-			CoralArmConstants.kD);
+	private PIDController controller = new PIDController(CoralArmConstants.kP.get(), CoralArmConstants.kI.get(),
+			CoralArmConstants.kD.get());
 
 	/**
 	 * creates a new io implementation of a single jointed arm in simulation
-	 * 
-	 * @param numMotors
-	 * @param gearing
-	 * @param momentOfInertia
-	 * @param length_meters
-	 * @param minAngle_degrees
-	 * @param maxAngle_degrees
-	 * @param simulateGravity
-	 * @param startingAngle_Degrees
 	 */
 	public CoralArmSim() {
 

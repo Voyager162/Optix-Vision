@@ -1,6 +1,5 @@
 package frc.robot.subsystems.roller.implementations;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -12,7 +11,7 @@ import frc.robot.subsystems.roller.PhotoelectricIO.PhotoelectricData;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
 import frc.robot.subsystems.roller.RollerIO.RollerData;
 import frc.robot.subsystems.roller.sim.PhotoelectricSim;
-import frc.robot.utils.ShuffleData;
+
 
 /**
  * Coral implementation of the roller subsystem
@@ -36,16 +35,9 @@ public class CoralRoller extends Roller {
         photoelectricIO = new PhotoelectricSim();
     }
 
-    public static PIDController velocityController() {
-        return new PIDController(RollerConstants.Coral.kPVelocity, RollerConstants.Coral.kIVelocity, RollerConstants.Coral.kDVelocity);
-    }
-
     public static SimpleMotorFeedforward FF() {
-        return new SimpleMotorFeedforward(RollerConstants.Coral.kSVelocity, RollerConstants.Coral.kVVelocity, RollerConstants.Coral.kAVelocity);
-    }
-
-    public static PIDController positionController() {
-        return new PIDController(RollerConstants.Coral.kPPosition, RollerConstants.Coral.kIPosition, RollerConstants.Coral.kDPosition);
+        return new SimpleMotorFeedforward(RollerConstants.Coral.kSVelocity.get(), RollerConstants.Coral.kVVelocity.get(),
+                RollerConstants.Coral.kAVelocity.get());
     }
 
     public boolean getIsStableState() {
@@ -102,8 +94,6 @@ public class CoralRoller extends Roller {
         super.periodic();
         photoelectricIO.updateData(photoelectricData);
         hasPiece = photoelectricData.sensing;
-        hasPieceLog.set(hasPiece);
-        setInitialStateLog.set(routineStarted);
 
         // routineStarted is true when the routine begins in Autos 
         if (Autos.isRoutineStarted() && !routineStarted) { 

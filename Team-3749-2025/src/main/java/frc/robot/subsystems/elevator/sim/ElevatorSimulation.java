@@ -19,7 +19,7 @@ public class ElevatorSimulation implements ElevatorIO {
     private double inputVolts = 0;
     private double previousVelocity = 0;
     private double velocity = 0;
-    private PIDController controller = new PIDController(ElevatorControl.kP, ElevatorControl.kI, ElevatorControl.kD);
+    private PIDController controller = new PIDController(ElevatorControl.kP.get(), ElevatorControl.kI.get(), ElevatorControl.kD.get());
 
     private final ElevatorSim elevatorSimSystem = new ElevatorSim(
             DCMotor.getNEO(2),
@@ -33,6 +33,25 @@ public class ElevatorSimulation implements ElevatorIO {
 
     public ElevatorSimulation() {
         System.out.println("[Init] Creating ElevatorSimulation");
+        // Consumer<SysIdRoutineLog> log = (SysIdRoutineLog log) -> {
+        // log.motor("elevator-left")
+        // .voltage(
+        // elevatorSimSystem.getVelocityMetersPerSecond().mut_replace(
+        // m_leftMotor.get() * RobotController.getBatteryVoltage(), Volts))
+        // .linearPosition(m_distance.mut_replace(m_leftEncoder.getDistance(), Meters))
+        // .linearVelocity(
+        // m_velocity.mut_replace(m_leftEncoder.getRate(), MetersPerSecond));
+        // // Record a frame for the right motors. Since these share an encoder, we
+        // consider
+        // // the entire group to be one motor.
+        // log.motor("elevator-right")
+        // .voltage(
+        // m_appliedVoltage.mut_replace(
+        // m_rightMotor.get() * RobotController.getBatteryVoltage(), Volts))
+        // .linearPosition(m_distance.mut_replace(m_rightEncoder.getDistance(), Meters))
+        // .linearVelocity(
+        // m_velocity.mut_replace(m_rightEncoder.getRate(), MetersPerSecond));
+        // };
     }
 
     @Override
