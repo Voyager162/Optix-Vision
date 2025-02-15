@@ -14,6 +14,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.arm.climb.ClimbArmIO.ArmData;
@@ -41,7 +42,7 @@ public class ClimbArm extends SubsystemBase {
 	private ArmFeedforward feedforward;
 	private ClimbArmIO armIO;
 	private ArmData data = new ArmData();
-	private ClimbArmConstants.ArmStates state = ClimbArmConstants.ArmStates.STOPPED;
+	private ClimbArmConstants.ArmStates state = ClimbArmConstants.ArmStates.STOWED;
 
 	private LoggedMechanism2d mechanism2d = new LoggedMechanism2d(60, 60);
 	private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
@@ -57,9 +58,9 @@ public class ClimbArm extends SubsystemBase {
 	private SysIdTuner sysIdTuner;
 
 	SysIdRoutine.Config config = new SysIdRoutine.Config(
-			Volts.per(Seconds).of(1), // Voltage ramp rate
-			Volts.of(12), // Max voltage
-			Seconds.of(12) // Test duration
+			Volts.per(Seconds).of(1.5), // Voltage ramp rate
+			Volts.of(2), // Max voltage
+			Seconds.of(2.5) // Test duration
 	);
 
 	Map<String, MotorData> motorData = Map.of(
@@ -79,7 +80,14 @@ public class ClimbArm extends SubsystemBase {
 		}
 
 		sysIdTuner = new SysIdTuner("climb arm", getConfig(), this, armIO::setVoltage, getMotorData(), Type.ROTATIONAL);
-	}
+		feedforward = new ArmFeedforward(ClimbArmConstants.kS.get(), ClimbArmConstants.kG.get(),
+				ClimbArmConstants.kV.get());
+		profile = new ProfiledPIDController(ClimbArmConstants.kP.get(), ClimbArmConstants.kI.get(),
+				ClimbArmConstants.kD.get(),
+				new TrapezoidProfile.Constraints(ClimbArmConstants.maxVelocity.get(),
+						ClimbArmConstants.maxAcceleration.get()));
+		setState(state);
+					}
 
 	public Map<String, MotorData> getMotorData() {
 		return motorData;
@@ -119,10 +127,6 @@ public class ClimbArm extends SubsystemBase {
 			case STOWED:
 				return UtilityFunctions.withinMargin(ClimbArmConstants.stateMarginOfError,
 						ClimbArmConstants.stowSetPoint_rad, data.positionRad);
-			case PREPARE_FOR_CLIMB:
-				return UtilityFunctions.withinMargin(ClimbArmConstants.stateMarginOfError,
-						ClimbArmConstants.PrepareForClimbSetPoint_rad,
-						data.positionRad);
 			case CLIMB:
 				return UtilityFunctions.withinMargin(ClimbArmConstants.stateMarginOfError,
 						ClimbArmConstants.climbSetPoint_rad, data.positionRad);
@@ -159,8 +163,6 @@ public class ClimbArm extends SubsystemBase {
 			case STOWED:
 				setGoal(ClimbArmConstants.stowSetPoint_rad);
 				break;
-			case PREPARE_FOR_CLIMB:
-				setGoal(ClimbArmConstants.PrepareForClimbSetPoint_rad);
 			case CLIMB:
 				setGoal(ClimbArmConstants.climbSetPoint_rad);
 			default:
@@ -207,18 +209,20 @@ public class ClimbArm extends SubsystemBase {
 	 */
 	private void moveToGoal() {
 		// Get setpoint from the PID controller
-		State firstState = profile.getSetpoint();
+		// State firstState = profile.getSetpoint();
+		// SmartDashboard.putNumber("setpoint pos", firstState.position);
+		// SmartDashboard.putNumber("setpoint vel", firstState.velocity);
+		// // Calculate PID voltage based on the current position
+		// profile.calculate(getPositionRad());
 
-		// Calculate PID voltage based on the current position
-		profile.calculate(getPositionRad());
+		// State nextState = profile.getSetpoint();
 
-		State nextState = profile.getSetpoint();
-
-		// Calculate feedforward voltage
-		double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
-
+		// // Calculate feedforward voltage
+		// double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
+		// SmartDashboard.putNumber("ff output", ffVoltage);
 		// Set the voltage for the arm motor (combine PID and feedforward)
-		armIO.setPosition(firstState.position, ffVoltage);
+		// armIO.setPosition(firstState.position, ffVoltage);
+		armIO.setVoltage(ClimbArmConstants.kG.get() * Math.cos(data.positionRad));
 	}
 
 	// PERIODIC FUNCTIONS
@@ -255,14 +259,9 @@ public class ClimbArm extends SubsystemBase {
 
 		publisher.set(getPose3d());
 
-		profile = new ProfiledPIDController(ClimbArmConstants.kP.get(), ClimbArmConstants.kI.get(),
-				ClimbArmConstants.kD.get(),
-				new TrapezoidProfile.Constraints(ClimbArmConstants.maxVelocity.get(),
-						ClimbArmConstants.maxAcceleration.get()));
-		feedforward = new ArmFeedforward(ClimbArmConstants.kS.get(), ClimbArmConstants.kG.get(),
-				ClimbArmConstants.kV.get());
-
 		Logger.recordOutput("subsystems/arms/climbArm/Climb Arm Mechanism", mechanism2d);
+
+		SmartDashboard.putNumber("goal pos", profile.getGoal().position);
 	}
 
 	/**
@@ -273,7 +272,7 @@ public class ClimbArm extends SubsystemBase {
 
 		armIO.updateData(data);
 
-		// runState();
+		runState();
 
 		logData();
 
