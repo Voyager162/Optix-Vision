@@ -224,7 +224,7 @@ public class ClimbArm extends SubsystemBase {
 	// PERIODIC FUNCTIONS
 
 	/** Runs the logic for the current arm state. */
-	public void runState() {
+	private void runState() {
 		switch (state) {
 			case STOPPED:
 				stop();
