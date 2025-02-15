@@ -43,9 +43,9 @@ public class RollerConstants {
         public static LoggedTunableNumber kVVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kVVelocity", 0.061);
         public static LoggedTunableNumber kAVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kAVelocity", 0.04);
 
-        public static LoggedTunableNumber kPPosition = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kPPosition", 15.0);
+        public static LoggedTunableNumber kPPosition = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kPPosition", 0.0);
         public static LoggedTunableNumber kIPosition = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kIPosition", 0.0);
-        public static LoggedTunableNumber kDPosition = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kDPosition", 10.0);
+        public static LoggedTunableNumber kDPosition = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kDPosition", 0.0);
 
         public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/maxVelocity", 0.0);
         public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("/subsystems/rollers/coralRoller/maxAcceleration", 0.0);
