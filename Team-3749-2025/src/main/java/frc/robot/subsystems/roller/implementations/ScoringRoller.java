@@ -1,5 +1,6 @@
 package frc.robot.subsystems.roller.implementations;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.Robot;
 import frc.robot.subsystems.roller.Roller;
@@ -11,7 +12,7 @@ public class ScoringRoller extends Roller {
     private RollerData rollerData;
 
     public ScoringRoller() {
-        super(Implementations.SCORING, FF());
+        super(Implementations.SCORING, FF(), positionPID(), velocityPID());
         this.rollerData = new RollerData();
     }
 
@@ -20,6 +21,13 @@ public class ScoringRoller extends Roller {
                 RollerConstants.Scoring.kAVelocity.get());
     }
 
+        public static PIDController positionPID(){
+        return new PIDController(RollerConstants.Scoring.kPPosition.get(), RollerConstants.Scoring.kIPosition.get(),RollerConstants.Scoring.kDPosition.get());
+    }
+
+    public static PIDController velocityPID(){
+        return new PIDController(RollerConstants.Scoring.kPVelocity.get(), RollerConstants.Scoring.kIVelocity.get(),RollerConstants.Scoring.kDVelocity.get());
+    }
     @Override
     public void run() {
         // if (!rollerData.sensorTripped) {

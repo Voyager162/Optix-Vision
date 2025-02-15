@@ -89,10 +89,7 @@ public class SwerveConstants {
                                 false
                 };
                 public static final double[] absoluteEncoderOffsetDeg = {
-                                26.191,
-                                137.594,
-                                71.455,
-                                186.943
+                                49.733,67.208,276.509,21.715
                 };
 
         }

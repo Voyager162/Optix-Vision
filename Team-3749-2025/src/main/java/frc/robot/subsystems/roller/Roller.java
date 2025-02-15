@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -25,6 +26,9 @@ public abstract class Roller extends SubsystemBase {
     private RollerData rollerData = new RollerData();
     private RollerStates rollerState;
     private SimpleMotorFeedforward rollerFF;
+    private PIDController positionController;
+    private PIDController velocityController;
+
     private double lastKnownPosition = 0.0;
 
     protected LoggedTunableNumber kv;
@@ -48,12 +52,15 @@ public abstract class Roller extends SubsystemBase {
 
     private SysIdTuner sysIdTuner;
 
-    public Roller(Implementations implementation, SimpleMotorFeedforward rollerFF) {
+    public Roller(Implementations implementation, SimpleMotorFeedforward rollerFF, PIDController positionController,
+            PIDController velocityController) {
         rollerIO = Robot.isSimulation() ? new RollerSim(implementation)
                 : new RollerSparkMax(implementation);
 
         String name = implementation.name();
         this.rollerFF = rollerFF;
+        this.positionController = positionController;
+        this.velocityController = velocityController;
         this.rollerState = RollerConstants.RollerStates.STOP;
 
         sysIdTuner = new SysIdTuner("roller " + name, config, this, rollerIO::setVoltage, motorData, Type.ROTATIONAL);
@@ -73,7 +80,11 @@ public abstract class Roller extends SubsystemBase {
     }
 
     public void setVelocity(double velocityRadPerSec) {
-        rollerIO.setVelocity(velocityRadPerSec, rollerFF.calculate(velocityRadPerSec));
+        double PIDOutput = velocityController.calculate(rollerData.rollerVelocityRadPerSec, velocityRadPerSec);
+        double FFOutput = rollerFF.calculate(velocityRadPerSec);
+        rollerIO.setVoltage(PIDOutput + FFOutput);
+        // rollerIO.setVelocity(velocityRadPerSec,
+        // rollerFF.calculate(velocityRadPerSec));
     }
 
     public RollerStates getState() {
