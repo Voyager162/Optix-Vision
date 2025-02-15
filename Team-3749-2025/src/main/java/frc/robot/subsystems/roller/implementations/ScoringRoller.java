@@ -1,6 +1,7 @@
 package frc.robot.subsystems.roller.implementations;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import frc.robot.Robot;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
@@ -21,10 +22,13 @@ public class ScoringRoller extends Roller {
 
     @Override
     public void run() {
-        if (!rollerData.sensorTripped) {
-            setVelocity(RollerConstants.Scoring.velocity);
-        } else {
-            setVoltage(0.0);
-        }
+        // if (!rollerData.sensorTripped) {
+        //     setVelocity(RollerConstants.Scoring.velocity);
+        // } else {
+            setVoltage(Robot.subsystemVoltageSetter.get());
+        // }
     }
+
+    @Override
+    public void outtake() {}
 }

@@ -36,11 +36,11 @@ public class RollerConstants {
         public static final double gearRatio = 3;
         public static final double measurementNoise = 0.0;
 
-        public static LoggedTunableNumber kPVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kPVelocity", 10.0);
+        public static LoggedTunableNumber kPVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kPVelocity", 0.0);
         public static LoggedTunableNumber kIVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kIVelocity", 0.0);
         public static LoggedTunableNumber kDVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kDVelocity", 0.0);
         public static LoggedTunableNumber kSVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kSVelocity", 0.205);
-        public static LoggedTunableNumber kVVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kVVelocity", 0.061);
+        public static LoggedTunableNumber kVVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kVVelocity", 0.0594);
         public static LoggedTunableNumber kAVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kAVelocity", 0.04);
 
         public static LoggedTunableNumber kPPosition = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kPPosition", 0.0);
@@ -48,10 +48,10 @@ public class RollerConstants {
         public static LoggedTunableNumber kDPosition = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kDPosition", 0.0);
 
         public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/maxVelocity", 194.0);
-        public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("/subsystems/rollers/coralRoller/maxAcceleration", 0.0);
+        public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("/subsystems/rollers/coralRoller/maxAcceleration", 415.0);
 
-        public static final double velocity = 100.0;
-
+        public static LoggedTunableNumber intakeVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/intakeVelocitySetpoint", 150.0);
+        public static LoggedTunableNumber outtakeVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/outtakeVelocitySetpoint", -40.0);
     }
 
     public static final class Scoring {
@@ -83,7 +83,8 @@ public class RollerConstants {
     public enum RollerStates {
         RUN,
         MAINTAIN,
-        STOP
+        STOP,
+        OUTTAKE
     }
 
     public enum Implementations {

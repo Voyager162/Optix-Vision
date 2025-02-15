@@ -11,6 +11,7 @@ import frc.robot.subsystems.roller.RollerConstants.Implementations;
 import frc.robot.subsystems.roller.RollerConstants.Scoring;
 import frc.robot.utils.OptixSpark;
 import frc.robot.utils.MiscConstants.MotorControllerConstants;
+import frc.robot.utils.MiscConstants.SimConstants;
 import frc.robot.utils.LoggedTunableNumber;
 
 public class RollerSparkMax implements RollerIO {
@@ -70,11 +71,12 @@ public class RollerSparkMax implements RollerIO {
     @Override
     public void updateData(RollerData data) {
         data.rollerAppliedVolts = rollerMotor.getAppliedVolts();
+        double previousVelocity = data.rollerVelocityRadPerSec;
         data.rollerVelocityRadPerSec = rollerMotor.getVelocity();
         data.rollerTempCelcius = rollerMotor.getTemperature();
         data.currentAmps = rollerMotor.getCurrent();
         data.rollerPositionRad = rollerMotor.getPosition();
-        
+        data.acceleration = (data.rollerVelocityRadPerSec - previousVelocity) / SimConstants.loopPeriodSec;
     }
 
     @Override
@@ -85,11 +87,11 @@ public class RollerSparkMax implements RollerIO {
 
     @Override
     public void setVelocity(double setpointVelocity, double feedforward) {
-        rollerMotor.setVelocityControl(setpointVelocity, feedforward);
+        rollerMotor.setVelocityControl(setpointVelocity, feedforward, ClosedLoopSlot.kSlot1);
     }
 
     @Override
     public void setPosition(double setpointPosition, double feedforward) {
-        rollerMotor.setPositionControl(setpointPosition, feedforward);
+        rollerMotor.setPositionControl(setpointPosition, feedforward, ClosedLoopSlot.kSlot0);
     }
 }
