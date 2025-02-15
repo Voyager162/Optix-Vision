@@ -1,5 +1,7 @@
 package frc.robot.subsystems.roller.implementations;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,9 +27,6 @@ public class ScoringRoller extends Roller {
     private PhotoelectricIO photoelectricIO;
     private boolean hasPiece = true;
     private boolean routineStarted = false;
-
-    private ShuffleData<Boolean> hasPieceLog = new ShuffleData<Boolean>(this.getName(), "hasPiece", hasPiece);
-    private ShuffleData<Boolean> setInitialStateLog = new ShuffleData<Boolean>(this.getName(), "setInitialState", routineStarted);
 
     public ScoringRoller() {
         super(Implementations.SCORING, FF());
@@ -89,8 +88,9 @@ public class ScoringRoller extends Roller {
         photoelectricIO.updateData(photoelectricData);
 
         hasPiece = photoelectricData.sensing;
-        hasPieceLog.set(hasPiece);
-        setInitialStateLog.set(routineStarted);
+        
+        Logger.recordOutput("subsystems/rollers/scoring/hasPiece", hasPiece);
+        Logger.recordOutput("subsystems/rollers/scoring/setInitalState", routineStarted);
 
         // routineStarted is true when the routine begins in Autos 
         if (Autos.isRoutineStarted() && !routineStarted) { 

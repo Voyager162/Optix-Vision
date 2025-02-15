@@ -432,7 +432,6 @@ public class Swerve extends SubsystemBase {
     //     modules[3].getState().speedMetersPerSecond
     // };
 
-    // // SmartDashboard.puTarr("Swerve: Real States",realSwerveModuleStates);
     // Double[] desiredStates = {
     //     modules[0].getDesiredState().angle.getRadians(),
     //     modules[0].getDesiredState().speedMetersPerSecond,
@@ -444,8 +443,9 @@ public class Swerve extends SubsystemBase {
     //     modules[3].getDesiredState().speedMetersPerSecond
     // };
 
-    Logger.recordOutput("/subsystems/swerve/real states", realStates);
-    Logger.recordOutput("/subsystems/swerve/desired states", desiredStates);
+    // Logger.recordOutput("/subsystems/swerve/real states", realStates);
+    // Logger.recordOutput("/subsystems/swerve/desired states", desiredStates);
+    
     double[] odometry = {
         getPose().getX(),
         getPose().getY(),

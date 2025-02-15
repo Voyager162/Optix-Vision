@@ -1,5 +1,7 @@
 package frc.robot.subsystems.roller.implementations;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -25,10 +27,6 @@ public class CoralRoller extends Roller {
     private PhotoelectricData photoelectricData = new PhotoelectricData();
     private RollerData rollerData = new RollerData();
     private boolean routineStarted = false;
-
-    private ShuffleData<Boolean> hasPieceLog = new ShuffleData<Boolean>(this.getName(), "hasPiece", hasPiece);
-    private ShuffleData<Boolean> setInitialStateLog = new ShuffleData<Boolean>(this.getName(), "setInitialState", routineStarted);
-
     
     public CoralRoller() {
         super(Implementations.CORAL, FF());
@@ -95,7 +93,8 @@ public class CoralRoller extends Roller {
         photoelectricIO.updateData(photoelectricData);
         hasPiece = photoelectricData.sensing;
 
-        hasPieceLog
+        Logger.recordOutput("subsystems/rollers/coral/hasPiece", hasPiece);
+        Logger.recordOutput("subsystems/rollers/coral/setInitalState", routineStarted);
 
         // routineStarted is true when the routine begins in Autos 
         if (Autos.isRoutineStarted() && !routineStarted) { 
