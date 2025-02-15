@@ -91,7 +91,8 @@ public class ToPosConstants {
         public static enum TrigDirection {
             LEFT,
             RIGHT,
-            BACKWARD
+            BACKWARD,
+            SHIFT
         }
 
         /**
@@ -119,6 +120,16 @@ public class ToPosConstants {
                     angleOffset = -90;
                     intialAngleOffset = 180;
                     break;
+                case SHIFT:
+
+                    // Return the updated position with the same rotation
+                    return new Pose2d(reefPose.getX()
+                            + Math.cos(Math.toRadians(reefPose.getRotation().getDegrees() + intialAngleOffset))
+                                    * Units.inchesToMeters(intialOffset),
+                            reefPose.getY()
+                                    + Math.sin(Math.toRadians(reefPose.getRotation().getDegrees() + intialAngleOffset))
+                                            * Units.inchesToMeters(intialOffset),
+                            reefPose.getRotation());
             }
 
             // Apply an initial 6.25-inch offset based on the robot's orientation
@@ -275,9 +286,9 @@ public class ToPosConstants {
                 put(reefClose, new int[] { 2, 4, 26 }); // Left and right options from reefClose
                 put(reefCloseLeft, new int[] { 22, 24, 27 }); // Left and right options from reefCloseLeft
                 put(reefCloseRight, new int[] { 6, 8, 28 }); // Left and right options from reefCloseRight
-                put(reefFarRight, new int[] { 12, 10,31 }); // Left and right options from reefFarRight
-                put(reefFar, new int[] { 16, 14,29 }); // Left and right options from reefFar
-                put(reefFarLeft, new int[] { 20, 18,30 }); // Left and right options from reefFarLeft
+                put(reefFarRight, new int[] { 12, 10, 31 }); // Left and right options from reefFarRight
+                put(reefFar, new int[] { 16, 14, 29 }); // Left and right options from reefFar
+                put(reefFarLeft, new int[] { 20, 18, 30 }); // Left and right options from reefFarLeft
             }
         };
 
@@ -350,17 +361,25 @@ public class ToPosConstants {
             // ======= Nearest Reef Side Setpoints =======
             // These are used to allow the robot to move toward the nearest reef side
             // based on driver input (e.g., moving left or right)
-            REEFCLOSE(reefTrig(reefClose,TrigDirection.LEFT), createApproachPoint(reefClose)), // Move to center front reef
-            REEFCLOSELEFT(reefTrig(reefCloseLeft,TrigDirection.LEFT), createApproachPoint(reefCloseLeft)), // Move to closest left
-                                                                                              // reef
-            REEFCLOSERIGHT(reefTrig(reefCloseRight,TrigDirection.LEFT), createApproachPoint(reefCloseRight)), // Move to closest
-                                                                                                 // right reef
+            REEFCLOSE(reefTrig(reefClose, TrigDirection.SHIFT), createApproachPoint(reefClose)), // Move to center front
+                                                                                                // reef
+            REEFCLOSELEFT(reefTrig(reefCloseLeft, TrigDirection.SHIFT), createApproachPoint(reefCloseLeft)), // Move to
+                                                                                                            // closest
+                                                                                                            // left
+            // reef
+            REEFCLOSERIGHT(reefTrig(reefCloseRight, TrigDirection.SHIFT), createApproachPoint(reefCloseRight)), // Move
+                                                                                                               // to
+                                                                                                               // closest
+            // right reef
 
-            REEFFAR(reefTrig(reefFar,TrigDirection.RIGHT), createApproachPoint(reefFar)), // Move to center back reef
-            REEFFARLEFT(reefTrig(reefFarLeft,TrigDirection.LEFT), createApproachPoint(reefFarLeft)), // Move to closest left back
-                                                                                        // reef
-            REEFFARRIGHT(reefTrig(reefFarRight,TrigDirection.RIGHT), createApproachPoint(reefFarRight)); // Move to closest right back
-                                                                                           // reef
+            REEFFAR(reefTrig(reefFar, TrigDirection.SHIFT), createApproachPoint(reefFar)), // Move to center back reef
+            REEFFARLEFT(reefTrig(reefFarLeft, TrigDirection.SHIFT), createApproachPoint(reefFarLeft)), // Move to closest
+                                                                                                      // left back
+            // reef
+            REEFFARRIGHT(reefTrig(reefFarRight, TrigDirection.SHIFT), createApproachPoint(reefFarRight)); // Move to
+                                                                                                          // closest
+                                                                                                          // right back
+            // reef
 
             // ======= Variables for Each Setpoint =======
             public Pose2d setpoint; // The final scoring position or movement target
