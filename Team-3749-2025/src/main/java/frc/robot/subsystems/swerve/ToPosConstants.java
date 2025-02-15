@@ -350,16 +350,16 @@ public class ToPosConstants {
             // ======= Nearest Reef Side Setpoints =======
             // These are used to allow the robot to move toward the nearest reef side
             // based on driver input (e.g., moving left or right)
-            REEFCLOSE(rotatePose(reefClose, 180), createApproachPoint(reefClose)), // Move to center front reef
-            REEFCLOSELEFT(rotatePose(reefCloseLeft, 180), createApproachPoint(reefCloseLeft)), // Move to closest left
+            REEFCLOSE(reefTrig(reefClose,TrigDirection.LEFT), createApproachPoint(reefClose)), // Move to center front reef
+            REEFCLOSELEFT(reefTrig(reefCloseLeft,TrigDirection.LEFT), createApproachPoint(reefCloseLeft)), // Move to closest left
                                                                                               // reef
-            REEFCLOSERIGHT(rotatePose(reefCloseRight, 180), createApproachPoint(reefCloseRight)), // Move to closest
+            REEFCLOSERIGHT(reefTrig(reefCloseRight,TrigDirection.LEFT), createApproachPoint(reefCloseRight)), // Move to closest
                                                                                                  // right reef
 
-            REEFFAR(rotatePose(reefFar, 180), createApproachPoint(reefFar)), // Move to center back reef
-            REEFFARLEFT(rotatePose(reefFarLeft, 180), createApproachPoint(reefFarLeft)), // Move to closest left back
+            REEFFAR(reefTrig(reefFar,TrigDirection.RIGHT), createApproachPoint(reefFar)), // Move to center back reef
+            REEFFARLEFT(reefTrig(reefFarLeft,TrigDirection.LEFT), createApproachPoint(reefFarLeft)), // Move to closest left back
                                                                                         // reef
-            REEFFARRIGHT(rotatePose(reefFarRight, 180), createApproachPoint(reefFarRight)); // Move to closest right back
+            REEFFARRIGHT(reefTrig(reefFarRight,TrigDirection.RIGHT), createApproachPoint(reefFarRight)); // Move to closest right back
                                                                                            // reef
 
             // ======= Variables for Each Setpoint =======
