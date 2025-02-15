@@ -33,7 +33,7 @@ public class RollerConstants {
         public static final boolean inverted = true;
 
         public static final double momentOfInertia = 0.04;
-        public static final double gearRatio = 1.0;
+        public static final double gearRatio = 3;
         public static final double measurementNoise = 0.0;
 
         public static LoggedTunableNumber kPVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/kPVelocity", 10.0);
@@ -59,7 +59,7 @@ public class RollerConstants {
         public static final boolean inverted = false;
 
         public static final double momentOfInertia = 0.04;
-        public static final double gearRatio = 1.0;
+        public static final double gearRatio = 4;
         public static final double measurementNoise = 0.0;
 
         public static LoggedTunableNumber kPVelocity = new LoggedTunableNumber("/subsystems/rollers/scoringRoller/kPVelocity", 10.0);
