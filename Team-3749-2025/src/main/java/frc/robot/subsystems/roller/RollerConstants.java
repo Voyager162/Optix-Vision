@@ -84,6 +84,7 @@ public class RollerConstants {
         public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("/subsystems/rollers/scoringRoller/maxAcceleration", 0.0);
 
         public static final double scoreVelocity = 10.0;
+        public static final int sensorPort = 7;
     }
 
     public enum RollerStates {

@@ -25,7 +25,6 @@ import frc.robot.subsystems.roller.sim.PhotoelectricSim;
  * @author Lilian Wu
  */
 public class ScoringRoller extends Roller {
-    @SuppressWarnings("unused")
     private RollerData rollerData;
     private PhotoelectricData photoelectricData = new PhotoelectricData();
     private PhotoelectricIO photoelectricIO;
@@ -106,8 +105,8 @@ public class ScoringRoller extends Roller {
 
         hasPiece = photoelectricData.sensing;
         
-        Logger.recordOutput("subsystems/rollers/scoring/hasPiece", hasPiece);
-        Logger.recordOutput("subsystems/rollers/scoring/setInitalState", routineStarted);
+        Logger.recordOutput("subsystems/roller/ScoringRoller/hasPiece", hasPiece);
+        Logger.recordOutput("subsystems/roller/ScoringRoller/setInitalState", routineStarted);
 
         // routineStarted is true when the routine begins in Autos 
         if (Autos.isRoutineStarted() && !routineStarted) { 
