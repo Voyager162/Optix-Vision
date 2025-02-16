@@ -18,6 +18,8 @@ import frc.robot.subsystems.roller.implementations.AlgaeRoller;
 import frc.robot.subsystems.roller.implementations.CoralRoller;
 import frc.robot.subsystems.roller.implementations.ScoringRoller;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.utils.ShuffleData;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -28,6 +30,7 @@ public class Robot extends TimedRobot {
   public static Roller scoringRoller = new ScoringRoller();
 
   public static Elevator elevator = new Elevator();
+  public static Vision vision = new Vision();
 
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
