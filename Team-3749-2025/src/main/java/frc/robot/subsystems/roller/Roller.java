@@ -67,6 +67,8 @@ public abstract class Roller extends SubsystemBase {
         double PIDOutput = velocityController.calculate(rollerData.rollerVelocityRadPerSec, velocityRadPerSec);
         double FFOutput = rollerFF.calculate(velocityRadPerSec);
         rollerIO.setVoltage(PIDOutput + FFOutput);
+        Logger.recordOutput("subsystems/roller/" + getName() + "/pid", PIDOutput);
+        Logger.recordOutput("subsystems/roller/" + getName() + "/ff", FFOutput);
         // rollerIO.setVelocity(velocityRadPerSec,
         // rollerFF.calculate(velocityRadPerSec));
     }
@@ -121,7 +123,7 @@ public abstract class Roller extends SubsystemBase {
     @Override
     public void periodic() {
         rollerIO.updateData(rollerData);
-        // runRollerStates();
+        runRollerStates();
 
 
         Logger.recordOutput("subsystems/roller/" + getName() + "/velocity", rollerData.rollerVelocityRadPerSec);

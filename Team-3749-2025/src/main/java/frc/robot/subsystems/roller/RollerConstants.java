@@ -13,24 +13,24 @@ public class RollerConstants {
         public static final boolean inverted = false;
 
         public static final double momentOfInertia = 0.04;
-        public static final double gearRatio = 4.0;
+        public static final double gearRatio = 5.0;
         public static final double measurementNoise = 0.0;
 
         public static LoggedTunableNumber kPVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kPVelocity", 0.0);
         public static LoggedTunableNumber kIVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kIVelocity", 0.0);
         public static LoggedTunableNumber kDVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kDVelocity", 0.0);
-        public static LoggedTunableNumber kSVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kSVelocity", 0.0);
-        public static LoggedTunableNumber kVVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kVVelocity", 0.35);
-        public static LoggedTunableNumber kAVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kAVelocity", 0.0);
+        public static LoggedTunableNumber kSVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kSVelocity", 0.35);
+        public static LoggedTunableNumber kVVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kVVelocity", 0.042);
+        public static LoggedTunableNumber kAVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kAVelocity", 0.02);
 
-        public static LoggedTunableNumber kPPosition = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kPPosition", 15.0);
+        public static LoggedTunableNumber kPPosition = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kPPosition", 0.0);
         public static LoggedTunableNumber kIPosition = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kIPosition", 0.0);
-        public static LoggedTunableNumber kDPosition = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kDPosition", 10.0);
+        public static LoggedTunableNumber kDPosition = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kDPosition", 0.0);
 
-        public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/maxVelocity", 0.0);
+        public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/maxVelocity", 256);
         public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/maxAcceleration", 0.0);
 
-        public static final double velocity = 5.0;
+        public static final double velocity = 50.0;
     }
 
     public static final class Coral {
