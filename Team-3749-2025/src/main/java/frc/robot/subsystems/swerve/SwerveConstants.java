@@ -70,8 +70,8 @@ public class SwerveConstants {
                 public static final boolean[] driveMotorInverted = {
                                 true,
                                 false,
-                                false,
-                                false
+                                true,
+                                true
                 };
                 public static final boolean[] turningMotorInverted = {
                                 false,
