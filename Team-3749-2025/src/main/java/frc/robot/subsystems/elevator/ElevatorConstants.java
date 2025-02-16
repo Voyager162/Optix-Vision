@@ -1,4 +1,5 @@
 package frc.robot.subsystems.elevator;
+import frc.robot.utils.LoggedTunableNumber;
 
 /**
  * Elevator constants
@@ -14,29 +15,31 @@ public class ElevatorConstants {
         public static final double gearing = 6.0;
         public static final double carriageMassKg = 12;
         public static final double drumRadiusMeters = Units.inchesToMeters(2);
-        public static final double minHeightMeters = Units.inchesToMeters(0);
+        public static final double minHeightMeters = 0;
         public static final double maxHeightMeters = Units.feetToMeters(6); // remeasure maxV and A
         // public static final boolean simulateGravity = true;
         public static final double startingHeightMeters = 0;
 
         public static final double baseHeight = Units.feetToMeters(3.25);
 
-        public static int[] motorIds = { 1, 2 };
-        public static int stallLimit = 30;
-        public static int freeLimit = 50;
+        public static int[] motorIds = { 19, 20 };
+        public static boolean[] motorInverted = { false, true };
 
         public static int zeroOffset = 0;
     }
 
     public static class ElevatorControl {
-        public static final double kPSim = 0.02;
-        public static final double kDSim = 0;
-        public static final double kSSim = 0;
-        public static final double kGSim = 2.2977;
-        public static final double kVSim = 2.35; // 12 - 2.3 / 4.139
-        public static final double kASim = 0;
-        public static final double maxV = 4.139;
-        public static final double maxA = 3.988; // change in velocity / seconds
+        public static LoggedTunableNumber kG = new LoggedTunableNumber("/subsystems/elevator/kG", 2.2977);
+        public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/elevator/kP", 0.02);
+        public static LoggedTunableNumber kI = new LoggedTunableNumber("/subsystems/elevator/kI", 0);
+        public static LoggedTunableNumber kD = new LoggedTunableNumber("/subsystems/elevator/kD", 0);
+        public static LoggedTunableNumber kS = new LoggedTunableNumber("/subsystems/elevator/kS", 0);
+        public static LoggedTunableNumber kV = new LoggedTunableNumber("/subsystems/elevator/kV", 2.35);
+        public static LoggedTunableNumber kA = new LoggedTunableNumber("/subsystems/elevator/kA", 0);
+        public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/elevator/max velocity",
+        4.139);
+        public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("/subsystems/elevator/max acceleration",
+        3.988);
     }
 
     public enum ElevatorStates {
@@ -61,6 +64,5 @@ public class ElevatorConstants {
         public static final double algaeHighHeight = Units.inchesToMeters(47.625);
         public static final double sourceHeight = Units.inchesToMeters(ElevatorSpecs.baseHeight);
         public static final double stowHeight = Units.inchesToMeters(5.0); // placedholder
-
     }
 }

@@ -13,7 +13,6 @@ import frc.robot.subsystems.swerve.GyroIO;
 public class GyroSim implements GyroIO {
   private double yaw = 0;
 
-
   @Override
   public void updateData(GyroData data) {
 

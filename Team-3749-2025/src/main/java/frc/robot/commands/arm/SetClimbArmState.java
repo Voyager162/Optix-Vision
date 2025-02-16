@@ -1,7 +1,7 @@
 package frc.robot.commands.arm;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.arm.climb.ClimbConstants.ArmStates;
+import frc.robot.subsystems.arm.climb.ClimbArmConstants.ArmStates;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 
 /**
@@ -32,6 +32,6 @@ public class SetClimbArmState extends Command {
     public boolean isFinished() {
         
         return arm.getIsStableState();
-        
+
     }
 }

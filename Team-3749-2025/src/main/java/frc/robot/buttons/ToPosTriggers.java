@@ -4,7 +4,7 @@ import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
-import frc.robot.buttons.ButtonBoard.ScoringLocation;
+import frc.robot.buttons.ButtonBoard.ScoringMode;
 import frc.robot.commands.integration.IntakeSource;
 import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.ScoreL1;
@@ -116,7 +116,7 @@ public class ToPosTriggers {
         Trigger coralReefL1 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
             return OTFWithinMargin() &&
                     isReefL1Supplier.getAsBoolean() &&
-                    JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L1;
+                    JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L1;
         });
         coralReefL1.onTrue(new ScoreL1());
 
@@ -124,7 +124,7 @@ public class ToPosTriggers {
         Trigger coralReefL2 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
             return OTFWithinMargin() &&
                     isReefSupplier.getAsBoolean() &&
-                    JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L2;
+                    JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L2;
         });
         coralReefL2.onTrue(new ScoreL234(ElevatorStates.L2));
 
@@ -132,7 +132,7 @@ public class ToPosTriggers {
         Trigger coralReefL3 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
             return OTFWithinMargin() &&
                     isReefSupplier.getAsBoolean() &&
-                    JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L3;
+                    JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L3;
         });
         coralReefL3.onTrue(new ScoreL234(ElevatorStates.L3));
 
@@ -140,7 +140,7 @@ public class ToPosTriggers {
         Trigger coralReefL4 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
             return OTFWithinMargin() &&
                     isReefSupplier.getAsBoolean() &&
-                    JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L4;
+                    JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L4;
         });
         coralReefL4.onTrue(new ScoreL234(ElevatorStates.L4));
 

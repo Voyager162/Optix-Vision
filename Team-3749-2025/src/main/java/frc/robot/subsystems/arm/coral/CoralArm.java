@@ -1,216 +1,264 @@
 package frc.robot.subsystems.arm.coral;
 
 import frc.robot.Robot;
-import frc.robot.subsystems.arm.Arm;
-import frc.robot.subsystems.arm.real.ArmSparkMax;
-import frc.robot.subsystems.arm.sim.ArmSim;
 import frc.robot.utils.ShuffleData;
+import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import static edu.wpi.first.units.Units.Radians;
+
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
+import frc.robot.utils.MotorData;
 import static edu.wpi.first.units.Units.*;
 
+import java.util.Map;
+import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
+import frc.robot.subsystems.arm.coral.sim.CoralArmSim;
+import frc.robot.utils.UtilityFunctions;
+
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
+
 /**
- * Subsystem class for the arm
- * 
+ * Subsystem class for the coral arm
+ *
  * @author Weston Gardner
  */
+public class CoralArm extends SubsystemBase {
 
-public class CoralArm extends Arm {
+    private CoralArmIO armIO;
+    private ArmData data = new ArmData();
+    private CoralArmConstants.ArmStates state = CoralArmConstants.ArmStates.STOPPED;
 
-    private CoralConstants.ArmStates state = CoralConstants.ArmStates.STOPPED;
 
-    private PIDController controller = new PIDController(
-            CoralConstants.kP,
-            CoralConstants.kI,
-            CoralConstants.kD);
+    // Profiled PID Controller used only for the motion profile, PID within
+    // implementation classes
+    private ProfiledPIDController profile = new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(
+            CoralArmConstants.maxVelocity.get(), CoralArmConstants.maxAcceleration.get()));
+    private ArmFeedforward feedforward = new ArmFeedforward(CoralArmConstants.kS.get(), CoralArmConstants.kG.get(),
+            CoralArmConstants.kV.get());
+    private LoggedMechanism2d mechanism2d = new LoggedMechanism2d(3, 3);
+    private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 1.8, .4);
+    private LoggedMechanismLigament2d armLigament = armRoot
+            .append(new LoggedMechanismLigament2d("Coral Arm", CoralArmConstants.armLength_meters, 0));
 
-    private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
-
-    private Mechanism2d mechanism2d = new Mechanism2d(3, 3);
-    private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 1.8, .4);
-    private MechanismLigament2d armLigament = armRoot
-            .append(new MechanismLigament2d("Coral Arm", CoralConstants.armLength_meters, 0));
-    // private Pose3d zeroedComponentPose = new Pose3d(0, 0, 0, new Rotation3d(roll,
-    // pitch, yaw));
-
-    StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
+    private StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
             .getStructTopic("CoralArm Pose", Pose3d.struct).publish();
 
     /**
-     * Constructor for the CoralArm subsystem.
-     * Determines if simulation or real hardware is used.
+     * Constructor for the CoralArm subsystem. Determines if simulation or real
+     * hardware is used.
      */
     public CoralArm() {
-        if (Robot.isSimulation()) {
 
-            armIO = new ArmSim(
-                    CoralConstants.numMotors,
-                    CoralConstants.armGearing,
-                    CoralConstants.momentOfInertia,
-                    CoralConstants.armLength_meters,
-                    CoralConstants.armMinAngle_degrees,
-                    CoralConstants.armMaxAngle_degrees,
-                    CoralConstants.simulateGravity,
-                    CoralConstants.armStartingAngle_degrees);
+        // If the robot is in simulation, use the simulated I/O for the arm.
+        if (Robot.isSimulation()) {
+            armIO = new CoralArmSim();
 
         } else {
-            armIO = new ArmSparkMax(CoralConstants.motorId);
+            // If running on real hardware, use SparkMax motors for the arm.
+            armIO = new CoralArmSparkMax();
         }
-        SmartDashboard.putData("Coral Arm Mechanism", mechanism2d);
-        System.out.println(data.positionUnits);
     }
 
+    // GET FUNCTIONS
+
     /**
-     * @return the current arm state.
+     * @return The current arm state (e.g., STOPPED, STOWED, etc.)
      */
-    public CoralConstants.ArmStates getState() {
+    public CoralArmConstants.ArmStates getState() {
         return state;
     }
 
-    @Override
-    public void stop() {
-        setState(CoralConstants.ArmStates.STOPPED);
+    /**
+     * @return The current position of the arm in radians.
+     */
+    public double getPositionRad() {
+        return data.positionUnits; // Return the arm's current position.
     }
 
     /**
-     * @return whether the arm is in a stable state.
+     * @return Whether the arm is in a stable state. Checks if the arm is within a
+     *         margin
+     *         of error for its set positions.
      */
     public boolean getIsStableState() {
 
         switch (state) {
             case STOWED:
-                return data.positionUnits == CoralConstants.stowSetPoint_rad;
+                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
+                        CoralArmConstants.stowSetPoint_rad, data.positionUnits);
             case HAND_OFF:
-                return data.positionUnits == CoralConstants.handOffSetPoint_rad;
+                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
+                        CoralArmConstants.handOffSetPoint_rad, data.positionUnits);
             case CORAL_PICKUP:
-                return data.positionUnits == CoralConstants.coralPickUpSetPoint_rad;
-            case MOVING_DOWN:
-                return data.velocityUnits < 0;
-            case MOVING_UP:
-                return data.velocityUnits > 0;
-            case L1:
-                return data.positionUnits == CoralConstants.scoreL1_rad;
+                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
+                        CoralArmConstants.coralPickUpSetPoint_rad, data.positionUnits);
             case STOPPED:
-                return UtilityFunctions.withinMargin(0.001, 0, data.velocityUnits);
+                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError, 0, data.velocityUnits); 
+                // ensure velocity is near zero when stopped
             default:
-                return false;
+                return false; // Return false if the state is unrecognized.
         }
     }
 
+    // SET FUNCTIONS
+
     /**
-     * Sets the current state of the arm.
+     * Sets the voltage to the arm motors. This directly controls the motor voltage.
+     * 
+     * @param volts The voltage to apply to the arm motors.
+     */
+    public void setVoltage(double volts) {
+        armIO.setVoltage(volts);
+    }
+
+    /**
+     * Sets the state of the arm (e.g., STOPPED, STOWED, etc.). This will move the
+     * arm
+     * to preset angles or stop it depending on the state.
      * 
      * @param state The new state for the arm.
      */
-    @Override
-    public void setState(Enum<?> state) {
-        this.state = (CoralConstants.ArmStates) state;
+    public void setState(CoralArmConstants.ArmStates state) {
+        this.state = (CoralArmConstants.ArmStates) state;
+        switch (this.state) {
+            case STOPPED:
+                stop(); // Stop the arm if in STOPPED state.
+                break;
+            case STOWED:
+                setGoal(CoralArmConstants.stowSetPoint_rad); // Set the goal to the stowed position.
+                break;
+            case CORAL_PICKUP:
+                setGoal(CoralArmConstants.coralPickUpSetPoint_rad); // Set the goal to the coral pickup position.
+            case HAND_OFF:
+                setGoal(CoralArmConstants.handOffSetPoint_rad); // Set the goal to the hand-off position.
+            default:
+                stop(); // Stop the arm in any unrecognized state.
+                break;
+        }
+    }
+
+    private Angle getPitch() {
+        return Angle.ofBaseUnits(data.positionUnits + Units.degreesToRadians(-55), Radians);
+        // remove offsest once coral arm code is fixed
+    }
+
+    private Pose3d getPose3d() {
+        Pose3d pose = new Pose3d(0, 0.35, 0.4,
+                new Rotation3d(Angle.ofBaseUnits(0, Radians), getPitch(),
+                        Angle.ofBaseUnits(Units.degreesToRadians(90), Radians)));
+        return pose;
     }
 
     /**
-     * Runs the logic for the current arm state.
+     * Sets the target position for the arm's PID controller.
+     * 
+     * @param setPoint The desired target position for the arm in radians.
+     */
+    public void setGoal(double setPoint) {
+        profile.setGoal(setPoint); // Set the PID controller's goal.
+    }
+
+    // UTILITY FUNCTIONS
+
+    /**
+     * Stops the arm completely. This method is for use in emergencies or on
+     * startup.
+     */
+    public void stop() {
+        setVoltage(0); // Apply zero volts to stop the arm.
+    }
+
+    /**
+     * Moves the arm to its goal using both PID control and feedforward
+     * calculations.
+     * This method combines PID and feedforward to control the arm's movement.
+     */
+    private void moveToGoal() {
+        // Get the setpoint from the PID controller
+        State firstState = profile.getSetpoint();
+
+        // Calculate the PID control voltage based on the arm's current position
+        profile.calculate(getPositionRad());
+
+        State nextState = profile.getSetpoint(); // Get the next state of the setpoint
+
+        // Calculate the feedforward voltage based on velocity
+        double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
+
+        // Apply the combined PID and feedforward voltages to the arm
+        armIO.setPosition(firstState.position, ffVoltage);
+    }
+
+    // PERIODIC FUNCTIONS
+
+    /**
+     * Runs the logic for the current arm state. This is called periodically to
+     * update the arm's behavior.
      */
     private void runState() {
         switch (state) {
-            case STOWED:
-                setVoltage(controller.calculate(data.positionUnits, CoralConstants.stowSetPoint_rad)
-                        + calculateFeedForward());
-                break;
-            case HAND_OFF:
-                setVoltage(controller.calculate(data.positionUnits, CoralConstants.handOffSetPoint_rad)
-                        + calculateFeedForward());
-                break;
-            case CORAL_PICKUP:
-                setVoltage(controller.calculate(data.positionUnits, CoralConstants.coralPickUpSetPoint_rad)
-                        + calculateFeedForward());
-                break;
-            case L1:
-                setVoltage(controller.calculate(data.positionUnits, CoralConstants.scoreL1_rad)
-                        + calculateFeedForward());
-                break;
             case STOPPED:
-                setVoltage(0 + calculateFeedForward());
-                break;
-            case MOVING_DOWN:
-                setVoltage(-1 + calculateFeedForward());
-                break;
-            case MOVING_UP:
-                setVoltage(1 + calculateFeedForward());
+                stop(); // If the arm is stopped, we stop it.
                 break;
             default:
+                moveToGoal(); // In other states, move the arm to its goal position.
                 break;
         }
     }
 
     /**
-     * Logs data to Shuffleboard.
+     * Logs the arm's data to Shuffleboard for monitoring. This is useful for
+     * debugging and analysis.
      */
     private void logData() {
-        currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-        positionUnitsLog.set(data.positionUnits);
-        velocityUnitsLog.set(data.velocityUnits);
-        inputVoltsLog.set(data.inputVolts);
-        appliedVoltsLog.set(data.appliedVolts);
-        currentAmpsLog.set(data.currentAmps);
-        tempCelciusLog.set(data.tempCelcius);
 
+        // Log various arm parameters to Shuffleboard
+        Logger.recordOutput("subsystems/arms/coralArm/Current Command",
+                this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
+        Logger.recordOutput("subsystems/arms/coralArm/position", data.positionUnits);
+        Logger.recordOutput("subsystems/arms/coralArm/velocity", data.velocityUnits);
+        Logger.recordOutput("subsystems/arms/coralArm/input volts", data.inputVolts);
+        Logger.recordOutput("subsystems/arms/coralArm/applied volts", data.motorAppliedVolts);
+        Logger.recordOutput("subsystems/arms/coralArm/current amps", data.motorCurrentAmps);
+        Logger.recordOutput("subsystems/arms/coralArm/temperature", data.motorTempCelcius);
+
+        // Update the visualization on the SmartDashboard with the arm's position
         armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
-        stateLog.set(state.name());
+        Logger.recordOutput("subsystems/arms/coralArm/state", state.name());
 
         // Logger.recordOutput("zeropose", zeroedComponentPose);
 
-        publisher.set(new Pose3d(getTransform3d().getTranslation(), getTransform3d().getRotation()));
-        // elevatorPose3dLog.set(
-        // new Double[] {
-        // getTransform3d().getTranslation().getX(),
-        // getTransform3d().getTranslation().getY(),
-        // getTransform3d().getTranslation().getZ(),
-        // getTransform3d().getRotation().getAngle()
-        // }
-        // )
+        publisher.set(getPose3d());
+
+        Logger.recordOutput("subsystems/arms/coralArm/coral arm mechanism", mechanism2d);
     }
 
-    private Angle getPitch() {
-        // System.out.println("Coral Arm: " + data.positionUnits);
-        return Angle.ofBaseUnits(data.positionUnits + Units.degreesToRadians(-55), Radians); // remove offset once coral
-                                                                                             // arm code is fixed
-    }
-
-    private Transform3d getTransform3d() {
-        Transform3d transform = new Transform3d(-0.33, 0.35, 0.4,
-                new Rotation3d(Angle.ofBaseUnits(0, Radians), getPitch(),
-                        Angle.ofBaseUnits(Units.degreesToRadians(90), Radians)));
-        return transform;
-    }
-
-    private double calculateFeedForward() {
-        double feedForward = CoralConstants.kG * Math.cos(data.positionUnits);
-        return feedForward;
-    }
-
-    /**
-     * Periodic method for updating arm behavior.
-     */
+    /** Periodic method for updating arm behavior. */
     @Override
     public void periodic() {
+
         armIO.updateData(data);
 
-        logData();
-
         runState();
+
+        logData();
     }
 
 }

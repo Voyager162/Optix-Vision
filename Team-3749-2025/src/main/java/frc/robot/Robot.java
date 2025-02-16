@@ -6,54 +6,99 @@ package frc.robot;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.littletonrobotics.junction.LogFileUtil;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.subsystems.elevator.Elevator;
 
-import frc.robot.subsystems.arm.algae.AlgaeArm;
+import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
+
 import frc.robot.subsystems.roller.implementations.AlgaeRoller;
 import frc.robot.subsystems.roller.implementations.CoralRoller;
-import frc.robot.subsystems.roller.implementations.ChuteRoller;
+import frc.robot.subsystems.roller.implementations.ScoringRoller;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.ToPosConstants;
-import frc.robot.utils.ShuffleData;
+import frc.robot.utils.LoggedTunableNumber;
+import frc.robot.utils.MiscConstants;
 
-public class Robot extends TimedRobot {
-  private Field2d field2d = new Field2d();
+public class Robot extends LoggedRobot {
+private Field2d field2d = new Field2d();
   private Command m_autonomousCommand;
 
   public static Swerve swerve = new Swerve();
   public static AlgaeRoller algaeRoller = new AlgaeRoller();
   public static CoralRoller coralRoller = new CoralRoller();
-  public static ChuteRoller chuteRoller = new ChuteRoller();
+  public static ScoringRoller scoringRoller = new ScoringRoller();
 
   public static Elevator elevator = new Elevator();
 
-  public static AlgaeArm algaeArm = new AlgaeArm();
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
+  public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("/subsystems/setVoltage", 1);
 
-  private ShuffleData<Double> batteryVoltageLog = new ShuffleData<Double>("DS", "battery voltage", 0.0);
-  private ShuffleData<Boolean> isBrownedOutLog = new ShuffleData<Boolean>("DS", "brownout", false);
-  private ShuffleData<Double> cpuTempLog = new ShuffleData<Double>("DS", "cpu temp", 0.0);
-  private ShuffleData<Double> CANUtilizationLog = new ShuffleData<Double>("DS", "CAN utilizaition", 0.0);
-  private ShuffleData<String> radioStatusLog = new ShuffleData<String>("DS", "radio status", "kOff");
-  private ShuffleData<String> allianceLog = new ShuffleData<String>("DS", "alliance", "Red");
-  private ShuffleData<Boolean> FMSLog = new ShuffleData<Boolean>("DS", "FMS connected", false);
   private RobotContainer m_robotContainer;
 
   public static Subsystem[] getAllSuperStructureSubsystems() {
-    return new Subsystem[] {algaeRoller, coralRoller, chuteRoller, elevator, algaeArm, coralArm, climbArm};
+    return new Subsystem[] {algaeRoller, coralRoller, scoringRoller, elevator, coralArm, climbArm};
+  }
+
+  public Robot() {
+    // Record metadata
+    Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
+    Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
+    Logger.recordMetadata("GitSHA", BuildConstants.GIT_SHA);
+    Logger.recordMetadata("GitDate", BuildConstants.GIT_DATE);
+    Logger.recordMetadata("GitBranch", BuildConstants.GIT_BRANCH);
+    switch (BuildConstants.DIRTY) {
+      case 0:
+        Logger.recordMetadata("GitDirty", "All changes committed");
+        break;
+      case 1:
+        Logger.recordMetadata("GitDirty", "Uncomitted changes");
+        break;
+      default:
+        Logger.recordMetadata("GitDirty", "Unknown");
+        break;
+    }
+
+    // Set up data receivers & replay source
+    switch (MiscConstants.currentMode) {
+      case REAL:
+        // Running on a real robot, log to a USB stick ("/U/logs")
+        Logger.addDataReceiver(new WPILOGWriter());
+        Logger.addDataReceiver(new NT4Publisher());
+        break;
+
+      case SIM:
+        // Running a physics simulator, log to NT
+        Logger.addDataReceiver(new WPILOGWriter());
+        Logger.addDataReceiver(new NT4Publisher());
+        break;
+
+      case REPLAY:
+        // Replaying a log, set up replay source
+        setUseTiming(false); // Run as fast as possible
+        String logPath = LogFileUtil.findReplayLog();
+        Logger.setReplaySource(new WPILOGReader(logPath));
+        Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+        break;
+    }
+
+    // Start AdvantageKit logger
+    Logger.start();
   }
 
   @Override
@@ -65,14 +110,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
-    batteryVoltageLog.set(RobotController.getBatteryVoltage());
-    cpuTempLog.set(RobotController.getCPUTemp());
-    CANUtilizationLog.set(RobotController.getCANStatus().percentBusUtilization);
-    radioStatusLog.set(RobotController.getRadioLEDState().name());
-    isBrownedOutLog.set(RobotController.isBrownedOut());
-    allianceLog.set(DriverStation.getAlliance().isPresent() ? DriverStation.getAlliance().get().name() : "None");
-    FMSLog.set(DriverStation.isFMSAttached());
-    // Publish hexagon points to NetworkTables
+
+    // /Publish hexagon points to NetworkTables
     List<Pose2d> hexagonPoses = new ArrayList<>();
     for (Translation2d vertex : ToPosConstants.ReefVerticies.getHexagonVertices()) {
       hexagonPoses.add(new Pose2d(vertex, new Rotation2d()));

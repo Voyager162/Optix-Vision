@@ -54,9 +54,9 @@ public class OnTheFly extends Command {
                 Robot.swerve.getPPSetpoint().approachPoint, // Intermediate approach point
                 Robot.swerve.getPPSetpoint().setpoint, // Final target position
                 Robot.swerve.getMaxDriveSpeed(), // Max driving speed
-                SwerveConstants.DriveConstants.maxAccelerationMetersPerSecondSquared, // Max acceleration
+                SwerveConstants.ControlConstants.maxAcceleration.get(), // Max acceleration
                 Robot.swerve.getMaxAngularSpeed(), // Max angular speed
-                SwerveConstants.DriveConstants.maxAngularAccelerationRadiansPerSecondSquared // Max angular acceleration
+                SwerveConstants.ControlConstants.maxAngularAccelerationRadiansPerSecondSquared // Max angular acceleration
         );
 
         // If path generation fails, stop the command

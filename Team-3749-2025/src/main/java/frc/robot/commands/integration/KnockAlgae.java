@@ -2,26 +2,31 @@ package frc.robot.commands.integration;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.arm.coral.CoralConstants;
+import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.roller.RollerConstants;
+
 /*
  * KnockAlgae command for knocking algae off reef
  */
 public class KnockAlgae extends Command {
-    private final ElevatorStates state;
+    private final ElevatorStates elevatorState;
 
-    public KnockAlgae(ElevatorStates state) {
-        this.state = state;
+    /**
+     * 
+     * @param elevatorState 
+     */
+    public KnockAlgae(ElevatorStates elevatorState) {
+        this.elevatorState = elevatorState;
+        // ensures other commands do not infere while this is active
         addRequirements(Robot.getAllSuperStructureSubsystems());
-
     }
 
     @Override
     public void initialize() {
-        Robot.coralArm.setState(CoralConstants.ArmStates.STOWED);
-        Robot.algaeRoller.setState(RollerConstants.RollerStates.SCORE);
-        Robot.elevator.setState(state);
+        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
+        Robot.algaeRoller.setState(RollerConstants.RollerStates.INTAKE);
+        Robot.elevator.setState(elevatorState);
     }
 
     @Override
@@ -34,8 +39,11 @@ public class KnockAlgae extends Command {
         Robot.algaeRoller.setState(RollerConstants.RollerStates.STOP);
     }
 
+    /**
+     * Command finishes when elevator reaches desired state and command is being scheduled
+     */
     @Override
     public boolean isFinished() {
-        return Robot.elevator.getIsStableState(); 
+        return Robot.elevator.getIsStableState() && this.isScheduled(); 
     }
 }

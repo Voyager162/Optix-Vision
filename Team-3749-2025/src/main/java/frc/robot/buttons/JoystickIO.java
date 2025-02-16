@@ -4,12 +4,15 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Robot;
-import frc.robot.buttons.ButtonBoard.ScoringLocation;
+import frc.robot.buttons.ButtonBoard.ScoringMode;
 import frc.robot.commands.arm.SetClimbArmState;
+import frc.robot.commands.arm.SetCoralArmState;
 import frc.robot.commands.elevator.SetElevatorState;
 import frc.robot.commands.integration.CoralIntakeSource;
 import frc.robot.commands.integration.Handoff;
@@ -19,10 +22,11 @@ import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.OuttakeCoral;
 import frc.robot.commands.integration.ScoreL1;
 import frc.robot.commands.integration.ScoreL234;
-import frc.robot.commands.swerve.DriveStraight;
+import frc.robot.commands.roller.MaintainCommand;
 import frc.robot.commands.swerve.OnTheFly;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
-import frc.robot.subsystems.arm.climb.ClimbConstants;
+import frc.robot.subsystems.arm.climb.ClimbArmConstants;
+import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.swerve.ToPos;
 import frc.robot.utils.MiscConstants.ControllerConstants;
@@ -33,14 +37,13 @@ import frc.robot.utils.MiscConstants.ControllerConstants;
  * @author Rohin Sood
  * @author Noah Simon
  */
+@SuppressWarnings("unused")
 public class JoystickIO {
 
     private static final CommandXboxController pilot = new CommandXboxController(0);
     private static final CommandXboxController operator = new CommandXboxController(1);
-    public static final ButtonBoard buttonBoard = new ButtonBoard();
     // private static final Command sample = new ExampleSubsystemCommand(); it was
     // getting on my nerves seeing the warning
-    private static final Command driveStraight = new DriveStraight();
     private static final Command onTheFly = new OnTheFly();
 
     private final static GenericHID buttonBoardPlayer1 = new GenericHID(2);
@@ -75,6 +78,17 @@ public class JoystickIO {
     private final static JoystickButton buttonUtilityA = new JoystickButton(buttonBoardPlayer1, 20);
     private final static JoystickButton buttonUtilityB = new JoystickButton(buttonBoardPlayer1, 21);
 
+    private static final Command climbStow = new SetClimbArmState(Robot.climbArm, ClimbArmConstants.ArmStates.STOWED,
+            ClimbArmConstants.stowSetPoint_rad);
+    private static final Command climb = new SetClimbArmState(Robot.climbArm, ClimbArmConstants.ArmStates.CLIMB,
+            ClimbArmConstants.climbSetPoint_rad);
+    private static final Command coralHandOff = new SetCoralArmState(Robot.coralArm,
+            CoralArmConstants.ArmStates.HAND_OFF,
+            CoralArmConstants.handOffSetPoint_rad);
+    private static final Command coralPickUp = new SetCoralArmState(Robot.coralArm,
+            CoralArmConstants.ArmStates.CORAL_PICKUP,
+            CoralArmConstants.coralPickUpSetPoint_rad);
+
     private static final SetElevatorState l1 = new SetElevatorState(ElevatorStates.L1);
     private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
     private static final SetElevatorState l3 = new SetElevatorState(ElevatorStates.L3);
@@ -91,17 +105,15 @@ public class JoystickIO {
     private static final ScoreL1 scoreL1 = new ScoreL1();
     private static final ScoreL234 scoreL4 = new ScoreL234(ElevatorStates.L4);
 
-    private static final Command climbStow = new SetClimbArmState(Robot.climbArm, ClimbConstants.ArmStates.STOWED,
-            ClimbConstants.stowSetPoint_rad);
-    private static final Command climb = new SetClimbArmState(Robot.climbArm, ClimbConstants.ArmStates.CLIMB,
-            ClimbConstants.climbSetPoint_rad);
+    private static final MaintainCommand algaeMaintain = new MaintainCommand(Robot.algaeRoller);
+    private static final MaintainCommand coralMaintain = new MaintainCommand(Robot.coralRoller);
+    private static final MaintainCommand scoringMaintain = new MaintainCommand(Robot.scoringRoller);
+
+    public static ButtonBoard buttonBoard = new ButtonBoard();
 
     public JoystickIO() {
     }
 
-    /**
-     * Calls binding methods according to the joysticks connected
-     */
     public static void getButtonBindings() {
 
         if (DriverStation.isJoystickConnected(1)) {
@@ -140,7 +152,7 @@ public class JoystickIO {
         buttonl2.onTrue(l2);
         buttonl3.onTrue(l3);
         buttonl4.onTrue(l4);
-        buttonAlgaeKnockoff.onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.ALGAE)));
+        buttonAlgaeKnockoff.onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.ALGAE)));
     }
 
     /**
@@ -149,7 +161,6 @@ public class JoystickIO {
     public static void pilotAndOperatorBindings() {
         // gyro reset
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
-        pilot.a().whileTrue(driveStraight);
 
         /**
          * otf related bindings:
@@ -185,7 +196,7 @@ public class JoystickIO {
         }));
 
         pilot.y().onTrue(Commands.runOnce(() -> {
-            buttonBoard.setScoringLocation(ScoringLocation.ALGAE);
+            buttonBoard.setScoringMode(ScoringMode.ALGAE);
         })); //y is for testing only for now: so this command will always change
         
         new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
@@ -206,10 +217,41 @@ public class JoystickIO {
         operator.x().onTrue(climb);
         operator.y().onTrue(climbStow);
 
-        pilot.povLeft().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L1)));
-        pilot.povUp().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L2)));
-        pilot.povRight().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L3)));
-        pilot.povDown().onTrue(Commands.runOnce(() -> buttonBoard.setScoringLocation(ScoringLocation.L4)));
+        pilot.povLeft().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L1)));
+        pilot.povUp().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L2)));
+        pilot.povRight().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L3)));
+        pilot.povDown().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L4)));
+        
+        // Checking voltage for all subsystems
+        operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.b().onTrue(Commands.run(() -> Robot.coralArm.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.x().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.y().onTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.leftBumper().onTrue(Commands.run(() -> Robot.coralRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.rightBumper().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
+
+
+        // All elevator stages
+        // operator.a().onTrue(l1);
+        // operator.b().onTrue(l2);
+        // operator.x().onTrue(l3);
+        // operator.y().onTrue(l4);
+
+        // Climb + Coral Arms
+        // operator.a().onTrue(climbStow);
+        // operator.b().onTrue(climb);
+        // operator.x().onTrue(coralHandOff);
+        // operator.y().onTrue(coralPickUp);
+
+        // Run
+        // operator.a().whileTrue(algaeRun);
+        // operator.b().whileTrue(coralRun);
+        // operator.x().whileTrue(scoringRun);
+
+        // Maintain
+        // operator.a().whileTrue(algaeMaintain);
+        // operator.b().whileTrue(coralMaintain);
+        // operator.x().whileTrue(scoringMaintain);
     }
 
     public static void pilotBindings() {
@@ -217,7 +259,6 @@ public class JoystickIO {
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
 
         // Example binding
-        // pilot.a().whileTrue(new ExampleSubsystemCommand());
     }
 
     public static void simBindings() {
@@ -249,7 +290,12 @@ public class JoystickIO {
                         new SwerveDefaultCommand(
                                 () -> pilot.getLeftX(),
                                 () -> pilot.getLeftY(),
-                                () -> pilot.getRightX()));
+                                () -> {
+                                    if (pilot.y().getAsBoolean()) {
+                                        return 1.0;
+                                    }
+                                    return 0.0;
+                                }));
     }
 
 }

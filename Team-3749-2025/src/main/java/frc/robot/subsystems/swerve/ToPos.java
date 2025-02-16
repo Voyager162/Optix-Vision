@@ -13,7 +13,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Robot;
 import frc.robot.buttons.JoystickIO;
 import frc.robot.buttons.ToPosTriggers;
-import frc.robot.buttons.ButtonBoard.ScoringLocation;
+import frc.robot.buttons.ButtonBoard.ScoringMode;
 
 /**
  * This class generates dynamic paths for a robot to move from one pose to
@@ -407,7 +407,7 @@ public class ToPos {
         Pose2d closestSide = Robot.swerve.getPose().nearest(ToPosConstants.Setpoints.reefSides);
 
         // If scoring at Level 1, adjust the offset accordingly
-        if (JoystickIO.buttonBoard.getScoringLocation() == ScoringLocation.L1) {
+        if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L1) {
             shouldOffsetForL1 = 1;
         }
 

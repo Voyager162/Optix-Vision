@@ -1,16 +1,13 @@
 package frc.robot.subsystems.elevator.real;
 
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkAbsoluteEncoder;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.ClosedLoopSlot;
 
 import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO;
+import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorControl;
+import frc.robot.utils.OptixSpark;
+import frc.robot.utils.MiscConstants.MotorControllerConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**
@@ -20,73 +17,73 @@ import frc.robot.utils.MiscConstants.SimConstants;
  */
 
 public class ElevatorSparkMax implements ElevatorIO {
-    private SparkMax leftMotor = new SparkMax(ElevatorConstants.ElevatorSpecs.motorIds[0], MotorType.kBrushless);
-    private SparkMax rightMotor = new SparkMax(ElevatorConstants.ElevatorSpecs.motorIds[1], MotorType.kBrushless);
-    private SparkMaxConfig leftConfig = new SparkMaxConfig();
-    private SparkMaxConfig rightConfig = new SparkMaxConfig();
+    private OptixSpark leftMotorLead = new OptixSpark(ElevatorConstants.ElevatorSpecs.motorIds[0],
+            OptixSpark.Type.SPARKMAX);
 
-    private SparkAbsoluteEncoder absoluteEncoder;
-    private double absolutePos;
+    private OptixSpark rightMotorFollow = new OptixSpark(ElevatorConstants.ElevatorSpecs.motorIds[1],
+            OptixSpark.Type.SPARKMAX);
 
-    private double inputVolts = 0;
     private double previousVelocity = 0;
-    private double velocity = 0;
 
     public ElevatorSparkMax() {
         // System.out.println("[Init] Creating Elevator");
 
-        leftConfig.smartCurrentLimit(ElevatorConstants.ElevatorSpecs.stallLimit,
-                ElevatorConstants.ElevatorSpecs.freeLimit);
-        leftConfig.encoder.inverted(false);
-        leftConfig.inverted(false);
-        leftConfig.idleMode(IdleMode.kBrake);
-        leftConfig.encoder.positionConversionFactor(2 * Math.PI);
-        leftConfig.encoder.velocityConversionFactor(2 * Math.PI / 60.0);
-        leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        leftMotorLead.setPositionConversionFactor(Math.PI * 2 * ElevatorConstants.ElevatorSpecs.drumRadiusMeters
+                / ElevatorConstants.ElevatorSpecs.gearing);
+        leftMotorLead.setVelocityConversionFactor(Math.PI * 2 * ElevatorConstants.ElevatorSpecs.drumRadiusMeters
+                / (60 * ElevatorConstants.ElevatorSpecs.gearing));
 
-        rightConfig.apply(leftConfig);
-        rightConfig.encoder.inverted(true);
-        rightConfig.inverted(true);
-        rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        leftMotorLead.setCurrentLimit(MotorControllerConstants.standardStallLimit,
+                MotorControllerConstants.standardFreeLimit);
+        leftMotorLead.setInverted(ElevatorConstants.ElevatorSpecs.motorInverted[0]);
+        leftMotorLead.setBrakeMode(true);
 
-        absoluteEncoder = leftMotor.getAbsoluteEncoder();
-        absolutePos = absoluteEncoder.getPosition() + ElevatorConstants.ElevatorSpecs.zeroOffset;
+        leftMotorLead.setPID(ElevatorControl.kP.get(), ElevatorControl.kI.get(), ElevatorControl.kD.get(),
+                ClosedLoopSlot.kSlot0);
+        leftMotorLead.applyConfig();
+        rightMotorFollow.applyConfig(leftMotorLead.getConfig());
+        rightMotorFollow.setInverted(ElevatorConstants.ElevatorSpecs.motorInverted[1]);
+        rightMotorFollow.setFollow(leftMotorLead);
+        rightMotorFollow.applyConfig();
 
-        leftMotor.getEncoder().setPosition(absolutePos);
-        rightMotor.getEncoder().setPosition(absolutePos);
     }
 
-    public void setIdleMode(IdleMode idleMode) {
-        leftConfig.idleMode(idleMode);
-        rightConfig.idleMode(idleMode);
-        leftMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        rightMotor.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    @Override
+    public void setBrakeMode(boolean enabled) {
+        rightMotorFollow.setBrakeMode(enabled);
+        leftMotorLead.setBrakeMode(enabled);
     }
 
     @Override
     public void updateData(ElevatorData data) {
-        previousVelocity = velocity;
-        velocity = (leftMotor.getEncoder().getVelocity() + rightMotor.getEncoder().getVelocity()) / 2;
-        // data.positionMeters = (leftMotor.getEncoder().getPosition() + rightMotor.getEncoder().getVelocity()) / 2
-        //         + absolutePos;
-        data.positionMeters = (leftMotor.getEncoder().getPosition() + rightMotor.getEncoder().getVelocity()) / 2;
+        double velocity = (leftMotorLead.getVelocity() + rightMotorFollow.getVelocity()) / 2;
+        // data.positionMeters = (leftMotor.getEncoder().getPosition() +
+        // rightMotor.getEncoder().getVelocity()) / 2
+        // + absolutePos;
+        data.positionMeters = (leftMotorLead.getPosition() + rightMotorFollow.getPosition()) / 2;
         data.velocityMetersPerSecond = velocity;
         data.accelerationMetersPerSecondSquared = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
-        data.leftCurrentAmps = leftMotor.getOutputCurrent();
-        data.rightCurrentAmps = rightMotor.getOutputCurrent();
-        data.inputVolts = inputVolts;
-        data.leftAppliedVolts = leftMotor.getBusVoltage() * leftMotor.getAppliedOutput();
-        data.rightAppliedVolts = rightMotor.getBusVoltage() * rightMotor.getAppliedOutput();
-        data.leftTempCelcius = leftMotor.getMotorTemperature();
-        data.rightTempCelcius = rightMotor.getMotorTemperature();
+        data.leftCurrentAmps = leftMotorLead.getCurrent();
+        data.rightCurrentAmps = rightMotorFollow.getCurrent();
+        data.leftAppliedVolts = leftMotorLead.getAppliedVolts();
+        data.rightAppliedVolts = rightMotorFollow.getAppliedVolts();
+        data.leftTempCelcius = leftMotorLead.getTemperature();
+        data.rightTempCelcius = rightMotorFollow.getTemperature();
+
+        previousVelocity = velocity;
     }
 
     @Override
     public void setVoltage(double volts) {
-        inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
+        double inputVolts = MathUtil.applyDeadband(volts, 0.05);
         inputVolts = MathUtil.clamp(volts, -12, 12);
-        leftMotor.setVoltage(inputVolts);
-        rightMotor.setVoltage(inputVolts);
+        leftMotorLead.setVoltage(inputVolts);
+        rightMotorFollow.setVoltage(inputVolts);
     }
+
+    @Override
+    public void setPosition(double setpointPosition, double feedforward) {
+        leftMotorLead.setPositionControl(setpointPosition, feedforward);
+    }
+
 }
- 

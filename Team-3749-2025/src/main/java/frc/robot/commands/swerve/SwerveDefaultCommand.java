@@ -38,19 +38,20 @@ public class SwerveDefaultCommand extends Command {
 
   @Override
   public void execute() {
+    
    // controllers are weird in what's positive, so we flip these
    double xMagnitude = xSpdFunction.get();
    double yMagnitude = ySpdFunction.get();
    double turningMagnitude = -xTurningSpdFunction.get();
 
-   // one combined magnitutde
-   double linearMagnitude = Math.hypot(xMagnitude, yMagnitude);
-   // to make a 0,0 rotation 2d not throw an error
-   if (xMagnitude == 0 && yMagnitude == 0) {
-     yMagnitude = 0.0001;
-   }
-   // one combined direction
-   Rotation2d linearDirection = new Rotation2d(xMagnitude, yMagnitude);
+    // one combined magnitutde
+    double linearMagnitude = Math.hypot(xMagnitude, yMagnitude);
+    // to make a 0,0 rotation 2d not throw an error
+    if (xMagnitude == 0 && yMagnitude == 0) {
+      yMagnitude = 0.0001;
+    }
+    // one combined direction
+    Rotation2d linearDirection = new Rotation2d(xMagnitude, yMagnitude);
 
    // deadbands
    // is always postive
@@ -73,6 +74,11 @@ public class SwerveDefaultCommand extends Command {
    double xSpeed = driveSpeedMPS * Math.cos(linearDirection.getRadians());
    double ySpeed = driveSpeedMPS * Math.sin(linearDirection.getRadians());
    ChassisSpeeds chassisSpeeds;
+    chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+        UtilityFunctions.isRedAlliance() ? ySpeed : -ySpeed,
+        UtilityFunctions.isRedAlliance() ? xSpeed : -xSpeed,
+        turningSpeedRadPerSecond,
+        Robot.swerve.getRotation2d());
 
    chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
        UtilityFunctions.isRedAlliance() ? ySpeed : -ySpeed,
