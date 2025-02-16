@@ -55,8 +55,8 @@ public class ButtonBoard {
         return scoringMode;
     }
 
-    public Object setScoringMode(ScoringMode algae) {
-        throw new UnsupportedOperationException("Unimplemented method 'setScoringMode'");
+    public void setScoringMode(ScoringMode scoringMode) {
+        this.scoringMode = scoringMode;
     }
 
 }
