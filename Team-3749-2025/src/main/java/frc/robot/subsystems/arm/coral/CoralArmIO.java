@@ -9,7 +9,7 @@ public interface CoralArmIO {
 
 	public static class ArmData {
 		public double appliedVolts = 0;
-		public double positionUnits = 0;
+		public double positionRad = 0;
 		public double velocityUnits = 0;
 		public double accelerationUnits = 0;
 		public double motorCurrentAmps = 0;
@@ -33,9 +33,6 @@ public interface CoralArmIO {
 	 */
 	public default void setVoltage(double volts) {
 	};
-
-	public default void setPosition(double setpointPositionRad, double feedforward) {
-	}
 
 	/**
 	 * Enable or disable brake mode on the motor.

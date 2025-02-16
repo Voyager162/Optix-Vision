@@ -37,6 +37,7 @@ import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.MotorData;
 import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
+import frc.robot.utils.SysIdTuner.Type;
 import frc.robot.subsystems.swerve.SwerveConstants.ControlConstants;
 import frc.robot.subsystems.swerve.SwerveConstants.DrivetrainConstants;
 import frc.robot.subsystems.swerve.real.*;
@@ -421,30 +422,30 @@ public class Swerve extends SubsystemBase {
    */
   private void logData() {
     // logging of our module states
-    // Double[] realStates = {
-    //     modules[0].getState().angle.getRadians(),
-    //     modules[0].getState().speedMetersPerSecond,
-    //     modules[1].getState().angle.getRadians(),
-    //     modules[1].getState().speedMetersPerSecond,
-    //     modules[2].getState().angle.getRadians(),
-    //     modules[2].getState().speedMetersPerSecond,
-    //     modules[3].getState().angle.getRadians(),
-    //     modules[3].getState().speedMetersPerSecond
-    // };
+    double[] realStates = {
+        modules[0].getState().angle.getRadians(),
+        modules[0].getState().speedMetersPerSecond,
+        modules[1].getState().angle.getRadians(),
+        modules[1].getState().speedMetersPerSecond,
+        modules[2].getState().angle.getRadians(),
+        modules[2].getState().speedMetersPerSecond,
+        modules[3].getState().angle.getRadians(),
+        modules[3].getState().speedMetersPerSecond
+    };
 
-    // Double[] desiredStates = {
-    //     modules[0].getDesiredState().angle.getRadians(),
-    //     modules[0].getDesiredState().speedMetersPerSecond,
-    //     modules[1].getDesiredState().angle.getRadians(),
-    //     modules[1].getDesiredState().speedMetersPerSecond,
-    //     modules[2].getDesiredState().angle.getRadians(),
-    //     modules[2].getDesiredState().speedMetersPerSecond,
-    //     modules[3].getDesiredState().angle.getRadians(),
-    //     modules[3].getDesiredState().speedMetersPerSecond
-    // };
+    double[] desiredStates = {
+        modules[0].getDesiredState().angle.getRadians(),
+        modules[0].getDesiredState().speedMetersPerSecond,
+        modules[1].getDesiredState().angle.getRadians(),
+        modules[1].getDesiredState().speedMetersPerSecond,
+        modules[2].getDesiredState().angle.getRadians(),
+        modules[2].getDesiredState().speedMetersPerSecond,
+        modules[3].getDesiredState().angle.getRadians(),
+        modules[3].getDesiredState().speedMetersPerSecond
+    };
 
-    // Logger.recordOutput("/subsystems/swerve/real states", realStates);
-    // Logger.recordOutput("/subsystems/swerve/desired states", desiredStates);
+    Logger.recordOutput("/subsystems/swerve/real states", realStates);
+    Logger.recordOutput("/subsystems/swerve/desired states", desiredStates);
     
     double[] odometry = {
         getPose().getX(),

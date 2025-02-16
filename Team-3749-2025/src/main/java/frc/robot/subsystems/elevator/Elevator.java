@@ -36,6 +36,7 @@ import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.MotorData;
 import frc.robot.utils.UtilityFunctions;
+import frc.robot.utils.SysIdTuner.Type;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -79,6 +80,14 @@ public class Elevator extends SubsystemBase {
         } else {
             elevatorio = new ElevatorSparkMax();
         }
+
+        profile = new ProfiledPIDController(ElevatorConstants.ElevatorControl.kP.get(),
+                ElevatorConstants.ElevatorControl.kI.get(), ElevatorConstants.ElevatorControl.kD.get(),
+                new TrapezoidProfile.Constraints(ElevatorConstants.ElevatorControl.maxVelocity.get(),
+                        ElevatorConstants.ElevatorControl.maxAcceleration.get()));
+        feedforward = new ElevatorFeedforward(ElevatorConstants.ElevatorControl.kS.get(),
+                ElevatorConstants.ElevatorControl.kG.get(), ElevatorConstants.ElevatorControl.kV.get(),
+                ElevatorConstants.ElevatorControl.kA.get());
     }
 
 
@@ -165,12 +174,11 @@ public class Elevator extends SubsystemBase {
 
     private void moveToGoal() {
         State firstState = profile.getSetpoint();
-        profile.calculate(getPositionMeters());
+        double PID = profile.calculate(getPositionMeters());
 
         State nextState = profile.getSetpoint();
         double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
-
-        elevatorio.setPosition(firstState.position, ffVoltage);
+        elevatorio.setVoltage(ffVoltage + PID);
     }
 
     public void stop() {
@@ -187,14 +195,14 @@ public class Elevator extends SubsystemBase {
 
         Logger.recordOutput("subsystems/elevator/acceleration", data.accelerationMetersPerSecondSquared);
 
-        Logger.recordOutput("subsystems/elevator/input volts",
+        Logger.recordOutput("subsystems/elevator/applied volts",
                 ((data.leftAppliedVolts + data.rightAppliedVolts) / 2.0));
-        Logger.recordOutput("subsystems/elevator/input volts", data.leftAppliedVolts);
-        Logger.recordOutput("subsystems/elevator/input volts", data.rightAppliedVolts);
-        Logger.recordOutput("subsystems/elevator/input volts", data.leftCurrentAmps);
-        Logger.recordOutput("subsystems/elevator/input volts", data.rightCurrentAmps);
-        Logger.recordOutput("subsystems/elevator/input volts", data.leftTempCelcius);
-        Logger.recordOutput("subsystems/elevator/input volts", data.rightTempCelcius);
+        Logger.recordOutput("subsystems/elevator/leftAppliedVolts", data.leftAppliedVolts);
+        Logger.recordOutput("subsystems/elevator/rightAppliedVolts", data.rightAppliedVolts);
+        Logger.recordOutput("subsystems/elevator/leftCurrentAmps", data.leftCurrentAmps);
+        Logger.recordOutput("subsystems/elevator/rightCurrentAmps", data.rightCurrentAmps);
+        Logger.recordOutput("subsystems/elevator/leftTempCelcius", data.leftTempCelcius);
+        Logger.recordOutput("subsystems/elevator/rightTempCelcius", data.rightTempCelcius);
 
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
 

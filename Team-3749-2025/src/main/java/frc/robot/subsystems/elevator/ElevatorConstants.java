@@ -12,7 +12,7 @@ import edu.wpi.first.math.util.Units;
 
 public class ElevatorConstants {
     public static class ElevatorSpecs {
-        public static final double gearing = 6.0;
+        public static final double gearing = 75;
         public static final double carriageMassKg = 12;
         public static final double drumRadiusMeters = Units.inchesToMeters(2);
         public static final double minHeightMeters = 0;

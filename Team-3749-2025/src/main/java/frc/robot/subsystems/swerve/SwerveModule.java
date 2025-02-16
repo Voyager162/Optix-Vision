@@ -2,6 +2,7 @@ package frc.robot.subsystems.swerve;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
@@ -22,6 +23,10 @@ public class SwerveModule {
     private SwerveModuleState desiredState = new SwerveModuleState();
 
     private SimpleMotorFeedforward drivingFeedFordward;
+    private PIDController drivePID = new PIDController(ControlConstants.drivePID[0], ControlConstants.drivePID[1],
+            ControlConstants.drivePID[2]);
+    private PIDController turnPID = new PIDController(ControlConstants.turnPID[0], ControlConstants.turnPID[1],
+            ControlConstants.turnPID[2]);
 
     private ModuleData moduleData = new ModuleData();
     private SwerveModuleIO moduleIO;
@@ -45,6 +50,7 @@ public class SwerveModule {
 
         drivingFeedFordward = new SimpleMotorFeedforward(ControlConstants.kSDriving.get(),
                 ControlConstants.kVDriving.get(), ControlConstants.kADriving.get());
+        turnPID.enableContinuousInput(0, 2 * Math.PI);
     }
 
     public String getName() {
@@ -111,9 +117,8 @@ public class SwerveModule {
         previousSetpointVelocity = speedMetersPerSecond;
 
         double feedforward = drivingFeedFordward.calculate(speedMetersPerSecond, setpointAcceleration);
-
-        moduleIO.setDriveVelocity(speedMetersPerSecond, feedforward);
-
+        double PID = drivePID.calculate(moduleData.driveVelocityMPerSec, speedMetersPerSecond);
+        moduleIO.setDriveVoltage(PID + feedforward);
     }
 
     /**
@@ -121,7 +126,9 @@ public class SwerveModule {
      * @param positionRad - the angle setpoint (0-2pi) for the module
      */
     public void setTurnPosition(double positionRad) {
-        moduleIO.setTurnPosition(positionRad, 0);
+
+        double PID = turnPID.calculate(moduleData.turnPositionRad, positionRad);
+        moduleIO.setTurnVoltage(PID);
     }
 
     public void setDriveVoltage(double volts) {

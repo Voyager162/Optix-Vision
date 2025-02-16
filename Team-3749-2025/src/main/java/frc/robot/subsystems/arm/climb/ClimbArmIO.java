@@ -8,9 +8,8 @@ package frc.robot.subsystems.arm.climb;
 public interface ClimbArmIO {
 
 	public static class ArmData {
-		public double appliedVolts = 0;
-		public double positionUnits = 0;
-		public double velocityUnits = 0;
+		public double positionRad = 0;
+		public double velocityRadPerSec = 0;
 		public double accelerationUnits = 0;
 		public double inputVolts = 0;
 		public double frontMotorCurrentAmps = 0;

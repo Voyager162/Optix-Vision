@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.hal.AllianceStationID;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -43,14 +45,16 @@ public class Robot extends LoggedRobot {
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
   public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("/subsystems/setVoltage", 1);
-
+  
   private RobotContainer m_robotContainer;
+  private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
 
   public static Subsystem[] getAllSuperStructureSubsystems() {
     return new Subsystem[] {algaeRoller, coralRoller, scoringRoller, elevator, coralArm, climbArm};
   }
 
   public Robot() {
+    pdh.setSwitchableChannel(true);
     // Record metadata
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
@@ -111,6 +115,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledInit() {
     swerve.setBreakMode(false);
+    climbArm.setBrakeMode(false);
   }
 
   @Override
@@ -120,6 +125,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void disabledExit() {
     swerve.setBreakMode(true);
+    climbArm.setBrakeMode(true);
   }
 
   @Override
@@ -144,7 +150,6 @@ public class Robot extends LoggedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
   }
 
   @Override

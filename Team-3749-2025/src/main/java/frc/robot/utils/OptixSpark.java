@@ -16,6 +16,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -171,7 +172,7 @@ public class OptixSpark {
      * @param factor
      */
     public void setVelocityConversionFactor(double factor) {
-        encoderConfig.positionConversionFactor(factor);
+        encoderConfig.velocityConversionFactor(factor);
 
         motorConfig.apply(encoderConfig);
 
@@ -237,6 +238,11 @@ public class OptixSpark {
 
     }
 
+    public void setAbsoluteEncoderInverted(boolean inverted){
+        motorConfig.absoluteEncoder.inverted(inverted);
+
+    }
+
     public void setBrakeMode(boolean isBrakeMode) {
         if (isBrakeMode) {
             motorConfig.idleMode(IdleMode.kBrake);
@@ -248,6 +254,11 @@ public class OptixSpark {
 
     public void setFollow(OptixSpark spark) {
         motorConfig.follow(spark.getSpark());
+    }
+
+    public void setControlEncoder(FeedbackSensor sensor){
+        controllerConfig.feedbackSensor(sensor);
+        motorConfig.apply(controllerConfig);
     }
 
     /**

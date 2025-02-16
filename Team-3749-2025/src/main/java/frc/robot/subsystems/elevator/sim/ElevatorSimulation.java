@@ -19,7 +19,6 @@ public class ElevatorSimulation implements ElevatorIO {
     private double inputVolts = 0;
     private double previousVelocity = 0;
     private double velocity = 0;
-    private PIDController controller = new PIDController(ElevatorControl.kP.get(), ElevatorControl.kI.get(), ElevatorControl.kD.get());
 
     private final ElevatorSim elevatorSimSystem = new ElevatorSim(
             DCMotor.getNEO(2),
@@ -80,9 +79,6 @@ public class ElevatorSimulation implements ElevatorIO {
         elevatorSimSystem.setInputVoltage(inputVolts);
     }
 
-    @Override
-    public void setPosition(double setpointPosition, double feedforward) {
-        setVoltage(controller.calculate(elevatorSimSystem.getPositionMeters(), setpointPosition) + feedforward);
-    }
+
 
 }

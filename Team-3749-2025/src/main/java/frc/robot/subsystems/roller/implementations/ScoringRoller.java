@@ -1,5 +1,8 @@
 package frc.robot.subsystems.roller.implementations;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import frc.robot.Robot;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -29,7 +32,7 @@ public class ScoringRoller extends Roller {
     private boolean routineStarted = false;
 
     public ScoringRoller() {
-        super(Implementations.SCORING, FF());
+        super(Implementations.SCORING, FF(), positionPID(), velocityPID());
         this.rollerData = new RollerData();
         if (Robot.isSimulation()) {
             this.photoelectricIO = new PhotoelectricSim();
@@ -39,15 +42,28 @@ public class ScoringRoller extends Roller {
         }
     }
 
-    public static PIDController velocityController() {
+    public static SimpleMotorFeedforward FF() {
+        return new SimpleMotorFeedforward(RollerConstants.Scoring.kSVelocity.get(),
+                RollerConstants.Scoring.kVVelocity.get(),
+                RollerConstants.Scoring.kAVelocity.get());
+    }
+
+    public static PIDController positionPID() {
+        return new PIDController(RollerConstants.Scoring.kPPosition.get(), RollerConstants.Scoring.kIPosition.get(),
+                RollerConstants.Scoring.kDPosition.get());
+    }
+
+    public static PIDController velocityPID() {
         return new PIDController(RollerConstants.Scoring.kPVelocity.get(), RollerConstants.Scoring.kIVelocity.get(),
                 RollerConstants.Scoring.kDVelocity.get());
     }
 
-    public static SimpleMotorFeedforward FF() {
-        return new SimpleMotorFeedforward(RollerConstants.Scoring.kSVelocity.get(), RollerConstants.Scoring.kVVelocity.get(),
-                RollerConstants.Scoring.kAVelocity.get());
+
+    @Override
+    public void outtake() {
+        setVelocity(RollerConstants.Coral.intakeVelocity.get());
     }
+
 
     public static PIDController positionController() {
         return new PIDController(RollerConstants.Scoring.kPPosition.get(), RollerConstants.Scoring.kIPosition.get(),
@@ -89,8 +105,8 @@ public class ScoringRoller extends Roller {
 
         hasPiece = photoelectricData.sensing;
         
-        Logger.recordOutput("subsystems/rollers/scoring/hasPiece", hasPiece);
-        Logger.recordOutput("subsystems/rollers/scoring/setInitalState", routineStarted);
+        Logger.recordOutput("subsystems/roller/ScoringRoller/hasPiece", hasPiece);
+        Logger.recordOutput("subsystems/roller/ScoringRoller/setInitalState", routineStarted);
 
         // routineStarted is true when the routine begins in Autos 
         if (Autos.isRoutineStarted() && !routineStarted) { 

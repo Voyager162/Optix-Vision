@@ -17,27 +17,10 @@ import frc.robot.utils.LoggedTunableNumber;
 public class SwerveConstants {
 
         public static final class ControlConstants {
-                public static final double[][] turnPID = new double[][] {
-                                { 8, 0, 0 }, // large error position
-                                { 12, 0, 0 }, // small error position
-                                { 0, 0, 0 }, // deadband error position
-                                { 0, 0, 0 } }; //
-                public static final double[][] drivePID = new double[][] {
-                                { 0, 0, 0 }, // small error position
-                                { 0, 0, 0 }, // large error position
-                                { 0.27, 0, 0 }, // no slow velocity control
-                                { 0.27, 0, 0 } }; // no fast velocity control
-
-                // pid
-                public static LoggedTunableNumber largeErrorTurningKP = new LoggedTunableNumber(
-                                "subsystems/swerve/largeErrorTurningKP", 8);
-                public static LoggedTunableNumber smallErrorTurningKP = new LoggedTunableNumber(
-                                "subsystems/swerve/smallErrorTurningKP", 12);
-                public static LoggedTunableNumber noSlowVelocityControlDriveKP = new LoggedTunableNumber(
-                                "subsystems/swerve/noSlowVelocityControlDriveKP", .27);
-                public static LoggedTunableNumber noFastVelocityControlDriveKP = new LoggedTunableNumber(
-                                "subsystems/swerve/noFastVelocityControlDriveKP", .27);
-
+                public static final double[] turnPID = new double[] {
+                                3.75, 0, 0 };
+                public static final double[] drivePID = new double[] {
+                                0.27, 0, 0 };
                 // our FF values
                 public static LoggedTunableNumber kSDriving = new LoggedTunableNumber("subsystems/swerve/kSDriving",
                                 0.26);
@@ -87,8 +70,8 @@ public class SwerveConstants {
                 public static final boolean[] driveMotorInverted = {
                                 true,
                                 false,
-                                false,
-                                false
+                                true,
+                                true
                 };
                 public static final boolean[] turningMotorInverted = {
                                 false,
@@ -103,10 +86,7 @@ public class SwerveConstants {
                                 false
                 };
                 public static final double[] absoluteEncoderOffsetDeg = {
-                                26.191,
-                                137.594,
-                                71.455,
-                                186.943
+                                49.733, 67.208, 276.509, 21.715
                 };
 
         }

@@ -13,6 +13,9 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.units.Units.Seconds;
 
@@ -29,6 +32,8 @@ public class SysIdTuner {
     private VoltageDrive io;
     private Map<String, MotorData> motorData;
 
+    private Type type;
+
     private SysIdRoutine.Config config = new SysIdRoutine.Config(
             Volts.per(Seconds).of(1), // Voltage ramp rate
             Volts.of(7), // Max voltage
@@ -43,7 +48,7 @@ public class SysIdTuner {
      * @param io        - VoltageDrive
      */
     public SysIdTuner(String name, Subsystem subsystem, VoltageDrive io,
-            Map<String, MotorData> motorData) {
+            Map<String, MotorData> motorData, Type type) {
 
         this.io = io;
         this.motorData = motorData;
@@ -54,6 +59,8 @@ public class SysIdTuner {
         sysIdRoutine = new SysIdRoutine(
                 config,
                 new SysIdRoutine.Mechanism(setVolts, setLog, subsystem, name));
+
+        this.type = type;
     }
 
     /**
@@ -65,7 +72,7 @@ public class SysIdTuner {
      * @param io        - VoltageDrive
      */
     public SysIdTuner(String name, SysIdRoutine.Config config, Subsystem subsystem, VoltageDrive io,
-            Map<String, MotorData> motorData) {
+            Map<String, MotorData> motorData, Type type) {
 
         this.io = io;
         this.motorData = motorData;
@@ -76,6 +83,8 @@ public class SysIdTuner {
         sysIdRoutine = new SysIdRoutine(
                 config,
                 new SysIdRoutine.Mechanism(setVolts, setLog, subsystem, name));
+        this.type = type;
+
     }
 
     /**
@@ -85,13 +94,23 @@ public class SysIdTuner {
      * @param log - SysIdRoutineLog object
      */
     private void setLog(SysIdRoutineLog log) {
-        motorData.forEach((motorName, data) -> {
-            log.motor(motorName)
-                    .voltage(Voltage.ofBaseUnits(data.appliedVolts, Volts))
-                    .linearPosition(Meters.ofBaseUnits(data.position))
-                    .linearVelocity(MetersPerSecond.ofBaseUnits(data.velocity))
-                    .linearAcceleration(MetersPerSecondPerSecond.ofBaseUnits(data.acceleration));
-        });
+        if (type == Type.LINEAR) {
+            motorData.forEach((motorName, data) -> {
+                log.motor(motorName)
+                        .voltage(Voltage.ofBaseUnits(data.appliedVolts, Volts))
+                        .linearPosition(Meters.ofBaseUnits(data.position))
+                        .linearVelocity(MetersPerSecond.ofBaseUnits(data.velocity))
+                        .linearAcceleration(MetersPerSecondPerSecond.ofBaseUnits(data.acceleration));
+            });
+        } else {
+            motorData.forEach((motorName, data) -> {
+                log.motor(motorName)
+                        .voltage(Voltage.ofBaseUnits(data.appliedVolts, Volts))
+                        .angularPosition(Radians.ofBaseUnits(data.position))
+                        .angularVelocity(RadiansPerSecond.ofBaseUnits(data.velocity))
+                        .angularAcceleration(RadiansPerSecondPerSecond.ofBaseUnits(data.acceleration));
+            });
+        }
 
     }
 
@@ -142,5 +161,10 @@ public class SysIdTuner {
         // need to set burnout timer to lower values
         return sysIdRoutine.quasistatic(Direction.kForward).andThen(sysIdRoutine.quasistatic(Direction.kReverse)
                 .andThen(sysIdRoutine.dynamic(Direction.kForward).andThen(sysIdRoutine.dynamic(Direction.kReverse))));
+    }
+
+    public enum Type {
+        ROTATIONAL,
+        LINEAR;
     }
 }

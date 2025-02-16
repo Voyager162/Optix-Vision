@@ -1,7 +1,8 @@
 package frc.robot.subsystems.arm.coral.real;
 
-import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+
 import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.arm.coral.CoralArmIO;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
@@ -34,19 +35,20 @@ public class CoralArmSparkMax implements CoralArmIO {
 		motor = new OptixSpark(CoralArmConstants.motorID, OptixSpark.Type.SPARKMAX);
 
 		motor.setCurrentLimit(MotorControllerConstants.standardStallLimit, MotorControllerConstants.standardFreeLimit);
-		motor.setInverted(false);
+		motor.setInverted(true);
 		motor.setBrakeMode(true);
 		motor.setPositionConversionFactor(1 / CoralArmConstants.armGearing * 2 * Math.PI);
 		motor.setVelocityConversionFactor(1 / CoralArmConstants.armGearing * 2 * Math.PI / 60.0);
-
+		motor.setAbsoluteEncoderInverted(true);
 		absoluteEncoder = motor.getAbsoluteEncoder();
+		
 		absolutePos = absoluteEncoder.getPosition();
 
-		motor.setPID(CoralArmConstants.kP.get(), CoralArmConstants.kI.get(), CoralArmConstants.kD.get(),
-				ClosedLoopSlot.kSlot0);
 
-		motor.applyConfig();
 		motor.setPosition(absolutePos);
+		motor.setPositionWrapping(-Math.PI, Math.PI);
+		motor.setControlEncoder(FeedbackSensor.kAbsoluteEncoder);
+		motor.applyConfig();
 	}
 
 	@Override
@@ -64,7 +66,7 @@ public class CoralArmSparkMax implements CoralArmIO {
 	@Override
 	public void updateData(ArmData data) {
 		double velocity = motor.getVelocity();
-		data.positionUnits = motor.getPosition();
+		data.positionRad = getPosition();
 		data.velocityUnits = velocity;
 		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
 		data.motorCurrentAmps = motor.getCurrent();
@@ -84,9 +86,15 @@ public class CoralArmSparkMax implements CoralArmIO {
 		motor.setVoltage(inputVolts);
 	}
 
-	@Override
-	public void setPosition(double setpointPositionRad, double feedforward) {
-		motor.setPositionControl(setpointPositionRad, feedforward);
+	private double getPosition() {
+		absolutePos = (absoluteEncoder.getPosition() * 2 * Math.PI) - CoralArmConstants.absoluteEncoderOffsetRad;
+		while (absolutePos > Math.PI) {
+			absolutePos -= Math.PI * 2;
+		}
+		while (absolutePos < -Math.PI) {
+			absolutePos += Math.PI * 2;
+		}
+		return absolutePos;
 	}
 
 }
