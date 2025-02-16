@@ -47,10 +47,14 @@ public class CoralArmConstants {
 	public static final boolean simulateGravity = true;
 	public static final double stateMarginOfError = 0.01;
 
-	public enum ArmStates {
-		CORAL_PICKUP,
-		HAND_OFF,
-		STOWED,
-		STOPPED
-	}
+    public enum ArmStates {
+        MOVING_DOWN,
+        MOVING_UP,
+        CORAL_PICKUP,
+        L1,
+        SOURCE,
+        HAND_OFF,
+        STOWED,
+        STOPPED
+    }
 }

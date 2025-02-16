@@ -1,4 +1,9 @@
 package frc.robot.subsystems.roller;
+/**
+ * Constants for roller subsystem
+ * 
+ * @author Lilian Wu
+ */
 
 import frc.robot.utils.LoggedTunableNumber;
 
@@ -50,8 +55,7 @@ public class RollerConstants {
         public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/rollers/coralRoller/maxVelocity", 0.0);
         public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("/subsystems/rollers/coralRoller/maxAcceleration", 0.0);
 
-        public static final double velocity = 5.0;
-
+        public static final double scoreVelocity = 7.0;
     }
 
     public static final class Scoring {
@@ -76,13 +80,13 @@ public class RollerConstants {
         public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/rollers/scoringRoller/maxVelocity", 0.0);
         public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("/subsystems/rollers/scoringRoller/maxAcceleration", 0.0);
 
-        public static final double velocity = 5.0;
-
+        public static final double scoreVelocity = 10.0;
     }
 
     public enum RollerStates {
         RUN,
         MAINTAIN,
+        SCORE,
         STOP
     }
 

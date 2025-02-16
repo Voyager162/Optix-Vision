@@ -28,6 +28,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return Autos.getPrint();
+    return Autos.getSelectedCommand();
   }
 }

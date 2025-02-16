@@ -5,6 +5,11 @@ import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
 
+/**
+ * Algae implementation of the roller subsystem
+ *
+ * @author Lilian Wu
+ */
 public class AlgaeRoller extends Roller {
 
     public AlgaeRoller() {
@@ -15,10 +20,17 @@ public class AlgaeRoller extends Roller {
         return new SimpleMotorFeedforward(RollerConstants.Algae.kSVelocity.get(), RollerConstants.Algae.kVVelocity.get(),
                 RollerConstants.Algae.kAVelocity.get());
     }
-
+    /**
+     * Implemetation of run method
+     */
     @Override
     public void run() {
         setVelocity(RollerConstants.Algae.velocity);
     }
 
+    /**
+     * Implemetation of score method
+     */
+    public void score() {
+    }
 }

@@ -9,7 +9,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import java.util.Map;
 
-import choreo.util.ChoreoAllianceFlipUtil.Flipper;
+import choreo.auto.AutoTrajectory;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -251,15 +251,13 @@ public class Swerve extends SubsystemBase {
 
   public void followSample(SwerveSample sample, boolean isFlipped) {
 
-    Flipper flipper = AutoUtils.flipper;
-
     // ternaries are for x-axis flipping
 
     double xPos = sample.x;
 
     double xVel = sample.vx;
     double xAcc = sample.ax;
-    double yPos = isFlipped ? flipper.flipY(sample.y) : sample.y;
+    double yPos = isFlipped ? AutoUtils.flipper.flipY(sample.y) : sample.y;
 
     double yVel = isFlipped ? -sample.vy : sample.vy;
     double yAcc = isFlipped ? -sample.ay : sample.ay;
@@ -423,31 +421,31 @@ public class Swerve extends SubsystemBase {
    */
   private void logData() {
     // logging of our module states
-    double[] realStates = {
-        modules[0].getState().angle.getRadians(),
-        modules[0].getState().speedMetersPerSecond,
-        modules[1].getState().angle.getRadians(),
-        modules[1].getState().speedMetersPerSecond,
-        modules[2].getState().angle.getRadians(),
-        modules[2].getState().speedMetersPerSecond,
-        modules[3].getState().angle.getRadians(),
-        modules[3].getState().speedMetersPerSecond
-    };
+    // Double[] realStates = {
+    //     modules[0].getState().angle.getRadians(),
+    //     modules[0].getState().speedMetersPerSecond,
+    //     modules[1].getState().angle.getRadians(),
+    //     modules[1].getState().speedMetersPerSecond,
+    //     modules[2].getState().angle.getRadians(),
+    //     modules[2].getState().speedMetersPerSecond,
+    //     modules[3].getState().angle.getRadians(),
+    //     modules[3].getState().speedMetersPerSecond
+    // };
 
-    // SmartDashboard.puTarr("Swerve: Real States",realSwerveModuleStates);
-    double[] desiredStates = {
-        modules[0].getDesiredState().angle.getRadians(),
-        modules[0].getDesiredState().speedMetersPerSecond,
-        modules[1].getDesiredState().angle.getRadians(),
-        modules[1].getDesiredState().speedMetersPerSecond,
-        modules[2].getDesiredState().angle.getRadians(),
-        modules[2].getDesiredState().speedMetersPerSecond,
-        modules[3].getDesiredState().angle.getRadians(),
-        modules[3].getDesiredState().speedMetersPerSecond
-    };
+    // Double[] desiredStates = {
+    //     modules[0].getDesiredState().angle.getRadians(),
+    //     modules[0].getDesiredState().speedMetersPerSecond,
+    //     modules[1].getDesiredState().angle.getRadians(),
+    //     modules[1].getDesiredState().speedMetersPerSecond,
+    //     modules[2].getDesiredState().angle.getRadians(),
+    //     modules[2].getDesiredState().speedMetersPerSecond,
+    //     modules[3].getDesiredState().angle.getRadians(),
+    //     modules[3].getDesiredState().speedMetersPerSecond
+    // };
 
-    Logger.recordOutput("/subsystems/swerve/real states", realStates);
-    Logger.recordOutput("/subsystems/swerve/desired states", desiredStates);
+    // Logger.recordOutput("/subsystems/swerve/real states", realStates);
+    // Logger.recordOutput("/subsystems/swerve/desired states", desiredStates);
+    
     double[] odometry = {
         getPose().getX(),
         getPose().getY(),
