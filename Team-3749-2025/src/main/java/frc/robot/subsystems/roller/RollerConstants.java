@@ -8,7 +8,7 @@ public class RollerConstants {
         public static final boolean inverted = false;
 
         public static final double momentOfInertia = 0.04;
-        public static final double gearRatio = 3.0;
+        public static final double gearRatio = 4.0;
         public static final double measurementNoise = 0.0;
 
         public static LoggedTunableNumber kPVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kPVelocity", 0.0);
