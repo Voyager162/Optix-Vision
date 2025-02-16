@@ -23,7 +23,8 @@ import frc.robot.commands.integration.OuttakeCoral;
 import frc.robot.commands.integration.ScoreL1;
 import frc.robot.commands.integration.ScoreL234;
 import frc.robot.commands.roller.MaintainCommand;
-import frc.robot.commands.swerve.OnTheFly;
+import frc.robot.commands.roller.OuttakeRoller;
+import frc.robot.commands.roller.RunRoller;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
 import frc.robot.subsystems.arm.climb.ClimbArmConstants;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
@@ -104,6 +105,10 @@ public class JoystickIO {
     private static final OuttakeCoral outtakeCoral = new OuttakeCoral();
     private static final ScoreL1 scoreL1 = new ScoreL1();
     private static final ScoreL234 scoreL4 = new ScoreL234(ElevatorStates.L4);
+    private static final RunRoller algaeRun = new RunRoller(Robot.algaeRoller);
+    private static final RunRoller coralRunIntake = new RunRoller(Robot.coralRoller);
+    private static final OuttakeRoller coralRunOuttake = new OuttakeRoller(Robot.coralRoller);
+    private static final RunRoller scoringRun = new RunRoller(Robot.scoringRoller);
 
     private static final MaintainCommand algaeMaintain = new MaintainCommand(Robot.algaeRoller);
     private static final MaintainCommand coralMaintain = new MaintainCommand(Robot.coralRoller);
@@ -221,14 +226,16 @@ public class JoystickIO {
         pilot.povUp().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L2)));
         pilot.povRight().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L3)));
         pilot.povDown().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L4)));
+        // pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
         
-        // Checking voltage for all subsystems
-        operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(Robot.subsystemVoltageSetter.get())));
-        operator.b().onTrue(Commands.run(() -> Robot.coralArm.setVoltage(Robot.subsystemVoltageSetter.get())));
-        operator.x().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(Robot.subsystemVoltageSetter.get())));
-        operator.y().onTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
-        operator.leftBumper().onTrue(Commands.run(() -> Robot.coralRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
-        operator.rightBumper().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
+        // // Checking voltage for all subsystems
+        // operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(Robot.subsystemVoltageSetter.get())));
+        // operator.b().onTrue(Commands.run(() -> Robot.coralArm.setVoltage(Robot.subsystemVoltageSetter.get())));
+        // operator.x().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.y().whileTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
+        // operator.leftBumper().whileTrue(Commands.run(() -P> Robot.coralRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
+        // operator.leftBumper().whileFalse(Commands.runOnce(() -> Robot.coralRoller.stop()));
+        // operator.rightBumper().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
 
 
         // All elevator stages
@@ -240,12 +247,15 @@ public class JoystickIO {
         // Climb + Coral Arms
         // operator.a().onTrue(climbStow);
         // operator.b().onTrue(climb);
+ 
+
+        // Run
+        operator.a().whileTrue(algaeRun);
+        // operator.b().onTrue(coralRunIntake);
+        // operator.a().onTrue(coralRunOuttake);
         // operator.x().onTrue(coralHandOff);
         // operator.y().onTrue(coralPickUp);
 
-        // Run
-        // operator.a().whileTrue(algaeRun);
-        // operator.b().whileTrue(coralRun);
         // operator.x().whileTrue(scoringRun);
 
         // Maintain

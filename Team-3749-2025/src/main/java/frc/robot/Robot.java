@@ -4,19 +4,10 @@
 
 package frc.robot;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.littletonrobotics.junction.LogFileUtil;
-import org.littletonrobotics.junction.LoggedRobot;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.NT4Publisher;
-import org.littletonrobotics.junction.wpilog.WPILOGReader;
-import org.littletonrobotics.junction.wpilog.WPILOGWriter;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.hal.AllianceStationID;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -31,6 +22,14 @@ import frc.robot.subsystems.roller.implementations.CoralRoller;
 import frc.robot.subsystems.roller.implementations.ScoringRoller;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.ToPosConstants;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.utils.MiscConstants;
+import org.littletonrobotics.junction.LogFileUtil;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.MiscConstants;
 
@@ -44,18 +43,21 @@ private Field2d field2d = new Field2d();
   public static ScoringRoller scoringRoller = new ScoringRoller();
 
   public static Elevator elevator = new Elevator();
+  public static Vision vision = new Vision();
 
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
   public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("/subsystems/setVoltage", 1);
-
+  
   private RobotContainer m_robotContainer;
+  private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
 
   public static Subsystem[] getAllSuperStructureSubsystems() {
     return new Subsystem[] {algaeRoller, coralRoller, scoringRoller, elevator, coralArm, climbArm};
   }
 
   public Robot() {
+    pdh.setSwitchableChannel(true);
     // Record metadata
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
@@ -124,6 +126,7 @@ private Field2d field2d = new Field2d();
   @Override
   public void disabledInit() {
     swerve.setBreakMode(false);
+    climbArm.setBrakeMode(false);
   }
 
   @Override
@@ -133,6 +136,7 @@ private Field2d field2d = new Field2d();
   @Override
   public void disabledExit() {
     swerve.setBreakMode(true);
+    climbArm.setBrakeMode(true);
   }
 
   @Override
@@ -157,7 +161,6 @@ private Field2d field2d = new Field2d();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
   }
 
   @Override

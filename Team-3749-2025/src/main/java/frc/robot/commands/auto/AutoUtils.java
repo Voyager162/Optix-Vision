@@ -37,7 +37,7 @@ public class AutoUtils {
     private static AutoFactory factoryFlipped;
     private static AutoChooser chooser;
     // private static AutoChooser flipChooser;
-    private static SendableChooser<Boolean> flippedChooser;
+    private static SendableChooser<Boolean> flippedChooser = new SendableChooser<Boolean>();
     public static ChoreoAllianceFlipUtil.Flipper flipper = ChoreoAllianceFlipUtil.getFlipper();
 
     /**
@@ -62,10 +62,12 @@ public class AutoUtils {
     }
 
     public static AutoFactory getAutoFactory() {
-        if (flippedChooser.getSelected()) {
-            return factoryFlipped;
-        }
+        
+        // if (flippedChooser.getSelected()) {
+        //     return factoryFlipped;
+        // }
         return factory;
+
     }
 
     /**
@@ -131,7 +133,6 @@ public class AutoUtils {
      */
 
     private static void setupFlipChooser() {
-        flippedChooser = new SendableChooser<Boolean>();
 
         flippedChooser.addOption("Yes", true);
         flippedChooser.addOption("No", false);
@@ -277,7 +278,8 @@ public class AutoUtils {
     }
 
     /**
-     * A command to intake from station using coral arm when the robot is approaching the end of the
+     * A command to intake from station using coral arm when the robot is
+     * approaching the end of the
      * given trajectory
      * 
      * @param trajectory
@@ -293,7 +295,7 @@ public class AutoUtils {
         Command Coralintake = new CoralIntakeSource();
         trajectory.atPose(endingPose2d, 1, 1.57).onTrue(Coralintake);
         return Coralintake;
-        
+
     }
 
     /**
@@ -307,7 +309,6 @@ public class AutoUtils {
      * @param ScoreL234
      */
 
- 
     /**
      * This will begin "nextTrajectory" following the completion of "curTrajectory"
      * and a command. This should be used to link trajectories together, but only
@@ -323,8 +324,6 @@ public class AutoUtils {
         new Trigger(() -> command.isFinished()).onTrue(Commands.print(command.getName()).andThen(nextTrajectory.cmd()));
 
     }
-
-
 
     /**
      * This will flip a given pose across the x-axis of the field
@@ -349,13 +348,13 @@ public class AutoUtils {
      * @return
      */
     public static Pose2d getFinalPose2d(AutoTrajectory trajectory) {
-        if (flippedChooser.getSelected()) {
-            System.out.println("Flipped Pose:" + getFlippedPose(trajectory.getFinalPose().get()));
+        // if (flippedChooser.getSelected()) {
+        //     System.out.println("Flipped Pose:" + getFlippedPose(trajectory.getFinalPose().get()));
 
-            return getFlippedPose(trajectory.getFinalPose().get());
-        } else {
+        //     return getFlippedPose(trajectory.getFinalPose().get());
+        // } else {
             return trajectory.getFinalPose().get();
-        }
+        // }
     }
 
 }

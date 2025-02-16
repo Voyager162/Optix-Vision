@@ -4,7 +4,6 @@ import frc.robot.utils.OptixSpark;
 import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.swerve.SwerveModuleIO;
-import frc.robot.subsystems.swerve.SwerveConstants.ControlConstants;
 import frc.robot.subsystems.swerve.SwerveConstants.DrivetrainConstants;
 import frc.robot.subsystems.swerve.SwerveConstants.MotorConstants;
 import frc.robot.utils.MiscConstants.MotorControllerConstants;
@@ -39,21 +38,6 @@ public class SwerveModuleSpark implements SwerveModuleIO {
         turn.setBrakeMode(true);
         turn.setPositionWrapping(0, 2 * Math.PI);
 
-        for (int i = 0; i < 4; i++) {
-            turn.setPID(
-                    ControlConstants.turnPID[i][0],
-                    ControlConstants.turnPID[i][1],
-                    ControlConstants.turnPID[i][2],
-
-                    MotorControllerConstants.slots[i]);
-
-            drive.setPID(
-                    ControlConstants.drivePID[i][0],
-                    ControlConstants.drivePID[i][1],
-                    ControlConstants.drivePID[i][2],
-
-                    MotorControllerConstants.slots[i]);
-        }
 
         drive.applyConfig();
         turn.applyConfig();

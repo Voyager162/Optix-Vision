@@ -1,5 +1,6 @@
 package frc.robot.subsystems.roller.implementations;
 
+import edu.wpi.first.math.controller.PIDController;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -29,13 +30,20 @@ public class CoralRoller extends Roller {
     private boolean routineStarted = false;
     
     public CoralRoller() {
-        super(Implementations.CORAL, FF());
+        super(Implementations.CORAL, FF(), positionPID(), velocityPID());
         photoelectricIO = new PhotoelectricSim();
     }
 
     public static SimpleMotorFeedforward FF() {
         return new SimpleMotorFeedforward(RollerConstants.Coral.kSVelocity.get(), RollerConstants.Coral.kVVelocity.get(),
                 RollerConstants.Coral.kAVelocity.get());
+    }
+        public static PIDController positionPID(){
+        return new PIDController(RollerConstants.Coral.kPPosition.get(), RollerConstants.Coral.kIPosition.get(),RollerConstants.Coral.kDPosition.get());
+    }
+
+    public static PIDController velocityPID(){
+        return new PIDController(RollerConstants.Coral.kPVelocity.get(), RollerConstants.Coral.kIVelocity.get(),RollerConstants.Coral.kDVelocity.get());
     }
 
     public boolean getIsStableState() {
@@ -76,10 +84,16 @@ public class CoralRoller extends Roller {
      * Implemetation of run method
      */
     @Override
-    public void intake() {
-        setVelocity(RollerConstants.Coral.scoreVelocity);
+    public void run() {
+        setVelocity(RollerConstants.Coral.intakeVelocity.get());
     }
-
+        /**
+     * Implemetation of run method
+     */
+    @Override
+    public void outtake() {
+        setVelocity(RollerConstants.Coral.intakeVelocity.get());
+    }
     /**
      * Implemetation of score method
      */

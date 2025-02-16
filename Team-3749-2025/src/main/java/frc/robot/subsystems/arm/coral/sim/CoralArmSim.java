@@ -1,7 +1,6 @@
 package frc.robot.subsystems.arm.coral.sim;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.subsystems.arm.coral.CoralArmIO;
@@ -19,8 +18,6 @@ public class CoralArmSim implements CoralArmIO {
 
 	private double inputVolts = 0;
 	private double previousVelocity = 0;
-	private PIDController controller = new PIDController(CoralArmConstants.kP.get(), CoralArmConstants.kI.get(),
-			CoralArmConstants.kD.get());
 
 	/**
 	 * creates a new io implementation of a single jointed arm in simulation
@@ -49,7 +46,7 @@ public class CoralArmSim implements CoralArmIO {
 	public void updateData(ArmData data) {
 		armSim.update(0.02);
 		double velocity = armSim.getVelocityRadPerSec();
-		data.positionUnits = armSim.getAngleRads();
+		data.positionRad = armSim.getAngleRads();
 		data.velocityUnits = velocity;
 		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
 
@@ -71,10 +68,5 @@ public class CoralArmSim implements CoralArmIO {
 		inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
 		inputVolts = MathUtil.clamp(volts, -12, 12);
 		armSim.setInputVoltage(inputVolts);
-	}
-
-	@Override
-	public void setPosition(double setpointPositionRad, double feedforward) {
-		setVoltage(controller.calculate(armSim.getAngleRads(), setpointPositionRad) + feedforward);
 	}
 }

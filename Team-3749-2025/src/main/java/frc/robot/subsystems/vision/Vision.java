@@ -23,14 +23,16 @@ public class Vision extends SubsystemBase {
         visionIO.updatePose();
 
         for (int i = 0; i < visionData.visionEstimatedPoses.length; i++) {
-            SmartDashboard.putNumber("Vision/Cam" + i + "/latency", visionData.latencyMillis[i]);
-            SmartDashboard.putNumber("Vision/Cam" + i + "/targetsSeen", visionData.targetsSeen[i]);
+            SmartDashboard.putNumber("Vision/Cam" + (i + 1) + "/latency", visionData.latencyMillis[i]);
+            SmartDashboard.putNumber("Vision/Cam" + (i + 1) + "/targetsSeen", visionData.targetsSeen[i]);
 
             double x = (visionData.visionEstimatedPoses[i].getX());
             double y = (visionData.visionEstimatedPoses[i].getY());
-            double rotation = (visionData.visionEstimatedPoses[i].getRotation().getDegrees());
+            double z = (visionData.visionEstimatedPoses[i].getZ());
 
-            SmartDashboard.putNumberArray("Vision/Cam" + i + "/pose", new double[] { x, y, rotation });
+            double rotation = (visionData.visionEstimatedPoses[i].toPose2d().getRotation().getRadians());
+            SmartDashboard.putNumber("Vision/Cam" + (i + 1) + "/hieght", z);
+            SmartDashboard.putNumberArray("Vision/Cam" + (i + 1) + "/pose", new double[] { x, y, rotation });
         }
     }
 }

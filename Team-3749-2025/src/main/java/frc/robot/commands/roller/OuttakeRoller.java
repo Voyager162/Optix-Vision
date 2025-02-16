@@ -4,13 +4,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 
-public class RunRoller extends Command {
-    private static RollerStates targetState = RollerStates.INTAKE;
+public class OuttakeRoller extends Command {
+    private static RollerStates targetState = RollerStates.OUTTAKE;
     private Roller roller;
 
-    public RunRoller(Roller roller) {
+    public OuttakeRoller(Roller roller) {
         this.roller = roller;
         addRequirements(roller);
+
     }
 
     @Override
