@@ -41,29 +41,29 @@ public class ScoreL234 extends Command {
             this.cancel(); // cancels command if neither scoringRoller nor coralRoller has coral
         }
 
-        //if im not mistaken this is unreachable 
-        if (Robot.coralRoller.hasPiece()) {
-            Robot.elevator.setState(ElevatorStates.STOW);
-            Robot.coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
-            Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
-            Robot.scoringRoller.setState(RollerConstants.RollerStates.INTAKE);
-            return;
-        }
+        // //if im not mistaken this is unreachable 
+        // if (Robot.coralRoller.hasPiece()) {
+        //     Robot.elevator.setState(ElevatorStates.STOW);
+        //     Robot.coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
+        //     Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
+        //     Robot.scoringRoller.setState(RollerConstants.RollerStates.INTAKE);
+        //     return;
+        // }
 
-            this.cancel();
+        //     this.cancel();
     }
 
     @Override
     public void execute() {
         // handoff execution
-        if ((Robot.coralArm.getState() == CoralArmConstants.ArmStates.HAND_OFF) && Robot.coralArm.getIsStableState() &&
-            (Robot.elevator.getState() == ElevatorStates.STOW) && Robot.elevator.getIsStableState()) {
+        if (true){//((Robot.coralArm.getState() == CoralArmConstants.ArmStates.HAND_OFF) && Robot.coralArm.getIsStableState() &&
+            //(Robot.elevator.getState() == ElevatorStates.STOW) && Robot.elevator.getIsStableState()) {
             Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE);
             Robot.scoringRoller.setState(RollerConstants.RollerStates.INTAKE);
             handoffComplete = true;
         }
         // checks whether handoff is complete
-        if (handoffComplete && !Robot.coralRoller.hasPiece() && Robot.scoringRoller.hasPiece()) {
+        if (true){//(handoffComplete && !Robot.coralRoller.hasPiece() && Robot.scoringRoller.hasPiece()) {
             Robot.scoringRoller.setState(RollerStates.MAINTAIN);
             Robot.elevator.setState(elevatorState);
         }

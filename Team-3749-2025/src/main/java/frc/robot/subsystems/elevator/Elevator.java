@@ -129,6 +129,7 @@ public class Elevator extends SubsystemBase {
 
     public void setState(ElevatorStates state) {
         this.state = state;
+        System.out.println(state);
         switch (state) {
             case STOP:
                 stop();
@@ -177,7 +178,13 @@ public class Elevator extends SubsystemBase {
         double PID = profile.calculate(getPositionMeters());
 
         State nextState = profile.getSetpoint();
+
+        // System.out.println(firstState.position);
+        // System.out.println(getPositionMeters());
+
         double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
+        // System.out.println("FF " + ffVoltage);
+        // System.out.println("PID " + PID);
         elevatorio.setVoltage(ffVoltage + PID);
     }
 
