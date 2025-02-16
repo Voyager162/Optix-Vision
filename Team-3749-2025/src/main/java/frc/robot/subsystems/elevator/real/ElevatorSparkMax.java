@@ -1,11 +1,8 @@
 package frc.robot.subsystems.elevator.real;
 
-import com.revrobotics.spark.ClosedLoopSlot;
-
 import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO;
-import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorControl;
 import frc.robot.utils.OptixSpark;
 import frc.robot.utils.MiscConstants.MotorControllerConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
