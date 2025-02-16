@@ -5,10 +5,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.Robot;
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Robot;
 import frc.robot.commands.auto.Autos;
 import frc.robot.subsystems.roller.PhotoelectricIO;
 import frc.robot.subsystems.roller.Roller;
@@ -40,6 +37,7 @@ public class ScoringRoller extends Roller {
         } else {
             this.photoelectricIO = new JTVisiSight();
         }
+        this.photoelectricIO = new JTVisiSight(); 
     }
 
     public static SimpleMotorFeedforward FF() {
@@ -74,12 +72,13 @@ public class ScoringRoller extends Roller {
      * Implemetation of run method
      */
     @Override
-    public void run() {
+    public void intake() {
         if (!rollerData.sensorTripped) {
             setVelocity(RollerConstants.Scoring.scoreVelocity);
         } else {
             setVoltage(0.0);
         }
+            setVoltage(0.0);
     }
 
     /**

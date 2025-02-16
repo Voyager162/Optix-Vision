@@ -1,25 +1,17 @@
 package frc.robot.subsystems.roller;
 
-import java.util.Map;
-
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.roller.RollerIO.RollerData;
 import frc.robot.subsystems.roller.real.RollerSparkMax;
 import frc.robot.subsystems.roller.sim.RollerSim;
 import frc.robot.utils.LoggedTunableNumber;
-import frc.robot.utils.MotorData;
-import frc.robot.utils.SysIdTuner;
-import frc.robot.utils.SysIdTuner.Type;
 import frc.robot.Robot;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
-
-import static edu.wpi.first.units.Units.*;
 
 public abstract class Roller extends SubsystemBase {
     private RollerIO rollerIO;
@@ -46,7 +38,7 @@ public abstract class Roller extends SubsystemBase {
         rollerIO = Robot.isSimulation() ? new RollerSim(implementation)
                 : new RollerSparkMax(implementation);
 
-        String name = implementation.name();
+        // String name = implementation.name();
         this.rollerFF = rollerFF;
         this.positionController = positionController;
         this.velocityController = velocityController;
@@ -83,17 +75,17 @@ public abstract class Roller extends SubsystemBase {
      * Stores last position when the state is maintain
      */
     public void setState(RollerStates rollerState) {
-        System.out.println(rollerState.name());
+        // System.out.println(rollerState.name());
         this.rollerState = rollerState;
         if (rollerState == RollerConstants.RollerStates.MAINTAIN) {
             lastKnownPosition = rollerData.rollerPositionRad;
         }
     }
 
-    public void runRollerStates() {
-        switch (rollerState) {
-            case RUN:
-                run();
+    public void runRollerStates() {        
+        switch(rollerState) {
+            case INTAKE:
+                intake();
                 break;
             case MAINTAIN:
                 maintain();
@@ -107,7 +99,7 @@ public abstract class Roller extends SubsystemBase {
         }
     }
     public abstract void outtake();
-    public abstract void run();
+    public abstract void intake();
 
     /**
      * Maintains the roller's last known position

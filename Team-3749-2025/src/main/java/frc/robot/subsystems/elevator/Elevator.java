@@ -107,16 +107,16 @@ public class Elevator extends SubsystemBase {
     public boolean getIsStableState() {
         switch (state) {
             case L1:
-                return UtilityFunctions.withinMargin(0.001, ElevatorConstants.StateHeights.l1Height,
+                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.l1Height,
                         data.positionMeters);
             case L2:
-                return UtilityFunctions.withinMargin(0.001, data.positionMeters,
+                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
                         ElevatorConstants.StateHeights.l2Height);
             case L3:
-                return UtilityFunctions.withinMargin(0.001, data.positionMeters,
+                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
                         ElevatorConstants.StateHeights.l3Height);
             case L4:
-                return UtilityFunctions.withinMargin(0.001, data.positionMeters,
+                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
                         ElevatorConstants.StateHeights.l4Height);
             default:
                 return false;
@@ -129,6 +129,7 @@ public class Elevator extends SubsystemBase {
 
     public void setState(ElevatorStates state) {
         this.state = state;
+        // System.out.println(state);
         switch (state) {
             case STOP:
                 stop();
@@ -177,12 +178,18 @@ public class Elevator extends SubsystemBase {
         double PID = profile.calculate(getPositionMeters());
 
         State nextState = profile.getSetpoint();
+
+        // System.out.println(firstState.position);
+        // System.out.println(getPositionMeters());
+
         double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
+        // System.out.println("FF " + ffVoltage);
+        // System.out.println("PID " + PID);
         elevatorio.setVoltage(ffVoltage + PID);
     }
 
     public void stop() {
-        elevatorio.setVoltage(0);
+        elevatorio.setVoltage(ElevatorConstants.ElevatorControl.kG.get());
     }
 
     private void logData() {

@@ -52,7 +52,7 @@ public class CoralRoller extends Roller {
         double velocityChangeThreshold = 0.05; 
 
         switch(Robot.coralRoller.getState()) {
-            case RUN:
+            case INTAKE:
                 return velocityChange < velocityChangeThreshold;
             case SCORE:
                 return velocityChange < velocityChangeThreshold;
@@ -84,7 +84,7 @@ public class CoralRoller extends Roller {
      * Implemetation of run method
      */
     @Override
-    public void run() {
+    public void intake() {
         setVelocity(RollerConstants.Coral.intakeVelocity.get());
     }
         /**

@@ -17,12 +17,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
-import static edu.wpi.first.units.Units.*;
-
 import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
 import frc.robot.subsystems.arm.coral.sim.CoralArmSim;
-import frc.robot.utils.UtilityFunctions;
-
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
@@ -172,7 +168,7 @@ public class CoralArm extends SubsystemBase {
     }
 
     private Pose3d getPose3d() {
-        Pose3d pose = new Pose3d(0, 0.35, 0.4,
+        Pose3d pose = new Pose3d(-0.33, 0.35, 0.4,
                 new Rotation3d(Angle.ofBaseUnits(0, Radians), getPitch(),
                         Angle.ofBaseUnits(Units.degreesToRadians(90), Radians)));
         return pose;
@@ -184,7 +180,6 @@ public class CoralArm extends SubsystemBase {
      * @param setpoint The desired target position for the arm in radians.
      */
     public void setGoal(double setpoint) {
-        System.out.println(setpoint);
         profile.setGoal(setpoint); // Set the PID controller's goal.
     }
 
@@ -273,4 +268,5 @@ public class CoralArm extends SubsystemBase {
 
         logData();
     }
+
 }

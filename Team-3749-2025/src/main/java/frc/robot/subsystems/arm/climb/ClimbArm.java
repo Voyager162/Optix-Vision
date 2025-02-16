@@ -48,7 +48,6 @@ public class ClimbArm extends SubsystemBase {
 
 
 
-
 	public ClimbArm() {
 		if (Robot.isSimulation()) {
 
@@ -146,8 +145,7 @@ public class ClimbArm extends SubsystemBase {
 	}
 
 	private Pose3d getPose3d() {
-		//
-		Pose3d pose = new Pose3d(0, 0.18, 0.165,
+		Pose3d pose = new Pose3d(-0.33, 0.18, 0.165,
 				new Rotation3d(getPitch(), Angle.ofBaseUnits(0, Radians), Angle.ofBaseUnits(0, Radians)));
 		return pose;
 	}

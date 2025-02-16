@@ -4,10 +4,12 @@
 
 package frc.robot;
 
-import edu.wpi.first.hal.AllianceStationID;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.simulation.DriverStationSim;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -16,13 +18,16 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
 
-import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.implementations.AlgaeRoller;
 import frc.robot.subsystems.roller.implementations.CoralRoller;
 import frc.robot.subsystems.roller.implementations.ScoringRoller;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.swerve.ToPosConstants;
 import frc.robot.utils.MiscConstants;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -32,6 +37,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import frc.robot.utils.LoggedTunableNumber;
 
 public class Robot extends LoggedRobot {
+private Field2d field2d = new Field2d();
   private Command m_autonomousCommand;
 
   public static Swerve swerve = new Swerve();
@@ -40,7 +46,7 @@ public class Robot extends LoggedRobot {
   public static ScoringRoller scoringRoller = new ScoringRoller();
 
   public static Elevator elevator = new Elevator();
-  public static Vision vision = new Vision();
+  // public static Vision vision = new Vision();
 
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
@@ -110,6 +116,14 @@ public class Robot extends LoggedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
 
+    // /Publish hexagon points to NetworkTables
+    List<Pose2d> hexagonPoses = new ArrayList<>();
+    for (Translation2d vertex : ToPosConstants.ReefVerticies.getHexagonVertices()) {
+      hexagonPoses.add(new Pose2d(vertex, new Rotation2d()));
+    }
+
+    // Add hexagon points as "Object" on the field
+    field2d.getObject("Hexagon").setPoses(hexagonPoses);
   }
 
   @Override
@@ -176,6 +190,5 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void simulationInit() {
-    DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
-  }
+}
 }

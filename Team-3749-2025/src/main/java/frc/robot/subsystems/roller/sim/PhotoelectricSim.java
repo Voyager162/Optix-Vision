@@ -57,6 +57,7 @@ public class PhotoelectricSim implements PhotoelectricIO {
 
                     if (Timer.getFPGATimestamp() - scoreTimer > 2) {
                         sensing = true;
+                        // System.out.println("scoreTimer" + scoreTimer);
                         if (scoreTimer != -1) {
                             scoreTimer = 1000000000; // resets timer for next command
                         } 

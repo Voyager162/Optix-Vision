@@ -24,7 +24,7 @@ public class Handoff extends Command {
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
         Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
-        Robot.scoringRoller.setState(RollerConstants.RollerStates.RUN);
+        Robot.scoringRoller.setState(RollerConstants.RollerStates.INTAKE);
     }
 
     @Override
