@@ -16,7 +16,6 @@ public class JTVisiSight implements PhotoelectricIO{
     @Override
     public void updateData(PhotoelectricData data){
         data.sensing = photoelectricSensor.get();
-        SmartDashboard.putBoolean("sensing", photoelectricSensor.get());
-        System.out.println("sensing");
+
     }
 }
