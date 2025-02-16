@@ -80,6 +80,11 @@ public class Swerve extends SubsystemBase {
   private double velocity = 0;
   private double yaw;
 
+  private LoggedTunableNumber kPDriving = new LoggedTunableNumber("/subsystems/swerve/kP Drive", AutoConstants.kPDrive);
+  private LoggedTunableNumber kDDriving = new LoggedTunableNumber("/subsystems/swerve/kD Drive", AutoConstants.kDDrive);
+  private LoggedTunableNumber kPTurn = new LoggedTunableNumber("/subsystems/swerve/kP Turn controller", AutoConstants.kPTurn);
+  private LoggedTunableNumber kDTurn = new LoggedTunableNumber("/subsystems/swerve/kD Turn controller", AutoConstants.kDTurn);
+
 
   // Logging
   private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
@@ -177,10 +182,6 @@ public class Swerve extends SubsystemBase {
       this.getName(),
       "setpoint rotational acceleration",
       0.0);
-  private LoggedTunableNumber kPDriving = new LoggedTunableNumber("/subsystems/swerve/kP Drive", AutoConstants.kPDrive);
-  private LoggedTunableNumber kDDriving = new LoggedTunableNumber("/subsystems/swerve/kD Drive", AutoConstants.kDDrive);
-  private LoggedTunableNumber kPTurn = new LoggedTunableNumber("/subsystems/swerve/kP Turn controller", AutoConstants.kPTurn);
-  private LoggedTunableNumber kDTurn = new LoggedTunableNumber("/subsystems/swerve/kD Turn controller", AutoConstants.kDTurn);
 
   private int currentPPSetpointIndex = 0; //what "index" do we currently want to go to for OTF
   private int currentPPApproachSetpointIndex = 0;
