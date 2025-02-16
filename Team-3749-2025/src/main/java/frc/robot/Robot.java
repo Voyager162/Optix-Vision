@@ -18,6 +18,7 @@ import frc.robot.subsystems.elevator.Elevator;
 
 import frc.robot.subsystems.example.ExampleSubsystem;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.vision.Vision;
 import frc.robot.utils.ShuffleData;
 
 public class Robot extends TimedRobot {
@@ -30,6 +31,7 @@ public class Robot extends TimedRobot {
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
   public static Elevator elevator = new Elevator();
+  public static Vision vision = new Vision();
 
   private ShuffleData<Double> batteryVoltageLog = new ShuffleData<Double>("DS", "battery voltage", 0.0);
   private ShuffleData<Boolean> isBrownedOutLog = new ShuffleData<Boolean>("DS", "brownout", false);
