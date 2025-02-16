@@ -218,10 +218,10 @@ public class JoystickIO {
         bindButtonBoard();
         ToPosTriggers.createOTFTriggers();
 
-        operator.a().onTrue(l3  );
-        operator.b().onTrue(intakeSource);
-        operator.x().onTrue(climb);
-        operator.y().onTrue(climbStow);
+        operator.b().onTrue(Commands.runOnce(() -> Robot.elevator.setVoltage(12)));
+        // operator.b().onTrue(intakeSource);
+        // operator.x().onTrue(climb);
+        // operator.y().onTrue(climbStow);
 
         pilot.povLeft().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L1)));
         pilot.povUp().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L2)));
@@ -230,10 +230,10 @@ public class JoystickIO {
         // pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
         
         // // Checking voltage for all subsystems
-        // operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(Robot.subsystemVoltageSetter.get())));
         // operator.b().onTrue(Commands.run(() -> Robot.coralArm.setVoltage(Robot.subsystemVoltageSetter.get())));
         // operator.x().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(Robot.subsystemVoltageSetter.get())));
-        operator.y().whileTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
+        // operator.y().whileTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
         // operator.leftBumper().whileTrue(Commands.run(() -P> Robot.coralRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
         // operator.leftBumper().whileFalse(Commands.runOnce(() -> Robot.coralRoller.stop()));
         // operator.rightBumper().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
@@ -251,7 +251,7 @@ public class JoystickIO {
  
 
         // Run
-        operator.a().whileTrue(algaeRun);
+        // operator.a().whileTrue(algaeRun);
         // operator.b().onTrue(coralRunIntake);
         // operator.a().onTrue(coralRunOuttake);
         // operator.x().onTrue(coralHandOff);
