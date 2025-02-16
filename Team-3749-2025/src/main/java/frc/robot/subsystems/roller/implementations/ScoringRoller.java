@@ -31,11 +31,11 @@ public class ScoringRoller extends Roller {
     }
     @Override
     public void run() {
-        // if (!rollerData.sensorTripped) {
-        //     setVelocity(RollerConstants.Scoring.velocity);
-        // } else {
+        if (!rollerData.sensorTripped) {
+            setVelocity(RollerConstants.Scoring.velocity);
+        } else {
             setVoltage(Robot.subsystemVoltageSetter.get());
-        // }
+        }
     }
 
     @Override

@@ -111,7 +111,7 @@ public class JoystickIO {
  
 
         // Run
-        // operator.a().whileTrue(algaeRun);
+        operator.a().whileTrue(algaeRun);
         // operator.b().onTrue(coralRunIntake);
         // operator.a().onTrue(coralRunOuttake);
         // operator.x().onTrue(coralHandOff);
