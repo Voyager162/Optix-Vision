@@ -5,6 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.hal.AllianceStationID;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
@@ -24,6 +27,10 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.ToPosConstants;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.utils.MiscConstants;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -43,7 +50,7 @@ private Field2d field2d = new Field2d();
   public static ScoringRoller scoringRoller = new ScoringRoller();
 
   public static Elevator elevator = new Elevator();
-  public static Vision vision = new Vision();
+  // public static Vision vision = new Vision();
 
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();

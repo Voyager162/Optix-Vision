@@ -25,6 +25,7 @@ import frc.robot.commands.integration.ScoreL234;
 import frc.robot.commands.roller.MaintainCommand;
 import frc.robot.commands.roller.OuttakeRoller;
 import frc.robot.commands.roller.RunRoller;
+import frc.robot.commands.swerve.OnTheFly;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
 import frc.robot.subsystems.arm.climb.ClimbArmConstants;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;

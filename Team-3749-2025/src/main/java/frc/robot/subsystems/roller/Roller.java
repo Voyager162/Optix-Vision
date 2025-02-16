@@ -107,7 +107,7 @@ public abstract class Roller extends SubsystemBase {
         }
     }
     public abstract void outtake();
-    public abstract void run();
+    public abstract void intake();
 
     /**
      * Maintains the roller's last known position

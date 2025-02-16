@@ -84,7 +84,7 @@ public class CoralRoller extends Roller {
      * Implemetation of run method
      */
     @Override
-    public void run() {
+    public void intake() {
         setVelocity(RollerConstants.Coral.intakeVelocity.get());
     }
         /**
