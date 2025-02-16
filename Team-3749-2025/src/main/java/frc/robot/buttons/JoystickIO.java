@@ -212,7 +212,7 @@ public class JoystickIO {
         bindButtonBoard();
         ToPosTriggers.createOTFTriggers();
 
-        operator.a().onTrue(l1);
+        operator.a().onTrue(l3  );
         operator.b().onTrue(intakeSource);
         operator.x().onTrue(climb);
         operator.y().onTrue(climbStow);

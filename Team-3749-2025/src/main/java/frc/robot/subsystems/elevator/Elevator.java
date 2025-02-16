@@ -189,12 +189,13 @@ public class Elevator extends SubsystemBase {
 
         Logger.recordOutput("subsystems/elevator/input volts",
                 ((data.leftAppliedVolts + data.rightAppliedVolts) / 2.0));
-        Logger.recordOutput("subsystems/elevator/input volts", data.leftAppliedVolts);
-        Logger.recordOutput("subsystems/elevator/input volts", data.rightAppliedVolts);
-        Logger.recordOutput("subsystems/elevator/input volts", data.leftCurrentAmps);
-        Logger.recordOutput("subsystems/elevator/input volts", data.rightCurrentAmps);
-        Logger.recordOutput("subsystems/elevator/input volts", data.leftTempCelcius);
-        Logger.recordOutput("subsystems/elevator/input volts", data.rightTempCelcius);
+        Logger.recordOutput("subsystems/elevator/leftAppliedVolts", data.leftAppliedVolts);
+        Logger.recordOutput("subsystems/elevator/rightAppliedVolts", data.rightAppliedVolts);
+        Logger.recordOutput("subsystems/elevator/leftCurrentAmps", data.leftCurrentAmps);
+        Logger.recordOutput("subsystems/elevator/rightCurrentAmps", data.rightCurrentAmps);
+        Logger.recordOutput("subsystems/elevator/leftTempCelcius", data.leftTempCelcius);
+        Logger.recordOutput("subsystems/elevator/rightTempCelcius", data.rightTempCelcius);
+        Logger.recordOutput("subsystems/elevator/state", state.name());
 
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
 
