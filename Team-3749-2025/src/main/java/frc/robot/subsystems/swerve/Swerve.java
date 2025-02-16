@@ -75,72 +75,72 @@ public class Swerve extends SubsystemBase {
   private LoggedTunableNumber kDTurn = new LoggedTunableNumber("/subsystems/swerve/kD Turn controller", AutoConstants.kDTurn);
 
 
-  // Logging
-  private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
+  // // Logging
+  // private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
 
-  private ShuffleData<Double[]> odometryLog = new ShuffleData<Double[]>(
-      this.getName(),
-      "odometry",
-      new Double[] { 0.0, 0.0, 0.0 });
+  // private ShuffleData<Double[]> odometryLog = new ShuffleData<Double[]>(
+  //     this.getName(),
+  //     "odometry",
+  //     new Double[] { 0.0, 0.0, 0.0 });
 
-  private ShuffleData<Double[]> realStatesLog = new ShuffleData<Double[]>(
-      this.getName(),
-      "real states",
-      new Double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
+  // private ShuffleData<Double[]> realStatesLog = new ShuffleData<Double[]>(
+  //     this.getName(),
+  //     "real states",
+  //     new Double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
 
-  private ShuffleData<Double[]> desiredStatesLog = new ShuffleData<Double[]>(
-      this.getName(),
-      "desired states",
-      new Double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
+  // private ShuffleData<Double[]> desiredStatesLog = new ShuffleData<Double[]>(
+  //     this.getName(),
+  //     "desired states",
+  //     new Double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
 
-  private ShuffleData<Double> velocityLog = new ShuffleData<Double>(
-      this.getName(),
-      "velocity",
-      0.0);
-  private ShuffleData<Double> accelerationLog = new ShuffleData<Double>(
-      this.getName(),
-      "acceleration",
-      0.0);
+  // private ShuffleData<Double> velocityLog = new ShuffleData<Double>(
+  //     this.getName(),
+  //     "velocity",
+  //     0.0);
+  // private ShuffleData<Double> accelerationLog = new ShuffleData<Double>(
+  //     this.getName(),
+  //     "acceleration",
+  //     0.0);
 
-  private ShuffleData<Double> yawLog = new ShuffleData<Double>(
-      this.getName(),
-      "yaw",
-      0.0);
+  // private ShuffleData<Double> yawLog = new ShuffleData<Double>(
+  //     this.getName(),
+  //     "yaw",
+  //     0.0);
 
-  private ShuffleData<Double> pitchLog = new ShuffleData<Double>(
-      this.getName(),
-      "pitch",
-      0.0);
+  // private ShuffleData<Double> pitchLog = new ShuffleData<Double>(
+  //     this.getName(),
+  //     "pitch",
+  //     0.0);
 
-  private ShuffleData<Double> rollLog = new ShuffleData<Double>(
-      this.getName(),
-      "roll",
-      0.0);
+  // private ShuffleData<Double> rollLog = new ShuffleData<Double>(
+  //     this.getName(),
+  //     "roll",
+  //     0.0);
 
-  private ShuffleData<Double> rotationalVelocityLog = new ShuffleData<Double>(
-      this.getName(),
-      "rotational velocity",
-      0.0);
+  // private ShuffleData<Double> rotationalVelocityLog = new ShuffleData<Double>(
+  //     this.getName(),
+  //     "rotational velocity",
+  //     0.0);
 
-  private ShuffleData<Boolean> gyroConnectedLog = new ShuffleData<Boolean>(
-      this.getName(),
-      "gyro connected",
+  // private ShuffleData<Boolean> gyroConnectedLog = new ShuffleData<Boolean>(
+  //     this.getName(),
+  //     "gyro connected",
 
-      false);
-  private ShuffleData<Boolean> gyroCalibratingLog = new ShuffleData<Boolean>(
-      this.getName(),
-      "gyro calibrating",
-      false);
+  //     false);
+  // private ShuffleData<Boolean> gyroCalibratingLog = new ShuffleData<Boolean>(
+  //     this.getName(),
+  //     "gyro calibrating",
+  //     false);
 
-  private ShuffleData<Double> headingLog = new ShuffleData<Double>(
-      this.getName(),
-      "heading",
-      0.0);
+  // private ShuffleData<Double> headingLog = new ShuffleData<Double>(
+  //     this.getName(),
+  //     "heading",
+  //     0.0);
 
-  private ShuffleData<Boolean> utilizeVisionLog = new ShuffleData<Boolean>(
-      this.getName(),
-      "utilize vision",
-      true);
+  // private ShuffleData<Boolean> utilizeVisionLog = new ShuffleData<Boolean>(
+  //     this.getName(),
+  //     "utilize vision",
+  //     true);
 
       private ShuffleData<Double[]> setpointPositionLog = new ShuffleData<Double[]>(
         this.getName(),

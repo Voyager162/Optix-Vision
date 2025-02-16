@@ -38,7 +38,7 @@ public abstract class Roller extends SubsystemBase {
         rollerIO = Robot.isSimulation() ? new RollerSim(implementation)
                 : new RollerSparkMax(implementation);
 
-        String name = implementation.name();
+        // String name = implementation.name();
         this.rollerFF = rollerFF;
         this.positionController = positionController;
         this.velocityController = velocityController;

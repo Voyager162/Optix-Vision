@@ -107,16 +107,16 @@ public class Elevator extends SubsystemBase {
     public boolean getIsStableState() {
         switch (state) {
             case L1:
-                return UtilityFunctions.withinMargin(0.001, ElevatorConstants.StateHeights.l1Height,
+                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.l1Height,
                         data.positionMeters);
             case L2:
-                return UtilityFunctions.withinMargin(0.001, data.positionMeters,
+                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
                         ElevatorConstants.StateHeights.l2Height);
             case L3:
-                return UtilityFunctions.withinMargin(0.001, data.positionMeters,
+                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
                         ElevatorConstants.StateHeights.l3Height);
             case L4:
-                return UtilityFunctions.withinMargin(0.001, data.positionMeters,
+                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
                         ElevatorConstants.StateHeights.l4Height);
             default:
                 return false;
@@ -175,7 +175,6 @@ public class Elevator extends SubsystemBase {
     private void moveToGoal() {
         State firstState = profile.getSetpoint();
         double PID = profile.calculate(getPositionMeters());
-        System.out.println(Units.metersToInches(profile.getSetpoint().position));
 
         State nextState = profile.getSetpoint();
         double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
@@ -183,7 +182,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void stop() {
-        elevatorio.setVoltage(0);
+        elevatorio.setVoltage(ElevatorConstants.ElevatorControl.kG.get());
     }
 
     private void logData() {

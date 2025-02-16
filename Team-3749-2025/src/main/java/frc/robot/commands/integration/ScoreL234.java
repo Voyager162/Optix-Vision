@@ -26,7 +26,6 @@ public class ScoreL234 extends Command {
 
     @Override
     public void initialize() {
-        System.out.println(elevatorState);
         if (Robot.scoringRoller.hasPiece()) {
             Robot.elevator.setState(elevatorState);
             Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);

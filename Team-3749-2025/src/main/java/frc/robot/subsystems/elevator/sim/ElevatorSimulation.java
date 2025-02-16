@@ -1,12 +1,10 @@
 package frc.robot.subsystems.elevator.sim;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO;
-import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorControl;
 import frc.robot.utils.MiscConstants.SimConstants;
 
 /**

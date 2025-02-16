@@ -180,7 +180,6 @@ public class CoralArm extends SubsystemBase {
      * @param setpoint The desired target position for the arm in radians.
      */
     public void setGoal(double setpoint) {
-        System.out.println(setpoint);
         profile.setGoal(setpoint); // Set the PID controller's goal.
     }
 
