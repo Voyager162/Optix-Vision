@@ -13,7 +13,8 @@ public interface VisionIO {
     public PhotonCamera cameraList[] = VisionConstants.CameraReal.cameraList;
 
     public static class VisionData {
-        public Pose2d[] visionEstimatedPoses;
+        public Pose2d[] visionEstimatedPoses = {
+                new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d() };
         public double[] latencyMillis = new double[cameraList.length];
         public double[] targetsSeen = new double[cameraList.length];
     }
