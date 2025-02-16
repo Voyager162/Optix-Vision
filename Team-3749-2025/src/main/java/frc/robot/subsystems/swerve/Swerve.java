@@ -4,13 +4,6 @@
 
 package frc.robot.subsystems.swerve;
 
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
-
-import java.util.Map;
-
-import choreo.auto.AutoTrajectory;
-
 import org.littletonrobotics.junction.Logger;
 
 import choreo.trajectory.SwerveSample;
@@ -26,23 +19,18 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
 import frc.robot.buttons.JoystickIO;
 import frc.robot.buttons.ButtonBoard.ScoringMode;
 import frc.robot.commands.auto.AutoConstants;
 import frc.robot.commands.auto.AutoUtils;
 import frc.robot.subsystems.swerve.GyroIO.GyroData;
-import frc.robot.subsystems.swerve.SwerveConstants.MotorConstants;
 import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 import frc.robot.subsystems.swerve.sim.GyroSim;
 import frc.robot.subsystems.swerve.sim.SwerveModuleSim;
 import frc.robot.utils.LoggedTunableNumber;
-import frc.robot.utils.MotorData;
 import frc.robot.utils.ShuffleData;
-import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
-import frc.robot.utils.SysIdTuner.Type;
 import frc.robot.subsystems.swerve.SwerveConstants.ControlConstants;
 import frc.robot.subsystems.swerve.SwerveConstants.DrivetrainConstants;
 import frc.robot.subsystems.swerve.real.*;

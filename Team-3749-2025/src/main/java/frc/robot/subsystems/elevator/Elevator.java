@@ -175,6 +175,7 @@ public class Elevator extends SubsystemBase {
     private void moveToGoal() {
         State firstState = profile.getSetpoint();
         double PID = profile.calculate(getPositionMeters());
+        System.out.println(Units.metersToInches(profile.getSetpoint().position));
 
         State nextState = profile.getSetpoint();
         double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
