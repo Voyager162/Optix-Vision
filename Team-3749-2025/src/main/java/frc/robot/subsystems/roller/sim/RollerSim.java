@@ -9,6 +9,11 @@ import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
 import frc.robot.subsystems.roller.RollerIO;
 
+/**
+ * Simulation for the roller subsystem
+ *
+ * @author Lilian Wu
+ */
 public class RollerSim implements RollerIO {
     private FlywheelSim rollerMotor;
     private double momentOfInertia;
@@ -18,6 +23,11 @@ public class RollerSim implements RollerIO {
     private double velocity = 0;
     private double position = 0;
 
+    /**
+     * Constructs a simulated roller subsystem based on the implementation type
+     *
+     * @param implementation 
+     */
     public RollerSim(Implementations implementation) {
         switch (implementation) {
             case ALGAE:
@@ -41,7 +51,6 @@ public class RollerSim implements RollerIO {
         // calculates how angular velocity changes over time with applied voltage
         LinearSystem<N1, N1, N1> flyWheelSystem = LinearSystemId.createFlywheelSystem(motor, momentOfInertia,
                 gearRatio);
-
         rollerMotor = new FlywheelSim(flyWheelSystem, motor, measurementNoise);
     }
 
@@ -61,5 +70,6 @@ public class RollerSim implements RollerIO {
     public void setVoltage(double rollerVolts) {
         rollerMotor.setInputVoltage(rollerVolts);
     }
+
 
 }

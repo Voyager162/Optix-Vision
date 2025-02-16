@@ -8,6 +8,7 @@ import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.arm.climb.ClimbArm;
@@ -31,9 +32,9 @@ public class Robot extends LoggedRobot {
   private Command m_autonomousCommand;
 
   public static Swerve swerve = new Swerve();
-  public static Roller algaeRoller = new AlgaeRoller();
-  public static Roller coralRoller = new CoralRoller();
-  public static Roller scoringRoller = new ScoringRoller();
+  public static AlgaeRoller algaeRoller = new AlgaeRoller();
+  public static CoralRoller coralRoller = new CoralRoller();
+  public static ScoringRoller scoringRoller = new ScoringRoller();
 
   public static Elevator elevator = new Elevator();
 
@@ -42,6 +43,10 @@ public class Robot extends LoggedRobot {
   public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("/subsystems/setVoltage", 8);
 
   private RobotContainer m_robotContainer;
+
+  public static Subsystem[] getAllSuperStructureSubsystems() {
+    return new Subsystem[] {algaeRoller, coralRoller, scoringRoller, elevator, coralArm, climbArm};
+  }
 
   public Robot() {
     // Record metadata

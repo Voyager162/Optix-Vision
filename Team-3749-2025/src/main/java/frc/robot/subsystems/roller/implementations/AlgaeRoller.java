@@ -6,29 +6,41 @@ import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
 
+/**
+ * Algae implementation of the roller subsystem
+ *
+ * @author Lilian Wu
+ */
 public class AlgaeRoller extends Roller {
 
     public AlgaeRoller() {
-        super(Implementations.ALGAE, FF(), positionPID(),velocityPID());
+        super(Implementations.ALGAE, FF(), positionPID(), velocityPID());
+    }
+
+    public static PIDController positionPID() {
+        return new PIDController(RollerConstants.Algae.kPPosition.get(), RollerConstants.Algae.kIPosition.get(),
+                RollerConstants.Algae.kDPosition.get());
+    }
+
+    public static PIDController velocityPID() {
+        return new PIDController(RollerConstants.Algae.kPVelocity.get(), RollerConstants.Algae.kIVelocity.get(),
+                RollerConstants.Algae.kDVelocity.get());
     }
 
     public static SimpleMotorFeedforward FF() {
-        return new SimpleMotorFeedforward(RollerConstants.Algae.kSVelocity.get(), RollerConstants.Algae.kVVelocity.get(),
+        return new SimpleMotorFeedforward(RollerConstants.Algae.kSVelocity.get(),
+                RollerConstants.Algae.kVVelocity.get(),
                 RollerConstants.Algae.kAVelocity.get());
     }
-    public static PIDController positionPID(){
-        return new PIDController(RollerConstants.Algae.kPPosition.get(), RollerConstants.Algae.kIPosition.get(),RollerConstants.Algae.kDPosition.get());
-    }
 
-    public static PIDController velocityPID(){
-        return new PIDController(RollerConstants.Algae.kPVelocity.get(), RollerConstants.Algae.kIVelocity.get(),RollerConstants.Algae.kDVelocity.get());
-    }
     @Override
     public void run() {
         setVelocity(RollerConstants.Algae.velocity);
     }
 
     @Override
-    public void outtake() {}
+    public void outtake() {
+        setVelocity(RollerConstants.Coral.intakeVelocity.get());
+    }
 
 }

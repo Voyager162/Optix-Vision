@@ -75,6 +75,11 @@ public abstract class Roller extends SubsystemBase {
         return rollerState;
     }
 
+    /**
+     * Sets the roller state
+     * 
+     * Stores last position when the state is maintain
+     */
     public void setState(RollerStates rollerState) {
         System.out.println(rollerState.name());
         this.rollerState = rollerState;
@@ -102,10 +107,11 @@ public abstract class Roller extends SubsystemBase {
     public abstract void outtake();
     public abstract void run();
 
+    /**
+     * Maintains the roller's last known position
+     */
     public void maintain() {
-
         rollerIO.setPosition(rollerData.rollerPositionRad, lastKnownPosition);
-
     }
 
     public void stop() {

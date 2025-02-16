@@ -8,6 +8,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Angle;
+
+import static edu.wpi.first.units.Units.Radians;
+
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -18,6 +21,7 @@ import static edu.wpi.first.units.Units.*;
 
 import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
 import frc.robot.subsystems.arm.coral.sim.CoralArmSim;
+import frc.robot.utils.UtilityFunctions;
 
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
