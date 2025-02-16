@@ -6,6 +6,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import frc.robot.Robot;
 
 public interface VisionIO {
@@ -13,8 +14,8 @@ public interface VisionIO {
     public PhotonCamera cameraList[] = VisionConstants.CameraReal.cameraList;
 
     public static class VisionData {
-        public Pose2d[] visionEstimatedPoses = {
-                new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d() };
+        public Pose3d[] visionEstimatedPoses = {
+                new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d() };
         public double[] latencyMillis = new double[cameraList.length];
         public double[] targetsSeen = new double[cameraList.length];
     }

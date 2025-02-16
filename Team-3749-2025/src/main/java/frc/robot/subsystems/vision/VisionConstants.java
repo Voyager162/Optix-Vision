@@ -12,8 +12,8 @@ import edu.wpi.first.math.util.Units;
 public class VisionConstants {
 
         public class RejectionRequirements {
-                public static final double maxLatencySec = 0.25;
-                public static final double maxSingleTagDistanceMeters = 2;
+                public static final double maxLatencyMilliSec = 150;
+                public static final double maxSingleTagDistanceMeters = 20;
         }
 
         // currently 3748's #'s'
@@ -41,14 +41,24 @@ public class VisionConstants {
 
         public class CameraPositions {
                 public static Transform3d cam1 = new Transform3d(Units.inchesToMeters(11.612),
-                                Units.inchesToMeters(14.891), Units.inchesToMeters(10.791), new Rotation3d(0, 15, -60));
+                                Units.inchesToMeters(14.891), Units.inchesToMeters(10.791),
+                                new Rotation3d(0, Units.degreesToRadians(
+                                                -15), Units.degreesToRadians(60)));
+
                 public static Transform3d cam2 = new Transform3d(Units.inchesToMeters(10.403),
-                                Units.inchesToMeters(11.783), Units.inchesToMeters(10.501), new Rotation3d(0, 0, 40));
+                                Units.inchesToMeters(11.783), Units.inchesToMeters(10.501),
+                                new Rotation3d(0, 0, Units.degreesToRadians(-40)));
+
                 public static Transform3d cam3 = new Transform3d(0, 0, 0, null);
+
                 public static Transform3d cam4 = new Transform3d(Units.inchesToMeters(-11.586),
-                                Units.inchesToMeters(14.161), Units.inchesToMeters(10.711), new Rotation3d(0, 15, 200));
+                                Units.inchesToMeters(14.161), Units.inchesToMeters(10.711),
+                                new Rotation3d(0, Units.degreesToRadians(15), Units.degreesToRadians(200)));
+
                 public static Transform3d cam5 = new Transform3d(Units.inchesToMeters(-9.745),
-                                Units.inchesToMeters(-11.177), Units.inchesToMeters(20.27), new Rotation3d(0, 10, 170));
+                                Units.inchesToMeters(-11.177), Units.inchesToMeters(20.27),
+                                new Rotation3d(0, Units.degreesToRadians(10), Units.degreesToRadians(170)));
+
                 public static Transform3d cam6 = new Transform3d(0, 0, 0, null);
 
                 public static Transform3d[] cameraList = { cam1, cam2, cam3, cam4, cam5, cam6 };
