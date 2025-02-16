@@ -129,7 +129,7 @@ public class Elevator extends SubsystemBase {
 
     public void setState(ElevatorStates state) {
         this.state = state;
-        System.out.println(state);
+        // System.out.println(state);
         switch (state) {
             case STOP:
                 stop();

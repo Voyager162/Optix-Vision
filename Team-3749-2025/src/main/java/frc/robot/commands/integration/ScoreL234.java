@@ -56,14 +56,14 @@ public class ScoreL234 extends Command {
     @Override
     public void execute() {
         // handoff execution
-        if (true){//((Robot.coralArm.getState() == CoralArmConstants.ArmStates.HAND_OFF) && Robot.coralArm.getIsStableState() &&
-            //(Robot.elevator.getState() == ElevatorStates.STOW) && Robot.elevator.getIsStableState()) {
+        if ((Robot.coralArm.getState() == CoralArmConstants.ArmStates.HAND_OFF) && Robot.coralArm.getIsStableState() &&
+            (Robot.elevator.getState() == ElevatorStates.STOW) && Robot.elevator.getIsStableState()) {
             Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE);
             Robot.scoringRoller.setState(RollerConstants.RollerStates.INTAKE);
             handoffComplete = true;
         }
         // checks whether handoff is complete
-        if (true){//(handoffComplete && !Robot.coralRoller.hasPiece() && Robot.scoringRoller.hasPiece()) {
+        if (handoffComplete && !Robot.coralRoller.hasPiece() && Robot.scoringRoller.hasPiece()) {
             Robot.scoringRoller.setState(RollerStates.MAINTAIN);
             Robot.elevator.setState(elevatorState);
         }
