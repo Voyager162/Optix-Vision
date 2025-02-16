@@ -1,5 +1,6 @@
 package frc.robot.utils;
 
+import edu.wpi.first.wpilibj.RobotBase;
 import com.revrobotics.spark.ClosedLoopSlot;
 
 /**
@@ -8,10 +9,18 @@ import com.revrobotics.spark.ClosedLoopSlot;
  * @author Noah Simon
  */
 public class MiscConstants {
+  public static final Mode simMode = Mode.SIM;
+  public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
-  public static enum RobotType {
+  public static enum Mode {
+    /** Running on a real robot. */
     REAL,
-    SIM
+
+    /** Running a physics simulator. */
+    SIM,
+
+    /** Replaying from a log file. */
+    REPLAY
   }
 
   public static final class SimConstants {
@@ -32,11 +41,14 @@ public class MiscConstants {
      */
     public static final ClosedLoopSlot[] slots = new ClosedLoopSlot[] { ClosedLoopSlot.kSlot0, ClosedLoopSlot.kSlot1,
         ClosedLoopSlot.kSlot2, ClosedLoopSlot.kSlot3 };
-    public static int standardStallLimit = 30;
-    public static int standardFreeLimit = 50;
 
-    public static int relaxedStallLimit = 10;
-    public static int relaxedFreeLimit = 20;
+    public static final int standardStallLimit = 30;
+    public static final int standardFreeLimit = 50;
+
+    public static final int relaxedStallLimit = 10;
+    public static final int relaxedFreeLimit = 20;
+
+    public static final double maxMotorVolts = 12.0;
 
   }
 

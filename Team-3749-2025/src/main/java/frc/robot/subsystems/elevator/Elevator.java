@@ -1,17 +1,21 @@
 package frc.robot.subsystems.elevator;
 
-import static edu.wpi.first.units.Units.Radians;
+import java.util.Map;
+import java.util.function.Consumer;
+
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
@@ -20,14 +24,20 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorData;
 import frc.robot.subsystems.elevator.real.ElevatorSparkMax;
 import frc.robot.subsystems.elevator.sim.ElevatorSimulation;
-import frc.robot.utils.ShuffleData;
+import frc.robot.utils.LoggedTunableNumber;
+import frc.robot.utils.SysIdTuner;
+import frc.robot.utils.MotorData;
 import frc.robot.utils.UtilityFunctions;
+
+import static edu.wpi.first.units.Units.*;
 
 /**
  * Elevator subsystem
@@ -35,43 +45,25 @@ import frc.robot.utils.UtilityFunctions;
  * @author Dhyan Soni
  * @author Andrew Ge
  */
-
+@SuppressWarnings("unused")
 public class Elevator extends SubsystemBase {
     private ElevatorIO elevatorio;
     private ElevatorData data = new ElevatorData();
     private ElevatorStates state = ElevatorStates.STOP;
 
-    private ProfiledPIDController profile = new ProfiledPIDController(
-            0,
-            0,
-            0,
-            new TrapezoidProfile.Constraints(ElevatorConstants.ElevatorControl.maxV,
-                    ElevatorConstants.ElevatorControl.maxA));
 
-    private ElevatorFeedforward feedforward = new ElevatorFeedforward(
-            ElevatorConstants.ElevatorControl.kS,
-            ElevatorConstants.ElevatorControl.kG,
-            ElevatorConstants.ElevatorControl.kV,
-            ElevatorConstants.ElevatorControl.kA);
+    private ProfiledPIDController profile = new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(
+            ElevatorConstants.ElevatorControl.maxVelocity.get(),
+            ElevatorConstants.ElevatorControl.maxAcceleration.get()));
 
-    private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
-    private ShuffleData<Double> positionMetersLog = new ShuffleData<Double>("Elevator", "position", 0.0);
-    private ShuffleData<Double> velocityMetersPerSecLog = new ShuffleData<Double>("Elevator", "velocity", 0.0);
-    private ShuffleData<Double> accelerationMetersPerSecSquaredLog = new ShuffleData<Double>("Elevator", "acceleration",
-            0.0);
+    private ElevatorFeedforward feedforward = new ElevatorFeedforward(ElevatorConstants.ElevatorControl.kS.get(),
+            ElevatorConstants.ElevatorControl.kG.get(), ElevatorConstants.ElevatorControl.kV.get(),
+            ElevatorConstants.ElevatorControl.kA.get());
 
-    private ShuffleData<Double> inputVoltsLog = new ShuffleData<Double>("Elevator", "input volts", 0.0);
-    private ShuffleData<Double> leftAppliedVoltsLog = new ShuffleData<Double>("Elevator", "left applied volts", 0.0);
-    private ShuffleData<Double> rightAppliedVoltsLog = new ShuffleData<Double>("Elevator", "right applied volts", 0.0);
-    private ShuffleData<Double> leftCurrentAmpsLog = new ShuffleData<Double>("Elevator", "left current amps", 0.0);
-    private ShuffleData<Double> rightCurrentAmpsLog = new ShuffleData<Double>("Elevator", "right current amps", 0.0);
-    private ShuffleData<Double> leftTempCelciusLog = new ShuffleData<Double>("Elevator", "left temp celcius", 0.0);
-    private ShuffleData<Double> rightTempCelciusLog = new ShuffleData<Double>("Elevator", "right temp celcius", 0.0);;
-
-    private Mechanism2d mech = new Mechanism2d(3, 3);
-    private MechanismRoot2d root = mech.getRoot("elevator", 1, 0);
-    private MechanismLigament2d elevatorMech = root
-            .append(new MechanismLigament2d("elevator", ElevatorConstants.ElevatorSpecs.baseHeight, 90));
+    private LoggedMechanism2d mech = new LoggedMechanism2d(3, 3);
+    private LoggedMechanismRoot2d root = mech.getRoot("elevator", 1, 0);
+    private LoggedMechanismLigament2d elevatorMech = root
+            .append(new LoggedMechanismLigament2d("elevator", ElevatorConstants.ElevatorSpecs.baseHeight, 90));
 
     private double elevatorInnerStagePos;
     private double elevatorMiddleStagePos;
@@ -89,12 +81,8 @@ public class Elevator extends SubsystemBase {
         }
     }
 
-    public ElevatorStates getState() {
 
-        StructPublisher<Pose3d> elevatorInnerStage = NetworkTableInstance.getDefault()
-                .getStructTopic("Elevator Inner Stage", Pose3d.struct).publish();
-        StructPublisher<Pose3d> elevatorMiddleStage = NetworkTableInstance.getDefault()
-                .getStructTopic("Elevator Middle Stage", Pose3d.struct).publish();
+    public ElevatorStates getState() {
         return state;
     }
 
@@ -106,20 +94,20 @@ public class Elevator extends SubsystemBase {
         return data.velocityMetersPerSecond;
     }
 
-    // returns true when the state is reached
+    /** returns true when the state is reached */
     public boolean getIsStableState() {
         switch (state) {
             case L1:
-                return UtilityFunctions.withinMargin(0.01, ElevatorConstants.StateHeights.l1Height,
+                return UtilityFunctions.withinMargin(0.001, ElevatorConstants.StateHeights.l1Height,
                         data.positionMeters);
             case L2:
-                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
+                return UtilityFunctions.withinMargin(0.001, data.positionMeters,
                         ElevatorConstants.StateHeights.l2Height);
             case L3:
-                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
+                return UtilityFunctions.withinMargin(0.001, data.positionMeters,
                         ElevatorConstants.StateHeights.l3Height);
             case L4:
-                return UtilityFunctions.withinMargin(0.01, data.positionMeters,
+                return UtilityFunctions.withinMargin(0.001, data.positionMeters,
                         ElevatorConstants.StateHeights.l4Height);
             default:
                 return false;
@@ -134,7 +122,7 @@ public class Elevator extends SubsystemBase {
         this.state = state;
         switch (state) {
             case STOP:
-                runStateStop();
+                stop();
                 break;
             case L1:
                 setGoal(ElevatorConstants.StateHeights.l1Height);
@@ -149,9 +137,11 @@ public class Elevator extends SubsystemBase {
                 setGoal(ElevatorConstants.StateHeights.l4Height);
                 break;
             case MAX:
-                setGoal(6);
+                setGoal(ElevatorConstants.ElevatorSpecs.maxHeightMeters);
                 break;
             case STOW:
+                setGoal(ElevatorConstants.ElevatorSpecs.baseHeight);
+                break;
             default:
                 setGoal(0);
                 break;
@@ -165,7 +155,7 @@ public class Elevator extends SubsystemBase {
     private void runState() {
         switch (state) {
             case STOP:
-                runStateStop();
+                stop();
                 break;
             default:
                 moveToGoal();
@@ -183,29 +173,30 @@ public class Elevator extends SubsystemBase {
         elevatorio.setPosition(firstState.position, ffVoltage);
     }
 
-    private void runStateStop() {
-        stop();
-    }
-
     public void stop() {
         elevatorio.setVoltage(0);
     }
 
     private void logData() {
-        currentCommandLog.set(this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-        positionMetersLog.set(data.positionMeters);
-        velocityMetersPerSecLog.set(data.velocityMetersPerSecond);
-        accelerationMetersPerSecSquaredLog.set(data.accelerationMetersPerSecondSquared);
+ 
+        Logger.recordOutput("subsystems/elevator/Current Command",
+                this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
 
-        leftAppliedVoltsLog.set(data.leftAppliedVolts);
-        rightAppliedVoltsLog.set(data.rightAppliedVolts);
-        leftCurrentAmpsLog.set(data.leftCurrentAmps);
-        rightCurrentAmpsLog.set(data.rightCurrentAmps);
-        leftTempCelciusLog.set(data.leftTempCelcius);
-        rightTempCelciusLog.set(data.rightTempCelcius);
+        Logger.recordOutput("subsystems/elevator/postion", data.positionMeters);
+        Logger.recordOutput("subsystems/elevator/velocity", data.velocityMetersPerSecond);
+
+        Logger.recordOutput("subsystems/elevator/acceleration", data.accelerationMetersPerSecondSquared);
+
+        Logger.recordOutput("subsystems/elevator/input volts",
+                ((data.leftAppliedVolts + data.rightAppliedVolts) / 2.0));
+        Logger.recordOutput("subsystems/elevator/input volts", data.leftAppliedVolts);
+        Logger.recordOutput("subsystems/elevator/input volts", data.rightAppliedVolts);
+        Logger.recordOutput("subsystems/elevator/input volts", data.leftCurrentAmps);
+        Logger.recordOutput("subsystems/elevator/input volts", data.rightCurrentAmps);
+        Logger.recordOutput("subsystems/elevator/input volts", data.leftTempCelcius);
+        Logger.recordOutput("subsystems/elevator/input volts", data.rightTempCelcius);
 
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
-        SmartDashboard.putData("elevator mechanism", mech);
 
         elevatorInnerStagePos = data.positionMeters / 2;
         elevatorMiddleStagePos = data.positionMeters - Units.inchesToMeters(1);
@@ -213,6 +204,8 @@ public class Elevator extends SubsystemBase {
                 getTransform3d(elevatorInnerStagePos).getRotation()));
         elevatorMiddleStage.set(new Pose3d(getTransform3d(elevatorMiddleStagePos).getTranslation(),
                 getTransform3d(elevatorMiddleStagePos).getRotation()));
+
+        Logger.recordOutput("subsystems/elevator/elevator mechanism", mech);
     }
 
     private Transform3d getTransform3d(double pos) {

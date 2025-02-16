@@ -4,8 +4,9 @@ import frc.robot.utils.OptixSpark;
 import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.swerve.SwerveModuleIO;
-import frc.robot.subsystems.swerve.SwerveConstants.DriveConstants;
-import frc.robot.subsystems.swerve.SwerveConstants.ModuleConstants;
+import frc.robot.subsystems.swerve.SwerveConstants.ControlConstants;
+import frc.robot.subsystems.swerve.SwerveConstants.DrivetrainConstants;
+import frc.robot.subsystems.swerve.SwerveConstants.MotorConstants;
 import frc.robot.utils.MiscConstants.MotorControllerConstants;
 
 public class SwerveModuleSpark implements SwerveModuleIO {
@@ -18,20 +19,21 @@ public class SwerveModuleSpark implements SwerveModuleIO {
     private double absoluteEncoderOffsetRad;
 
     public SwerveModuleSpark(int index) {
-        drive = new OptixSpark(DriveConstants.driveMotorIds[index], OptixSpark.Type.SPARKFLEX);
+        drive = new OptixSpark(MotorConstants.driveMotorIds[index], OptixSpark.Type.SPARKFLEX);
         drive.setPositionConversionFactor(
-                1 / ModuleConstants.driveMotorGearRatio * Math.PI * ModuleConstants.wheelDiameterMeters);
+                1 / MotorConstants.driveMotorGearRatio * Math.PI * DrivetrainConstants.wheelDiameterMeters);
         drive.setVelocityConversionFactor(
-                1 / ModuleConstants.driveMotorGearRatio * Math.PI * ModuleConstants.wheelDiameterMeters * (1 / 60.0));
-        drive.setInverted(DriveConstants.driveMotorInverted[index]);
+                1 / MotorConstants.driveMotorGearRatio * Math.PI * DrivetrainConstants.wheelDiameterMeters
+                        * (1 / 60.0));
+        drive.setInverted(MotorConstants.driveMotorInverted[index]);
         drive.setCurrentLimit(MotorControllerConstants.standardStallLimit,
                 MotorControllerConstants.standardFreeLimit);
         drive.setBrakeMode(true);
 
-        turn = new OptixSpark(DriveConstants.turnMotorIds[index], OptixSpark.Type.SPARKMAX);
-        turn.setPositionConversionFactor(1 / ModuleConstants.turnMotorGearRatio * Math.PI * 2);
-        turn.setVelocityConversionFactor(1 / ModuleConstants.turnMotorGearRatio * Math.PI * 2 * (1 / 60.0));
-        turn.setInverted(DriveConstants.turningMotorInverted[index]);
+        turn = new OptixSpark(MotorConstants.turnMotorIds[index], OptixSpark.Type.SPARKMAX);
+        turn.setPositionConversionFactor(1 / MotorConstants.turnMotorGearRatio * Math.PI * 2);
+        turn.setVelocityConversionFactor(1 / MotorConstants.turnMotorGearRatio * Math.PI * 2 * (1 / 60.0));
+        turn.setInverted(MotorConstants.turningMotorInverted[index]);
         turn.setCurrentLimit(MotorControllerConstants.standardStallLimit,
                 MotorControllerConstants.standardFreeLimit);
         turn.setBrakeMode(true);
@@ -39,22 +41,25 @@ public class SwerveModuleSpark implements SwerveModuleIO {
 
         for (int i = 0; i < 4; i++) {
             turn.setPID(
-                    ModuleConstants.turnPID[i][0],
-                    ModuleConstants.turnPID[i][1],
-                    ModuleConstants.turnPID[i][2],
+                    ControlConstants.turnPID[i][0],
+                    ControlConstants.turnPID[i][1],
+                    ControlConstants.turnPID[i][2],
 
                     MotorControllerConstants.slots[i]);
 
             drive.setPID(
-                    ModuleConstants.drivePID[i][0],
-                    ModuleConstants.drivePID[i][1],
-                    ModuleConstants.drivePID[i][2],
+                    ControlConstants.drivePID[i][0],
+                    ControlConstants.drivePID[i][1],
+                    ControlConstants.drivePID[i][2],
 
                     MotorControllerConstants.slots[i]);
         }
 
-        absoluteEncoder = new CANcoder(DriveConstants.absoluteEncoderIds[index]);
-        absoluteEncoderOffsetRad = Units.degreesToRadians(DriveConstants.absoluteEncoderOffsetDeg[index]);
+        drive.applyConfig();
+        turn.applyConfig();
+
+        absoluteEncoder = new CANcoder(MotorConstants.absoluteEncoderIds[index]);
+        absoluteEncoderOffsetRad = Units.degreesToRadians(MotorConstants.absoluteEncoderOffsetDeg[index]);
         turn.setPosition(absoluteEncoder.getPosition().getValueAsDouble() * 2 * Math.PI - absoluteEncoderOffsetRad);
     }
 
@@ -99,13 +104,13 @@ public class SwerveModuleSpark implements SwerveModuleIO {
     /** Enable or disable brake mode on the drive motor. */
     @Override
     public void setDriveBrakeMode(boolean enable) {
-        drive.setBrakeMode(enable);
+        // drive.setBrakeMode(enable);
     }
 
     /** Enable or disable brake mode on the turn motor. */
     @Override
     public void setTurningBrakeMode(boolean enable) {
-        turn.setBrakeMode(enable);
+        // turn.setBrakeMode(enable);
     }
 
 }

@@ -1,12 +1,10 @@
 package frc.robot.subsystems.arm.coral;
 
 import frc.robot.Robot;
-import frc.robot.utils.ShuffleData;
+import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
@@ -15,19 +13,20 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
+import frc.robot.utils.MotorData;
+import static edu.wpi.first.units.Units.*;
+
+import java.util.Map;
 import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
 import frc.robot.subsystems.arm.coral.sim.CoralArmSim;
-import frc.robot.utils.ShuffleData;
-import frc.robot.utils.UtilityFunctions;
 
-import static edu.wpi.first.units.Units.*;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 /**
  * Subsystem class for the coral arm
@@ -36,46 +35,21 @@ import static edu.wpi.first.units.Units.*;
  */
 public class CoralArm extends SubsystemBase {
 
-    // Profiled PID Controller used only for the motion profile, PID within
-    // implementation classes
-    private ProfiledPIDController profile = new ProfiledPIDController(
-            0, 0, 0,
-            new TrapezoidProfile.Constraints( // Constraints on velocity and acceleration
-                    CoralArmConstants.maxVelocity,
-                    CoralArmConstants.maxAcceleration));
-
-    // Arm feedforward to calculate the necessary voltage for the arm's movement.
-    private ArmFeedforward feedforward = new ArmFeedforward(
-            CoralArmConstants.kS,
-            CoralArmConstants.kG,
-            CoralArmConstants.kV,
-            CoralArmConstants.kA);
-
-    // The I/O interface for controlling the arm's motors (either real hardware or
-    // simulated).
     private CoralArmIO armIO;
-    // Stores the arm's current data (e.g., position, velocity, etc.).
     private ArmData data = new ArmData();
-    // The current state of the arm (e.g., stopped, stowed).
     private CoralArmConstants.ArmStates state = CoralArmConstants.ArmStates.STOPPED;
 
-    // Shuffleboard data for logging and displaying real-time data in the dashboard.
-    private ShuffleData<String> currentCommandLog = new ShuffleData<>(this.getName(), "current command", "None");
-    private ShuffleData<Double> positionUnitsLog = new ShuffleData<>(this.getName(), "position units", 0.0);
-    private ShuffleData<Double> velocityUnitsLog = new ShuffleData<>(this.getName(), "velocity units", 0.0);
-    private ShuffleData<Double> inputVoltsLog = new ShuffleData<>(this.getName(), "input volts", 0.0);
-    private ShuffleData<Double> motorAppliedVoltsLog = new ShuffleData<>(this.getName(),
-            "first motor applied volts", 0.0);
-    private ShuffleData<Double> motorCurrentAmpsLog = new ShuffleData<>(this.getName(),
-            "first motor current amps", 0.0);
-    private ShuffleData<Double> motorTempCelciusLog = new ShuffleData<>(this.getName(),
-            "first motor temp celcius", 0.0);
-    private ShuffleData<String> stateLog = new ShuffleData<String>(this.getName(), "state", state.name());
 
-    private Mechanism2d mechanism2d = new Mechanism2d(3, 3);
-    private MechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 1.8, .4);
-    private MechanismLigament2d armLigament = armRoot
-            .append(new MechanismLigament2d("Coral Arm", CoralArmConstants.armLength_meters, 0));
+    // Profiled PID Controller used only for the motion profile, PID within
+    // implementation classes
+    private ProfiledPIDController profile = new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(
+            CoralArmConstants.maxVelocity.get(), CoralArmConstants.maxAcceleration.get()));
+    private ArmFeedforward feedforward = new ArmFeedforward(CoralArmConstants.kS.get(), CoralArmConstants.kG.get(),
+            CoralArmConstants.kV.get());
+    private LoggedMechanism2d mechanism2d = new LoggedMechanism2d(3, 3);
+    private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 1.8, .4);
+    private LoggedMechanismLigament2d armLigament = armRoot
+            .append(new LoggedMechanismLigament2d("Coral Arm", CoralArmConstants.armLength_meters, 0));
 
     private StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
             .getStructTopic("CoralArm Pose", Pose3d.struct).publish();
@@ -94,9 +68,6 @@ public class CoralArm extends SubsystemBase {
             // If running on real hardware, use SparkMax motors for the arm.
             armIO = new CoralArmSparkMax();
         }
-
-        // Add the arm visualization to the SmartDashboard
-        SmartDashboard.putData("Coral Arm Mechanism", mechanism2d);
     }
 
     // GET FUNCTIONS
@@ -133,13 +104,8 @@ public class CoralArm extends SubsystemBase {
                 return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
                         CoralArmConstants.coralPickUpSetPoint_rad, data.positionUnits);
             case STOPPED:
-                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError, 0, data.velocityUnits); // Ensure
-                                                                                                                   // velocity
-                                                                                                                   // is
-                                                                                                                   // near
-                                                                                                                   // zero
-                                                                                                                   // when
-                                                                                                                   // stopped.
+                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError, 0, data.velocityUnits); 
+                // ensure velocity is near zero when stopped
             default:
                 return false; // Return false if the state is unrecognized.
         }
@@ -183,8 +149,8 @@ public class CoralArm extends SubsystemBase {
     }
 
     private Angle getPitch() {
-        return Angle.ofBaseUnits(data.positionUnits + Units.degreesToRadians(-55), Radians); // remove offset once coral
-                                                                                             // arm code is fixed
+        return Angle.ofBaseUnits(data.positionUnits + Units.degreesToRadians(-55), Radians);
+        // remove offsest once coral arm code is fixed
     }
 
     private Pose3d getPose3d() {
@@ -256,37 +222,37 @@ public class CoralArm extends SubsystemBase {
      * debugging and analysis.
      */
     private void logData() {
+
         // Log various arm parameters to Shuffleboard
-        currentCommandLog.set(
+        Logger.recordOutput("subsystems/arms/coralArm/Current Command",
                 this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-        positionUnitsLog.set(data.positionUnits);
-        velocityUnitsLog.set(data.velocityUnits);
-        motorAppliedVoltsLog.set(data.motorAppliedVolts);
-        motorCurrentAmpsLog.set(data.motorCurrentAmps);
-        motorTempCelciusLog.set(data.motorTempCelcius);
+        Logger.recordOutput("subsystems/arms/coralArm/position", data.positionUnits);
+        Logger.recordOutput("subsystems/arms/coralArm/velocity", data.velocityUnits);
+        Logger.recordOutput("subsystems/arms/coralArm/input volts", data.inputVolts);
+        Logger.recordOutput("subsystems/arms/coralArm/applied volts", data.motorAppliedVolts);
+        Logger.recordOutput("subsystems/arms/coralArm/current amps", data.motorCurrentAmps);
+        Logger.recordOutput("subsystems/arms/coralArm/temperature", data.motorTempCelcius);
 
         // Update the visualization on the SmartDashboard with the arm's position
         armLigament.setAngle(Math.toDegrees(data.positionUnits));
 
-        stateLog.set(state.name());
+        Logger.recordOutput("subsystems/arms/coralArm/state", state.name());
 
         // Logger.recordOutput("zeropose", zeroedComponentPose);
 
         publisher.set(getPose3d());
+
+        Logger.recordOutput("subsystems/arms/coralArm/coral arm mechanism", mechanism2d);
     }
 
-    /**
-     * Periodic method called every loop to update the arm's behavior and log data.
-     */
+    /** Periodic method for updating arm behavior. */
     @Override
     public void periodic() {
-        // Update the arm's data from the I/O interface
+
         armIO.updateData(data);
 
-        // Run the state logic based on the current arm state
         runState();
 
-        // Log the arm's data to Shuffleboard
         logData();
     }
 }

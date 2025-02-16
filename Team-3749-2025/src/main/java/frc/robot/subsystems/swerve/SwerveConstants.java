@@ -3,7 +3,7 @@ package frc.robot.subsystems.swerve;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import frc.robot.Robot;
+import frc.robot.utils.LoggedTunableNumber;
 
 /**
  * All constants for the swerve subsystem and swerve modules
@@ -15,60 +15,70 @@ import frc.robot.Robot;
  * 
  */
 public class SwerveConstants {
-        public static final class ModuleConstants {
-                public static final double wheelDiameterMeters = Units.inchesToMeters(4);
 
-                public static final double driveMotorGearRatio = 6.75;
-                public static final double turnMotorGearRatio = 12.8;
-
+        public static final class ControlConstants {
                 public static final double[][] turnPID = new double[][] {
                                 { 8, 0, 0 }, // large error position
                                 { 12, 0, 0 }, // small error position
                                 { 0, 0, 0 }, // deadband error position
-                                { 0, 0, 0 } }; // 
+                                { 0, 0, 0 } }; //
                 public static final double[][] drivePID = new double[][] {
                                 { 0, 0, 0 }, // small error position
                                 { 0, 0, 0 }, // large error position
                                 { 0.27, 0, 0 }, // no slow velocity control
                                 { 0.27, 0, 0 } }; // no fast velocity control
 
+                // pid
+                public static LoggedTunableNumber largeErrorTurningKP = new LoggedTunableNumber(
+                                "subsystems/swerve/largeErrorTurningKP", 8);
+                public static LoggedTunableNumber smallErrorTurningKP = new LoggedTunableNumber(
+                                "subsystems/swerve/smallErrorTurningKP", 12);
+                public static LoggedTunableNumber noSlowVelocityControlDriveKP = new LoggedTunableNumber(
+                                "subsystems/swerve/noSlowVelocityControlDriveKP", .27);
+                public static LoggedTunableNumber noFastVelocityControlDriveKP = new LoggedTunableNumber(
+                                "subsystems/swerve/noFastVelocityControlDriveKP", .27);
+
                 // our FF values
+                public static LoggedTunableNumber kSDriving = new LoggedTunableNumber("subsystems/swerve/kSDriving",
+                                0.26);
+                public static LoggedTunableNumber kVDriving = new LoggedTunableNumber("subsystems/swerve/kVDriving",
+                                2.765);
+                public static LoggedTunableNumber kADriving = new LoggedTunableNumber("subsystems/swerve/kADriving",
+                                0.0);
 
-                private static final double kSDrivingReal = 0.26;
-                private static final double kVDrivingReal = 2.765;
-                private static final double kADrivingReal = 0.0;
+                public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("subsystems/swerve/maxVelocity",
+                                4.3);
+                public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
+                                "subsystems/swerve/maxAcceleration", 3.3);
 
-                private static final double kSDrivingSim = 0.0;
-                private static final double kVDrivingSim = 12 / DriveConstants.simMaxSpeedMetersPerSecond;
-                private static final double kADrivingSim = 1.2;
-                /**
-                 * Or have have it be non-constant, (12 - Velocity*kVDrivingSim)/maxAcceleration
-                 * private static final double kADrivingSim = (12 - 2.94 * kVDrivingSim)
-                 * / DriveConstants.simMaxAccelerationMetersPerSecondSquared;
-                 */
+                // teleop speed
+                public static final double teleopMaxSpeedReduction = 0; // If we can drive a little faster in telop
+                // we may as well
+                public static final double teleopMaxSpeedMetersPerSecond = maxVelocity.get()
+                                * (1 - teleopMaxSpeedReduction);
 
-                public static double kSDriving = Robot.isReal()
-                                ? kSDrivingReal
-                                : kSDrivingSim;
-                public static double kVDriving = Robot.isReal()
-                                ? kVDrivingReal
-                                : kVDrivingSim;
-                public static double kADriving = Robot.isReal()
-                                ? kADrivingReal
-                                : kADrivingSim;
+                // auto speed
+                public static final double autoMaxSpeedReduction = 0;
+                public static final double autoMaxSpeedMetersPerSecond = maxVelocity.get()
+                                * (1 - autoMaxSpeedReduction);
+
+                public static final double maxAngularSpeedRadiansPerSecond = 12.162;
+                public static final double maxAngularAccelerationRadiansPerSecondSquared = 15.543;
+                // teleop angluar speed
+                public static final double teleopMaxAngularSpeedReduction = 0.4;
+                public static final double teleopMaxAngularSpeedRadPerSecond = maxAngularSpeedRadiansPerSecond
+                                * (1 - teleopMaxAngularSpeedReduction);
+
+                // auto angular speed
+                public static final double autoMaxAngularSpeedReduction = 0;
+                public static final double autoMaxAngularSpeedRadPerSecond = maxAngularSpeedRadiansPerSecond
+                                * (1 - autoMaxAngularSpeedReduction);
+
         }
 
-        public static final class DriveConstants {
-                // Distance between right and left wheels
-                public static final double trackWidth = Units.inchesToMeters(19.5);
-                // Distance between front and back wheels
-                public static final double wheelBase = Units.inchesToMeters(19.5);
-                public static final SwerveDriveKinematics driveKinematics = new SwerveDriveKinematics(
-                                new Translation2d(wheelBase / 2, trackWidth / 2), // front left
-                                new Translation2d(wheelBase / 2, -trackWidth / 2), // front right
-                                new Translation2d(-wheelBase / 2, trackWidth / 2), // back left
-                                new Translation2d(-wheelBase / 2, -trackWidth / 2)); // back right
-
+        public static final class MotorConstants {
+                public static final double driveMotorGearRatio = 6.75;
+                public static final double turnMotorGearRatio = 12.8;
                 // Module Settings: order is FL, FR, BL, BR
                 public static final int[] driveMotorIds = { 3, 5, 7, 9 };
                 public static final int[] turnMotorIds = { 4, 6, 8, 10 };
@@ -99,68 +109,20 @@ public class SwerveConstants {
                                 186.943
                 };
 
-                // current limits
-                public static final int driveMotorStallLimit = 25;
-                public static final int driveMotorFreeLimit = 50;
-                public static final int turnMotorStallLimit = 20;
-                public static final int turnMotorFreeLimit = 30;
+        }
 
-                // speed
-                private static final double realMaxSpeedMetersPerSecond = 4.3; // This is our actual top speed
-                private static final double simMaxSpeedMetersPerSecond = 4.55;
-                public static final double maxSpeedMetersPerSecond = Robot.isReal()
-                                ? DriveConstants.realMaxSpeedMetersPerSecond
-                                : DriveConstants.simMaxSpeedMetersPerSecond;
-                // acceleration
-                private static final double realMaxAccelerationMetersPerSecondSquared = 3.3; // actual top acceleration
-                private static final double simMaxAccelerationMetersPerSecondSquared = 6; // not entirely accurate
-                public static final double maxAccelerationMetersPerSecondSquared = Robot.isReal()
-                                ? DriveConstants.realMaxAccelerationMetersPerSecondSquared
-                                : DriveConstants.simMaxAccelerationMetersPerSecondSquared;
-                // teleop speed
-                public static final double teleopMaxSpeedReduction = 0; // If we can drive a little faster in telop
-                                                                        // we may as well
-                public static final double teleopMaxSpeedMetersPerSecond = maxSpeedMetersPerSecond
-                                * (1 - teleopMaxSpeedReduction);
-
-                // auto speed
-                public static final double autoMaxSpeedReduction = 0;
-                public static final double autoMaxSpeedMetersPerSecond = maxSpeedMetersPerSecond
-                                * (1 - autoMaxSpeedReduction);
-
-                // angular speed
-                private static final double realMaxAngularSpeedRadiansPerSecond = 12.162;
-                private static final double simMaxAngularSpeedRadiansPerSecond = 12.98;
-                public static final double maxAngularSpeedRadiansPerSecond = Robot.isReal()
-                                ? DriveConstants.realMaxAngularSpeedRadiansPerSecond
-                                : DriveConstants.simMaxAngularSpeedRadiansPerSecond;
-
-                // angular acceleration
-                private static final double realMaxAngularAccelerationRadiansPerSecondSquared = 15.543;
-                private static final double simMaxAngularAccelerationRadiansPerSecondSquared = 9;
-                public static final double maxAngularAccelerationRadiansPerSecondSquared = Robot.isReal()
-                                ? DriveConstants.realMaxAngularAccelerationRadiansPerSecondSquared
-                                : DriveConstants.simMaxAngularAccelerationRadiansPerSecondSquared;
-
-                // teleop angluar speed
-                public static final double teleopMaxAngularSpeedReduction = 0.4;
-                public static final double teleopMaxAngularSpeedRadPerSecond = maxAngularSpeedRadiansPerSecond
-                                * (1 - teleopMaxAngularSpeedReduction);
-
-                // auto angular speed
-                public static final double autoMaxAngularSpeedReduction = 0;
-                public static final double autoMaxAngularSpeedRadPerSecond = maxAngularSpeedRadiansPerSecond
-                                * (1 - autoMaxAngularSpeedReduction);
-
-                // motor volts
-                private static final double simMaxMotorVoltage = 12.0;
-                private static final double realMaxMotorVoltage = 12.0;
-                public static final double maxMotorVolts = Robot.isReal()
-                                ? DriveConstants.realMaxMotorVoltage
-                                : DriveConstants.simMaxMotorVoltage;
-
-                // allowed velocity error
-                public static final double maxDriveVelocityError = 0.15;
+        public static final class DrivetrainConstants {
+                public static final double wheelDiameterMeters = Units.inchesToMeters(4);
+                // Distance between right and left wheels
+                public static final double trackWidth = Units.inchesToMeters(19.5);
+                // Distance between front and back wheels
+                public static final double wheelBase = Units.inchesToMeters(19.5);
+                public static final SwerveDriveKinematics driveKinematics = new SwerveDriveKinematics(
+                                new Translation2d(wheelBase / 2, trackWidth / 2), // front left
+                                new Translation2d(wheelBase / 2, -trackWidth / 2), // front right
+                                new Translation2d(-wheelBase / 2, trackWidth / 2), // back left
+                                new Translation2d(-wheelBase / 2, -trackWidth / 2)); // back right
 
         }
+
 }
