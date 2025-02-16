@@ -11,11 +11,11 @@ public class RollerConstants {
         public static final double gearRatio = 3.0;
         public static final double measurementNoise = 0.0;
 
-        public static LoggedTunableNumber kPVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kPVelocity", 10.0);
+        public static LoggedTunableNumber kPVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kPVelocity", 0.0);
         public static LoggedTunableNumber kIVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kIVelocity", 0.0);
         public static LoggedTunableNumber kDVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kDVelocity", 0.0);
         public static LoggedTunableNumber kSVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kSVelocity", 0.0);
-        public static LoggedTunableNumber kVVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kVVelocity", 0.02);
+        public static LoggedTunableNumber kVVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kVVelocity", 0.35);
         public static LoggedTunableNumber kAVelocity = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kAVelocity", 0.0);
 
         public static LoggedTunableNumber kPPosition = new LoggedTunableNumber("/subsystems/rollers/algaeRoller/kPPosition", 15.0);

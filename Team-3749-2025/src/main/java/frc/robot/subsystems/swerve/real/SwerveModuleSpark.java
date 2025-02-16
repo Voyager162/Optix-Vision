@@ -73,13 +73,13 @@ public class SwerveModuleSpark implements SwerveModuleIO {
     /** Run the drive motor at the specified voltage. */
     @Override
     public void setDriveVoltage(double volts) {
-        drive.setVoltage(volts);
+        // drive.setVoltage(volts);
     }
 
     /** Run the turn motor at the specified voltage. */
     @Override
     public void setTurnVoltage(double volts) {
-        turn.setVoltage(volts);
+        // turn.setVoltage(volts);
     }
 
     /** Enable or disable brake mode on the drive motor. */

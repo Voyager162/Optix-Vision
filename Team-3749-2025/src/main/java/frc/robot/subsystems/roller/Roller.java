@@ -132,7 +132,7 @@ public abstract class Roller extends SubsystemBase {
     @Override
     public void periodic() {
         rollerIO.updateData(rollerData);
-        runRollerStates();
+        // runRollerStates();
 
         motorData.get("roller_motor").velocity = rollerData.rollerVelocityRadPerSec;
         motorData.get("roller_motor").position = rollerData.rollerPositionRad;

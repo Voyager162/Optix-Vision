@@ -51,7 +51,7 @@ public class RollerSparkMax implements RollerIO {
         }
         rollerMotor.setCurrentLimit(MotorControllerConstants.relaxedStallLimit,
                 MotorControllerConstants.relaxedFreeLimit);
-        rollerMotor.setBrakeMode(true);
+        rollerMotor.setBrakeMode(false);
 
         rollerMotor.applyConfig();
 
