@@ -301,12 +301,7 @@ public class JoystickIO {
                         new SwerveDefaultCommand(
                                 () -> pilot.getLeftX(),
                                 () -> pilot.getLeftY(),
-                                () -> {
-                                    if (pilot.y().getAsBoolean()) {
-                                        return 1.0;
-                                    }
-                                    return 0.0;
-                                }));
+                                () -> pilot.getRightX()));
     }
 
 }
