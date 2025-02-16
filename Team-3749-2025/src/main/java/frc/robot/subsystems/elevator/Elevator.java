@@ -33,7 +33,6 @@ import frc.robot.subsystems.elevator.ElevatorIO.ElevatorData;
 import frc.robot.subsystems.elevator.real.ElevatorSparkMax;
 import frc.robot.subsystems.elevator.sim.ElevatorSimulation;
 import frc.robot.utils.LoggedTunableNumber;
-import frc.robot.utils.ShuffleData;
 import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.MotorData;
 import frc.robot.utils.UtilityFunctions;
@@ -53,33 +52,20 @@ public class Elevator extends SubsystemBase {
     private ElevatorData data = new ElevatorData();
     private ElevatorStates state = ElevatorStates.STOP;
 
-    static Consumer<Voltage> setVolts;
-    static Consumer<SysIdRoutineLog> log;
 
-    private ProfiledPIDController profile;
+    private ProfiledPIDController profile = new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(
+            ElevatorConstants.ElevatorControl.maxVelocity.get(),
+            ElevatorConstants.ElevatorControl.maxAcceleration.get()));
 
-    private ElevatorFeedforward feedforward;
+    private ElevatorFeedforward feedforward = new ElevatorFeedforward(ElevatorConstants.ElevatorControl.kS.get(),
+            ElevatorConstants.ElevatorControl.kG.get(), ElevatorConstants.ElevatorControl.kV.get(),
+            ElevatorConstants.ElevatorControl.kA.get());
 
     private LoggedMechanism2d mech = new LoggedMechanism2d(3, 3);
     private LoggedMechanismRoot2d root = mech.getRoot("elevator", 1, 0);
     private LoggedMechanismLigament2d elevatorMech = root
             .append(new LoggedMechanismLigament2d("elevator", ElevatorConstants.ElevatorSpecs.baseHeight, 90));
 
-    // SysID
-    Map<String, MotorData> motorData = Map.of(
-            "elevator_motor", new MotorData(
-                    (data.leftAppliedVolts + data.rightAppliedVolts) / 2.0,
-                    data.positionMeters,
-                    data.velocityMetersPerSecond,
-                    data.accelerationMetersPerSecondSquared));
-
-    private SysIdRoutine.Config config = new SysIdRoutine.Config(
-            Volts.per(Seconds).of(1), // Voltage ramp rate
-            Volts.of(10), // Max voltage
-            Seconds.of(10) // Test duration
-    );
-
-    private SysIdTuner sysIdTuner;
     private double elevatorInnerStagePos;
     private double elevatorMiddleStagePos;
 
@@ -94,7 +80,6 @@ public class Elevator extends SubsystemBase {
         } else {
             elevatorio = new ElevatorSparkMax();
         }
-        sysIdTuner = new SysIdTuner("elevator", config, this, elevatorio::setVoltage, motorData, Type.LINEAR);
 
         profile = new ProfiledPIDController(ElevatorConstants.ElevatorControl.kP.get(),
                 ElevatorConstants.ElevatorControl.kI.get(), ElevatorConstants.ElevatorControl.kD.get(),
@@ -105,9 +90,6 @@ public class Elevator extends SubsystemBase {
                 ElevatorConstants.ElevatorControl.kA.get());
     }
 
-    public SysIdTuner getSysIdTuner() {
-        return sysIdTuner;
-    }
 
     public ElevatorStates getState() {
         return state;
@@ -204,6 +186,7 @@ public class Elevator extends SubsystemBase {
     }
 
     private void logData() {
+ 
         Logger.recordOutput("subsystems/elevator/Current Command",
                 this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
 
@@ -242,12 +225,7 @@ public class Elevator extends SubsystemBase {
     @Override
     public void periodic() {
         elevatorio.updateData(data);
-        // runState();
+        runState();
         logData();
-
-        motorData.get("elevator_motor").position = data.positionMeters;
-        motorData.get("elevator_motor").acceleration = data.accelerationMetersPerSecondSquared;
-        motorData.get("elevator_motor").velocity = data.velocityMetersPerSecond;
-        motorData.get("elevator_motor").appliedVolts = (data.leftAppliedVolts + data.rightAppliedVolts) / 2.0;
     }
 }

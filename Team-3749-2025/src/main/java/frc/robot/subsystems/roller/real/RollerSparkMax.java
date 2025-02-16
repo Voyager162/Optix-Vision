@@ -55,6 +55,8 @@ public class RollerSparkMax implements RollerIO {
 
         rollerMotor.applyConfig();
 
+        rollerMotor.applyConfig();
+
     }
 
     @Override

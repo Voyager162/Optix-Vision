@@ -22,7 +22,6 @@ public class SwerveConstants {
                 public static final double[] drivePID = new double[] {
                                 0.27, 0, 0 };
                 // our FF values
-
                 public static LoggedTunableNumber kSDriving = new LoggedTunableNumber("subsystems/swerve/kSDriving",
                                 0.26);
                 public static LoggedTunableNumber kVDriving = new LoggedTunableNumber("subsystems/swerve/kVDriving",

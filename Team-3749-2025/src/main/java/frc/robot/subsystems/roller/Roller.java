@@ -37,21 +37,9 @@ public abstract class Roller extends SubsystemBase {
     protected LoggedTunableNumber ks;
     protected LoggedTunableNumber maxVelocity;
     protected LoggedTunableNumber maxAcceleration;
-    // SysID
-    Map<String, MotorData> motorData = Map.of(
-            "roller_motor", new MotorData(
-                    rollerData.rollerAppliedVolts,
-                    rollerData.rollerPositionRad,
-                    rollerData.rollerVelocityRadPerSec,
-                    0));
 
-    private SysIdRoutine.Config config = new SysIdRoutine.Config(
-            Volts.per(Seconds).of(1), // Voltage ramp rate
-            Volts.of(12), // Max voltage
-            Seconds.of(12) // Test duration
-    );
+    
 
-    private SysIdTuner sysIdTuner;
 
     public Roller(Implementations implementation, SimpleMotorFeedforward rollerFF, PIDController positionController,
             PIDController velocityController) {
@@ -64,11 +52,6 @@ public abstract class Roller extends SubsystemBase {
         this.velocityController = velocityController;
         this.rollerState = RollerConstants.RollerStates.STOP;
 
-        sysIdTuner = new SysIdTuner("roller " + name, config, this, rollerIO::setVoltage, motorData, Type.ROTATIONAL);
-    }
-
-    public SysIdTuner getSysIdTuner() {
-        return sysIdTuner;
     }
 
     public RollerIO getRollerIO() {
@@ -134,10 +117,6 @@ public abstract class Roller extends SubsystemBase {
         rollerIO.updateData(rollerData);
         // runRollerStates();
 
-        motorData.get("roller_motor").velocity = rollerData.rollerVelocityRadPerSec;
-        motorData.get("roller_motor").position = rollerData.rollerPositionRad;
-        motorData.get("roller_motor").acceleration = rollerData.rollerVelocityRadPerSec;
-        motorData.get("roller_motor").appliedVolts = rollerData.rollerAppliedVolts;
 
         Logger.recordOutput("subsystems/roller/" + getName() + "/velocity", rollerData.rollerVelocityRadPerSec);
         Logger.recordOutput("subsystems/roller/" + getName() + "/applied voltage", rollerData.rollerAppliedVolts);

@@ -21,15 +21,6 @@ public class CoralArmSim implements CoralArmIO {
 
 	/**
 	 * creates a new io implementation of a single jointed arm in simulation
-	 * 
-	 * @param numMotors
-	 * @param gearing
-	 * @param momentOfInertia
-	 * @param length_meters
-	 * @param minAngle_degrees
-	 * @param maxAngle_degrees
-	 * @param simulateGravity
-	 * @param startingAngle_Degrees
 	 */
 	public CoralArmSim() {
 

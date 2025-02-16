@@ -37,8 +37,10 @@ public class CoralArm extends SubsystemBase {
 
     // Profiled PID Controller used only for the motion profile, PID within
     // implementation classes
-    private ProfiledPIDController profile;
-    private ArmFeedforward feedforward;
+    private ProfiledPIDController profile = new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(
+            CoralArmConstants.maxVelocity.get(), CoralArmConstants.maxAcceleration.get()));
+    private ArmFeedforward feedforward = new ArmFeedforward(CoralArmConstants.kS.get(), CoralArmConstants.kG.get(),
+            CoralArmConstants.kV.get());
     private LoggedMechanism2d mechanism2d = new LoggedMechanism2d(3, 3);
     private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 1.8, .4);
     private LoggedMechanismLigament2d armLigament = armRoot
@@ -113,6 +115,7 @@ public class CoralArm extends SubsystemBase {
                                                                                                                    // zero
                                                                                                                    // when
                                                                                                                    // stopped
+                // ensure velocity is near zero when stopped
             default:
                 return false; // Return false if the state is unrecognized.
         }
@@ -233,6 +236,7 @@ public class CoralArm extends SubsystemBase {
      * debugging and analysis.
      */
     private void logData() {
+
         // Log various arm parameters to Shuffleboard
         Logger.recordOutput("subsystems/arms/coralArm/Current Command",
                 this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());

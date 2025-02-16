@@ -33,8 +33,9 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 public class ClimbArm extends SubsystemBase {
 
-	private ProfiledPIDController profile;
-	private ArmFeedforward feedforward;
+	private ProfiledPIDController profile = new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(
+			ClimbArmConstants.maxVelocity.get(), ClimbArmConstants.maxAcceleration.get()));
+	private ArmFeedforward feedforward = new ArmFeedforward(ClimbArmConstants.kS.get(), ClimbArmConstants.kG.get(), ClimbArmConstants.kV.get());
 	private ClimbArmIO armIO;
 	private ArmData data = new ArmData();
 	private ClimbArmConstants.ArmStates state = ClimbArmConstants.ArmStates.STOWED;
@@ -43,12 +44,11 @@ public class ClimbArm extends SubsystemBase {
 	private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
 	private LoggedMechanismLigament2d armLigament = armRoot.append(new LoggedMechanismLigament2d("Climb Arm", 24, 0));
 	StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
-	.getStructTopic("ClimbArm Pose", Pose3d.struct).publish();
+			.getStructTopic("ClimbArm Pose", Pose3d.struct).publish();
 
-	/**
-	 * Constructor for the CoralArm subsystem. Determines if simulation or real
-	 * hardware is used.
-	 */
+
+
+
 	public ClimbArm() {
 		if (Robot.isSimulation()) {
 
@@ -203,6 +203,8 @@ public class ClimbArm extends SubsystemBase {
 
 	/** Logs data to Shuffleboard. */
 	private void logData() {
+		
+
 		Logger.recordOutput("subsystems/arms/climbArm/Current Command",
 				this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
 		Logger.recordOutput("subsystems/arms/climbArm/position", data.positionRad);
