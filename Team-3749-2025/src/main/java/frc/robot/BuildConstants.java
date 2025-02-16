@@ -13,7 +13,9 @@ public final class BuildConstants {
     public static final String GIT_BRANCH = "choreo_main_merge";
     public static final String BUILD_DATE = "2025-02-15 20:09:29 GMT";
     public static final long BUILD_UNIX_TIME = 1739650169722L;
+
     public static final int DIRTY = 1;
 
-    private BuildConstants(){}
+    private BuildConstants() {
+    }
 }
