@@ -159,7 +159,7 @@ public class CoralArm extends SubsystemBase {
     }
 
     private Pose3d getPose3d() {
-        Pose3d pose = new Pose3d(0, 0.35, 0.4,
+        Pose3d pose = new Pose3d(-0.33, 0.35, 0.4,
                 new Rotation3d(Angle.ofBaseUnits(0, Radians), getPitch(),
                         Angle.ofBaseUnits(Units.degreesToRadians(90), Radians)));
         return pose;

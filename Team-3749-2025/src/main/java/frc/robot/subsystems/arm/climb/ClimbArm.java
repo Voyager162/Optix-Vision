@@ -6,6 +6,7 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.math.util.Units;
@@ -149,13 +150,12 @@ public class ClimbArm extends SubsystemBase {
 	}
 
 	private Angle getPitch() {
-		return Angle.ofBaseUnits(-data.positionUnits + Units.degreesToRadians(0), Radians); // remove offset once climb
+		return Angle.ofBaseUnits(-data.positionUnits + Units.degreesToRadians(-30), Radians); // remove offset once climb
 																							// arm code is fixed
 	}
 
 	private Pose3d getPose3d() {
-		//
-		Pose3d pose = new Pose3d(0, 0.18, 0.165,
+		Pose3d pose = new Pose3d(-0.33, 0.18, 0.165,
 				new Rotation3d(getPitch(), Angle.ofBaseUnits(0, Radians), Angle.ofBaseUnits(0, Radians)));
 		return pose;
 	}
