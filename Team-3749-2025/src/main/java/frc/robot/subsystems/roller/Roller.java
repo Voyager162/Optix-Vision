@@ -118,7 +118,7 @@ public abstract class Roller extends SubsystemBase {
      * Maintains the roller's last known position
      */
     public void maintain() {
-        rollerIO.setPosition(rollerData.rollerPositionRad, lastKnownPosition);
+        rollerIO.setVoltage(positionController.calculate(rollerData.rollerPositionRad, lastKnownPosition));
     }
 
     public void stop() {

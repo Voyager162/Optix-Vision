@@ -121,7 +121,7 @@ public class RollerConstants {
     }
 
     public enum RollerStates {
-        INTAKE(50, 50, 50),
+        INTAKE(50, 100, 50),
         MAINTAIN(0, 0, 0),
         OUTTAKE(-50, -50, -50),
         STOP(0, 0, 0);

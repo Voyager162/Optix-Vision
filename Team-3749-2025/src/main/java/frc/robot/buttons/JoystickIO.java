@@ -13,6 +13,7 @@ import frc.robot.Robot;
 import frc.robot.commands.arm.SetClimbArmState;
 import frc.robot.commands.arm.SetCoralArmState;
 import frc.robot.commands.elevator.SetElevatorState;
+import frc.robot.commands.integration.IntakeFloor;
 import frc.robot.commands.roller.MaintainCommand;
 import frc.robot.commands.roller.OuttakeRoller;
 import frc.robot.commands.roller.RunRoller;
@@ -115,9 +116,9 @@ public class JoystickIO {
 
         // Run
         // operator.a().whileTrue(algaeRun);
-        operator.b().onTrue(coralRunIntake);
+        // operator.b().onTrue(new IntakeFloor());
         // operator.a().onTrue(coralRunOuttake);
-        // operator.x().onTrue(coralHandOff);
+        operator.x().onTrue(coralHandOff);
         // operator.y().onTrue(coralPickUp);
 
         // operator.x().whileTrue(scoringRun);
