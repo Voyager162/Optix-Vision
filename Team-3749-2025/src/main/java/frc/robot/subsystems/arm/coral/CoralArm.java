@@ -28,6 +28,8 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
+import com.google.flatbuffers.FlatBufferBuilder;
+
 /**
  * Subsystem class for the coral arm
  *
@@ -48,7 +50,7 @@ public class CoralArm extends SubsystemBase {
     private LoggedMechanism2d mechanism2d = new LoggedMechanism2d(3, 3);
     private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 1.8, .4);
     private LoggedMechanismLigament2d armLigament = armRoot
-            .append(new LoggedMechanismLigament2d("Coral Arm", CoralArmConstants.armLength_meters, 0));
+            .append(new LoggedMechanismLigament2d("Coral Arm", CoralArmConstants.armLengthMeters, 0));
 
     private StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
             .getStructTopic("CoralArm Pose", Pose3d.struct).publish();
@@ -119,7 +121,7 @@ public class CoralArm extends SubsystemBase {
                                                                                                                    // zero
                                                                                                                    // when
                                                                                                                    // stopped
-                // ensure velocity is near zero when stopped
+            // ensure velocity is near zero when stopped
             default:
                 return false; // Return false if the state is unrecognized.
         }
@@ -209,9 +211,10 @@ public class CoralArm extends SubsystemBase {
 
         // Calculate the PID control voltage based on the arm's current position
         double pidVoltage = profile.calculate(getPositionRad());
+        pidVoltage = 0;
         // Calculate the feedforward voltage based on velocity
         double ffVoltage = feedforward.calculate(getPositionRad(), firstState.velocity);
-
+        // ffVoltage = CoralArmConstants.kG.get() * Math.cos(data.positionRad);
         // Apply the combined PID and feedforward voltages to the arm
         double volts = ffVoltage + pidVoltage;
         armIO.setVoltage(volts);
