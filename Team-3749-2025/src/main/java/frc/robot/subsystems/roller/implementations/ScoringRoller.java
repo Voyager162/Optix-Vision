@@ -15,9 +15,11 @@ import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.PhotoelectricIO.PhotoelectricData;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
+import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 import frc.robot.subsystems.roller.RollerIO.RollerData;
 import frc.robot.subsystems.roller.real.JTVisiSight;
 import frc.robot.subsystems.roller.sim.PhotoelectricSim;
+import frc.robot.subsystems.roller.sim.RollerSim;
 
 /**
  * Scoring implementation of the roller subsystem
@@ -61,7 +63,7 @@ public class ScoringRoller extends Roller {
 
     @Override
     public void outtake() {
-        setVelocity(RollerConstants.Coral.intakeVelocity.get());
+        setVelocity(RollerStates.OUTTAKE.scoringVelocity);
     }
 
 
@@ -74,20 +76,15 @@ public class ScoringRoller extends Roller {
      * Implemetation of run method
      */
     @Override
-    public void run() {
+    public void intake() {
         if (!rollerData.sensorTripped) {
-            setVelocity(RollerConstants.Scoring.scoreVelocity);
+            setVelocity(RollerStates.INTAKE.scoringVelocity);
         } else {
             setVoltage(0.0);
         }
     }
 
-    /**
-     * Implemetation of score method
-     */
-    public void score() {
-        setVelocity(RollerConstants.Scoring.scoreVelocity);
-    }
+
 
     public boolean hasPiece() {
         return hasPiece;

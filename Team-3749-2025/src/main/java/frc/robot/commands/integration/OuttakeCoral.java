@@ -26,7 +26,7 @@ public class OuttakeCoral extends Command {
     @Override
     public void execute() {
         if (Robot.coralArm.getState() == CoralArmConstants.ArmStates.CORAL_PICKUP && Robot.coralArm.getIsStableState()) {
-            Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE);
+            Robot.coralRoller.setState(RollerConstants.RollerStates.OUTTAKE);
         }
     }
 

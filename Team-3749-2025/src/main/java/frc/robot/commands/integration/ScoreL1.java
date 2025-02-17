@@ -28,7 +28,7 @@ public class ScoreL1 extends Command {
     @Override
     public void execute() {
         if (Robot.coralArm.getState() == CoralArmConstants.ArmStates.L1 && Robot.coralArm.getIsStableState()) {
-            Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE);
+            Robot.coralRoller.setState(RollerConstants.RollerStates.OUTTAKE);
         }
     }
 

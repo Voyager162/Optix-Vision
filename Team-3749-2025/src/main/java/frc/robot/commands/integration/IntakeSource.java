@@ -24,7 +24,7 @@ public class IntakeSource extends Command {
             Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
             Robot.elevator.setState(ElevatorStates.SOURCE);
             Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
-            Robot.scoringRoller.setState(RollerConstants.RollerStates.RUN); 
+            Robot.scoringRoller.setState(RollerConstants.RollerStates.OUTTAKE); 
         }
     }
 

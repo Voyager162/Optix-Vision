@@ -4,6 +4,7 @@ import edu.wpi.first.math.controller.PIDController;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.commands.auto.Autos;
@@ -12,9 +13,11 @@ import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.PhotoelectricIO.PhotoelectricData;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
+import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 import frc.robot.subsystems.roller.RollerIO.RollerData;
 import frc.robot.subsystems.roller.sim.PhotoelectricSim;
-
+import frc.robot.subsystems.roller.sim.RollerSim;
+import frc.robot.utils.UtilityFunctions;
 
 /**
  * Coral implementation of the roller subsystem
@@ -28,52 +31,50 @@ public class CoralRoller extends Roller {
     private PhotoelectricData photoelectricData = new PhotoelectricData();
     private RollerData rollerData = new RollerData();
     private boolean routineStarted = false;
-    
+    private double intakeStartTime = 0;
+
     public CoralRoller() {
         super(Implementations.CORAL, FF(), positionPID(), velocityPID());
         photoelectricIO = new PhotoelectricSim();
     }
 
     public static SimpleMotorFeedforward FF() {
-        return new SimpleMotorFeedforward(RollerConstants.Coral.kSVelocity.get(), RollerConstants.Coral.kVVelocity.get(),
+        return new SimpleMotorFeedforward(RollerConstants.Coral.kSVelocity.get(),
+                RollerConstants.Coral.kVVelocity.get(),
                 RollerConstants.Coral.kAVelocity.get());
     }
-        public static PIDController positionPID(){
-        return new PIDController(RollerConstants.Coral.kPPosition.get(), RollerConstants.Coral.kIPosition.get(),RollerConstants.Coral.kDPosition.get());
+
+    public static PIDController positionPID() {
+        return new PIDController(RollerConstants.Coral.kPPosition.get(), RollerConstants.Coral.kIPosition.get(),
+                RollerConstants.Coral.kDPosition.get());
     }
 
-    public static PIDController velocityPID(){
-        return new PIDController(RollerConstants.Coral.kPVelocity.get(), RollerConstants.Coral.kIVelocity.get(),RollerConstants.Coral.kDVelocity.get());
+    public static PIDController velocityPID() {
+        return new PIDController(RollerConstants.Coral.kPVelocity.get(), RollerConstants.Coral.kIVelocity.get(),
+                RollerConstants.Coral.kDVelocity.get());
     }
 
-    public boolean getIsStableState() {
-        double currentVelocity = rollerData.rollerVelocityRadPerSec;
-        double velocityChange = Math.abs(currentVelocity - lastVelocity);
-        double velocityChangeThreshold = 0.05; 
-
-        switch(Robot.coralRoller.getState()) {
-            case RUN:
-                return velocityChange < velocityChangeThreshold;
-            case SCORE:
-                return velocityChange < velocityChangeThreshold;
-            case MAINTAIN:
-                return false;
-            case STOP:
-                return true;
-            default:
-                return false;
-        }
-    }
 
     public boolean hasPiece() {
         if (Robot.isSimulation()) {
-           return hasPiece; 
+            return hasPiece;
         } else {
-            if (!getIsStableState()) { 
-                hasPiece = true; 
+            if (!super.getIsStableState() && getState() == RollerStates.INTAKE
+                    && Timer.getFPGATimestamp() - intakeStartTime > 0.4) {
+                hasPiece = true;
             }
             return hasPiece;
         }
+    }
+
+    @Override
+    public void setState(RollerStates rollerState) {
+        System.out.println(rollerState.name());
+        super.setState(rollerState);
+        if (rollerState.equals(RollerStates.INTAKE)) {
+            intakeStartTime = Timer.getFPGATimestamp();
+        }
+
     }
 
     public boolean getHasPiece() {
@@ -84,22 +85,19 @@ public class CoralRoller extends Roller {
      * Implemetation of run method
      */
     @Override
-    public void run() {
-        setVelocity(RollerConstants.Coral.intakeVelocity.get());
+    public void intake() {
+        setVelocity(RollerStates.INTAKE.coralVelocity);
     }
-        /**
+
+    /**
      * Implemetation of run method
      */
     @Override
     public void outtake() {
-        setVelocity(RollerConstants.Coral.intakeVelocity.get());
+        setVelocity(RollerStates.OUTTAKE.coralVelocity);
     }
-    /**
-     * Implemetation of score method
-     */
-    public void score() {
-        setVelocity(RollerConstants.Coral.scoreVelocity);
-    }
+
+
 
     @Override
     public void periodic() {
@@ -110,16 +108,16 @@ public class CoralRoller extends Roller {
         Logger.recordOutput("subsystems/rollers/coral/hasPiece", hasPiece);
         Logger.recordOutput("subsystems/rollers/coral/setInitalState", routineStarted);
 
-        // routineStarted is true when the routine begins in Autos 
-        if (Autos.isRoutineStarted() && !routineStarted) { 
-            routineStarted = true; 
+        // routineStarted is true when the routine begins in Autos
+        if (Autos.isRoutineStarted() && !routineStarted) {
+            routineStarted = true;
             // sets initial state at the start of each routine
             photoelectricIO.setInitialState(true);
         }
-        
-        // routineStarted is false when the routine ends in Autos 
+
+        // routineStarted is false when the routine ends in Autos
         if (!Autos.isRoutineStarted() && routineStarted) {
-            routineStarted = false;  
+            routineStarted = false;
         }
 
         if (this.getCurrentCommand() != null) {

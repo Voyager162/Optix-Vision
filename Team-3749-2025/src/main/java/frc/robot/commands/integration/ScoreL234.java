@@ -45,8 +45,8 @@ public class ScoreL234 extends Command {
         // handoff execution
         if ((Robot.coralArm.getState() == CoralArmConstants.ArmStates.HAND_OFF) && Robot.coralArm.getIsStableState() &&
             (Robot.elevator.getState() == ElevatorStates.STOW) && Robot.elevator.getIsStableState()) {
-            Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE);
-            Robot.scoringRoller.setState(RollerConstants.RollerStates.RUN);
+            Robot.coralRoller.setState(RollerConstants.RollerStates.OUTTAKE);
+            Robot.scoringRoller.setState(RollerConstants.RollerStates.INTAKE);
             handoffComplete = true;
         }
         // checks whether handoff is complete
@@ -56,7 +56,7 @@ public class ScoreL234 extends Command {
         }
         // scores when elevator reaches desired state
         if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState()) {
-            Robot.scoringRoller.setState(RollerConstants.RollerStates.SCORE);
+            Robot.scoringRoller.setState(RollerConstants.RollerStates.OUTTAKE);
         }
     }
 

@@ -5,7 +5,7 @@ import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 
 public class RunRoller extends Command {
-    private static RollerStates targetState = RollerStates.RUN;
+    private static RollerStates targetState = RollerStates.INTAKE;
     private Roller roller;
 
     public RunRoller(Roller roller) {

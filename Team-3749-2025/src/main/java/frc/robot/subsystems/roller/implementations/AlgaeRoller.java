@@ -5,6 +5,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
+import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 
 /**
  * Algae implementation of the roller subsystem
@@ -34,13 +35,13 @@ public class AlgaeRoller extends Roller {
     }
 
     @Override
-    public void run() {
-        setVelocity(RollerConstants.Algae.velocity);
+    public void intake() {
+        setVelocity(RollerStates.INTAKE.algaeVelocity);
     }
 
     @Override
     public void outtake() {
-        setVelocity(RollerConstants.Coral.intakeVelocity.get());
+        setVelocity(RollerStates.OUTTAKE.algaeVelocity);
     }
 
 }
