@@ -43,20 +43,19 @@ public class CoralArmConstants {
 	public static final double stowSetPoint_rad = 2.51; // 70, 1.2217304764
 	public static final double handOffSetPoint_rad = 2.51; // 40
 	public static final double coralPickUpSetPoint_rad = -0.57; // 175, 3.05432619099
+	public static final double l1SetPoint_rad = Math.PI / 4;
 
-	public static final double momentOfInertia = 0.775; // from last years MOI
+	public static final double momentOfInertia = 0.775;
 
 	public static final boolean simulateGravity = true;
 	public static final double stateMarginOfError = 0.01;
 
-	public enum ArmStates {
-		MOVING_DOWN,
-		MOVING_UP,
-		CORAL_PICKUP,
-		L1,
-		SOURCE,
-		HAND_OFF,
-		STOWED,
-		STOPPED
-	}
+    public enum ArmStates {
+        CORAL_PICKUP,
+        L1,
+        SOURCE,
+        HAND_OFF,
+        STOWED,
+        STOPPED
+    }
 }

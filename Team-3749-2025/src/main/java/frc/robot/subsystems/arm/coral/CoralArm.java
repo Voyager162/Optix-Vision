@@ -17,11 +17,9 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
-import static edu.wpi.first.units.Units.*;
 
 import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
 import frc.robot.subsystems.arm.coral.sim.CoralArmSim;
-import frc.robot.utils.UtilityFunctions;
 
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
@@ -114,14 +112,11 @@ public class CoralArm extends SubsystemBase {
                 return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
                         CoralArmConstants.coralPickUpSetPoint_rad, data.positionRad);
             case STOPPED:
-                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError, 0, data.velocityUnits); // Ensure
-                                                                                                                   // velocity
-                                                                                                                   // is
-                                                                                                                   // near
-                                                                                                                   // zero
-                                                                                                                   // when
-                                                                                                                   // stopped
-            // ensure velocity is near zero when stopped
+                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError, 0, data.velocityUnits);
+                // ensure velocity is near zero when stopped
+            case L1:
+                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
+                        CoralArmConstants.l1SetPoint_rad, data.positionRad);
             default:
                 return false; // Return false if the state is unrecognized.
         }
@@ -160,6 +155,10 @@ public class CoralArm extends SubsystemBase {
 
             case HAND_OFF:
                 setGoal(CoralArmConstants.handOffSetPoint_rad); // Set the goal to the hand-off position.
+                break;
+
+            case L1:
+                setGoal(CoralArmConstants.l1SetPoint_rad); // Set the goal to the hand-off position.
                 break;
 
             default:

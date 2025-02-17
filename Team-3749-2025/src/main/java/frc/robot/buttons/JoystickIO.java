@@ -44,6 +44,9 @@ public class JoystickIO {
     private static final Command coralPickUp = new SetCoralArmState(Robot.coralArm,
             CoralArmConstants.ArmStates.CORAL_PICKUP,
             CoralArmConstants.coralPickUpSetPoint_rad);
+    private static final Command coralL1 = new SetCoralArmState(Robot.coralArm,
+            CoralArmConstants.ArmStates.L1,
+            CoralArmConstants.l1SetPoint_rad);
 
     private static final SetElevatorState l1 = new SetElevatorState(ElevatorStates.L1);
     private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
@@ -118,6 +121,7 @@ public class JoystickIO {
         // operator.a().whileTrue(algaeRun);
         // operator.b().onTrue(new IntakeFloor());
         // operator.a().onTrue(coralRunOuttake);
+        operator.a().onTrue(coralL1);
         operator.x().onTrue(coralHandOff);
         // operator.y().onTrue(coralPickUp);
 
