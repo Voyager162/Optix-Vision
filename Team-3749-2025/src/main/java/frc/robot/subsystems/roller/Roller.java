@@ -151,6 +151,8 @@ public abstract class Roller extends SubsystemBase {
         Logger.recordOutput("subsystems/roller/" + getName() + "/last known position", lastKnownPosition);
         Logger.recordOutput("subsystems/roller/" + getName() + "/state", rollerState.name());
         Logger.recordOutput("subsystems/roller/" + getName() + "/acceleration", rollerData.acceleration);
+        Logger.recordOutput("subsystems/roller/" + getName() + "/stable state", getIsStableState());
+
     }
 
 }

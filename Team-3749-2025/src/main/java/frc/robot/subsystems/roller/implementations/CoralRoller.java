@@ -54,14 +54,17 @@ public class CoralRoller extends Roller {
                 RollerConstants.Coral.kDVelocity.get());
     }
 
-
     public boolean hasPiece() {
+        SmartDashboard.putNumber("time since intake", Timer.getFPGATimestamp() - intakeStartTime);
+
         if (Robot.isSimulation()) {
-            return hasPiece;
+            return photoelectricData.sensing;
         } else {
             if (!super.getIsStableState() && getState() == RollerStates.INTAKE
                     && Timer.getFPGATimestamp() - intakeStartTime > 0.4) {
                 hasPiece = true;
+            } else {
+                hasPiece = false;
             }
             return hasPiece;
         }
@@ -97,16 +100,13 @@ public class CoralRoller extends Roller {
         setVelocity(RollerStates.OUTTAKE.coralVelocity);
     }
 
-
-
     @Override
     public void periodic() {
         super.periodic();
         photoelectricIO.updateData(photoelectricData);
-        hasPiece = photoelectricData.sensing;
 
-        Logger.recordOutput("subsystems/rollers/coral/hasPiece", hasPiece);
-        Logger.recordOutput("subsystems/rollers/coral/setInitalState", routineStarted);
+        Logger.recordOutput("subsystems/roller/CoralRoller/hasPiece", hasPiece());
+        Logger.recordOutput("subsystems/roller/CoralRoller/setInitalState", routineStarted);
 
         // routineStarted is true when the routine begins in Autos
         if (Autos.isRoutineStarted() && !routineStarted) {
