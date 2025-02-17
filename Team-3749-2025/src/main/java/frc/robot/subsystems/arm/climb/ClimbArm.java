@@ -236,7 +236,7 @@ public class ClimbArm extends SubsystemBase {
 
 		armIO.updateData(data);
 
-		runState();
+		// runState();
 
 		logData();
 	}

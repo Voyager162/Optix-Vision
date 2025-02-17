@@ -92,11 +92,14 @@ public class JoystickIO {
         // // Checking voltage for all subsystems
         operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(Robot.subsystemVoltageSetter.get())));
         // operator.b().onTrue(Commands.run(() -> Robot.coralArm.setVoltage(Robot.subsystemVoltageSetter.get())));
-        // operator.x().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.x().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(4))).onFalse(Commands.run(()->Robot.climbArm.setVoltage(0)));
+        operator.y().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(8))).onFalse(Commands.run(()->Robot.climbArm.setVoltage(0)));
+
         // operator.y().whileTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
         // operator.leftBumper().whileTrue(Commands.run(() -P> Robot.coralRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
         // operator.leftBumper().whileFalse(Commands.runOnce(() -> Robot.coralRoller.stop()));
-        // operator.rightBumper().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.rightBumper().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(8)));
+
 
 
         // All elevator stages
