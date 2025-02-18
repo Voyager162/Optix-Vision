@@ -28,22 +28,22 @@ public class CoralArmConstants {
 
 	// control values
 	public static LoggedTunableNumber kG = new LoggedTunableNumber("/subsystems/arms/coralArm/kG", 0.39);
-	public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/arms/coralArm/kP", 0);
+	public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/arms/coralArm/kP", 1.5);
 	public static LoggedTunableNumber kI = new LoggedTunableNumber("/subsystems/arms/coralArm/kP" + "/kI", 0);
 	public static LoggedTunableNumber kD = new LoggedTunableNumber("/subsystems/arms/coralArm/kD", 0);
 	public static LoggedTunableNumber kS = new LoggedTunableNumber("/subsystems/arms/coralArm/kS", 0.16);
-	public static LoggedTunableNumber kV = new LoggedTunableNumber("/subsystems/arms/coralArm/kV", 0.85);
-	public static LoggedTunableNumber kA = new LoggedTunableNumber("/subsystems/arms/coralArm/kA", 3.75);
+	public static LoggedTunableNumber kV = new LoggedTunableNumber("/subsystems/arms/coralArm/kV", 0.725);
+	public static LoggedTunableNumber kA = new LoggedTunableNumber("/subsystems/arms/coralArm/kA", 0);
 	public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/arms/coralArm/max velocity",
-			7);
+			6);
 	public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
 			"/subsystems/arms/coralArm/max acceleration",
-			14);
+			12);
 
 	public static final double stowSetPoint_rad = 2.37; // 70, 1.2217304764
 	public static final double handOffSetPoint_rad = 2.37; // 40
 	public static final double coralPickUpSetPoint_rad = -Units.degreesToRadians(38.5); // 175, 3.05432619099
-	public static final double l1SetPoint_rad = Math.PI / 4;
+	public static final double l1SetPoint_rad = Math.PI/4;
 
 	public static final double momentOfInertia = 0.775;
 

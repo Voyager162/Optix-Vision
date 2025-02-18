@@ -20,6 +20,7 @@ public class SetCoralArmState extends Command {
 
     @Override
     public void initialize() {
+        System.out.println(state.name());
         arm.setState(state);
     }
 

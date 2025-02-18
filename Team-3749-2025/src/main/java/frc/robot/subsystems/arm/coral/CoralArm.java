@@ -130,6 +130,8 @@ public class CoralArm extends SubsystemBase {
      * @param volts The voltage to apply to the arm motors.
      */
     public void setVoltage(double volts) {
+        // armIO.setVoltage(volts + CoralArmConstants.kG.get() * Math.cos(data.positionRad));
+        // System.out.println("volts");
         armIO.setVoltage(volts);
     }
 
@@ -210,9 +212,11 @@ public class CoralArm extends SubsystemBase {
 
         // Calculate the PID control voltage based on the arm's current position
         double pidVoltage = profile.calculate(getPositionRad());
-        pidVoltage = 0;
+        State nextState = profile.getSetpoint();
+
+        // pidVoltage = 0;
         // Calculate the feedforward voltage based on velocity
-        double ffVoltage = feedforward.calculate(getPositionRad(), firstState.velocity);
+        double ffVoltage = feedforward.calculate(getPositionRad(), firstState.velocity, nextState.velocity);
         // ffVoltage = CoralArmConstants.kG.get() * Math.cos(data.positionRad);
         // Apply the combined PID and feedforward voltages to the arm
         double volts = ffVoltage + pidVoltage;
