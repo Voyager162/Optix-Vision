@@ -60,6 +60,10 @@ public class OptixSpark {
         return motor.getBusVoltage() * motor.getAppliedOutput();
     }
 
+    public double getBusVolts(){
+        return motor.getBusVoltage();
+    }
+
     public double getCurrent() {
         return motor.getOutputCurrent();
     }

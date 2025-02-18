@@ -28,11 +28,11 @@ public class CoralArmConstants {
 
 	// control values
 	public static LoggedTunableNumber kG = new LoggedTunableNumber("/subsystems/arms/coralArm/kG", 0.39);
-	public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/arms/coralArm/kP", 1.5);
+	public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/arms/coralArm/kP", 2.75);
 	public static LoggedTunableNumber kI = new LoggedTunableNumber("/subsystems/arms/coralArm/kP" + "/kI", 0);
 	public static LoggedTunableNumber kD = new LoggedTunableNumber("/subsystems/arms/coralArm/kD", 0);
 	public static LoggedTunableNumber kS = new LoggedTunableNumber("/subsystems/arms/coralArm/kS", 0.16);
-	public static LoggedTunableNumber kV = new LoggedTunableNumber("/subsystems/arms/coralArm/kV", 0.725);
+	public static LoggedTunableNumber kV = new LoggedTunableNumber("/subsystems/arms/coralArm/kV", 0.61);
 	public static LoggedTunableNumber kA = new LoggedTunableNumber("/subsystems/arms/coralArm/kA", 0);
 	public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/arms/coralArm/max velocity",
 			6);

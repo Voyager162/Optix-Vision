@@ -130,7 +130,8 @@ public class CoralArm extends SubsystemBase {
      * @param volts The voltage to apply to the arm motors.
      */
     public void setVoltage(double volts) {
-        // armIO.setVoltage(volts + CoralArmConstants.kG.get() * Math.cos(data.positionRad));
+        // armIO.setVoltage(volts + CoralArmConstants.kG.get() *
+        // Math.cos(data.positionRad));
         // System.out.println("volts");
         armIO.setVoltage(volts);
     }
@@ -274,6 +275,7 @@ public class CoralArm extends SubsystemBase {
     /** Periodic method for updating arm behavior. */
     @Override
     public void periodic() {
+        profile.setPID(CoralArmConstants.kP.get(), CoralArmConstants.kI.get(), CoralArmConstants.kD.get());
 
         armIO.updateData(data);
 
