@@ -4,6 +4,7 @@ import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.arm.coral.CoralArmIO;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.utils.OptixSpark;
@@ -83,6 +84,8 @@ public class CoralArmSparkMax implements CoralArmIO {
 	public void setVoltage(double volts) {
 		double inputVolts = MathUtil.applyDeadband(volts, 0.05);
 		inputVolts = MathUtil.clamp(volts, -12, 12);
+		SmartDashboard.putNumber("input volts", inputVolts);
+		SmartDashboard.putNumber("bus volts", motor.getBusVolts());
 		motor.setVoltage(inputVolts);
 	}
 
