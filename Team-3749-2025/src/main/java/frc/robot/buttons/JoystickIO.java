@@ -89,7 +89,7 @@ public class JoystickIO {
         // pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
         
         // // Checking voltage for all subsystems
-        // operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.rightBumper().onTrue(Commands.run(() -> Robot.elevator.setVoltage(-1.5)));
         // operator.b().onTrue(Commands.run(() -> Robot.coralArm.setVoltage(Robot.subsystemVoltageSetter.get())));
         // operator.x().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(4))).onFalse(Commands.run(()->Robot.climbArm.setVoltage(0)));
         // operator.y().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(8))).onFalse(Commands.run(()->Robot.climbArm.setVoltage(0)));
