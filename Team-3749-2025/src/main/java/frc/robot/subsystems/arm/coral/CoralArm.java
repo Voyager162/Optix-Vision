@@ -113,7 +113,7 @@ public class CoralArm extends SubsystemBase {
                         CoralArmConstants.coralPickUpSetPoint_rad, data.positionRad);
             case STOPPED:
                 return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError, 0, data.velocityUnits);
-                // ensure velocity is near zero when stopped
+            // ensure velocity is near zero when stopped
             case L1:
                 return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
                         CoralArmConstants.l1SetPoint_rad, data.positionRad);
@@ -248,6 +248,8 @@ public class CoralArm extends SubsystemBase {
                 this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
         Logger.recordOutput("subsystems/arms/coralArm/position", data.positionRad);
         Logger.recordOutput("subsystems/arms/coralArm/velocity", data.velocityUnits);
+        Logger.recordOutput("subsystems/arms/coralArm/setpoint position", profile.getSetpoint().position);
+        Logger.recordOutput("subsystems/arms/coralArm/setpoint velocity", profile.getSetpoint().velocity);
         Logger.recordOutput("subsystems/arms/coralArm/input volts", data.inputVolts);
         Logger.recordOutput("subsystems/arms/coralArm/applied volts", data.motorAppliedVolts);
         Logger.recordOutput("subsystems/arms/coralArm/current amps", data.motorCurrentAmps);
