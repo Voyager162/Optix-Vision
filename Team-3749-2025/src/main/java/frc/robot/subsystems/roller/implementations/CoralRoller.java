@@ -105,7 +105,7 @@ public class CoralRoller extends Roller {
     public void periodic() {
         super.periodic();
         photoelectricIO.updateData(photoelectricData);
-        hasPiece = photoelectricData.sensing;
+        hasPiece = true;//photoelectricData.sensing;
 
         Logger.recordOutput("subsystems/rollers/coral/hasPiece", hasPiece);
         Logger.recordOutput("subsystems/rollers/coral/setInitalState", routineStarted);

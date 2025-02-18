@@ -28,7 +28,7 @@ public class CoralArmConstants {
 
 	// control values
 	public static LoggedTunableNumber kG = new LoggedTunableNumber("/subsystems/arms/coralArm/kG", 0.365);
-	public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/arms/coralArm/kP", 0);
+	public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/arms/coralArm/kP", 2.5);
 	public static LoggedTunableNumber kI = new LoggedTunableNumber("/subsystems/arms/coralArm/kP" + "/kI", 0);
 	public static LoggedTunableNumber kD = new LoggedTunableNumber("/subsystems/arms/coralArm/kD", 0);
 	public static LoggedTunableNumber kS = new LoggedTunableNumber("/subsystems/arms/coralArm/kS", 0.135);
@@ -42,6 +42,7 @@ public class CoralArmConstants {
 	public static final double stowSetPoint_rad = 2.51; // 70, 1.2217304764
 	public static final double handOffSetPoint_rad = 2.51; // 40
 	public static final double coralPickUpSetPoint_rad = -0.57; // 175, 3.05432619099
+	public static final double scoreL1_rad = 80 * Math.PI / 180;
 
 	public static final double momentOfInertia = 0.775; // from last years MOI
 
