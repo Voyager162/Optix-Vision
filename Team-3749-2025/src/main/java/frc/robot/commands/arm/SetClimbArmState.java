@@ -12,7 +12,7 @@ public class SetClimbArmState extends Command {
     private final ClimbArm arm;
     private final ArmStates state;
 
-    public SetClimbArmState(ClimbArm arm, ArmStates state, double setPoint) {
+    public SetClimbArmState(ClimbArm arm, ArmStates state) {
         this.arm = arm;
         this.state = state;
         addRequirements(arm);

@@ -34,19 +34,14 @@ public class JoystickIO {
     private static final CommandXboxController pilot = new CommandXboxController(0);
     private static final CommandXboxController operator = new CommandXboxController(1);
 
-    private static final Command climbStow = new SetClimbArmState(Robot.climbArm, ClimbArmConstants.ArmStates.STOWED,
-            ClimbArmConstants.stowSetPoint_rad);
-    private static final Command climb = new SetClimbArmState(Robot.climbArm, ClimbArmConstants.ArmStates.CLIMB,
-            ClimbArmConstants.climbSetPoint_rad);
+    private static final Command climbStow = new SetClimbArmState(Robot.climbArm, ClimbArmConstants.ArmStates.STOWED);
+    private static final Command climb = new SetClimbArmState(Robot.climbArm, ClimbArmConstants.ArmStates.CLIMB);
     private static final Command coralHandOff = new SetCoralArmState(Robot.coralArm,
-            CoralArmConstants.ArmStates.HAND_OFF,
-            CoralArmConstants.handOffSetPoint_rad);
+            CoralArmConstants.ArmStates.HAND_OFF);
     private static final Command coralPickUp = new SetCoralArmState(Robot.coralArm,
-            CoralArmConstants.ArmStates.CORAL_PICKUP,
-            CoralArmConstants.coralPickUpSetPoint_rad);
+            CoralArmConstants.ArmStates.CORAL_PICKUP);
     private static final Command coralL1 = new SetCoralArmState(Robot.coralArm,
-            CoralArmConstants.ArmStates.L1,
-            CoralArmConstants.l1SetPoint_rad);
+            CoralArmConstants.ArmStates.L1);
 
     private static final SetElevatorState l1 = new SetElevatorState(ElevatorStates.L1);
     private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);

@@ -12,7 +12,7 @@ public class SetCoralArmState extends Command {
     private final CoralArm arm;
     private final ArmStates state;
 
-    public SetCoralArmState(CoralArm arm, ArmStates state, double setPoint) {
+    public SetCoralArmState(CoralArm arm, ArmStates state) {
         this.arm = arm;
         this.state = state;
         addRequirements(arm);
