@@ -30,7 +30,7 @@ public class CoralArmSim implements CoralArmIO {
 				DCMotor.getNEO(CoralArmConstants.numMotors),
 				CoralArmConstants.armGearing,
 				CoralArmConstants.momentOfInertia,
-				CoralArmConstants.armLength_meters,
+				CoralArmConstants.armLengthMeters,
 				CoralArmConstants.armMinAngle_degrees * Math.PI / 180,
 				CoralArmConstants.armMaxAngle_degrees * Math.PI / 180,
 				CoralArmConstants.simulateGravity,
