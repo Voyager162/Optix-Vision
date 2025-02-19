@@ -26,6 +26,7 @@ public class OnTheFly extends Command {
     private final Timer timer = new Timer(); // Timer to track trajectory progress
 
     private Pose2d endpoint = new Pose2d();
+    private static boolean currentlyThreading = false; //threads make funky async stuff: this normalizes it
 
     /**
      * Constructs the OnTheFly command.
@@ -42,47 +43,54 @@ public class OnTheFly extends Command {
      */
     @Override
     public void initialize() {
-        timer.reset();
-        timer.start();
+        currentlyThreading = true;
+        new Thread(() -> {
+            timer.reset();
+            timer.start();
 
-        endpoint = Robot.swerve.getPPSetpoint().setpoint;
+            endpoint = Robot.swerve.getPPSetpoint().setpoint;
 
-        // Create a new dynamic path generator
-        ToPos toPos = new ToPos();
-        PathPlannerPath path = toPos.generateDynamicPath(
-                Robot.swerve.getPose(), // Current robot position
-                Robot.swerve.getPPSetpoint().approachPoint, // Intermediate approach point
-                Robot.swerve.getPPSetpoint().setpoint, // Final target position
-                Robot.swerve.getMaxDriveSpeed(), // Max driving speed
-                SwerveConstants.ControlConstants.maxAcceleration.get(), // Max acceleration
-                Robot.swerve.getMaxAngularSpeed(), // Max angular speed
-                SwerveConstants.ControlConstants.maxAngularAccelerationRadiansPerSecondSquared // Max angular acceleration
-        );
+            // Create a new dynamic path generator
+            ToPos toPos = new ToPos();
+            PathPlannerPath path = toPos.generateDynamicPath(
+                    Robot.swerve.getPose(), // Current robot position
+                    Robot.swerve.getPPSetpoint().approachPoint, // Intermediate approach point
+                    Robot.swerve.getPPSetpoint().setpoint, // Final target position
+                    Robot.swerve.getMaxDriveSpeed(), // Max driving speed
+                    SwerveConstants.ControlConstants.maxAcceleration.get(), // Max acceleration
+                    Robot.swerve.getMaxAngularSpeed(), // Max angular speed
+                    SwerveConstants.ControlConstants.maxAngularAccelerationRadiansPerSecondSquared // Max angular
+                                                                                                   // acceleration
+            );
 
-        // If path generation fails, stop the command
-        if (path == null) {
-            Robot.swerve.setIsOTF(false);
-            this.cancel();
-            return;
-        }
-
-        try {
-            // Generate the trajectory using the planned path and current robot state
-            trajectory = path.generateTrajectory(
-                    Robot.swerve.getChassisSpeeds(), // Current velocity
-                    Robot.swerve.getRotation2d(), // Current rotation
-                    RobotConfig.fromGUISettings()); // PathPlanner robot config settings
-
-            var states = trajectory.getStates();
-            if (states.size() >= 2) {
-                // Placeholder: Optionally store second-to-last waypoint
+            // If path generation fails, stop the command
+            if (path == null) {
+                Robot.swerve.setIsOTF(false);
+                currentlyThreading = false;
+                this.cancel();
+                return;
             }
-        } catch (IOException | ParseException e) {
-            // If an error occurs during trajectory generation, stop execution
-            e.printStackTrace();
-            Robot.swerve.setIsOTF(false);
-            this.cancel();
-        }
+
+            try {
+                // Generate the trajectory using the planned path and current robot state
+                trajectory = path.generateTrajectory(
+                        Robot.swerve.getChassisSpeeds(), // Current velocity
+                        Robot.swerve.getRotation2d(), // Current rotation
+                        RobotConfig.fromGUISettings()); // PathPlanner robot config settings
+
+                var states = trajectory.getStates();
+                if (states.size() >= 2) {
+                    // Placeholder: Optionally store second-to-last waypoint
+                }
+            } catch (IOException | ParseException e) {
+                // If an error occurs during trajectory generation, stop execution
+                e.printStackTrace();
+                Robot.swerve.setIsOTF(false);
+                currentlyThreading = false;
+                this.cancel();
+            }
+            currentlyThreading = false;
+        }).start();
     }
 
     /**
@@ -92,10 +100,16 @@ public class OnTheFly extends Command {
      */
     @Override
     public void execute() {
-        if (trajectory == null || !Robot.swerve.getIsOTF()) {
+        if(currentlyThreading)
+        {
+            return;
+        }
+
+        if ((trajectory == null || !Robot.swerve.getIsOTF())) {
             this.cancel();
             return;
         }
+
 
         // Get the current elapsed time in the trajectory
         double currentTime = timer.get();
@@ -133,6 +147,7 @@ public class OnTheFly extends Command {
      */
     @Override
     public boolean isFinished() {
-        return trajectory == null || !Robot.swerve.getIsOTF() || !Robot.swerve.getPPSetpoint().setpoint.equals(endpoint);
+        return !currentlyThreading && (trajectory == null || !Robot.swerve.getIsOTF()
+                || !Robot.swerve.getPPSetpoint().setpoint.equals(endpoint));
     }
 }
