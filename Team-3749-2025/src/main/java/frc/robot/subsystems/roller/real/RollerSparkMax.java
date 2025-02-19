@@ -25,14 +25,12 @@ public class RollerSparkMax implements RollerIO {
 
         switch (implementation) {
             case ALGAE:
-
                 rollerMotor = new OptixSpark(Algae.motorId, OptixSpark.Type.SPARKMAX);
                 rollerMotor.setPositionConversionFactor(2 * Math.PI / Algae.gearRatio);
                 rollerMotor.setVelocityConversionFactor((2 * Math.PI / Algae.gearRatio) / 60.0);
                 rollerMotor.setInverted(Algae.inverted);
                 break;
             case SCORING:
-
                 rollerMotor = new OptixSpark(Scoring.motorId, OptixSpark.Type.SPARKMAX);
                 rollerMotor.setPositionConversionFactor(2 * Math.PI / Scoring.gearRatio);
                 rollerMotor.setVelocityConversionFactor((2 * Math.PI / Scoring.gearRatio) / 60.0);
@@ -54,9 +52,6 @@ public class RollerSparkMax implements RollerIO {
         rollerMotor.setBrakeMode(false);
 
         rollerMotor.applyConfig();
-
-        rollerMotor.applyConfig();
-
     }
 
     @Override

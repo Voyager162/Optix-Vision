@@ -29,7 +29,5 @@ public interface ElevatorIO {
     }
 
     public default void setBrakeMode(boolean enable) {
-
     }
-
 }

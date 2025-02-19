@@ -1,27 +1,18 @@
 package frc.robot.subsystems.roller;
 
-import java.lang.Thread.State;
-import java.util.Map;
-
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.roller.RollerIO.RollerData;
 import frc.robot.subsystems.roller.real.RollerSparkMax;
 import frc.robot.subsystems.roller.sim.RollerSim;
 import frc.robot.utils.LoggedTunableNumber;
-import frc.robot.utils.MotorData;
-import frc.robot.utils.SysIdTuner;
 import frc.robot.utils.UtilityFunctions;
-import frc.robot.utils.SysIdTuner.Type;
 import frc.robot.Robot;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
-
-import static edu.wpi.first.units.Units.*;
 
 public abstract class Roller extends SubsystemBase {
     private RollerIO rollerIO;
@@ -50,7 +41,6 @@ public abstract class Roller extends SubsystemBase {
         this.positionController = positionController;
         this.velocityController = velocityController;
         this.rollerState = RollerConstants.RollerStates.STOP;
-
     }
 
     public RollerIO getRollerIO() {
@@ -154,5 +144,4 @@ public abstract class Roller extends SubsystemBase {
         Logger.recordOutput("subsystems/roller/" + getName() + "/stable state", getIsStableState());
 
     }
-
 }
