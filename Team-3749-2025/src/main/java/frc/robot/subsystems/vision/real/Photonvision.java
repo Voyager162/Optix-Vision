@@ -77,6 +77,7 @@ public class Photonvision implements VisionIO {
             if (pipelineResult.getTargets().size() == 1 &&
                     getHypotenuse(pipelineResult.getTargets().get(
                             0).bestCameraToTarget) > VisionConstants.RejectionRequirements.maxSingleTagDistanceMeters) {
+                                
                 SmartDashboard.putBoolean(index + ": single tag far", true);
 
                 continue;

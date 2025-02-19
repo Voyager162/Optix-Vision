@@ -15,7 +15,8 @@ public class JTVisiSight implements PhotoelectricIO{
 
     @Override
     public void updateData(PhotoelectricData data){
-        data.sensing = photoelectricSensor.get();
+        // sensor is inverted
+        data.sensing = !photoelectricSensor.get();
 
     }
 }
