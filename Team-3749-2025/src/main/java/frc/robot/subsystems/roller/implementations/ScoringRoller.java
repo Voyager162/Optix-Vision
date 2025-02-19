@@ -100,8 +100,8 @@ public class ScoringRoller extends Roller {
 
         photoelectricIO.updateData(photoelectricData);
 
-        // hasPiece = photoelectricData.sensing;
-        hasPiece = true;
+        hasPiece = photoelectricData.sensing;
+        // hasPiece = true;
 
         Logger.recordOutput("subsystems/roller/ScoringRoller/hasPiece", hasPiece);
         Logger.recordOutput("subsystems/roller/ScoringRoller/setInitalState", routineStarted);
