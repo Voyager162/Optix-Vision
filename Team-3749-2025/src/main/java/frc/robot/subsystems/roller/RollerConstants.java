@@ -14,7 +14,7 @@ public class RollerConstants {
         public static final boolean inverted = false;
 
         public static final double momentOfInertia = 0.04;
-        public static final double gearRatio = 5.0;
+        public static final double gearRatio = 9.0;
         public static final double measurementNoise = 0.0;
 
         public static LoggedTunableNumber kPVelocity = new LoggedTunableNumber(
