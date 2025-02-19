@@ -12,7 +12,7 @@ public class Vision extends SubsystemBase {
 
     public Vision() {
         if (Robot.isReal()) {
-            visionIO = new Photonvision(visionData);
+            // visionIO = new Photonvision(visionData);
         } else {
             throw new Error("Vision simulation not implemented");
         }
@@ -20,7 +20,7 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
-        visionIO.updatePose();
+        // visionIO.updatePose();
 
         for (int i = 0; i < visionData.visionEstimatedPoses.length; i++) {
             SmartDashboard.putNumber("Vision/Cam" + (i + 1) + "/latency", visionData.latencyMillis[i]);

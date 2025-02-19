@@ -97,9 +97,11 @@ public class JoystickIO {
         operator.y().whileTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(Robot.subsystemVoltageSetter.get()))).onFalse(Commands.run(() -> Robot.algaeRoller.setVoltage(0)));
         // operator.leftBumper().whileTrue(Commands.run(() -P> Robot.coralRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
         // operator.leftBumper().whileFalse(Commands.runOnce(() -> Robot.coralRoller.stop()));
-        operator.rightBumper().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(1)));//.onFalse(Commands.run(() -> Robot.scoringRoller.setVoltage(0)));
+        operator.rightBumper().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(3)));//.onFalse(Commands.run(() -> Robot.scoringRoller.setVoltage(0)));
         //kanhay's keyboard comment (donot remove need for college apps bc i coded a robot)
+        operator.leftBumper().onTrue(Commands.run(() -> Robot.coralRoller.setVoltage(3)));//.onFalse(Commands.run(() -> Robot.scoringRoller.setVoltage(0)));
 
+        operator.a().onTrue(Commands.run(() -> Robot.swerve.setTurnVoltage(3), Robot.swerve));//.onFalse(Commands.run(() -> Robot.scoringRoller.setVoltage(0)));
 
 
         // All elevator stages

@@ -126,6 +126,12 @@ public class Swerve extends SubsystemBase {
 
   }
 
+  public void setTurnVoltage(double volts){
+    for (int i =0; i<4; i++){
+      modules[i].setTurnVoltage(volts);
+    }
+  }
+
   
 
   public boolean getRotated() {

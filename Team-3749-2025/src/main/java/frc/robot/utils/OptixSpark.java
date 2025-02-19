@@ -43,7 +43,6 @@ public class OptixSpark {
         }
         controller = motor.getClosedLoopController();
         motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
     }
 
     public double getPosition() {

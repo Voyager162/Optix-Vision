@@ -278,8 +278,8 @@ public class CoralArm extends SubsystemBase {
     /** Periodic method for updating arm behavior. */
     @Override
     public void periodic() {
-        profile.setPID(CoralArmConstants.kP.get(), CoralArmConstants.kI.get(), CoralArmConstants.kD.get());
-
+        // profile.setPID(CoralArmConstants.kP.get(), CoralArmConstants.kI.get(), CoralArmConstants.kD.get());
+        profile.setPID(0, 0, 0);
         armIO.updateData(data);
 
         runState();
