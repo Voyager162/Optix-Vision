@@ -10,8 +10,8 @@ public interface CoralArmIO {
 	public static class ArmData {
 		public double appliedVolts = 0;
 		public double positionRad = 0;
-		public double velocityUnits = 0;
-		public double accelerationUnits = 0;
+		public double velocityRadsPerSecond = 0;
+		public double accelerationRadsPerSecondSquared = 0;
 		public double motorCurrentAmps = 0;
 		public double motorAppliedVolts = 0;
 		public double motorTempCelcius = 0;

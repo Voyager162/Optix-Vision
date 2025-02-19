@@ -18,9 +18,9 @@ public class CoralArmConstants {
 	public static final double armLengthIn = 17.796; // from cad max length of arm
 	public static final double armLengthMeters = Units.inchesToMeters(armLengthIn);
 
-	public static final int armMinAngle_degrees = 10;
-	public static final int armMaxAngle_degrees = 180;
-	public static final int armStartingAngle_degrees = 90;
+	public static final int armMinAngleDegrees = 10;
+	public static final int armMaxAngleDegrees = 180;
+	public static final int armStartingAngleDegrees = 90;
 
 	public static final double armMassKg = 1.132; // from cad, I highlighted all of the components on the arm and used
 													// the mass feature
@@ -40,10 +40,10 @@ public class CoralArmConstants {
 			"/subsystems/arms/coralArm/max acceleration",
 			12);
 
-	public static final double stowSetPoint_rad = 2.37; // 70, 1.2217304764
-	public static final double handOffSetPoint_rad = 2.37; // 40
-	public static final double coralPickUpSetPoint_rad = -Units.degreesToRadians(38.5); // 175, 3.05432619099
-	public static final double l1SetPoint_rad = Math.PI/4;
+	public static final double stowSetPointRad = 2.37; // 70, 1.2217304764
+	public static final double handOffSetPointRad = 2.37; // 40
+	public static final double coralPickUpSetPointRad = -Units.degreesToRadians(38.5); // 175, 3.05432619099
+	public static final double l1SetPointRad = Math.PI/4;
 
 	public static final double momentOfInertia = 0.775;
 

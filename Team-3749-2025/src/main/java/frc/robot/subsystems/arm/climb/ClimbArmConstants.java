@@ -5,7 +5,6 @@ import frc.robot.utils.LoggedTunableNumber;
 
 /**
  * Constants file for the climb arm subsystem
- *
  * @author Weston Gardner
  */
 public class ClimbArmConstants {
@@ -17,14 +16,14 @@ public class ClimbArmConstants {
 	public static final double absoluteEncoderOffsetRad = 6.13 - Math.PI * 0.5;
 
 	// arm specifications
-	public static final int armLength_inches = 16;
-	public static final double armLength_meters = Units.inchesToMeters(armLength_inches);
+	public static final int armLengthInches = 16;
+	public static final double armLengthMeters = Units.inchesToMeters(armLengthInches);
 
-	public static final int armMinAngle_degrees = -30;
-	public static final int armMaxAngle_degrees = 200;
-	public static final int armStartingAngle_degrees = 0;
+	public static final int armMinAngleDegrees = -30;
+	public static final int armMaxAngleDegrees = 200;
+	public static final int armStartingAngleDegrees = 0;
 
-	public static final double armMass_kg = 8.44;
+	public static final double armMassKg = 8.44;
 	public static final double armGearing = 125;
 
 	public static final double momentOfInertia = 0.775;
@@ -45,15 +44,14 @@ public class ClimbArmConstants {
 			18.4);
 
 	// setpoints
-	public static final double stowSetPoint_rad = Math.PI / 2;
-	public static final double climbSetPoint_rad = Math.PI * 6 / 6; // 20
-
+	public static final LoggedTunableNumber stowSetPointRad = new LoggedTunableNumber("/subsystems/arms/climbArm/stowSetPointRad", Math.PI / 2);
+	public static final LoggedTunableNumber climbVoltage = new LoggedTunableNumber("/subsystems/arms/climbArm/climbVoltage", 10.0);
+	
 	// extra
 	public static final boolean simulateGravity = true;
 	public static final double stateMarginOfError = 0.01;
 
 	public enum ArmStates {
-		PREPARE_FOR_CLIMB,
 		CLIMB,
 		STOWED,
 		STOPPED

@@ -31,10 +31,10 @@ public class CoralArmSim implements CoralArmIO {
 				CoralArmConstants.armGearing,
 				CoralArmConstants.momentOfInertia,
 				CoralArmConstants.armLengthMeters,
-				CoralArmConstants.armMinAngle_degrees * Math.PI / 180,
-				CoralArmConstants.armMaxAngle_degrees * Math.PI / 180,
+				CoralArmConstants.armMinAngleDegrees * Math.PI / 180,
+				CoralArmConstants.armMaxAngleDegrees * Math.PI / 180,
 				CoralArmConstants.simulateGravity,
-				CoralArmConstants.armStartingAngle_degrees * Math.PI / 180);
+				CoralArmConstants.armStartingAngleDegrees * Math.PI / 180);
 	}
 
 	/**
@@ -47,8 +47,8 @@ public class CoralArmSim implements CoralArmIO {
 		armSim.update(0.02);
 		double velocity = armSim.getVelocityRadPerSec();
 		data.positionRad = armSim.getAngleRads();
-		data.velocityUnits = velocity;
-		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
+		data.velocityRadsPerSecond = velocity;
+		data.accelerationRadsPerSecondSquared = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
 
 		data.motorAppliedVolts = inputVolts;
 		data.motorCurrentAmps = armSim.getCurrentDrawAmps();

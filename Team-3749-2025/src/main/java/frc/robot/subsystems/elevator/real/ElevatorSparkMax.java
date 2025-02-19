@@ -1,11 +1,8 @@
 package frc.robot.subsystems.elevator.real;
 
-import com.revrobotics.spark.ClosedLoopSlot;
-
 import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO;
-import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorControl;
 import frc.robot.utils.OptixSpark;
 import frc.robot.utils.MiscConstants.MotorControllerConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
@@ -24,6 +21,7 @@ public class ElevatorSparkMax implements ElevatorIO {
             OptixSpark.Type.SPARKMAX);
 
     private double previousVelocity = 0;
+    private double inputVolts = 0;
 
     public ElevatorSparkMax() {
         System.out.println("[Init] Creating Elevator");
@@ -42,7 +40,6 @@ public class ElevatorSparkMax implements ElevatorIO {
         rightMotor.applyConfig(leftMotor.getConfig());
         rightMotor.setInverted(ElevatorConstants.ElevatorSpecs.motorInverted[1]);
         rightMotor.applyConfig();
-
     }
 
     @Override
@@ -54,9 +51,6 @@ public class ElevatorSparkMax implements ElevatorIO {
     @Override
     public void updateData(ElevatorData data) {
         double velocity = (leftMotor.getVelocity() + rightMotor.getVelocity()) / 2;
-        // data.positionMeters = (leftMotor.getEncoder().getPosition() +
-        // rightMotor.getEncoder().getVelocity()) / 2
-        // + absolutePos;
         data.positionMeters = (leftMotor.getPosition() + rightMotor.getPosition()) / 2;
         data.velocityMetersPerSecond = velocity;
         data.accelerationMetersPerSecondSquared = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
@@ -72,11 +66,9 @@ public class ElevatorSparkMax implements ElevatorIO {
 
     @Override
     public void setVoltage(double volts) {
-        double inputVolts = MathUtil.applyDeadband(volts, 0.05);
+        inputVolts = MathUtil.applyDeadband(volts, 0.05);
         inputVolts = MathUtil.clamp(volts, -12, 12);
         leftMotor.setVoltage(inputVolts);
         rightMotor.setVoltage(inputVolts);
     }
-
-
 }

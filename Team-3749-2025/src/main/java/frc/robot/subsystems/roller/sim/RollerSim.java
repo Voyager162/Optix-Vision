@@ -70,6 +70,4 @@ public class RollerSim implements RollerIO {
     public void setVoltage(double rollerVolts) {
         rollerMotor.setInputVoltage(rollerVolts);
     }
-
-
 }

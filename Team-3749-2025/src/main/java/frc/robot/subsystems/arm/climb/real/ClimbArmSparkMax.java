@@ -29,11 +29,11 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 	/**
 	 * creates a new io implementation of a real arm that uses an absolute encoder
 	 * with two motors
-	 * 
-	 * @param frontMotorId
-	 * @param backMotorId
 	 */
 	public ClimbArmSparkMax() {
+
+		System.out.println("[Init] Creating Climb Arm");
+
 		frontMotor = new OptixSpark(ClimbArmConstants.frontMotorId, OptixSpark.Type.SPARKMAX);
 		backMotor = new OptixSpark(ClimbArmConstants.backMotorId, OptixSpark.Type.SPARKMAX);
 
@@ -75,7 +75,7 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 		velocity = (frontMotor.getVelocity() + backMotor.getVelocity()) / 2;
 		data.positionRad = getPosition();
 		data.velocityRadPerSec = velocity;
-		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
+		data.accelerationRadsPerSecondSquared = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
 		data.frontMotorCurrentAmps = frontMotor.getCurrent();
 		data.backMotorCurrentAmps = backMotor.getCurrent();
 		data.inputVolts = inputVolts;

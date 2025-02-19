@@ -31,16 +31,15 @@ public class ClimbArmSim implements ClimbArmIO {
 				DCMotor.getNEO(ClimbArmConstants.numMotors),
 				ClimbArmConstants.armGearing,
 				ClimbArmConstants.momentOfInertia,
-				ClimbArmConstants.armLength_meters,
-				ClimbArmConstants.armMinAngle_degrees * Math.PI / 180,
-				ClimbArmConstants.armMaxAngle_degrees * Math.PI / 180,
+				ClimbArmConstants.armLengthMeters,
+				ClimbArmConstants.armMinAngleDegrees * Math.PI / 180,
+				ClimbArmConstants.armMaxAngleDegrees * Math.PI / 180,
 				ClimbArmConstants.simulateGravity,
-				ClimbArmConstants.armStartingAngle_degrees * Math.PI / 180);
+				ClimbArmConstants.armStartingAngleDegrees * Math.PI / 180);
 	}
 
 	/**
 	 * Updates the set of loggable inputs for the sim.
-	 *
 	 * @param data
 	 */
 	@Override
@@ -50,7 +49,7 @@ public class ClimbArmSim implements ClimbArmIO {
 		velocity = armSim.getVelocityRadPerSec();
 		data.positionRad = armSim.getAngleRads();
 		data.velocityRadPerSec = velocity;
-		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
+		data.accelerationRadsPerSecondSquared = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
 
 		data.inputVolts = inputVolts;
 		data.frontMotorAppliedVolts = inputVolts;

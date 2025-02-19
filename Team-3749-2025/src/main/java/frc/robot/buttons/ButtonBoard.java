@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 public class ButtonBoard {
 
+    // IPAC players
     public GenericHID buttonBoardPlayer1 = new GenericHID(1);
     public GenericHID buttonBoardPlayer2 = new GenericHID(2);
     public GenericHID buttonBoardPlayer3 = new GenericHID(3);
