@@ -43,4 +43,10 @@ public class AlgaeRoller extends Roller {
         setVelocity(RollerConstants.Coral.intakeVelocity.get());
     }
 
+    @Override
+    public void score()
+    {
+        //algae allegedly does nothing while scoring
+    }
+
 }

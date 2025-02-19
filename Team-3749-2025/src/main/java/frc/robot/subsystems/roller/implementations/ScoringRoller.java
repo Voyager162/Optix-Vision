@@ -81,6 +81,7 @@ public class ScoringRoller extends Roller {
     /**
      * Implemetation of score method
      */
+    @Override
     public void score() {
         setVelocity(RollerConstants.Scoring.scoreVelocity);
     }
@@ -99,7 +100,8 @@ public class ScoringRoller extends Roller {
 
         photoelectricIO.updateData(photoelectricData);
 
-        hasPiece = photoelectricData.sensing;
+        // hasPiece = photoelectricData.sensing;
+        hasPiece = true;
 
         Logger.recordOutput("subsystems/roller/ScoringRoller/hasPiece", hasPiece);
         Logger.recordOutput("subsystems/roller/ScoringRoller/setInitalState", routineStarted);

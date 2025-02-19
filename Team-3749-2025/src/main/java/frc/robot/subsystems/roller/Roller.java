@@ -96,10 +96,14 @@ public abstract class Roller extends SubsystemBase {
             case OUTTAKE:
                 outtake();
                 break;
+            case SCORE:
+                score();
+            break;
         }
     }
     public abstract void outtake();
     public abstract void intake();
+    public abstract void score();
 
     /**
      * Maintains the roller's last known position
