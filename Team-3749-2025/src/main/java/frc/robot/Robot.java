@@ -16,7 +16,6 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
 
-import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.implementations.AlgaeRoller;
 import frc.robot.subsystems.roller.implementations.CoralRoller;
 import frc.robot.subsystems.roller.implementations.ScoringRoller;
@@ -48,10 +47,6 @@ public class Robot extends LoggedRobot {
   
   private RobotContainer m_robotContainer;
   private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
-
-  public static Subsystem[] getAllSuperStructureSubsystems() {
-    return new Subsystem[] {algaeRoller, coralRoller, scoringRoller, elevator, coralArm, climbArm};
-  }
 
   public Robot() {
     pdh.setSwitchableChannel(true);
@@ -98,6 +93,10 @@ public class Robot extends LoggedRobot {
 
     // Start AdvantageKit logger
     Logger.start();
+  }
+
+  public static Subsystem[] getAllSuperStructureSubsystems() {
+    return new Subsystem[] {algaeRoller, coralRoller, scoringRoller, elevator, coralArm, climbArm};
   }
 
   @Override

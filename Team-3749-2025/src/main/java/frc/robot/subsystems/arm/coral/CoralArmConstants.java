@@ -40,22 +40,22 @@ public class CoralArmConstants {
 			"/subsystems/arms/coralArm/max acceleration",
 			12);
 
-	public static final double stowSetPointRad = 2.37; // 70, 1.2217304764
-	public static final double handOffSetPointRad = 2.37; // 40
-	public static final double coralPickUpSetPointRad = -Units.degreesToRadians(38.5); // 175, 3.05432619099
-	public static final double l1SetPointRad = Math.PI/4;
-
 	public static final double momentOfInertia = 0.775;
 
 	public static final boolean simulateGravity = true;
 	public static final double stateMarginOfError = 0.01;
 
 	public enum ArmStates {
-		CORAL_PICKUP,
-		L1,
-		SOURCE,
-		HAND_OFF,
-		STOWED,
-		STOPPED
+		CORAL_PICKUP(-Units.degreesToRadians(38.5)),
+		L1(Math.PI/4),
+		HAND_OFF(2.37),
+		STOWED(2.37),
+		STOPPED(0);
+
+		public final double setPointRad;
+
+		private ArmStates(double setPoint) {
+			this.setPointRad = setPoint;
+		}
 	}
 }

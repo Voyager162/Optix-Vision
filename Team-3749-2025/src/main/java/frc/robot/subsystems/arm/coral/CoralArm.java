@@ -26,7 +26,6 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
-
 /**
  * Subsystem class for the coral arm
  *
@@ -85,7 +84,8 @@ public class CoralArm extends SubsystemBase {
      * @return The current arm pitch.
      */
     private Angle getPitch() {
-        return Angle.ofBaseUnits(data.positionRad + Units.degreesToRadians(-55), Radians); // remove offset once coral arm code is fixed
+        return Angle.ofBaseUnits(data.positionRad + Units.degreesToRadians(-55), Radians); // remove offset once coral
+                                                                                           // arm code is fixed
     }
 
     /**
@@ -122,19 +122,20 @@ public class CoralArm extends SubsystemBase {
         switch (state) {
             case STOWED:
                 return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
-                        CoralArmConstants.stowSetPointRad, data.positionRad);
+                        state.setPointRad, data.positionRad);
             case HAND_OFF:
                 return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
-                        CoralArmConstants.handOffSetPointRad, data.positionRad);
+                        state.setPointRad, data.positionRad);
             case CORAL_PICKUP:
                 return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
-                        CoralArmConstants.coralPickUpSetPointRad, data.positionRad);
+                        state.setPointRad, data.positionRad);
             case STOPPED:
-                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError, 0, data.velocityRadsPerSecond);
+                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError, 0,
+                        data.velocityRadsPerSecond);
             // ensure velocity is near zero when stopped
             case L1:
                 return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
-                        CoralArmConstants.l1SetPointRad, data.positionRad);
+                        state.setPointRad, data.positionRad);
             default:
                 return false; // Return false if the state is unrecognized.
         }
@@ -161,27 +162,11 @@ public class CoralArm extends SubsystemBase {
     public void setState(CoralArmConstants.ArmStates state) {
         this.state = (CoralArmConstants.ArmStates) state;
         switch (this.state) {
-
             case STOPPED:
                 stop(); // Stop the arm if in STOPPED state.
                 break;
-            case STOWED:
-                setGoal(CoralArmConstants.stowSetPointRad); // Set the goal to the stowed position.
-                break;
-            case CORAL_PICKUP:
-                setGoal(CoralArmConstants.coralPickUpSetPointRad); // Set the goal to the coral pickup position.
-                break;
-
-            case HAND_OFF:
-                setGoal(CoralArmConstants.handOffSetPointRad); // Set the goal to the hand-off position.
-                break;
-
-            case L1:
-                setGoal(CoralArmConstants.l1SetPointRad); // Set the goal to the hand-off position.
-                break;
-
             default:
-                stop(); // Stop the arm in any unrecognized state.
+                setGoal(state.setPointRad); // Stop the arm in any unrecognized state.
                 break;
         }
     }
@@ -192,8 +177,7 @@ public class CoralArm extends SubsystemBase {
      * @param setpoint The desired target position for the arm in radians.
      */
     public void setGoal(double setpoint) {
-        System.out.println(setpoint);
-        profile.setGoal(setpoint); // Set the PID controller's goal.
+        profile.setGoal(setpoint);
     }
 
     // UTILITY FUNCTIONS
@@ -267,7 +251,7 @@ public class CoralArm extends SubsystemBase {
 
         Logger.recordOutput("subsystems/arms/coralArm/current amps", data.motorCurrentAmps);
         Logger.recordOutput("subsystems/arms/coralArm/temperature", data.motorTempCelcius);
-        
+
         Logger.recordOutput("subsystems/arms/coralArm/coral arm mechanism", mechanism2d);
 
         armLigament.setAngle(Math.toDegrees(data.positionRad));
