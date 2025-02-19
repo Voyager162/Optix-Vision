@@ -2,8 +2,10 @@ package frc.robot.buttons;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -50,35 +52,35 @@ public class JoystickIO {
 
     private final static GenericHID buttonBoardPlayer1 = new GenericHID(2);
     private final static GenericHID buttonBoardPlayer2 = new GenericHID(3);
-
-    // coral elevator positions
-    private final static JoystickButton buttonl1 = new JoystickButton(buttonBoardPlayer1, 1);
-    private final static JoystickButton buttonl2 = new JoystickButton(buttonBoardPlayer1, 2);
-    private final static JoystickButton buttonl3 = new JoystickButton(buttonBoardPlayer1, 3);
-    private final static JoystickButton buttonl4 = new JoystickButton(buttonBoardPlayer1, 4);
+    private final static GenericHID buttonBoardPlayer3 = new GenericHID(4);
 
     // source buttons
-    private final static JoystickButton buttonRightSource = new JoystickButton(buttonBoardPlayer1, 5);
-    private final static JoystickButton buttonLeftSource = new JoystickButton(buttonBoardPlayer1, 6);
+    private final static JoystickButton buttonL1 = new JoystickButton(buttonBoardPlayer1, 6);//fixed
+    private final static JoystickButton buttonL2 = new JoystickButton(buttonBoardPlayer1, 5); //fixed
+    private final static JoystickButton buttonL3 = new JoystickButton(buttonBoardPlayer1, 4); //fixed
+    private final static JoystickButton buttonL4 = new JoystickButton(buttonBoardPlayer1, 3); //fixed
+    private final static JoystickButton buttonLeftSource = new JoystickButton(buttonBoardPlayer1, 1); //fixed
+    private final static JoystickButton buttonRightSource = new JoystickButton(buttonBoardPlayer1, 2); //fixed
 
     // reef positions
-    private final static JoystickButton buttonReefZoneA = new JoystickButton(buttonBoardPlayer2, 7);
-    private final static JoystickButton buttonReefZoneB = new JoystickButton(buttonBoardPlayer2, 8);
-    private final static JoystickButton buttonReefZoneC = new JoystickButton(buttonBoardPlayer2, 9);
-    private final static JoystickButton buttonReefZoneD = new JoystickButton(buttonBoardPlayer2, 10);
-    private final static JoystickButton buttonReefZoneE = new JoystickButton(buttonBoardPlayer2, 11);
-    private final static JoystickButton buttonReefZoneF = new JoystickButton(buttonBoardPlayer2, 12);
-    private final static JoystickButton buttonReefZoneG = new JoystickButton(buttonBoardPlayer2, 13);
-    private final static JoystickButton buttonReefZoneH = new JoystickButton(buttonBoardPlayer2, 14);
-    private final static JoystickButton buttonReefZoneI = new JoystickButton(buttonBoardPlayer2, 15);
-    private final static JoystickButton buttonReefZoneJ = new JoystickButton(buttonBoardPlayer2, 16);
-    private final static JoystickButton buttonReefZoneK = new JoystickButton(buttonBoardPlayer2, 17);
-    private final static JoystickButton buttonReefZoneL = new JoystickButton(buttonBoardPlayer2, 18);
+    private final static JoystickButton reefZoneG = new JoystickButton(buttonBoardPlayer2, 7);
+    private final static JoystickButton reefZoneF = new JoystickButton(buttonBoardPlayer2, 8);
+    private final static JoystickButton reefZoneH = new JoystickButton(buttonBoardPlayer2, 6);
+    private final static JoystickButton reefZoneI = new JoystickButton(buttonBoardPlayer2, 5);
+    private final static JoystickButton reefZoneJ = new JoystickButton(buttonBoardPlayer2, 4);
+    private final static JoystickButton reefZoneK = new JoystickButton(buttonBoardPlayer2,3);
+    private final static JoystickButton reefZoneA = new JoystickButton(buttonBoardPlayer2, 1);
 
-    // miscellaneous buttons
-    private final static JoystickButton buttonAlgaeKnockoff = new JoystickButton(buttonBoardPlayer1, 19);
-    private final static JoystickButton buttonUtilityA = new JoystickButton(buttonBoardPlayer1, 20);
-    private final static JoystickButton buttonUtilityB = new JoystickButton(buttonBoardPlayer1, 21);
+    private final static JoystickButton reefZoneE = new JoystickButton(buttonBoardPlayer3, 1);
+    private final static JoystickButton reefZoneD = new JoystickButton(buttonBoardPlayer3, 2);
+    private final static JoystickButton reefZoneC = new JoystickButton(buttonBoardPlayer3, 3);
+    private final static JoystickButton reefZoneB = new JoystickButton(buttonBoardPlayer3, 4);
+    private final static JoystickButton UtilityButtonC = new JoystickButton(buttonBoardPlayer3, 5);
+    private final static JoystickButton UtilityButtonB = new JoystickButton(buttonBoardPlayer3, 6);
+    private final static JoystickButton UtilityButtonA = new JoystickButton(buttonBoardPlayer3, 7);
+    private final static JoystickButton AlgaeKnockButton = new JoystickButton(buttonBoardPlayer3, 8);
+
+    private final static JoystickButton reefZoneL = new JoystickButton(buttonBoardPlayer1, 7);
 
     private static final Command climbStow = new SetClimbArmState(Robot.climbArm, ClimbArmConstants.ArmStates.STOWED,
             ClimbArmConstants.stowSetPoint_rad);
@@ -142,24 +144,25 @@ public class JoystickIO {
     public static void bindButtonBoard() {
         buttonLeftSource.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(0)));
         buttonRightSource.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(1)));
-        buttonReefZoneA.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(2)));
-        buttonReefZoneB.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(4)));
-        buttonReefZoneC.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(7)));
-        buttonReefZoneD.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(8)));
-        buttonReefZoneE.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(10)));
-        buttonReefZoneF.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(12)));
-        buttonReefZoneG.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(14)));
-        buttonReefZoneH.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(16)));
-        buttonReefZoneI.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(18)));
-        buttonReefZoneJ.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(20)));
-        buttonReefZoneK.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(22)));
-        buttonReefZoneL.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(24)));
-        buttonl1.onTrue(l1);
-        buttonl2.onTrue(l2);
-        buttonl3.onTrue(l3);
-        buttonl4.onTrue(l4);
-        buttonAlgaeKnockoff.onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.ALGAE)));
-    }
+        reefZoneA.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(2)));
+        reefZoneB.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(4)));
+        reefZoneC.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(7)));
+        reefZoneD.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(8)));
+        reefZoneE.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(10)));
+        reefZoneF.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(12)));
+        reefZoneG.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(14)));
+        reefZoneH.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(16)));
+        reefZoneI.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(18)));
+        reefZoneJ.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(20)));
+        reefZoneK.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(22)));
+        reefZoneL.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(24)));
+        buttonL1.onTrue(l1);
+        buttonL1.onTrue(l2);
+        buttonL1.onTrue(l3);
+        buttonL1.onTrue(l4);
+        AlgaeKnockButton.onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.ALGAE)));
+       
+    }   
 
     /**
      * If both controllers are plugged in (pi and op)
