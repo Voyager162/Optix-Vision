@@ -22,6 +22,8 @@ import frc.robot.subsystems.roller.sim.PhotoelectricSim;
  *
  * @author Lilian Wu
  */
+
+ @SuppressWarnings("unused")
 public class CoralRoller extends Roller {
     private double lastVelocity = 0.0;
     private boolean hasPiece = true;

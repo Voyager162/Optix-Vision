@@ -18,7 +18,7 @@ public class CoralIntakeSource extends Command {
 
     @Override
     public void initialize() {
-        Robot.coralArm.setState(CoralArmConstants.ArmStates.SOURCE);
+        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.scoringRoller.setState(RollerStates.STOP);
         Robot.coralRoller.setState(RollerStates.INTAKE);
