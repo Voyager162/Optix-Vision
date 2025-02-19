@@ -52,7 +52,6 @@ public class Elevator extends SubsystemBase {
     private ElevatorData data = new ElevatorData();
     private ElevatorStates state = ElevatorStates.STOP;
 
-
     private ProfiledPIDController profile = new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(
             ElevatorConstants.ElevatorControl.maxVelocity.get(),
             ElevatorConstants.ElevatorControl.maxAcceleration.get()));
@@ -69,9 +68,9 @@ public class Elevator extends SubsystemBase {
     private double elevatorInnerStagePos;
     private double elevatorMiddleStagePos;
 
-    StructPublisher<Pose3d> elevatorInnerStage = NetworkTableInstance.getDefault()
+    private StructPublisher<Pose3d> elevatorInnerStage = NetworkTableInstance.getDefault()
             .getStructTopic("Elevator Inner Stage", Pose3d.struct).publish();
-    StructPublisher<Pose3d> elevatorMiddleStage = NetworkTableInstance.getDefault()
+    private StructPublisher<Pose3d> elevatorMiddleStage = NetworkTableInstance.getDefault()
             .getStructTopic("Elevator Middle Stage", Pose3d.struct).publish();
 
     public Elevator() {
@@ -90,7 +89,6 @@ public class Elevator extends SubsystemBase {
                 ElevatorConstants.ElevatorControl.kA.get());
     }
 
-
     public ElevatorStates getState() {
         return state;
     }
@@ -103,7 +101,6 @@ public class Elevator extends SubsystemBase {
         return data.velocityMetersPerSecond;
     }
 
-    /** returns true when the state is reached */
     public boolean getIsStableState() {
         switch (state) {
             case L1:
@@ -186,7 +183,6 @@ public class Elevator extends SubsystemBase {
     }
 
     private void logData() {
- 
         Logger.recordOutput("subsystems/elevator/Current Command",
                 this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
 
