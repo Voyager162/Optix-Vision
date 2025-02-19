@@ -44,7 +44,7 @@ public class Robot extends LoggedRobot {
 
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
-  public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("/subsystems/setVoltage", 1);
+  public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("/subsystems/setVoltage", -12);
   
   private RobotContainer m_robotContainer;
   private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
