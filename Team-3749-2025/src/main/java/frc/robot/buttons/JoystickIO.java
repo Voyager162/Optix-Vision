@@ -89,15 +89,16 @@ public class JoystickIO {
         // pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
         
         // // Checking voltage for all subsystems
-        operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(-12)));
+        // operator.rightBumper().onTrue(Commands.run(() -> Robot.elevator.setVoltage(-1.5)));
         // operator.b().onTrue(Commands.run(() -> Robot.coralArm.setVoltage(Robot.subsystemVoltageSetter.get())));
         // operator.x().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(4))).onFalse(Commands.run(()->Robot.climbArm.setVoltage(0)));
         // operator.y().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(8))).onFalse(Commands.run(()->Robot.climbArm.setVoltage(0)));
 
-        // operator.y().whileTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
+        operator.y().whileTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(Robot.subsystemVoltageSetter.get()))).onFalse(Commands.run(() -> Robot.algaeRoller.setVoltage(0)));
         // operator.leftBumper().whileTrue(Commands.run(() -P> Robot.coralRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
         // operator.leftBumper().whileFalse(Commands.runOnce(() -> Robot.coralRoller.stop()));
-        // operator.rightBumper().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(8)));
+        operator.rightBumper().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(1)));//.onFalse(Commands.run(() -> Robot.scoringRoller.setVoltage(0)));
+        //kanhay's keyboard comment (donot remove need for college apps bc i coded a robot)
 
 
 

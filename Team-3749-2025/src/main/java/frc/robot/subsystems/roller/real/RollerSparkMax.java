@@ -29,26 +29,31 @@ public class RollerSparkMax implements RollerIO {
                 rollerMotor.setPositionConversionFactor(2 * Math.PI / Algae.gearRatio);
                 rollerMotor.setVelocityConversionFactor((2 * Math.PI / Algae.gearRatio) / 60.0);
                 rollerMotor.setInverted(Algae.inverted);
+                rollerMotor.setCurrentLimit(MotorControllerConstants.relaxedStallLimit,
+                        MotorControllerConstants.relaxedFreeLimit);
                 break;
             case SCORING:
                 rollerMotor = new OptixSpark(Scoring.motorId, OptixSpark.Type.SPARKMAX);
                 rollerMotor.setPositionConversionFactor(2 * Math.PI / Scoring.gearRatio);
                 rollerMotor.setVelocityConversionFactor((2 * Math.PI / Scoring.gearRatio) / 60.0);
                 rollerMotor.setInverted(Scoring.inverted);
+                rollerMotor.setCurrentLimit(MotorControllerConstants.standardStallLimit,
+                        MotorControllerConstants.standardFreeLimit);
                 break;
             case CORAL:
                 rollerMotor = new OptixSpark(Coral.motorId, OptixSpark.Type.SPARKMAX);
                 rollerMotor.setPositionConversionFactor(2 * Math.PI / Coral.gearRatio);
                 rollerMotor.setVelocityConversionFactor((2 * Math.PI / Coral.gearRatio) / 60.0);
                 rollerMotor.setInverted(Coral.inverted);
+                rollerMotor.setCurrentLimit(MotorControllerConstants.standardStallLimit,
+                        MotorControllerConstants.standardFreeLimit);
                 break;
 
             default:
                 rollerMotor = new OptixSpark(0, OptixSpark.Type.SPARKMAX);
 
         }
-        rollerMotor.setCurrentLimit(MotorControllerConstants.relaxedStallLimit,
-                MotorControllerConstants.relaxedFreeLimit);
+
         rollerMotor.setBrakeMode(false);
 
         rollerMotor.applyConfig();

@@ -45,7 +45,7 @@ public class MiscConstants {
     public static final int standardStallLimit = 30;
     public static final int standardFreeLimit = 50;
 
-    public static final int relaxedStallLimit = 10;
+    public static final int relaxedStallLimit = 15;
     public static final int relaxedFreeLimit = 15;
 
     public static final double maxMotorVolts = 12.0;
