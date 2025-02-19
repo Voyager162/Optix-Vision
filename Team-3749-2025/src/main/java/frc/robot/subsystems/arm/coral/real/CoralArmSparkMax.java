@@ -4,7 +4,6 @@ import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.arm.coral.CoralArmIO;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.utils.OptixSpark;
@@ -32,6 +31,8 @@ public class CoralArmSparkMax implements CoralArmIO {
 	 * @param motorId
 	 */
 	public CoralArmSparkMax() {
+
+		System.out.println("[Init] Creating Coral Arm");
 
 		motor = new OptixSpark(CoralArmConstants.motorID, OptixSpark.Type.SPARKMAX);
 
@@ -68,8 +69,8 @@ public class CoralArmSparkMax implements CoralArmIO {
 	public void updateData(ArmData data) {
 		double velocity = motor.getVelocity();
 		data.positionRad = getPosition();
-		data.velocityUnits = velocity;
-		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
+		data.velocityRadsPerSecond = velocity;
+		data.accelerationRadsPerSecondSquared = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
 		data.motorCurrentAmps = motor.getCurrent();
 		data.motorAppliedVolts = motor.getAppliedVolts();
 		data.motorTempCelcius = motor.getTemperature();
@@ -84,8 +85,6 @@ public class CoralArmSparkMax implements CoralArmIO {
 	public void setVoltage(double volts) {
 		double inputVolts = MathUtil.applyDeadband(volts, 0.05);
 		inputVolts = MathUtil.clamp(volts, -12, 12);
-		SmartDashboard.putNumber("input volts", inputVolts);
-		SmartDashboard.putNumber("bus volts", motor.getBusVolts());
 		motor.setVoltage(inputVolts);
 	}
 

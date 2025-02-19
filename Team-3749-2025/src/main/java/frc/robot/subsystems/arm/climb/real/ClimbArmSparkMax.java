@@ -31,6 +31,9 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 	 * with two motors
 	 */
 	public ClimbArmSparkMax() {
+
+		System.out.println("[Init] Creating Climb Arm");
+
 		frontMotor = new OptixSpark(ClimbArmConstants.frontMotorId, OptixSpark.Type.SPARKMAX);
 		backMotor = new OptixSpark(ClimbArmConstants.backMotorId, OptixSpark.Type.SPARKMAX);
 
