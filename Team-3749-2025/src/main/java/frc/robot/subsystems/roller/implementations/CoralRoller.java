@@ -16,8 +16,6 @@ import frc.robot.subsystems.roller.RollerConstants.Implementations;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 import frc.robot.subsystems.roller.RollerIO.RollerData;
 import frc.robot.subsystems.roller.sim.PhotoelectricSim;
-import frc.robot.subsystems.roller.sim.RollerSim;
-import frc.robot.utils.UtilityFunctions;
 
 /**
  * Coral implementation of the roller subsystem

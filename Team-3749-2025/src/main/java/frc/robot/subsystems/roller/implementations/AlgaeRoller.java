@@ -13,7 +13,6 @@ import frc.robot.subsystems.roller.RollerConstants.RollerStates;
  * @author Lilian Wu
  */
 public class AlgaeRoller extends Roller {
-
     public AlgaeRoller() {
         super(Implementations.ALGAE, FF(), positionPID(), velocityPID());
     }
@@ -43,5 +42,4 @@ public class AlgaeRoller extends Roller {
     public void outtake() {
         setVelocity(RollerStates.OUTTAKE.algaeVelocity);
     }
-
 }
