@@ -21,8 +21,6 @@ import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
 import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
 import frc.robot.subsystems.arm.coral.sim.CoralArmSim;
 
-import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
-import frc.robot.subsystems.arm.coral.sim.CoralArmSim;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
@@ -264,8 +262,8 @@ public class CoralArm extends SubsystemBase {
     /** Periodic method for updating arm behavior. */
     @Override
     public void periodic() {
-        // profile.setPID(CoralArmConstants.kP.get(), CoralArmConstants.kI.get(), CoralArmConstants.kD.get());
-        profile.setPID(0, 0, 0);
+        profile.setPID(CoralArmConstants.kP.get(), CoralArmConstants.kI.get(), CoralArmConstants.kD.get());
+        // profile.setPID(0, 0, 0);
         armIO.updateData(data);
 
         runState();

@@ -25,7 +25,6 @@ public class SetClimbArmState extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        arm.stop();
     }
 
     @Override

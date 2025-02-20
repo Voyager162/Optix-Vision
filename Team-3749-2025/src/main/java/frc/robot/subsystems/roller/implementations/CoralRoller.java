@@ -23,7 +23,7 @@ import frc.robot.subsystems.roller.sim.PhotoelectricSim;
  * @author Lilian Wu
  */
 
- @SuppressWarnings("unused")
+@SuppressWarnings("unused")
 public class CoralRoller extends Roller {
     private double lastVelocity = 0.0;
     private boolean hasPiece = true;
@@ -101,12 +101,18 @@ public class CoralRoller extends Roller {
     }
 
     @Override
+    public void maintain() {
+        setPosition(getLastKnownPosition(), RollerConstants.Coral.kSVelocity.get());
+    }
+
+    @Override
     public void periodic() {
         super.periodic();
         photoelectricIO.updateData(photoelectricData);
 
         Logger.recordOutput("subsystems/roller/CoralRoller/hasPiece", hasPiece());
         Logger.recordOutput("subsystems/roller/CoralRoller/setInitalState", routineStarted);
+        Logger.recordOutput("subsystems/roller/CoralRoller/is stable state", super.getIsStableState());
 
         // routineStarted is true when the routine begins in Autos
         if (Autos.isRoutineStarted() && !routineStarted) {

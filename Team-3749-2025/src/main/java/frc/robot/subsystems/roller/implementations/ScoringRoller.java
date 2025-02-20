@@ -87,9 +87,17 @@ public class ScoringRoller extends Roller {
         this.hasPiece = hasPiece;
     }
 
+    
+    @Override
+    public void maintain() {
+        Logger.recordOutput("subsystems/roller/ScoringRoller/setpoint position", getLastKnownPosition() - RollerConstants.Scoring.reverseDistance);
+        setPosition(getLastKnownPosition() - RollerConstants.Scoring.reverseDistance, RollerConstants.Scoring.kSVelocity.get());
+    }
+
     @Override
     public void periodic() {
         super.periodic();
+
 
         photoelectricIO.updateData(photoelectricData);
 

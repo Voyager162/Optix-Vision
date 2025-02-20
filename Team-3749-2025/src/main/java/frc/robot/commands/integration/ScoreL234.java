@@ -3,13 +3,12 @@ package frc.robot.commands.integration;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.roller.RollerConstants;
-import frc.robot.subsystems.roller.RollerConstants.RollerStates;
-import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 
 /*
  * ScoreL234 command for scoring coral on L2, L3, L4
  */
+@SuppressWarnings("unused")
 public class ScoreL234 extends Command {
     private final ElevatorStates elevatorState;
     private boolean handoffComplete = false;
@@ -26,59 +25,46 @@ public class ScoreL234 extends Command {
 
     @Override
     public void initialize() {
-        if (Robot.scoringRoller.hasPiece()) {
-            Robot.elevator.setState(elevatorState);
-            Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
-            Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
-        // handoff from coral arm to elevator to score
-        } else if (Robot.coralRoller.hasPiece()) {
-            System.out.println("coral is good");
-            Robot.coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
-            Robot.elevator.setState(ElevatorStates.STOW);
-            Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
-        } else {
-            System.out.println("no coral");
-            this.cancel(); // cancels command if neither scoringRoller nor coralRoller has coral
-        }
-
-        // //if im not mistaken this is unreachable 
-        // if (Robot.coralRoller.hasPiece()) {
-        //     Robot.elevator.setState(ElevatorStates.STOW);
+        // if (Robot.scoringRoller.hasPiece()) {
+        //     Robot.elevator.setState(elevatorState);
+            Robot.scoringRoller.setState(RollerConstants.RollerStates.OUTTAKE);
+        //     Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
+        // // handoff from coral arm to elevator to score
+        // } else if (Robot.coralRoller.hasPiece()) {
         //     Robot.coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
-        //     Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
-        //     Robot.scoringRoller.setState(RollerConstants.RollerStates.INTAKE);
-        //     return;
+        //     Robot.elevator.setState(ElevatorStates.STOW);
+        //     Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
+        // } else {
+        //     this.cancel(); // cancels command if neither scoringRoller nor coralRoller has coral
         // }
-
-        //     this.cancel();
     }
 
     @Override
     public void execute() {
-        // handoff execution
-        if ((Robot.coralArm.getState() == CoralArmConstants.ArmStates.HAND_OFF) && Robot.coralArm.getIsStableState() &&
-            (Robot.elevator.getState() == ElevatorStates.STOW) && Robot.elevator.getIsStableState()) {
-            Robot.coralRoller.setState(RollerConstants.RollerStates.OUTTAKE);
-            Robot.scoringRoller.setState(RollerConstants.RollerStates.INTAKE);
-            handoffComplete = true;
-        }
-        // checks whether handoff is complete
-        if (handoffComplete && !Robot.coralRoller.hasPiece() && Robot.scoringRoller.hasPiece()) {
-            Robot.scoringRoller.setState(RollerStates.MAINTAIN);
-            Robot.elevator.setState(elevatorState);
-        }
-        // scores when elevator reaches desired state
-        if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState()) {
-            Robot.scoringRoller.setState(RollerConstants.RollerStates.OUTTAKE);
-        }
+        // // handoff execution
+        // if ((Robot.coralArm.getState() == CoralArmConstants.ArmStates.HAND_OFF) && Robot.coralArm.getIsStableState() &&
+        //     (Robot.elevator.getState() == ElevatorStates.STOW) && Robot.elevator.getIsStableState()) {
+        //     Robot.coralRoller.setState(RollerConstants.RollerStates.OUTTAKE);
+        //     Robot.scoringRoller.setState(RollerConstants.RollerStates.INTAKE);
+        //     handoffComplete = true;
+        // }
+        // // checks whether handoff is complete
+        // if (handoffComplete && !Robot.coralRoller.hasPiece() && Robot.scoringRoller.hasPiece()) {
+        //     Robot.scoringRoller.setState(RollerStates.MAINTAIN);
+        //     Robot.elevator.setState(elevatorState);
+        // }
+        // // scores when elevator reaches desired state
+        // if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState()) {
+        //     Robot.scoringRoller.setState(RollerConstants.RollerStates.OUTTAKE);
+        // }
     }
 
     @Override
     public void end(boolean interrupted) {
-        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
-        Robot.elevator.setState(ElevatorStates.STOW);
+        // Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
+        // Robot.elevator.setState(ElevatorStates.STOW);
         Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);
-        Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
+        // Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
     }
 
     /**
@@ -86,6 +72,7 @@ public class ScoreL234 extends Command {
      */
     @Override
     public boolean isFinished() {
-        return !Robot.scoringRoller.hasPiece() && this.isScheduled();
+        // return !Robot.scoringRoller.hasPiece() && this.isScheduled();
+        return false;
     }
 }
