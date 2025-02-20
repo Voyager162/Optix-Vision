@@ -42,4 +42,9 @@ public class AlgaeRoller extends Roller {
     public void outtake() {
         setVelocity(RollerStates.OUTTAKE.algaeVelocity);
     }
+
+    @Override
+    public void maintain() {
+        setPosition(getLastKnownPosition(), RollerConstants.Algae.kSVelocity.get());
+    }
 }

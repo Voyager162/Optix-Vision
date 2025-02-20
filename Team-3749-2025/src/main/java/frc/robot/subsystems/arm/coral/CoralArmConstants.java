@@ -28,11 +28,11 @@ public class CoralArmConstants {
 
 	// control values
 	public static LoggedTunableNumber kG = new LoggedTunableNumber("/subsystems/arms/coralArm/kG", 0.39);
-	public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/arms/coralArm/kP", 2.75);
-	public static LoggedTunableNumber kI = new LoggedTunableNumber("/subsystems/arms/coralArm/kP" + "/kI", 0);
+	public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/arms/coralArm/kP", 0.7);
+	public static LoggedTunableNumber kI = new LoggedTunableNumber("/subsystems/arms/coralArm/kI", 0);
 	public static LoggedTunableNumber kD = new LoggedTunableNumber("/subsystems/arms/coralArm/kD", 0);
 	public static LoggedTunableNumber kS = new LoggedTunableNumber("/subsystems/arms/coralArm/kS", 0.16);
-	public static LoggedTunableNumber kV = new LoggedTunableNumber("/subsystems/arms/coralArm/kV", 0.61);
+	public static LoggedTunableNumber kV = new LoggedTunableNumber("/subsystems/arms/coralArm/kV", 0.8);
 	public static LoggedTunableNumber kA = new LoggedTunableNumber("/subsystems/arms/coralArm/kA", 0);
 	public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/arms/coralArm/max velocity",
 			6);
@@ -47,9 +47,9 @@ public class CoralArmConstants {
 
 	public enum ArmStates {
 		CORAL_PICKUP(-Units.degreesToRadians(38.5)),
-		L1(Math.PI/4),
-		HAND_OFF(2.37),
-		STOWED(2.37),
+		L1(0),
+		HAND_OFF(2.355),
+		STOWED(2.355),
 		STOPPED(0);
 
 		public final double setPointRad;

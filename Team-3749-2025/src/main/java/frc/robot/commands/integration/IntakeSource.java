@@ -3,8 +3,10 @@ package frc.robot.commands.integration;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
+import frc.robot.subsystems.arm.coral.CoralArmConstants.ArmStates;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.roller.RollerConstants;
+import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 /*
  * IntakeSource command for intaking coral from source
  */
@@ -21,20 +23,23 @@ public class IntakeSource extends Command {
             this.cancel(); // cancels command if scoringRoller has coral initially
         }
         else {
-            Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
+            Robot.coralArm.setState(ArmStates.STOWED);
             Robot.elevator.setState(ElevatorStates.SOURCE);
-            Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
-            Robot.scoringRoller.setState(RollerConstants.RollerStates.OUTTAKE); 
+            Robot.coralRoller.setState(RollerStates.STOP);
+            Robot.scoringRoller.setState(RollerStates.INTAKE); 
         }
     }
 
     @Override
     public void execute() {
+        if (Robot.scoringRoller.hasPiece() && Robot.scoringRoller.getState() != RollerStates.MAINTAIN) {
+            Robot.scoringRoller.setState(RollerStates.MAINTAIN);
+        }
     }
 
     @Override
     public void end(boolean interrupted) {
-        Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
+        // Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);
     }
 
     /**
@@ -42,6 +47,7 @@ public class IntakeSource extends Command {
      */
     @Override
     public boolean isFinished() {
-        return Robot.scoringRoller.hasPiece() && this.isScheduled();
+        // return Robot.scoringRoller.hasPiece() && this.isScheduled();
+        return false;
     }
 }

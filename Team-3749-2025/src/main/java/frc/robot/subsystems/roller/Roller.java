@@ -6,6 +6,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.roller.RollerIO.RollerData;
+import frc.robot.subsystems.roller.implementations.ScoringRoller;
 import frc.robot.subsystems.roller.real.RollerSparkMax;
 import frc.robot.subsystems.roller.sim.RollerSim;
 import frc.robot.utils.LoggedTunableNumber;
@@ -62,8 +63,23 @@ public abstract class Roller extends SubsystemBase {
         // rollerFF.calculate(velocityRadPerSec));
     }
 
+    public void setPosition(double position, double kS) {
+        double PIDOutput = positionController.calculate(rollerData.rollerPositionRad, position);
+        Logger.recordOutput("subsystems/roller/" + getName() + "/position pid", PIDOutput);
+        double volts = PIDOutput + Math.copySign(kS, PIDOutput);
+        rollerIO.setVoltage(volts);
+    }
+
     public RollerStates getState() {
         return rollerState;
+    }
+
+    public double getLastKnownPosition() {
+        return lastKnownPosition;
+    }
+
+    public double getPosition() {
+        return rollerData.rollerPositionRad;
     }
 
     /**
@@ -72,7 +88,6 @@ public abstract class Roller extends SubsystemBase {
      * Stores last position when the state is maintain
      */
     public void setState(RollerStates rollerState) {
-        System.out.println(rollerState.name());
         this.rollerState = rollerState;
         if (rollerState == RollerConstants.RollerStates.MAINTAIN) {
             setLastKnownPosition(rollerData.rollerPositionRad);
@@ -104,12 +119,7 @@ public abstract class Roller extends SubsystemBase {
 
     public abstract void intake();
 
-    /**
-     * Maintains the roller's last known position
-     */
-    public void maintain() {
-        rollerIO.setVoltage(positionController.calculate(rollerData.rollerPositionRad, lastKnownPosition));
-    }
+    public abstract void maintain();
 
     public void stop() {
         rollerIO.setVoltage(0.0);
@@ -118,11 +128,11 @@ public abstract class Roller extends SubsystemBase {
     public boolean getIsStableState() {
         switch (implementation) {
             case CORAL:
-                return UtilityFunctions.withinMargin(10, rollerData.rollerVelocityRadPerSec, rollerState.coralVelocity);
+                return UtilityFunctions.withinMargin(4, rollerData.rollerVelocityRadPerSec, rollerState.coralVelocity);
             case ALGAE:
-                return UtilityFunctions.withinMargin(10, rollerData.rollerVelocityRadPerSec, rollerState.algaeVelocity);
+                return UtilityFunctions.withinMargin(4, rollerData.rollerVelocityRadPerSec, rollerState.algaeVelocity);
             case SCORING:
-                return UtilityFunctions.withinMargin(10, rollerData.rollerVelocityRadPerSec,
+                return UtilityFunctions.withinMargin(4, rollerData.rollerVelocityRadPerSec,
                         rollerState.scoringVelocity);
             default:
                 return false;
@@ -131,6 +141,8 @@ public abstract class Roller extends SubsystemBase {
 
     @Override
     public void periodic() {
+
+        velocityController = new PIDController(RollerConstants.Coral.kPVelocity.get(), RollerConstants.Coral.kIVelocity.get(), RollerConstants.Coral.kDVelocity.get());
         rollerIO.updateData(rollerData);
         runRollerStates();
 
@@ -142,6 +154,7 @@ public abstract class Roller extends SubsystemBase {
         Logger.recordOutput("subsystems/roller/" + getName() + "/state", rollerState.name());
         Logger.recordOutput("subsystems/roller/" + getName() + "/acceleration", rollerData.acceleration);
         Logger.recordOutput("subsystems/roller/" + getName() + "/stable state", getIsStableState());
-
+        Logger.recordOutput("subsystems/roller/" + this.getName() + "/position controller values",
+                positionController.getP() + " | " + positionController.getD());
     }
 }

@@ -28,7 +28,7 @@ public class RollerConstants {
                 public static LoggedTunableNumber kVVelocity = new LoggedTunableNumber(
                                 "/subsystems/rollers/algaeRoller/kVVelocity", 0.042);
                 public static LoggedTunableNumber kAVelocity = new LoggedTunableNumber(
-                                "/subsystems/rollers/algaeRoller/kAVelocity", 0.02);
+                                "/subsystems/rollers/algaeRoller/kAVelocity", 0.0124);
 
                 public static LoggedTunableNumber kPPosition = new LoggedTunableNumber(
                                 "/subsystems/rollers/algaeRoller/kPPosition", 0.0);
@@ -93,37 +93,39 @@ public class RollerConstants {
                 public static final double measurementNoise = 0.0;
 
                 public static LoggedTunableNumber kPVelocity = new LoggedTunableNumber(
-                                "/subsystems/rollers/scoringRoller/kPVelocity", 10.0);
+                                "/subsystems/rollers/scoringRoller/kPVelocity", 0.0);
                 public static LoggedTunableNumber kIVelocity = new LoggedTunableNumber(
                                 "/subsystems/rollers/scoringRoller/kIVelocity", 0.0);
                 public static LoggedTunableNumber kDVelocity = new LoggedTunableNumber(
                                 "/subsystems/rollers/scoringRoller/kDVelocity", 0.0);
                 public static LoggedTunableNumber kSVelocity = new LoggedTunableNumber(
-                                "/subsystems/rollers/scoringRoller/kSVelocity", 0.0);
+                                "/subsystems/rollers/scoringRoller/kSVelocity", 0.14);
                 public static LoggedTunableNumber kVVelocity = new LoggedTunableNumber(
-                                "/subsystems/rollers/scoringRoller/kVVelocity", 0.02);
+                                "/subsystems/rollers/scoringRoller/kVVelocity", 0.0619);
                 public static LoggedTunableNumber kAVelocity = new LoggedTunableNumber(
-                                "/subsystems/rollers/scoringRoller/kAVelocity", 0.0);
+                                "/subsystems/rollers/scoringRoller/kAVelocity", 0.0142);
 
                 public static LoggedTunableNumber kPPosition = new LoggedTunableNumber(
-                                "/subsystems/rollers/scoringRoller/kPPosition", 15.0);
+                                "/subsystems/rollers/scoringRoller/kPPosition", .25);
                 public static LoggedTunableNumber kIPosition = new LoggedTunableNumber(
                                 "/subsystems/rollers/scoringRoller/kIPosition", 0.0);
                 public static LoggedTunableNumber kDPosition = new LoggedTunableNumber(
-                                "/subsystems/rollers/scoringRoller/kDPosition", 10.0);
+                                "/subsystems/rollers/scoringRoller/kDPosition", 0.0);
 
                 public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber(
-                                "/subsystems/rollers/scoringRoller/maxVelocity", 0.0);
+                                "/subsystems/rollers/scoringRoller/maxVelocity", 194);
                 public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
-                                "/subsystems/rollers/scoringRoller/maxAcceleration", 0.0);
+                                "/subsystems/rollers/scoringRoller/maxAcceleration", 412);
 
                 public static final int sensorPort = 7;
+
+                public static final double reverseDistance = 7;
         }
 
         public enum RollerStates {
-                INTAKE(50, 100, 50),
+                INTAKE(50, 60, 70),
                 MAINTAIN(0, 0, 0),
-                OUTTAKE(-50, -50, -50),
+                OUTTAKE(-50, -50, 60),
                 STOP(0, 0, 0);
 
                 public final double algaeVelocity;

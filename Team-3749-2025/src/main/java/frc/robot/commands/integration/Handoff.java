@@ -23,15 +23,18 @@ public class Handoff extends Command {
     public void initialize() {
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
-        Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
+        Robot.coralRoller.setState(RollerConstants.RollerStates.OUTTAKE);
         Robot.scoringRoller.setState(RollerConstants.RollerStates.INTAKE);
     }
 
     @Override
     public void execute() {
-        if (Robot.coralArm.getState() == CoralArmConstants.ArmStates.HAND_OFF && Robot.coralArm.getIsStableState()
-                && Robot.elevator.getState() == ElevatorStates.STOW && Robot.elevator.getIsStableState()) { 
-            Robot.coralRoller.setState(RollerConstants.RollerStates.OUTTAKE); 
+        // if (Robot.coralArm.getState() == CoralArmConstants.ArmStates.HAND_OFF && Robot.coralArm.getIsStableState()
+        //         && Robot.elevator.getState() == ElevatorStates.STOW && Robot.elevator.getIsStableState()) { 
+        //     Robot.coralRoller.setState(RollerConstants.RollerStates.OUTTAKE); 
+        // }
+        if (Robot.scoringRoller.hasPiece() && Robot.scoringRoller.getState() != RollerStates.MAINTAIN) {
+            Robot.scoringRoller.setState(RollerStates.MAINTAIN);
         }
     }
 
