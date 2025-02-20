@@ -93,10 +93,6 @@ public class JoystickIO {
             CoralArmConstants.ArmStates.CORAL_PICKUP,
             CoralArmConstants.coralPickUpSetPoint_rad);
 
-    private static final SetElevatorState l1 = new SetElevatorState(ElevatorStates.L1);
-    private static final SetElevatorState l2 = new SetElevatorState(ElevatorStates.L2);
-    private static final SetElevatorState l3 = new SetElevatorState(ElevatorStates.L3);
-    private static final SetElevatorState l4 = new SetElevatorState(ElevatorStates.L4);
     private static final SetElevatorState stow = new SetElevatorState(ElevatorStates.STOW);
 
     private static final KnockAlgae knockAlgaeLow = new KnockAlgae(ElevatorStates.ALGAE_LOW);
@@ -118,6 +114,11 @@ public class JoystickIO {
     private static final MaintainCommand scoringMaintain = new MaintainCommand(Robot.scoringRoller);
 
     public static ButtonBoard buttonBoard = new ButtonBoard();
+
+    private static final Command l1 = Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L1));
+    private static final Command l2 = Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L2));
+    private static final Command l3 = Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L3));
+    private static final Command l4 = Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L4));
 
     public JoystickIO() {
     }
@@ -157,9 +158,9 @@ public class JoystickIO {
         reefZoneK.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(22)));
         reefZoneL.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(24)));
         buttonL1.onTrue(l1);
-        buttonL1.onTrue(l2);
-        buttonL1.onTrue(l3);
-        buttonL1.onTrue(l4);
+        buttonL2.onTrue(l2);
+        buttonL3.onTrue(l3);
+        buttonL4.onTrue(l4);
         AlgaeKnockButton.onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.ALGAE)));
        
     }   
