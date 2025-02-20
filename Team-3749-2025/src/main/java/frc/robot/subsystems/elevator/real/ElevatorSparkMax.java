@@ -24,7 +24,7 @@ public class ElevatorSparkMax implements ElevatorIO {
     private double inputVolts = 0;
 
     public ElevatorSparkMax() {
-        System.out.println("[Init] Creating Elevator");
+        // System.out.println("[Init] Creating Elevator");
 
         leftMotor.setPositionConversionFactor(Math.PI * 2 * ElevatorConstants.ElevatorSpecs.drumRadiusMeters
                 / ElevatorConstants.ElevatorSpecs.gearing);

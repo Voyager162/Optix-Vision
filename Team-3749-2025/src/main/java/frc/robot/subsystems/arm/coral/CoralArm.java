@@ -21,6 +21,8 @@ import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
 import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
 import frc.robot.subsystems.arm.coral.sim.CoralArmSim;
 
+import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
+import frc.robot.subsystems.arm.coral.sim.CoralArmSim;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
@@ -177,7 +179,7 @@ public class CoralArm extends SubsystemBase {
      * @param setpoint The desired target position for the arm in radians.
      */
     public void setGoal(double setpoint) {
-        profile.setGoal(setpoint);
+        profile.setGoal(setpoint); // Set the PID controller's goal.
     }
 
     // UTILITY FUNCTIONS
@@ -270,4 +272,5 @@ public class CoralArm extends SubsystemBase {
 
         logData();
     }
+
 }

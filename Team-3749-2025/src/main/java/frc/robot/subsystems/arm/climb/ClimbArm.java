@@ -49,6 +49,8 @@ public class ClimbArm extends SubsystemBase {
 	StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
 			.getStructTopic("ClimbArm Pose", Pose3d.struct).publish();
 
+
+
 	public ClimbArm() {
 		if (Robot.isSimulation()) {
 
@@ -65,24 +67,6 @@ public class ClimbArm extends SubsystemBase {
 				new TrapezoidProfile.Constraints(ClimbArmConstants.maxVelocity.get(),
 						ClimbArmConstants.maxAcceleration.get()));
 		setState(state);
-	}
-
-	// GET FUNCTIONS
-
-	/**
-	 * @return the current arm pitch.
-	 */
-	private Angle getPitch() {
-		return Angle.ofBaseUnits(-data.positionRad + Units.degreesToRadians(0), Radians); // remove offset once climb arm code fixed
-	}
-
-	/**
-	 * @return the current arm pose.
-	 */
-	private Pose3d getPose3d() {
-		Pose3d pose = new Pose3d(0, 0.18, 0.165,
-				new Rotation3d(getPitch(), Angle.ofBaseUnits(0, Radians), Angle.ofBaseUnits(0, Radians)));
-		return pose;
 	}
 
 	/**
@@ -158,6 +142,17 @@ public class ClimbArm extends SubsystemBase {
 	 */
 	public void setBrakeMode(boolean setMode) {
 		armIO.setBrakeMode(setMode);
+	}
+
+	private Angle getPitch() {
+		return Angle.ofBaseUnits(-data.positionRad + Units.degreesToRadians(0), Radians); // remove offset once climb
+																							// arm code is fixed
+	}
+
+	private Pose3d getPose3d() {
+		Pose3d pose = new Pose3d(-0.33, 0.18, 0.165,
+				new Rotation3d(getPitch(), Angle.ofBaseUnits(0, Radians), Angle.ofBaseUnits(0, Radians)));
+		return pose;
 	}
 
 	/**

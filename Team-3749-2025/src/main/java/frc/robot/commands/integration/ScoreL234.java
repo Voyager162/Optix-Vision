@@ -32,12 +32,25 @@ public class ScoreL234 extends Command {
             Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
         // handoff from coral arm to elevator to score
         } else if (Robot.coralRoller.hasPiece()) {
+            System.out.println("coral is good");
             Robot.coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
             Robot.elevator.setState(ElevatorStates.STOW);
             Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
         } else {
+            System.out.println("no coral");
             this.cancel(); // cancels command if neither scoringRoller nor coralRoller has coral
         }
+
+        // //if im not mistaken this is unreachable 
+        // if (Robot.coralRoller.hasPiece()) {
+        //     Robot.elevator.setState(ElevatorStates.STOW);
+        //     Robot.coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
+        //     Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
+        //     Robot.scoringRoller.setState(RollerConstants.RollerStates.INTAKE);
+        //     return;
+        // }
+
+        //     this.cancel();
     }
 
     @Override

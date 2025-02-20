@@ -37,6 +37,8 @@ public abstract class Roller extends SubsystemBase {
         rollerIO = Robot.isSimulation() ? new RollerSim(implementation)
                 : new RollerSparkMax(implementation);
         this.implementation = implementation;
+
+        // String name = implementation.name();
         this.rollerFF = rollerFF;
         this.positionController = positionController;
         this.velocityController = velocityController;
@@ -72,7 +74,7 @@ public abstract class Roller extends SubsystemBase {
      * Stores last position when the state is maintain
      */
     public void setState(RollerStates rollerState) {
-        System.out.println(rollerState.name());
+        // System.out.println(rollerState.name());
         this.rollerState = rollerState;
         if (rollerState == RollerConstants.RollerStates.MAINTAIN) {
             setLastKnownPosition(rollerData.rollerPositionRad);
@@ -101,7 +103,6 @@ public abstract class Roller extends SubsystemBase {
     }
 
     public abstract void outtake();
-
     public abstract void intake();
 
     /**

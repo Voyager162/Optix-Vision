@@ -38,10 +38,11 @@ public class SwerveDefaultCommand extends Command {
 
   @Override
   public void execute() {
-    // controllers are weird in what's positive, so we flip these
-    double xMagnitude = xSpdFunction.get();
-    double yMagnitude = ySpdFunction.get();
-    double turningMagnitude = -xTurningSpdFunction.get();
+    
+   // controllers are weird in what's positive, so we flip these
+   double xMagnitude = xSpdFunction.get();
+   double yMagnitude = ySpdFunction.get();
+   double turningMagnitude = -xTurningSpdFunction.get();
 
     // one combined magnitutde
     double linearMagnitude = Math.hypot(xMagnitude, yMagnitude);
@@ -52,34 +53,42 @@ public class SwerveDefaultCommand extends Command {
     // one combined direction
     Rotation2d linearDirection = new Rotation2d(xMagnitude, yMagnitude);
 
-    // deadbands
-    // is always postive
-    linearMagnitude = MathUtil.applyDeadband(linearMagnitude, ControllerConstants.deadband);
-    // can be negative
-    turningMagnitude = Math.abs(turningMagnitude) > ControllerConstants.deadband
-        ? turningMagnitude
-        : 0.0;
+   // deadbands
+   // is always postive
+   linearMagnitude = MathUtil.applyDeadband(linearMagnitude, ControllerConstants.deadband);
+   // can be negative
+   turningMagnitude = Math.abs(turningMagnitude) > ControllerConstants.deadband
+       ? turningMagnitude
+       : 0.0;
 
-    // squaring the inputs for smoother driving at low speeds
-    linearMagnitude = Math.copySign(linearMagnitude * linearMagnitude, linearMagnitude);
-    turningMagnitude = Math.copySign(turningMagnitude * turningMagnitude, turningMagnitude);
+   // squaring the inputs for smoother driving at low speeds
+   linearMagnitude = Math.copySign(linearMagnitude * linearMagnitude, linearMagnitude);
+   turningMagnitude = Math.copySign(turningMagnitude * turningMagnitude, turningMagnitude);
 
-    double driveSpeedMPS = linearMagnitude * Robot.swerve.getMaxDriveSpeed();
-    double turningSpeedRadPerSecond = turningMagnitude * Robot.swerve.getMaxAngularSpeed();
 
-    // Calcaulate new linear components
-    double xSpeed = driveSpeedMPS * Math.cos(linearDirection.getRadians());
-    double ySpeed = driveSpeedMPS * Math.sin(linearDirection.getRadians());
-    ChassisSpeeds chassisSpeeds;
 
+   double driveSpeedMPS = linearMagnitude * Robot.swerve.getMaxDriveSpeed();
+   double turningSpeedRadPerSecond = turningMagnitude * Robot.swerve.getMaxAngularSpeed();
+
+   // Calcaulate new linear components
+   double xSpeed = driveSpeedMPS * Math.cos(linearDirection.getRadians());
+   double ySpeed = driveSpeedMPS * Math.sin(linearDirection.getRadians());
+   ChassisSpeeds chassisSpeeds;
     chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         UtilityFunctions.isRedAlliance() ? ySpeed : -ySpeed,
         UtilityFunctions.isRedAlliance() ? xSpeed : -xSpeed,
         turningSpeedRadPerSecond,
         Robot.swerve.getRotation2d());
 
-    // set chassis speeds
-    Robot.swerve.setChassisSpeeds(chassisSpeeds);
+   chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+       UtilityFunctions.isRedAlliance() ? ySpeed : -ySpeed,
+       UtilityFunctions.isRedAlliance() ? xSpeed : -xSpeed,
+       turningSpeedRadPerSecond,
+       Robot.swerve.getRotation2d());
+
+   // set chassis speeds
+
+   Robot.swerve.setChassisSpeeds(chassisSpeeds);
   }
 
   @Override
