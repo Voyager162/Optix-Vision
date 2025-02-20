@@ -3,10 +3,10 @@ package frc.robot.subsystems.vision;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
-import frc.robot.subsystems.vision.real.Photonvision;
 import frc.robot.subsystems.vision.VisionIO.*;
 
 public class Vision extends SubsystemBase {
+    @SuppressWarnings("unused")
     private VisionIO visionIO;
     private VisionData visionData = new VisionData();
 

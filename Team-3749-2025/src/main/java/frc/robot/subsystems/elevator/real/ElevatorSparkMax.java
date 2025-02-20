@@ -21,6 +21,7 @@ public class ElevatorSparkMax implements ElevatorIO {
             OptixSpark.Type.SPARKMAX);
 
     private double previousVelocity = 0;
+    @SuppressWarnings("unused")
     private double inputVolts = 0;
 
     public ElevatorSparkMax() {

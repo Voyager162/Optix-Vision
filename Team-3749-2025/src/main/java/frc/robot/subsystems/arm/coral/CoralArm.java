@@ -21,8 +21,6 @@ import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
 import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
 import frc.robot.subsystems.arm.coral.sim.CoralArmSim;
 
-import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
-import frc.robot.subsystems.arm.coral.sim.CoralArmSim;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
 import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;

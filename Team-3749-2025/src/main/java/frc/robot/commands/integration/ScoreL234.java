@@ -3,13 +3,12 @@ package frc.robot.commands.integration;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.roller.RollerConstants;
-import frc.robot.subsystems.roller.RollerConstants.RollerStates;
-import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 
 /*
  * ScoreL234 command for scoring coral on L2, L3, L4
  */
+@SuppressWarnings("unused")
 public class ScoreL234 extends Command {
     private final ElevatorStates elevatorState;
     private boolean handoffComplete = false;

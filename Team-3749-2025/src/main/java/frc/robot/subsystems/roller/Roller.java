@@ -6,7 +6,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.roller.RollerIO.RollerData;
-import frc.robot.subsystems.roller.implementations.ScoringRoller;
 import frc.robot.subsystems.roller.real.RollerSparkMax;
 import frc.robot.subsystems.roller.sim.RollerSim;
 import frc.robot.utils.LoggedTunableNumber;
