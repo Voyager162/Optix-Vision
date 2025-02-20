@@ -15,6 +15,7 @@ import frc.robot.Robot;
 import frc.robot.buttons.ButtonBoard.ScoringMode;
 import frc.robot.commands.arm.SetClimbArmState;
 import frc.robot.commands.arm.SetCoralArmState;
+import frc.robot.commands.elevator.OTFElevatorPreflight;
 import frc.robot.commands.elevator.SetElevatorState;
 import frc.robot.commands.integration.CoralIntakeSource;
 import frc.robot.commands.integration.Handoff;
@@ -143,20 +144,20 @@ public class JoystickIO {
     }
 
     public static void bindButtonBoard() {
-        buttonLeftSource.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(0)));
-        buttonRightSource.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(1)));
-        reefZoneA.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(2)));
-        reefZoneB.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(4)));
-        reefZoneC.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(7)));
-        reefZoneD.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(8)));
-        reefZoneE.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(10)));
-        reefZoneF.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(12)));
-        reefZoneG.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(14)));
-        reefZoneH.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(16)));
-        reefZoneI.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(18)));
-        reefZoneJ.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(20)));
-        reefZoneK.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(22)));
-        reefZoneL.onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(24)));
+        buttonLeftSource.onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(0))));
+        buttonRightSource.onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(1))));
+        reefZoneA.onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(2))));
+        reefZoneB.onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(4))));
+        reefZoneC.onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(7))));
+        reefZoneD.onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(8))));
+        reefZoneE.onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(10))));
+        reefZoneF.onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(12))));
+        reefZoneG.onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(14))));
+        reefZoneH.onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(16))));
+        reefZoneI.onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(18))));
+        reefZoneJ.onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(20))));
+        reefZoneK.onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(22))));
+        reefZoneL.onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(24))));
         buttonL1.onTrue(l1);
         buttonL2.onTrue(l2);
         buttonL3.onTrue(l3);
@@ -209,7 +210,7 @@ public class JoystickIO {
             buttonBoard.setScoringMode(ScoringMode.ALGAE);
         })); //y is for testing only for now: so this command will always change
         
-        new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
+        new Trigger(() -> Robot.swerve.getIsOTF()).whileTrue(onTheFly);
         new Trigger(() -> {
             if (Math.abs(pilot.getLeftX()) > ControllerConstants.deadband
                     || Math.abs(pilot.getLeftY()) > ControllerConstants.deadband

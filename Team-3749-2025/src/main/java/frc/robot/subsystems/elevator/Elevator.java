@@ -183,8 +183,8 @@ public class Elevator extends SubsystemBase {
         // System.out.println(getPositionMeters());
 
         double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
-        // System.out.println("FF " + ffVoltage);
-        // System.out.println("PID " + PID);
+        System.out.println("FF " + ffVoltage);
+        System.out.println("PID " + PID);
         elevatorio.setVoltage(ffVoltage + PID);
     }
 
