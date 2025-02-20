@@ -38,7 +38,6 @@ public class ScoringRoller extends Roller {
         } else {
             this.photoelectricIO = new JTVisiSight();
         }
-        this.photoelectricIO = new JTVisiSight(); 
     }
 
     public static SimpleMotorFeedforward FF() {
