@@ -29,7 +29,7 @@ public class SetClimbArmState extends Command {
 
     @Override
     public boolean isFinished() {
-
+        
         return arm.getIsStableState();
 
     }

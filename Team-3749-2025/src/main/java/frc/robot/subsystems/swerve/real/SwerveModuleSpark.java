@@ -1,8 +1,12 @@
 package frc.robot.subsystems.swerve.real;
 
 import frc.robot.utils.OptixSpark;
+
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.CANcoder;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
 import frc.robot.subsystems.swerve.SwerveModuleIO;
 import frc.robot.subsystems.swerve.SwerveConstants.DrivetrainConstants;
 import frc.robot.subsystems.swerve.SwerveConstants.MotorConstants;
@@ -45,6 +49,12 @@ public class SwerveModuleSpark implements SwerveModuleIO {
         absoluteEncoder = new CANcoder(MotorConstants.absoluteEncoderIds[index]);
         absoluteEncoderOffsetRad = Units.degreesToRadians(MotorConstants.absoluteEncoderOffsetDeg[index]);
         turn.setPosition(absoluteEncoder.getPosition().getValueAsDouble() * 2 * Math.PI - absoluteEncoderOffsetRad);
+
+        absoluteEncoder.optimizeBusUtilization();
+        StatusSignal<Angle> absolutePositionSignal = absoluteEncoder.getAbsolutePosition();
+        absolutePositionSignal.setUpdateFrequency(100);
+
+        
     }
 
     @Override
