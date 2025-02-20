@@ -103,9 +103,12 @@ public class Photonvision implements VisionIO {
     }
 
     public void updatePose() {
-        for (int i = 0; i < cameraList.length; i++) {
-            cameraUpdatePose(i);
-        }
+        // cameraUpdatePose(0);
+        // cameraUpdatePose(1);
+
+        // for (int i = 0; i < cameraList.length; i++) {
+        //     cameraUpdatePose(i);
+        // }
     }
 
     public double getHypotenuse(Transform3d transform3d) {
