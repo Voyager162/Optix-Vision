@@ -22,7 +22,8 @@ public class PigeonGyro implements GyroIO {
     @Override
     public void updateData(GyroData data) {
         try {
-            data.yawDeg = pigeonGyro.getYaw().getValueAsDouble();
+            // +180 because it is mounted backwards
+            data.yawDeg = pigeonGyro.getYaw().getValueAsDouble() + 180;
             data.pitchDeg = pigeonGyro.getPitch().getValueAsDouble();
             data.rollDeg = pigeonGyro.getRoll().getValueAsDouble();
             data.isConnected = pigeonGyro.isConnected();
