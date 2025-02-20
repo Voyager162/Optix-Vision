@@ -50,6 +50,8 @@ public class MiscConstants {
 
     public static final double maxMotorVolts = 12.0;
 
+    public static final double deadbandVoltage = 0.15;
+
   }
 
 }

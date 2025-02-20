@@ -43,9 +43,8 @@ public class CoralArmSparkMax implements CoralArmIO {
 		motor.setVelocityConversionFactor(1 / CoralArmConstants.armGearing * 2 * Math.PI / 60.0);
 		motor.setAbsoluteEncoderInverted(true);
 		absoluteEncoder = motor.getAbsoluteEncoder();
-		
-		absolutePos = absoluteEncoder.getPosition();
 
+		absolutePos = absoluteEncoder.getPosition();
 
 		motor.setPosition(absolutePos);
 		motor.setPositionWrapping(-Math.PI, Math.PI);
@@ -83,7 +82,7 @@ public class CoralArmSparkMax implements CoralArmIO {
 	 */
 	@Override
 	public void setVoltage(double volts) {
-		double inputVolts = MathUtil.applyDeadband(volts, 0.05);
+		double inputVolts = MathUtil.applyDeadband(volts, MotorControllerConstants.deadbandVoltage);
 		inputVolts = MathUtil.clamp(volts, -12, 12);
 		motor.setVoltage(inputVolts);
 	}

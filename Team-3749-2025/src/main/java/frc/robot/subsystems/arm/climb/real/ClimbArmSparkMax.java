@@ -93,7 +93,7 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 	 */
 	@Override
 	public void setVoltage(double volts) {
-		inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
+		inputVolts = MathUtil.applyDeadband(inputVolts, MotorControllerConstants.deadbandVoltage);
 		inputVolts = MathUtil.clamp(volts, -12, 12);
 		// frontMotor.setVoltage(inputVolts);
 		// backMotor.setVoltage(inputVolts);

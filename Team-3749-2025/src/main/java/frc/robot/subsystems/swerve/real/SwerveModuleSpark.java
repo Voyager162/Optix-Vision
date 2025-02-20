@@ -5,6 +5,8 @@ import frc.robot.utils.OptixSpark;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.CANcoder;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
 import frc.robot.subsystems.swerve.SwerveModuleIO;
@@ -42,7 +44,6 @@ public class SwerveModuleSpark implements SwerveModuleIO {
         turn.setBrakeMode(true);
         turn.setPositionWrapping(0, 2 * Math.PI);
 
-
         drive.applyConfig();
         turn.applyConfig();
 
@@ -54,7 +55,6 @@ public class SwerveModuleSpark implements SwerveModuleIO {
         StatusSignal<Angle> absolutePositionSignal = absoluteEncoder.getAbsolutePosition();
         absolutePositionSignal.setUpdateFrequency(100);
 
-        
     }
 
     @Override
@@ -86,12 +86,16 @@ public class SwerveModuleSpark implements SwerveModuleIO {
     /** Run the drive motor at the specified voltage. */
     @Override
     public void setDriveVoltage(double volts) {
+        volts = MathUtil.clamp(volts, -12, 12);
+        volts = MathUtil.applyDeadband(volts, MotorControllerConstants.deadbandVoltage);
         drive.setVoltage(volts);
     }
 
     /** Run the turn motor at the specified voltage. */
     @Override
     public void setTurnVoltage(double volts) {
+        volts = MathUtil.clamp(volts, -12, 12);
+        volts = MathUtil.applyDeadband(volts, MotorControllerConstants.deadbandVoltage * 2.0 / 3.0);
         turn.setVoltage(volts);
     }
 

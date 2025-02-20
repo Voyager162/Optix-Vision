@@ -66,8 +66,8 @@ public class ElevatorSparkMax implements ElevatorIO {
 
     @Override
     public void setVoltage(double volts) {
-        inputVolts = MathUtil.applyDeadband(volts, 0.05);
         inputVolts = MathUtil.clamp(volts, -12, 12);
+        inputVolts = MathUtil.applyDeadband(volts, MotorControllerConstants.deadbandVoltage);
         leftMotor.setVoltage(inputVolts);
         rightMotor.setVoltage(inputVolts);
     }
