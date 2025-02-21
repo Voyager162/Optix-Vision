@@ -280,7 +280,9 @@ public class JoystickIO {
 
         // All elevator stages
         // operator.a().onTrue(l1);
-        operator.b().onTrue(l2);
+        operator.y().onTrue(l1);
+        operator.x().onTrue(l2);
+        operator.b().onTrue(l3);
         operator.a().onTrue(stow);
         // operator.x().onTrue(l3);
         // operator.y().onTrue(l4);

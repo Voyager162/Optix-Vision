@@ -44,6 +44,8 @@ public class ElevatorSparkMax implements ElevatorIO {
         rightMotor.applyConfig(leftMotor.getConfig());
         rightMotor.setInverted(ElevatorConstants.ElevatorSpecs.motorInverted[1]);
         rightMotor.applyConfig();
+
+    
     }
 
     @Override

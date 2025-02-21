@@ -95,8 +95,9 @@ public class SwerveModuleSpark implements SwerveModuleIO {
     @Override
     public void setTurnVoltage(double volts) {
         volts = MathUtil.clamp(volts, -12, 12);
-        volts = UtilityFunctions.applyDeadband(volts, MotorControllerConstants.deadbandVoltage * 2.0 / 3.0);
+        volts = UtilityFunctions.applyDeadband(volts, MotorControllerConstants.deadbandVoltage);
         turn.setVoltage(volts);
+
     }
 
     /** Enable or disable brake mode on the drive motor. */

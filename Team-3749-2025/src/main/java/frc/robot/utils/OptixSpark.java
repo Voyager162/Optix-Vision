@@ -42,7 +42,6 @@ public class OptixSpark {
             motor = new SparkMax(id, MotorType.kBrushless);
         }
         controller = motor.getClosedLoopController();
-        motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     public double getPosition() {
