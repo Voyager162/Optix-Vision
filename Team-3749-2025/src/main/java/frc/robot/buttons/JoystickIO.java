@@ -124,17 +124,12 @@ public class JoystickIO {
 
     public static void getButtonBindings() {
 
-        if (DriverStation.isJoystickConnected(1)) {
-            // if both xbox controllers are connected
-            pilotAndOperatorBindings();
-        } else if (DriverStation.isJoystickConnected(0)) {
-            // if only one xbox controller is connected
-            pilotBindings();
-        } else if (Robot.isSimulation()) {
+        if (Robot.isSimulation()) {
             // will show not connected if on
             pilotAndOperatorBindings();
             // simBindings();
         } else {
+            testBindings();
 
         }
 
@@ -205,8 +200,8 @@ public class JoystickIO {
 
         pilot.y().onTrue(Commands.runOnce(() -> {
             buttonBoard.setScoringMode(ScoringMode.ALGAE);
-        })); //y is for testing only for now: so this command will always change
-        
+        })); // y is for testing only for now: so this command will always change
+
         new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
         new Trigger(() -> {
             if (Math.abs(pilot.getLeftX()) > ControllerConstants.deadband
@@ -220,7 +215,7 @@ public class JoystickIO {
         bindButtonBoard();
         ToPosTriggers.createOTFTriggers();
 
-        operator.b().onTrue(Commands.runOnce(() -> Robot.elevator.setVoltage(12)));
+        // operator.b().onTrue(Commands.runOnce(() -> Robot.elevator.setVoltage(12)));
         // operator.b().onTrue(intakeSource);
         // operator.x().onTrue(climb);
         // operator.y().onTrue(climbStow);
@@ -230,26 +225,58 @@ public class JoystickIO {
         pilot.povRight().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L3)));
         pilot.povDown().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L4)));
         // pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
-        
+
+    }
+
+    public static void testBindings() {
         // // Checking voltage for all subsystems
-        // operator.rightBumper().onTrue(Commands.run(() -> Robot.elevator.setVoltage(-1.5)));
-        // operator.b().onTrue(Commands.run(() -> Robot.coralArm.setVoltage(Robot.subsystemVoltageSetter.get())));
-        // operator.x().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(4))).onFalse(Commands.run(()->Robot.climbArm.setVoltage(0)));
-        // operator.y().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(8))).onFalse(Commands.run(()->Robot.climbArm.setVoltage(0)));
+        operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(-1.5), Robot.elevator))
+                .onFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
+        operator.x().onTrue(Commands.run(() -> Robot.elevator.setVoltage(-3), Robot.elevator))
+                .onFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
+        operator.b().onTrue(Commands.run(() -> Robot.elevator.setVoltage(-6), Robot.elevator))
+                .onFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
+        operator.y().onTrue(Commands.run(() -> Robot.elevator.setVoltage(-9), Robot.elevator))
+                .onFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
+        operator.leftBumper().onTrue(Commands.run(() -> Robot.elevator.setVoltage(-12), Robot.elevator))
+                .onFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
 
-        operator.y().whileTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(Robot.subsystemVoltageSetter.get()))).onFalse(Commands.run(() -> Robot.algaeRoller.setVoltage(0)));
-        operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(Robot.subsystemVoltageSetter.get())));
-        // operator.b().onTrue(Commands.run(() -> Robot.coralArm.setVoltage(Robot.subsystemVoltageSetter.get())));
-        // operator.x().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(Robot.subsystemVoltageSetter.get())));
-        // operator.y().whileTrue(Commands.run(() -> Robot.algaeRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
-        // operator.leftBumper().whileTrue(Commands.run(() -P> Robot.coralRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
-        // operator.leftBumper().whileFalse(Commands.runOnce(() -> Robot.coralRoller.stop()));
-        // operator.rightBumper().onTrue(Commands.run(() -> Robot.scoringRoller.setVoltage(Robot.subsystemVoltageSetter.get())));//.onFalse(Commands.run(() -> Robot.scoringRoller.setVoltage(0)));
-        //kanhay's keyboard comment (donot remove need for college apps bc i coded a robot)
-        // operator.leftBumper().onTrue(Commands.run(() -> Robot.coralRoller.setVoltage(Robot.subsystemVoltageSetter.get())));//.onFalse(Commands.run(() -> Robot.scoringRoller.setVoltage(0)));
+        operator.rightBumper().onTrue(Commands.run(() -> Robot.elevator.setVoltage(3))).onFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
+        // operator.b().onTrue(Commands.run(() ->
+        // Robot.coralArm.setVoltage(Robot.subsystemVoltageSetter.get())));
+        // operator.x().onTrue(Commands.run(() ->
+        // Robot.climbArm.setVoltage(4))).onFalse(Commands.run(()->Robot.climbArm.setVoltage(0)));
+        // operator.y().onTrue(Commands.run(() ->
+        // Robot.climbArm.setVoltage(8))).onFalse(Commands.run(()->Robot.climbArm.setVoltage(0)));
 
-        // pilot.a().onTrue(Commands.run(() -> Robot.swerve.setTurnVoltage(3), Robot.swerve));//.onFalse(Commands.run(() -> Robot.scoringRoller.setVoltage(0)));
+        // operator.y().whileTrue(Commands.run(() ->
+        // Robot.algaeRoller.setVoltage(Robot.subsystemVoltageSetter.get()))).onFalse(Commands.run(()
+        // -> Robot.algaeRoller.setVoltage(0)));
+        // operator.a().onTrue(Commands.run(() ->
+        // Robot.elevator.setVoltage(Robot.subsystemVoltageSetter.get())));
+        // operator.b().whileTrue(Commands.run(() ->
+        // Robot.coralRoller.setVoltage(Robot.subsystemVoltageSetter.get()))).onFalse(Commands.run(()
+        // -> Robot.coralRoller.setVoltage(0)));
+        // operator.x().onTrue(Commands.run(() ->
+        // Robot.climbArm.setVoltage(Robot.subsystemVoltageSetter.get())));
+        // operator.y().whileTrue(Commands.run(() ->
+        // Robot.algaeRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
+        // operator.leftBumper().whileTrue(Commands.run(() -P>
+        // Robot.coralRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
+        // operator.leftBumper().whileFalse(Commands.runOnce(() ->
+        // Robot.coralRoller.stop()));
+        // operator.rightBumper().onTrue(Commands.run(() ->
+        // Robot.scoringRoller.setVoltage(Robot.subsystemVoltageSetter.get())));//.onFalse(Commands.run(()
+        // -> Robot.scoringRoller.setVoltage(0)));
+        // kanhay's keyboard comment (donot remove need for college apps bc i coded a
+        // robot)
+        // operator.leftBumper().onTrue(Commands.run(() ->
+        // Robot.coralRoller.setVoltage(Robot.subsystemVoltageSetter.get())));//.onFalse(Commands.run(()
+        // -> Robot.scoringRoller.setVoltage(0)));
 
+        // pilot.a().onTrue(Commands.run(() -> Robot.swerve.setTurnVoltage(3),
+        // Robot.swerve));//.onFalse(Commands.run(() ->
+        // Robot.scoringRoller.setVoltage(0)));
 
         // All elevator stages
         // operator.a().onTrue(l1);
@@ -260,7 +287,6 @@ public class JoystickIO {
         // Climb + Coral Arms
         // operator.a().onTrue(climbStow);
         // operator.b().onTrue(climb);
- 
 
         // Run
         // operator.a().whileTrue(algaeRun);
@@ -280,7 +306,8 @@ public class JoystickIO {
 
         // operator.leftBumper().onTrue(intakeSource);
         // operator.rightBumper().onTrue(scoreL234);
-        // operator.b().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
+        // operator.b().onTrue(Commands.runOnce(() ->
+        // Robot.scoringRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
     }
 
     public static void pilotBindings() {
