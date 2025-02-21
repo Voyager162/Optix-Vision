@@ -36,13 +36,13 @@ public class ElevatorConstants {
         public static LoggedTunableNumber kI = new LoggedTunableNumber("/subsystems/elevator/kI", 0);
         public static LoggedTunableNumber kD = new LoggedTunableNumber("/subsystems/elevator/kD", 0);
         public static LoggedTunableNumber kS = new LoggedTunableNumber("/subsystems/elevator/kS", 0.14);
-        public static LoggedTunableNumber kV = new LoggedTunableNumber("/subsystems/elevator/kV", 15.642);
-        public static LoggedTunableNumber kA = new LoggedTunableNumber("/subsystems/elevator/kA", 3.44);
+        public static LoggedTunableNumber kV = new LoggedTunableNumber("/subsystems/elevator/kV", 7.821);
+        public static LoggedTunableNumber kA = new LoggedTunableNumber("/subsystems/elevator/kA", 1.72);
         public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/elevator/max velocity",
-                0.700);
+                1.40);
         public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
                 "/subsystems/elevator/max acceleration",
-                1.59);
+                3.18);
     }
 
     public enum ElevatorStates {
@@ -65,7 +65,7 @@ public class ElevatorConstants {
         public static final double l4Height = Units.inchesToMeters(72);
         public static final double algaeLowHeight = Units.inchesToMeters(31.875);
         public static final double algaeHighHeight = Units.inchesToMeters(47.625);
-        public static final double sourceHeight = Units.inchesToMeters(ElevatorSpecs.baseHeight);
-        public static final double stowHeight = Units.inchesToMeters(5.0); // placedholder
+        public static final double sourceHeight = Units.inchesToMeters(ElevatorSpecs.baseHeight);// check later
+        public static final double stowHeight = Units.inchesToMeters(2.0); // placedholder
     }
 }

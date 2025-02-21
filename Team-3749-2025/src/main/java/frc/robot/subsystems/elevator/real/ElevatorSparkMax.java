@@ -32,7 +32,7 @@ public class ElevatorSparkMax implements ElevatorIO {
         // 2x for two stages, 2pi for circumfrence, radius of sprocket, gear ratio
         leftMotor.setPositionConversionFactor(2 * Math.PI * 2 * ElevatorConstants.ElevatorSpecs.drumRadiusMeters
                 / ElevatorConstants.ElevatorSpecs.gearing);
-        leftMotor.setVelocityConversionFactor(Math.PI * 2 * ElevatorConstants.ElevatorSpecs.drumRadiusMeters
+        leftMotor.setVelocityConversionFactor(2 * Math.PI * 2 * ElevatorConstants.ElevatorSpecs.drumRadiusMeters
                 / (60 * ElevatorConstants.ElevatorSpecs.gearing));
 
         leftMotor.setCurrentLimit(MotorControllerConstants.standardStallLimit,

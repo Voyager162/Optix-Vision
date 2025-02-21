@@ -146,10 +146,10 @@ public class Elevator extends SubsystemBase {
                 setGoal(ElevatorConstants.StateHeights.l4Height);
                 break;
             case MAX:
-                setGoal(ElevatorConstants.ElevatorSpecs.maxHeightMeters);
+                // fill in later
                 break;
             case STOW:
-                setGoal(ElevatorConstants.ElevatorSpecs.baseHeight);
+                setGoal(ElevatorConstants.StateHeights.stowHeight);
                 break;
             default:
                 setGoal(0);

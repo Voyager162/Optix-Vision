@@ -33,7 +33,7 @@ public class SetElevatorState extends Command {
 
     @Override
     public void end(boolean interupted) {
-        Robot.elevator.setState(ElevatorStates.STOW);
+        // Robot.elevator.setState(ElevatorStates.STOW);
     }
 
     @Override

@@ -281,6 +281,7 @@ public class JoystickIO {
         // All elevator stages
         // operator.a().onTrue(l1);
         operator.b().onTrue(l2);
+        operator.a().onTrue(stow);
         // operator.x().onTrue(l3);
         // operator.y().onTrue(l4);
 
@@ -291,6 +292,7 @@ public class JoystickIO {
         // Run
         // operator.a().whileTrue(algaeRun);
         // operator.b().onTrue(new IntakeFloor());
+
         // operator.b().onTrue(coralRunIntake);
         // operator.a().onTrue(coralRunOuttake);
         // operator.a().onTrue(coralL1);
