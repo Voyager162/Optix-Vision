@@ -71,10 +71,12 @@ public class CoralArm extends SubsystemBase {
                 CoralArmConstants.kD.get(),
                 new TrapezoidProfile.Constraints(CoralArmConstants.maxVelocity.get(),
                         CoralArmConstants.maxAcceleration.get()));
+
         feedforward = new ArmFeedforward(CoralArmConstants.kS.get(), CoralArmConstants.kG.get(),
                 CoralArmConstants.kV.get(),
                 CoralArmConstants.kA.get());
 
+        profile.reset(data.positionRad);
         setState(state);
     }
 

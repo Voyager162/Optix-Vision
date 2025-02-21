@@ -80,13 +80,15 @@ public class Elevator extends SubsystemBase {
             elevatorio = new ElevatorSparkMax();
         }
 
+        feedforward = new ElevatorFeedforward(ElevatorConstants.ElevatorControl.kS.get(),
+                ElevatorConstants.ElevatorControl.kG.get(), ElevatorConstants.ElevatorControl.kV.get(),
+                ElevatorConstants.ElevatorControl.kA.get());
         profile = new ProfiledPIDController(ElevatorConstants.ElevatorControl.kP.get(),
                 ElevatorConstants.ElevatorControl.kI.get(), ElevatorConstants.ElevatorControl.kD.get(),
                 new TrapezoidProfile.Constraints(ElevatorConstants.ElevatorControl.maxVelocity.get(),
                         ElevatorConstants.ElevatorControl.maxAcceleration.get()));
-        feedforward = new ElevatorFeedforward(ElevatorConstants.ElevatorControl.kS.get(),
-                ElevatorConstants.ElevatorControl.kG.get(), ElevatorConstants.ElevatorControl.kV.get(),
-                ElevatorConstants.ElevatorControl.kA.get());
+        profile.reset(data.positionMeters);
+        setState(state);
     }
 
     public ElevatorStates getState() {
@@ -187,7 +189,6 @@ public class Elevator extends SubsystemBase {
         // ffVoltage = ElevatorConstants.ElevatorControl.kG.get();
         Logger.recordOutput("subsystems/elevator/position setpoint", firstState.position);
         Logger.recordOutput("subsystems/elevator/velocity setpoint", firstState.velocity);
-
 
         setVoltage(ffVoltage + PID);
     }

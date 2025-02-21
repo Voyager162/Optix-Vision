@@ -49,8 +49,6 @@ public class ClimbArm extends SubsystemBase {
 	StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
 			.getStructTopic("ClimbArm Pose", Pose3d.struct).publish();
 
-
-
 	public ClimbArm() {
 		if (Robot.isSimulation()) {
 
@@ -66,6 +64,8 @@ public class ClimbArm extends SubsystemBase {
 				ClimbArmConstants.kD.get(),
 				new TrapezoidProfile.Constraints(ClimbArmConstants.maxVelocity.get(),
 						ClimbArmConstants.maxAcceleration.get()));
+		profile.reset(data.positionRad);
+
 		setState(state);
 	}
 
@@ -94,7 +94,8 @@ public class ClimbArm extends SubsystemBase {
 						ClimbArmConstants.stowSetPointRad.get(), data.positionRad);
 			case CLIMB:
 				return UtilityFunctions.withinMargin(ClimbArmConstants.stateMarginOfError,
-						ClimbArmConstants.climbVoltage.get(), (data.backMotorAppliedVolts + data.frontMotorAppliedVolts) / 2);
+						ClimbArmConstants.climbVoltage.get(),
+						(data.backMotorAppliedVolts + data.frontMotorAppliedVolts) / 2);
 			case STOPPED:
 				return UtilityFunctions.withinMargin(ClimbArmConstants.stateMarginOfError, 0, data.velocityRadPerSec);
 			default:
@@ -195,7 +196,7 @@ public class ClimbArm extends SubsystemBase {
 		switch (state) {
 			case CLIMB:
 				armIO.setVoltage(ClimbArmConstants.climbVoltage.get());
-			    break;
+				break;
 			case STOPPED:
 				stop();
 				break;
