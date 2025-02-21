@@ -1,9 +1,12 @@
 package frc.robot.subsystems.elevator.real;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.utils.OptixSpark;
+import frc.robot.utils.UtilityFunctions;
 import frc.robot.utils.MiscConstants.MotorControllerConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
 
@@ -26,8 +29,8 @@ public class ElevatorSparkMax implements ElevatorIO {
 
     public ElevatorSparkMax() {
         // System.out.println("[Init] Creating Elevator");
-
-        leftMotor.setPositionConversionFactor(Math.PI * 2 * ElevatorConstants.ElevatorSpecs.drumRadiusMeters
+        // 2x for two stages, 2pi for circumfrence, radius of sprocket, gear ratio
+        leftMotor.setPositionConversionFactor(2 * Math.PI * 2 * ElevatorConstants.ElevatorSpecs.drumRadiusMeters
                 / ElevatorConstants.ElevatorSpecs.gearing);
         leftMotor.setVelocityConversionFactor(Math.PI * 2 * ElevatorConstants.ElevatorSpecs.drumRadiusMeters
                 / (60 * ElevatorConstants.ElevatorSpecs.gearing));
@@ -68,7 +71,9 @@ public class ElevatorSparkMax implements ElevatorIO {
     @Override
     public void setVoltage(double volts) {
         inputVolts = MathUtil.clamp(volts, -12, 12);
-        inputVolts = MathUtil.applyDeadband(volts, MotorControllerConstants.deadbandVoltage);
+        inputVolts = UtilityFunctions.applyDeadband(inputVolts, MotorControllerConstants.deadbandVoltage);
+        Logger.recordOutput("subsystems/elevator/input volts", inputVolts);
+
         leftMotor.setVoltage(inputVolts);
         rightMotor.setVoltage(inputVolts);
     }

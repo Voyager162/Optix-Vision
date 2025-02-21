@@ -50,7 +50,7 @@ import static edu.wpi.first.units.Units.*;
 public class Elevator extends SubsystemBase {
     private ElevatorIO elevatorio;
     private ElevatorData data = new ElevatorData();
-    private ElevatorStates state = ElevatorStates.STOP;
+    private ElevatorStates state = ElevatorStates.STOW;
 
     private ProfiledPIDController profile = new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(
             ElevatorConstants.ElevatorControl.maxVelocity.get(),
@@ -182,16 +182,25 @@ public class Elevator extends SubsystemBase {
         double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
         // System.out.println("FF " + ffVoltage);
         // System.out.println("PID " + PID);
-        elevatorio.setVoltage(ffVoltage + PID);
+
+        PID = 0;
+        // ffVoltage = ElevatorConstants.ElevatorControl.kG.get();
+        Logger.recordOutput("subsystems/elevator/position setpoint", firstState.position);
+        Logger.recordOutput("subsystems/elevator/velocity setpoint", firstState.velocity);
+
+
+        setVoltage(ffVoltage + PID);
     }
 
     public void stop() {
-        elevatorio.setVoltage(ElevatorConstants.ElevatorControl.kG.get());
+        setVoltage(0);
     }
 
     private void logData() {
         Logger.recordOutput("subsystems/elevator/Current Command",
                 this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
+
+        Logger.recordOutput("subsystems/elevator/state", state.name());
 
         Logger.recordOutput("subsystems/elevator/postion", data.positionMeters);
         Logger.recordOutput("subsystems/elevator/velocity", data.velocityMetersPerSecond);
@@ -228,7 +237,7 @@ public class Elevator extends SubsystemBase {
     @Override
     public void periodic() {
         elevatorio.updateData(data);
-        // runState();
+        runState();
         logData();
     }
 }

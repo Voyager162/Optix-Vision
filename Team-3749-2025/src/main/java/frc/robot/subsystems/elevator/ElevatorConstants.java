@@ -1,4 +1,5 @@
 package frc.robot.subsystems.elevator;
+
 import frc.robot.utils.LoggedTunableNumber;
 
 /**
@@ -12,9 +13,10 @@ import edu.wpi.first.math.util.Units;
 
 public class ElevatorConstants {
     public static class ElevatorSpecs {
-        public static final double gearing = 75;
-        public static final double carriageMassKg = Units.kilogramsToLbs(54);
-        public static final double drumRadiusMeters = Units.inchesToMeters(2);
+        public static final double gearing = 16 * (24.0 / 22.0);
+        public static final double carriageMassKg = Units.lbsToKilograms(54);
+        // 22 TOOTH, 1/4 in pitch, divide by 2pi to go from circumfrence to radius
+        public static final double drumRadiusMeters = (Units.inchesToMeters(22.0 / 4.0) / (2 * Math.PI));
         public static final double minHeightMeters = 0;
         public static final double maxHeightMeters = Units.feetToMeters(6); // remeasure maxV and A
         // public static final boolean simulateGravity = true;
@@ -23,23 +25,24 @@ public class ElevatorConstants {
         public static final double baseHeight = Units.feetToMeters(3.25);
 
         public static int[] motorIds = { 19, 20 };
-        public static boolean[] motorInverted = { false, true };
+        public static boolean[] motorInverted = { true, false };
 
         public static int zeroOffset = 0;
     }
 
     public static class ElevatorControl {
-        public static LoggedTunableNumber kG = new LoggedTunableNumber("/subsystems/elevator/kG", 0.184);
-        public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/elevator/kP", 20);
+        public static LoggedTunableNumber kG = new LoggedTunableNumber("/subsystems/elevator/kG", 0.31);
+        public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/elevator/kP", 0);
         public static LoggedTunableNumber kI = new LoggedTunableNumber("/subsystems/elevator/kI", 0);
         public static LoggedTunableNumber kD = new LoggedTunableNumber("/subsystems/elevator/kD", 0);
-        public static LoggedTunableNumber kS = new LoggedTunableNumber("/subsystems/elevator/kS", 0);
-        public static LoggedTunableNumber kV = new LoggedTunableNumber("/subsystems/elevator/kV", 2.35);
-        public static LoggedTunableNumber kA = new LoggedTunableNumber("/subsystems/elevator/kA", 0);
+        public static LoggedTunableNumber kS = new LoggedTunableNumber("/subsystems/elevator/kS", 0.14);
+        public static LoggedTunableNumber kV = new LoggedTunableNumber("/subsystems/elevator/kV", 15.642);
+        public static LoggedTunableNumber kA = new LoggedTunableNumber("/subsystems/elevator/kA", 3.44);
         public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/elevator/max velocity",
-        4.139);
-        public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("/subsystems/elevator/max acceleration",
-        3.988);
+                0.700);
+        public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
+                "/subsystems/elevator/max acceleration",
+                1.59);
     }
 
     public enum ElevatorStates {

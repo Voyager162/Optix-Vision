@@ -203,7 +203,7 @@ public class JoystickIO {
         })); // y is for testing only for now: so this command will always change
 
         new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
-        new Trigger(() -> {
+        new Trigger(() -> { 
             if (Math.abs(pilot.getLeftX()) > ControllerConstants.deadband
                     || Math.abs(pilot.getLeftY()) > ControllerConstants.deadband
                     || Math.abs(pilot.getRightX()) > ControllerConstants.deadband) {
@@ -230,18 +230,18 @@ public class JoystickIO {
 
     public static void testBindings() {
         // // Checking voltage for all subsystems
-        operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(-1.5), Robot.elevator))
-                .onFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
-        operator.x().onTrue(Commands.run(() -> Robot.elevator.setVoltage(-3), Robot.elevator))
-                .onFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
-        operator.b().onTrue(Commands.run(() -> Robot.elevator.setVoltage(-6), Robot.elevator))
-                .onFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
-        operator.y().onTrue(Commands.run(() -> Robot.elevator.setVoltage(-9), Robot.elevator))
-                .onFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
-        operator.leftBumper().onTrue(Commands.run(() -> Robot.elevator.setVoltage(-12), Robot.elevator))
-                .onFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
-
-        operator.rightBumper().onTrue(Commands.run(() -> Robot.elevator.setVoltage(3))).onFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
+        // operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(1.5), Robot.elevator))
+        //         .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
+        // operator.x().onTrue(Commands.run(() -> Robot.elevator.setVoltage(3), Robot.elevator))
+        //         .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
+        // operator.b().onTrue(Commands.run(() -> Robot.elevator.setVoltage(10), Robot.elevator))
+        //         .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
+        // operator.y().onTrue(Commands.run(() -> Robot.elevator.setVoltage(9), Robot.elevator))
+        //         .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
+        // operator.leftBumper().onTrue(Commands.run(() -> Robot.elevator.setVoltage(12), Robot.elevator))
+        //         .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
+        // operator.a().whileTrue(Robot.elevator.setVoltage())
+        // operator.rightBumper().onTrue(Commands.run(() -> Robot.elevator.setVoltage(-3))).onFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
         // operator.b().onTrue(Commands.run(() ->
         // Robot.coralArm.setVoltage(Robot.subsystemVoltageSetter.get())));
         // operator.x().onTrue(Commands.run(() ->
@@ -280,7 +280,7 @@ public class JoystickIO {
 
         // All elevator stages
         // operator.a().onTrue(l1);
-        // operator.b().onTrue(l2);
+        operator.b().onTrue(l2);
         // operator.x().onTrue(l3);
         // operator.y().onTrue(l4);
 

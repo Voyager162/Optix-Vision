@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.subsystems.arm.climb.ClimbArmIO;
 import frc.robot.subsystems.arm.climb.ClimbArmConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
+import frc.robot.utils.UtilityFunctions;
 
 /**
  * IO implementation for an arm subsystem's simulation
@@ -69,7 +70,7 @@ public class ClimbArmSim implements ClimbArmIO {
 	 */
 	@Override
 	public void setVoltage(double volts) {
-		inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
+		inputVolts = UtilityFunctions.applyDeadband(inputVolts, 0.05);
 		inputVolts = MathUtil.clamp(volts, -12, 12);
 		armSim.setInputVoltage(inputVolts);
 	}

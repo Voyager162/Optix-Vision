@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.arm.climb.ClimbArmIO;
 import frc.robot.subsystems.arm.climb.ClimbArmConstants;
 import frc.robot.utils.OptixSpark;
+import frc.robot.utils.UtilityFunctions;
 import frc.robot.utils.MiscConstants.MotorControllerConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
 
@@ -93,7 +94,7 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 	 */
 	@Override
 	public void setVoltage(double volts) {
-		inputVolts = MathUtil.applyDeadband(inputVolts, MotorControllerConstants.deadbandVoltage);
+		inputVolts = UtilityFunctions.applyDeadband(inputVolts, MotorControllerConstants.deadbandVoltage);
 		inputVolts = MathUtil.clamp(volts, -12, 12);
 		// frontMotor.setVoltage(inputVolts);
 		// backMotor.setVoltage(inputVolts);

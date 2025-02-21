@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.utils.MiscConstants.SimConstants;
+import frc.robot.utils.UtilityFunctions;
 
 /**
  * Simulation for elevator subsystem
@@ -50,7 +51,7 @@ public class ElevatorSimulation implements ElevatorIO {
 
     @Override
     public void setVoltage(double volts) {
-        inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
+        inputVolts = UtilityFunctions.applyDeadband(inputVolts, 0.05);
         inputVolts = MathUtil.clamp(volts, -12, 12);
         elevatorSimSystem.setInputVoltage(inputVolts);
     }

@@ -7,6 +7,7 @@ import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.arm.coral.CoralArmIO;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.utils.OptixSpark;
+import frc.robot.utils.UtilityFunctions;
 import frc.robot.utils.MiscConstants.MotorControllerConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
 
@@ -82,7 +83,7 @@ public class CoralArmSparkMax implements CoralArmIO {
 	 */
 	@Override
 	public void setVoltage(double volts) {
-		double inputVolts = MathUtil.applyDeadband(volts, MotorControllerConstants.deadbandVoltage);
+		double inputVolts = UtilityFunctions.applyDeadband(volts, MotorControllerConstants.deadbandVoltage);
 		inputVolts = MathUtil.clamp(volts, -12, 12);
 		motor.setVoltage(inputVolts);
 	}

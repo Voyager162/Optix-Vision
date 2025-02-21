@@ -20,7 +20,7 @@ public class UtilityFunctions {
 
         if (DriverStation.getAlliance().isEmpty()) {
             return isRed;
-        } 
+        }
         return DriverStation.getAlliance().get() == Alliance.Red;
     }
 
@@ -41,29 +41,29 @@ public class UtilityFunctions {
         return (a + margin >= b && a - margin <= b);
     }
 
+    public static boolean withinMargin(double translationMargin, Translation2d translationA,
+            Translation2d translationB) {
 
-    public static boolean withinMargin(double translationMargin, Translation2d translationA, Translation2d translationB){
-        
-            double Dist = translationA.getDistance(translationB);
-    
-            return Dist < translationMargin ;
+        double Dist = translationA.getDistance(translationB);
+
+        return Dist < translationMargin;
     }
-    
+
     /**
      * 
-     * @param poseMargin 
+     * @param poseMargin
      * @param poseA
      * @param poseB
      * @return
      */
-    public static boolean withinMargin(Pose2d poseMargin, Pose2d poseA, Pose2d poseB){
-        
+    public static boolean withinMargin(Pose2d poseMargin, Pose2d poseA, Pose2d poseB) {
+
         Pose2d relativeMargin = poseA.relativeTo(poseB);
 
-        return Math.abs(relativeMargin.getX()) < poseMargin.getX() && 
-        Math.abs(relativeMargin.getY()) < poseMargin.getY() && 
-        Math.abs(relativeMargin.getRotation().getDegrees()) < poseMargin.getRotation().getDegrees();
-}
+        return Math.abs(relativeMargin.getX()) < poseMargin.getX() &&
+                Math.abs(relativeMargin.getY()) < poseMargin.getY() &&
+                Math.abs(relativeMargin.getRotation().getDegrees()) < poseMargin.getRotation().getDegrees();
+    }
 
     /**
      * @param velocity
@@ -93,7 +93,8 @@ public class UtilityFunctions {
      */
     public static Rotation2d safeRotation(double rads) {
         if (Math.abs(Math.cos(rads)) < 1e-6 && Math.abs(Math.sin(rads)) < 1e-6) {
-            // System.out.println("Warning: Invalid Rotation2d detected. Falling back to neutral rotation.");
+            // System.out.println("Warning: Invalid Rotation2d detected. Falling back to
+            // neutral rotation.");
             return new Rotation2d(0); // Neutral rotation
         }
         return new Rotation2d(rads);
@@ -104,21 +105,32 @@ public class UtilityFunctions {
         if (x == 0) {
             rads = Math.copySign(Math.PI / 2, y);
         }
-        
+
         if (Math.abs(Math.cos(rads)) < 1e-6 && Math.abs(Math.sin(rads)) < 1e-6) {
-            // System.out.println("Warning: Invalid Rotation2d detected. Falling back to neutral rotation.");
+            // System.out.println("Warning: Invalid Rotation2d detected. Falling back to
+            // neutral rotation.");
             return new Rotation2d(0); // Neutral rotation
         }
         return new Rotation2d(rads);
     }
+
     // This is a custom trigger for AutoUtils
     public static Trigger CheckPose(Pose2d targetPose, double toleranceMeters, double toleranceRadians) {
         return new Trigger(() -> {
             Pose2d currentPose = Robot.swerve.getPose();
             double distance = currentPose.getTranslation().getDistance(targetPose.getTranslation());
-            double rotationDifference = Math.abs(currentPose.getRotation().getRadians() - targetPose.getRotation().getRadians());
+            double rotationDifference = Math
+                    .abs(currentPose.getRotation().getRadians() - targetPose.getRotation().getRadians());
             return distance < toleranceMeters && rotationDifference < toleranceRadians;
         });
+    }
+
+    public static double applyDeadband(double num, double deadband) {
+        if (deadband > Math.abs(num)) {
+            return 0;
+        }
+        return num;
+
     }
 
 }

@@ -9,6 +9,7 @@ import frc.robot.subsystems.roller.RollerConstants.Coral;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
 import frc.robot.subsystems.roller.RollerConstants.Scoring;
 import frc.robot.utils.OptixSpark;
+import frc.robot.utils.UtilityFunctions;
 import frc.robot.utils.MiscConstants.MotorControllerConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
 import frc.robot.utils.LoggedTunableNumber;
@@ -77,7 +78,7 @@ public class RollerSparkMax implements RollerIO {
     @Override
     public void setVoltage(double volts) {
         volts = MathUtil.clamp(volts, -12, 12);
-        volts = MathUtil.applyDeadband(volts, MotorControllerConstants.deadbandVoltage);
+        volts = UtilityFunctions.applyDeadband(volts, MotorControllerConstants.deadbandVoltage);
         rollerMotor.setVoltage(volts);
     }
 

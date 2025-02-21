@@ -1,6 +1,7 @@
 package frc.robot.subsystems.swerve.real;
 
 import frc.robot.utils.OptixSpark;
+import frc.robot.utils.UtilityFunctions;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -86,7 +87,7 @@ public class SwerveModuleSpark implements SwerveModuleIO {
     @Override
     public void setDriveVoltage(double volts) {
         volts = MathUtil.clamp(volts, -12, 12);
-        volts = MathUtil.applyDeadband(volts, MotorControllerConstants.deadbandVoltage);
+        volts = UtilityFunctions.applyDeadband(volts, MotorControllerConstants.deadbandVoltage);
         drive.setVoltage(volts);
     }
 
@@ -94,7 +95,7 @@ public class SwerveModuleSpark implements SwerveModuleIO {
     @Override
     public void setTurnVoltage(double volts) {
         volts = MathUtil.clamp(volts, -12, 12);
-        volts = MathUtil.applyDeadband(volts, MotorControllerConstants.deadbandVoltage * 2.0 / 3.0);
+        volts = UtilityFunctions.applyDeadband(volts, MotorControllerConstants.deadbandVoltage * 2.0 / 3.0);
         turn.setVoltage(volts);
     }
 

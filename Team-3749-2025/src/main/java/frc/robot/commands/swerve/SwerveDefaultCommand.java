@@ -55,7 +55,7 @@ public class SwerveDefaultCommand extends Command {
 
    // deadbands
    // is always postive
-   linearMagnitude = MathUtil.applyDeadband(linearMagnitude, ControllerConstants.deadband);
+   linearMagnitude = UtilityFunctions.applyDeadband(linearMagnitude, ControllerConstants.deadband);
    // can be negative
    turningMagnitude = Math.abs(turningMagnitude) > ControllerConstants.deadband
        ? turningMagnitude
