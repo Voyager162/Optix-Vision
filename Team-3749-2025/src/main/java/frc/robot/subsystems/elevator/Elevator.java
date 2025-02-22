@@ -185,7 +185,7 @@ public class Elevator extends SubsystemBase {
         // System.out.println("FF " + ffVoltage);
         // System.out.println("PID " + PID);
 
-        PID = 0;
+        // PID = 0;
         // ffVoltage = ElevatorConstants.ElevatorControl.kG.get();
         Logger.recordOutput("subsystems/elevator/position setpoint", firstState.position);
         Logger.recordOutput("subsystems/elevator/velocity setpoint", firstState.velocity);

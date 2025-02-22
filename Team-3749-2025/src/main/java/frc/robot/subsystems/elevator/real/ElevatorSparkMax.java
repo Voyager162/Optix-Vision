@@ -58,6 +58,9 @@ public class ElevatorSparkMax implements ElevatorIO {
     public void updateData(ElevatorData data) {
         double velocity = (backMotor.getVelocity() + frontMotor.getVelocity()) / 2;
         data.positionMeters = (backMotor.getPosition() + frontMotor.getPosition()) / 2;
+        Logger.recordOutput("subsystems/elevator/back pos", backMotor.getPosition());
+        Logger.recordOutput("subsystems/elevator/front pos", frontMotor.getPosition());
+
         data.velocityMetersPerSecond = velocity;
         data.accelerationMetersPerSecondSquared = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
         data.leftCurrentAmps = backMotor.getCurrent();

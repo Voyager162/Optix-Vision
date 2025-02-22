@@ -52,8 +52,8 @@ public class CoralArmConstants {
 	public enum ArmStates {
 		CORAL_PICKUP(-Units.degreesToRadians(38.5)),
 		L1(0),
-		HAND_OFF(2.355),
-		STOWED(2.355),
+		HAND_OFF(2.2),
+		STOWED(2.2),
 		STOPPED(0);
 
 		public final double setPointRad;

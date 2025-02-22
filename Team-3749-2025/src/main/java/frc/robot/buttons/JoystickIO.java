@@ -97,6 +97,11 @@ public class JoystickIO {
             CoralArmConstants.ArmStates.L1);
 
     private static final SetElevatorState stow = new SetElevatorState(ElevatorStates.STOW);
+    private static final SetElevatorState el1 = new SetElevatorState(ElevatorStates.L1);
+    private static final SetElevatorState el2 = new SetElevatorState(ElevatorStates.L2);
+    private static final SetElevatorState el3 = new SetElevatorState(ElevatorStates.L3);
+    private static final SetElevatorState el4 = new SetElevatorState(ElevatorStates.L4);
+
 
     private static final KnockAlgae knockAlgaeLow = new KnockAlgae(ElevatorStates.ALGAE_LOW);
     private static final KnockAlgae knockAlgaeHigh = new KnockAlgae(ElevatorStates.ALGAE_HIGH);
@@ -296,11 +301,11 @@ public class JoystickIO {
         // Robot.scoringRoller.setVoltage(0)));
 
         // All elevator stages
-        operator.a().onTrue(l1);
-        operator.y().onTrue(l4);
-        operator.x().onTrue(l2);
-        operator.b().onTrue(l3);
-        operator.a().onTrue(stow);
+        operator.a().onTrue(el1);
+        operator.y().onTrue(el2);
+        operator.x().onTrue(el3);
+        operator.b().onTrue(el4);
+        operator.leftBumper().onTrue(stow);
         // operator.x().onTrue(l3);
         // operator.y().onTrue(l4);
 
