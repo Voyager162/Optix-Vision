@@ -37,7 +37,7 @@ public class ElevatorConstants {
         public static LoggedTunableNumber kD = new LoggedTunableNumber("/subsystems/elevator/kD", 0);
         public static LoggedTunableNumber kS = new LoggedTunableNumber("/subsystems/elevator/kS", 0.14);
         public static LoggedTunableNumber kV = new LoggedTunableNumber("/subsystems/elevator/kV", 7.821);
-        public static LoggedTunableNumber kA = new LoggedTunableNumber("/subsystems/elevator/kA", 1.72);
+        public static LoggedTunableNumber kA = new LoggedTunableNumber("/subsystems/elevator/kA", 0.3); // 1.72
         public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/elevator/max velocity",
                 1.43);
         public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(

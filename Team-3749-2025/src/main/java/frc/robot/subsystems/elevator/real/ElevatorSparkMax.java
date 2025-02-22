@@ -38,7 +38,7 @@ public class ElevatorSparkMax implements ElevatorIO {
         leftMotor.setCurrentLimit(MotorControllerConstants.standardStallLimit,
                 MotorControllerConstants.standardFreeLimit);
         leftMotor.setInverted(ElevatorConstants.ElevatorSpecs.motorInverted[0]);
-        leftMotor.setBrakeMode(false);
+        leftMotor.setBrakeMode(true);
 
         leftMotor.applyConfig();
         rightMotor.applyConfig(leftMotor.getConfig());
