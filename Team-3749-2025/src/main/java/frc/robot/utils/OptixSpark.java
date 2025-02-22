@@ -42,6 +42,7 @@ public class OptixSpark {
             motor = new SparkMax(id, MotorType.kBrushless);
         }
         controller = motor.getClosedLoopController();
+
     }
 
     public double getPosition() {
@@ -267,7 +268,7 @@ public class OptixSpark {
      * Configure motor with internal settings applied
      */
     public void applyConfig() {
-        motor.configure(motorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+        motor.configure(motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     }
 
@@ -278,7 +279,7 @@ public class OptixSpark {
      */
     public void applyConfig(SparkBaseConfig config) {
         motorConfig = config;
-        motor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+        motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     public static enum Type {
