@@ -72,7 +72,7 @@ public class ScoringRoller extends Roller {
     @Override
     public void intake() {
         if (!rollerData.sensorTripped) {
-            setVelocity(RollerConstants.Coral.intakeVelocity.get());
+            setVelocity(RollerConstants.RollerStates.INTAKE.scoringVelocity);
             return;
         }
         setVoltage(0.0);

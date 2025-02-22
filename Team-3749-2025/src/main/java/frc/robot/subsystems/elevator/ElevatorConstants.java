@@ -34,7 +34,7 @@ public class ElevatorConstants {
 
     public static class ElevatorControl {
         public static LoggedTunableNumber kG = new LoggedTunableNumber("/subsystems/elevator/kG", 0.32);
-        public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/elevator/kP", 15);
+        public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/elevator/kP", 12);
         public static LoggedTunableNumber kI = new LoggedTunableNumber("/subsystems/elevator/kI", 0);
         public static LoggedTunableNumber kD = new LoggedTunableNumber("/subsystems/elevator/kD", 0);
         public static LoggedTunableNumber kS = new LoggedTunableNumber("/subsystems/elevator/kS", 0.16

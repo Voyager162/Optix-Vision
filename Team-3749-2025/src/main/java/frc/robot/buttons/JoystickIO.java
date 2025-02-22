@@ -102,7 +102,6 @@ public class JoystickIO {
     private static final SetElevatorState el3 = new SetElevatorState(ElevatorStates.L3);
     private static final SetElevatorState el4 = new SetElevatorState(ElevatorStates.L4);
 
-
     private static final KnockAlgae knockAlgaeLow = new KnockAlgae(ElevatorStates.ALGAE_LOW);
     private static final KnockAlgae knockAlgaeHigh = new KnockAlgae(ElevatorStates.ALGAE_HIGH);
     private static final Handoff handoff = new Handoff();
@@ -243,26 +242,28 @@ public class JoystickIO {
     public static void testBindings() {
         // // Checking voltage for all subsystems
         // operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(1.5),
-        //         Robot.elevator))
-        //         .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
-        //                 Robot.elevator));
+        // Robot.elevator))
+        // .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
+        // Robot.elevator));
         // operator.x().onTrue(Commands.run(() -> Robot.elevator.setVoltage(3),
-        //         Robot.elevator))
-        //         .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
-        //                 Robot.elevator));
+        // Robot.elevator))
+        // .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
+        // Robot.elevator));
         // operator.b().onTrue(Commands.run(() -> Robot.elevator.setVoltage(10),
-        //         Robot.elevator))
-        //         .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
-        //                 Robot.elevator));
+        // Robot.elevator))
+        // .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
+        // Robot.elevator));
         // operator.y().onTrue(Commands.run(() -> Robot.elevator.setVoltage(9),
-        //         Robot.elevator))
-        //         .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
-        //                 Robot.elevator));
-        // operator.leftBumper().onTrue(Commands.run(() -> Robot.elevator.setVoltage(12), Robot.elevator))
-        //         .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
-        //                 Robot.elevator));
-        // operator.rightBumper().onTrue(Commands.run(() -> Robot.elevator.setVoltage(-3)))
-        //         .onFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
+        // Robot.elevator))
+        // .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
+        // Robot.elevator));
+        // operator.leftBumper().onTrue(Commands.run(() ->
+        // Robot.elevator.setVoltage(12), Robot.elevator))
+        // .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
+        // Robot.elevator));
+        // operator.rightBumper().onTrue(Commands.run(() ->
+        // Robot.elevator.setVoltage(-3)))
+        // .onFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
 
         // operator.b().onTrue(Commands.run(() ->
         // Robot.coralArm.setVoltage(Robot.subsystemVoltageSetter.get())));
@@ -301,12 +302,12 @@ public class JoystickIO {
         // Robot.scoringRoller.setVoltage(0)));
 
         // All elevator stages
-        operator.a().onTrue(el1);
-        operator.y().onTrue(el2);
-        operator.x().onTrue(el3);
-        operator.b().onTrue(el4);
+        // operator.a().onTrue(el1);
+        // operator.y().onTrue(el2);
+        // operator.x().onTrue(el3);
+        operator.rightBumper().onTrue(el4);
         operator.leftBumper().onTrue(stow);
-        // operator.x().onTrue(l3);
+        // // operator.x().onTrue(l3);
         // operator.y().onTrue(l4);
 
         // Climb + Coral Arms
@@ -315,7 +316,9 @@ public class JoystickIO {
 
         // Run
         // operator.a().whileTrue(algaeRun);
-        // operator.b().onTrue(new IntakeFloor());
+        operator.b().onTrue(new IntakeFloor());
+        operator.x().onTrue(handoff);
+        operator.y().onTrue(scoreL4);
 
         // operator.x().onTrue(coralHandOff);
         // operator.b().onTrue(coralRunIntake);

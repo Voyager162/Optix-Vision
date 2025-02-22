@@ -66,7 +66,7 @@ public class RollerConstants {
                                 "/subsystems/rollers/coralRoller/kAVelocity", 0.04);
 
                 public static LoggedTunableNumber kPPosition = new LoggedTunableNumber(
-                                "/subsystems/rollers/coralRoller/kPPosition", 0.0);
+                                "/subsystems/rollers/coralRoller/kPPosition", 0.5);
                 public static LoggedTunableNumber kIPosition = new LoggedTunableNumber(
                                 "/subsystems/rollers/coralRoller/kIPosition", 0.0);
                 public static LoggedTunableNumber kDPosition = new LoggedTunableNumber(
@@ -123,7 +123,7 @@ public class RollerConstants {
         }
 
         public enum RollerStates {
-                INTAKE(50, 60, 70),
+                INTAKE(50, 80, 70),
                 MAINTAIN(0, 0, 0),
                 OUTTAKE(-50, -50, 60),
                 STOP(0, 0, 0);
