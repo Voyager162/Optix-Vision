@@ -72,11 +72,10 @@ public class ScoringRoller extends Roller {
     @Override
     public void intake() {
         if (!rollerData.sensorTripped) {
-            setVelocity(RollerStates.INTAKE.scoringVelocity);
-        } else {
-            setVoltage(0.0);
+            setVelocity(RollerConstants.Scoring.scoreVelocity);
+            return;
         }
-            setVoltage(0.0);
+        setVoltage(0.0);
     }
 
     public boolean hasPiece() {
@@ -109,19 +108,25 @@ public class ScoringRoller extends Roller {
         // routineStarted is true when the routine begins in Autos
         if (Autos.isRoutineStarted() && !routineStarted) {
             routineStarted = true;
+        // routineStarted is true when the routine begins in Autos
+        if (Autos.isRoutineStarted() && !routineStarted) {
+            routineStarted = true;
             // sets initial state at the start of each routine
+            photoelectricIO.setInitialState(true);
             photoelectricIO.setInitialState(true);
         }
 
         // routineStarted is false when the routine ends in Autos
+
+        // routineStarted is false when the routine ends in Autos
         if (!Autos.isRoutineStarted() && routineStarted) {
+            routineStarted = false;
             routineStarted = false;
         }
 
         if (this.getCurrentCommand() != null) {
             SmartDashboard.putString("scoring roller command", this.getCurrentCommand().getName());
-        } else {
-            SmartDashboard.putString("scoring roller command", "null");
+            return; //if you add more stuff here then this will cause problems
         }
     }
 }

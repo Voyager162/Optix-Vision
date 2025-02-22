@@ -2,6 +2,7 @@ package frc.robot.subsystems.roller;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -57,7 +58,9 @@ public abstract class Roller extends SubsystemBase {
     public void setVelocity(double velocityRadPerSec) {
         double PIDOutput = velocityController.calculate(rollerData.rollerVelocityRadPerSec, velocityRadPerSec);
         double FFOutput = rollerFF.calculate(velocityRadPerSec);
-        rollerIO.setVoltage(PIDOutput + FFOutput);
+        double volts = PIDOutput+FFOutput;
+        volts = MathUtil.clamp(volts, -12, 12);
+        rollerIO.setVoltage(volts);
         Logger.recordOutput("subsystems/roller/" + getName() + "/pid", PIDOutput);
         Logger.recordOutput("subsystems/roller/" + getName() + "/ff", FFOutput);
         // rollerIO.setVelocity(velocityRadPerSec,
@@ -114,11 +117,15 @@ public abstract class Roller extends SubsystemBase {
             case OUTTAKE:
                 outtake();
                 break;
+            case SCORE:
+                score();
+            break;
         }
     }
 
     public abstract void outtake();
     public abstract void intake();
+    public abstract void score();
 
     public abstract void maintain();
 

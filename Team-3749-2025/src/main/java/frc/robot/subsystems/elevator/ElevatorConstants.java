@@ -30,6 +30,8 @@ public class ElevatorConstants {
         public static int zeroOffset = 0;
     }
 
+    public static final double stateMarginOfError = 0.1;
+
     public static class ElevatorControl {
         public static LoggedTunableNumber kG = new LoggedTunableNumber("/subsystems/elevator/kG", 0.31);
         public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/elevator/kP", 0);

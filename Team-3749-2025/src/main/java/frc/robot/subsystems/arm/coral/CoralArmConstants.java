@@ -36,9 +36,13 @@ public class CoralArmConstants {
 	public static LoggedTunableNumber kA = new LoggedTunableNumber("/subsystems/arms/coralArm/kA", 0);
 	public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/arms/coralArm/max velocity",
 			6);
-	public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
-			"/subsystems/arms/coralArm/max acceleration",
+	public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("/subsystems/arms/coralArm/max acceleration",
 			12);
+
+	public static final double stowSetPoint_rad = 2.51; // 70, 1.2217304764
+	public static final double handOffSetPoint_rad = 2.51; // 40
+	public static final double coralPickUpSetPoint_rad = -0.57; // 175, 3.05432619099
+	public static final double scoreL1_rad = 80 * Math.PI / 180;
 
 	public static final double momentOfInertia = 0.775;
 
