@@ -240,6 +240,8 @@ public class JoystickIO {
     }
 
     public static void testBindings() {
+        pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
+
         // // Checking voltage for all subsystems
         // operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(1.5),
         // Robot.elevator))

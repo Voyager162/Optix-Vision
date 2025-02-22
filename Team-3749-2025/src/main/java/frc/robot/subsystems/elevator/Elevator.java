@@ -106,17 +106,17 @@ public class Elevator extends SubsystemBase {
     public boolean getIsStableState() {
         switch (state) {
             case L1:
-                return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError, ElevatorConstants.StateHeights.l1Height,
+                return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError, ElevatorConstants.StateHeights.l1Height.getAsDouble(),
                         data.positionMeters);
             case L2:
                 return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError, data.positionMeters,
-                        ElevatorConstants.StateHeights.l2Height);
+                        ElevatorConstants.StateHeights.l2Height.getAsDouble());
             case L3:
                 return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError, data.positionMeters,
-                        ElevatorConstants.StateHeights.l3Height);
+                        ElevatorConstants.StateHeights.l3Height.getAsDouble());
             case L4:
                 return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError, data.positionMeters,
-                        ElevatorConstants.StateHeights.l4Height);
+                        ElevatorConstants.StateHeights.l4Height.getAsDouble());
             default:
                 return false;
         }
@@ -134,16 +134,16 @@ public class Elevator extends SubsystemBase {
                 stop();
                 break;
             case L1:
-                setGoal(ElevatorConstants.StateHeights.l1Height);
+                setGoal(ElevatorConstants.StateHeights.l1Height.getAsDouble());
                 break;
             case L2:
-                setGoal(ElevatorConstants.StateHeights.l2Height);
+                setGoal(ElevatorConstants.StateHeights.l2Height.getAsDouble());
                 break;
             case L3:
-                setGoal(ElevatorConstants.StateHeights.l3Height);
+                setGoal(ElevatorConstants.StateHeights.l3Height.getAsDouble());
                 break;
             case L4:
-                setGoal(ElevatorConstants.StateHeights.l4Height);
+                setGoal(ElevatorConstants.StateHeights.l4Height.getAsDouble());
                 break;
             case MAX:
                 // fill in later
