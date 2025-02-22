@@ -10,6 +10,7 @@ import frc.robot.subsystems.swerve.GyroIO;
  */
 public class PigeonGyro implements GyroIO {
     private final Pigeon2 pigeonGyro = new Pigeon2(30);
+    private double yaw = 0;
 
     public PigeonGyro() {
 
@@ -23,7 +24,14 @@ public class PigeonGyro implements GyroIO {
     public void updateData(GyroData data) {
         try {
             // +180 because it is mounted backwards
-            data.yawDeg = pigeonGyro.getYaw().getValueAsDouble() + 180;
+            yaw = pigeonGyro.getYaw().getValueAsDouble() + 180;
+            while (yaw > 360) {
+                yaw -= 360;
+            }
+            while (yaw < 0) {
+                yaw+=360;
+            }
+            data.yawDeg = pigeonGyro.getYaw().getValueAsDouble() ;
             data.pitchDeg = pigeonGyro.getPitch().getValueAsDouble();
             data.rollDeg = pigeonGyro.getRoll().getValueAsDouble();
             data.isConnected = pigeonGyro.isConnected();

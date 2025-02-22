@@ -241,6 +241,8 @@ public class JoystickIO {
     }
 
     public static void testBindings() {
+        pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
+
         operator.a().onTrue(new Climb());
         operator.b().whileTrue(Commands.runOnce(() -> Robot.climbArm.setVoltage(6)));
         // // Checking voltage for all subsystems
