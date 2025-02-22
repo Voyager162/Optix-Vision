@@ -40,9 +40,9 @@ public class SwerveDefaultCommand extends Command {
   public void execute() {
     
    // controllers are weird in what's positive, so we flip these
-   double xMagnitude = xSpdFunction.get();
-   double yMagnitude = ySpdFunction.get();
-   double turningMagnitude = xTurningSpdFunction.get();
+   double xMagnitude = -xSpdFunction.get();
+   double yMagnitude = -ySpdFunction.get();
+   double turningMagnitude = -xTurningSpdFunction.get();
 
     // one combined magnitutde
     double linearMagnitude = Math.hypot(xMagnitude, yMagnitude);
@@ -57,9 +57,7 @@ public class SwerveDefaultCommand extends Command {
    // is always postive
    linearMagnitude = UtilityFunctions.applyDeadband(linearMagnitude, ControllerConstants.deadband);
    // can be negative
-   turningMagnitude = Math.abs(turningMagnitude) > ControllerConstants.deadband
-       ? turningMagnitude
-       : 0.0;
+   turningMagnitude = UtilityFunctions.applyDeadband(turningMagnitude, ControllerConstants.deadband);
 
    // squaring the inputs for smoother driving at low speeds
    linearMagnitude = Math.copySign(linearMagnitude * linearMagnitude, linearMagnitude);
