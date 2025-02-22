@@ -17,10 +17,10 @@ import frc.robot.utils.MiscConstants.SimConstants;
  */
 
 public class ElevatorSparkMax implements ElevatorIO {
-    private OptixSpark leftMotor = new OptixSpark(ElevatorConstants.ElevatorSpecs.motorIds[0],
+    private OptixSpark backMotor = new OptixSpark(ElevatorConstants.ElevatorSpecs.motorIds[0],
             OptixSpark.Type.SPARKMAX);
 
-    private OptixSpark rightMotor = new OptixSpark(ElevatorConstants.ElevatorSpecs.motorIds[1],
+    private OptixSpark frontMotor = new OptixSpark(ElevatorConstants.ElevatorSpecs.motorIds[1],
             OptixSpark.Type.SPARKMAX);
 
     private double previousVelocity = 0;
@@ -30,42 +30,42 @@ public class ElevatorSparkMax implements ElevatorIO {
     public ElevatorSparkMax() {
         // System.out.println("[Init] Creating Elevator");
         // 2x for two stages, 2pi for circumfrence, radius of sprocket, gear ratio
-        leftMotor.setPositionConversionFactor(2 * Math.PI * 2 * ElevatorConstants.ElevatorSpecs.drumRadiusMeters
+        backMotor.setPositionConversionFactor(2 * Math.PI * 2 * ElevatorConstants.ElevatorSpecs.drumRadiusMeters
                 / ElevatorConstants.ElevatorSpecs.gearing);
-        leftMotor.setVelocityConversionFactor(2 * Math.PI * 2 * ElevatorConstants.ElevatorSpecs.drumRadiusMeters
+        backMotor.setVelocityConversionFactor(2 * Math.PI * 2 * ElevatorConstants.ElevatorSpecs.drumRadiusMeters
                 / (60 * ElevatorConstants.ElevatorSpecs.gearing));
 
-        leftMotor.setCurrentLimit(MotorControllerConstants.standardStallLimit,
+        backMotor.setCurrentLimit(MotorControllerConstants.standardStallLimit,
                 MotorControllerConstants.standardFreeLimit);
-        leftMotor.setInverted(ElevatorConstants.ElevatorSpecs.motorInverted[0]);
-        leftMotor.setBrakeMode(true);
+        backMotor.setInverted(ElevatorConstants.ElevatorSpecs.motorInverted[0]);
+        backMotor.setBrakeMode(true);
 
-        leftMotor.applyConfig();
-        rightMotor.applyConfig(leftMotor.getConfig());
-        rightMotor.setInverted(ElevatorConstants.ElevatorSpecs.motorInverted[1]);
-        rightMotor.applyConfig();
+        backMotor.applyConfig();
+        frontMotor.applyConfig(backMotor.getConfig());
+        frontMotor.setInverted(ElevatorConstants.ElevatorSpecs.motorInverted[1]);
+        frontMotor.applyConfig();
 
     
     }
 
     @Override
     public void setBrakeMode(boolean enabled) {
-        rightMotor.setBrakeMode(enabled);
-        leftMotor.setBrakeMode(enabled);
+        frontMotor.setBrakeMode(enabled);
+        backMotor.setBrakeMode(enabled);
     }
 
     @Override
     public void updateData(ElevatorData data) {
-        double velocity = (leftMotor.getVelocity() + rightMotor.getVelocity()) / 2;
-        data.positionMeters = (leftMotor.getPosition() + rightMotor.getPosition()) / 2;
+        double velocity = (backMotor.getVelocity() + frontMotor.getVelocity()) / 2;
+        data.positionMeters = (backMotor.getPosition() + frontMotor.getPosition()) / 2;
         data.velocityMetersPerSecond = velocity;
         data.accelerationMetersPerSecondSquared = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
-        data.leftCurrentAmps = leftMotor.getCurrent();
-        data.rightCurrentAmps = rightMotor.getCurrent();
-        data.leftAppliedVolts = leftMotor.getAppliedVolts();
-        data.rightAppliedVolts = rightMotor.getAppliedVolts();
-        data.leftTempCelcius = leftMotor.getTemperature();
-        data.rightTempCelcius = rightMotor.getTemperature();
+        data.leftCurrentAmps = backMotor.getCurrent();
+        data.rightCurrentAmps = frontMotor.getCurrent();
+        data.leftAppliedVolts = backMotor.getAppliedVolts();
+        data.rightAppliedVolts = frontMotor.getAppliedVolts();
+        data.leftTempCelcius = backMotor.getTemperature();
+        data.rightTempCelcius = frontMotor.getTemperature();
 
         previousVelocity = velocity;
     }
@@ -76,7 +76,7 @@ public class ElevatorSparkMax implements ElevatorIO {
         inputVolts = UtilityFunctions.applyDeadband(inputVolts, MotorControllerConstants.deadbandVoltage);
         Logger.recordOutput("subsystems/elevator/input volts", inputVolts);
 
-        leftMotor.setVoltage(inputVolts);
-        rightMotor.setVoltage(inputVolts);
+        backMotor.setVoltage(inputVolts);
+        frontMotor.setVoltage(inputVolts);
     }
 }

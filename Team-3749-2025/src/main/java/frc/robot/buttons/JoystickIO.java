@@ -60,11 +60,11 @@ public class JoystickIO {
     private final static GenericHID buttonBoardPlayer3 = new GenericHID(4);
 
     // Source buttons & their IDs
-    private final static JoystickButton buttonL1 = new JoystickButton(buttonBoardPlayer1, 6);          // P1-6
-    private final static JoystickButton buttonL2 = new JoystickButton(buttonBoardPlayer1, 5);          // P1-5
-    private final static JoystickButton buttonL3 = new JoystickButton(buttonBoardPlayer1, 4);          // P1-4
-    private final static JoystickButton buttonL4 = new JoystickButton(buttonBoardPlayer1, 3);          // P1-3
-    private final static JoystickButton buttonLeftSource = new JoystickButton(buttonBoardPlayer1, 1);  // P1-1
+    private final static JoystickButton buttonL1 = new JoystickButton(buttonBoardPlayer1, 6); // P1-6
+    private final static JoystickButton buttonL2 = new JoystickButton(buttonBoardPlayer1, 5); // P1-5
+    private final static JoystickButton buttonL3 = new JoystickButton(buttonBoardPlayer1, 4); // P1-4
+    private final static JoystickButton buttonL4 = new JoystickButton(buttonBoardPlayer1, 3); // P1-3
+    private final static JoystickButton buttonLeftSource = new JoystickButton(buttonBoardPlayer1, 1); // P1-1
     private final static JoystickButton buttonRightSource = new JoystickButton(buttonBoardPlayer1, 2); // P1-2
 
     // Reef positions & their IDs
@@ -78,13 +78,13 @@ public class JoystickIO {
     private final static JoystickButton reefZoneH = new JoystickButton(buttonBoardPlayer2, 6); // P2-6
     private final static JoystickButton reefZoneI = new JoystickButton(buttonBoardPlayer2, 5); // P2-5
     private final static JoystickButton reefZoneJ = new JoystickButton(buttonBoardPlayer2, 4); // P2-4
-    private final static JoystickButton reefZoneK = new JoystickButton(buttonBoardPlayer2,3);  // P2-3
+    private final static JoystickButton reefZoneK = new JoystickButton(buttonBoardPlayer2, 3); // P2-3
     private final static JoystickButton reefZoneL = new JoystickButton(buttonBoardPlayer1, 7); // P1-7
 
     // Util buttons & their IDs
-    private final static JoystickButton UtilityButtonC = new JoystickButton(buttonBoardPlayer3, 5);   // P3-5
-    private final static JoystickButton UtilityButtonB = new JoystickButton(buttonBoardPlayer3, 6);   // P3-6
-    private final static JoystickButton UtilityButtonA = new JoystickButton(buttonBoardPlayer3, 7);   // P3-7
+    private final static JoystickButton UtilityButtonC = new JoystickButton(buttonBoardPlayer3, 5); // P3-5
+    private final static JoystickButton UtilityButtonB = new JoystickButton(buttonBoardPlayer3, 6); // P3-6
+    private final static JoystickButton UtilityButtonA = new JoystickButton(buttonBoardPlayer3, 7); // P3-7
     private final static JoystickButton AlgaeKnockButton = new JoystickButton(buttonBoardPlayer3, 8); // P3-8
 
     private static final Command climbStow = new SetClimbArmState(Robot.climbArm, ClimbArmConstants.ArmStates.STOWED);
@@ -141,8 +141,10 @@ public class JoystickIO {
     }
 
     public static void bindButtonBoard() {
-        buttonLeftSource.onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(0))));
-        buttonRightSource.onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(1))));
+        buttonLeftSource
+                .onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(0))));
+        buttonRightSource
+                .onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(1))));
         reefZoneA.onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(2))));
         reefZoneB.onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(4))));
         reefZoneC.onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(7))));
@@ -160,8 +162,8 @@ public class JoystickIO {
         buttonL3.onTrue(l3);
         buttonL4.onTrue(l4);
         AlgaeKnockButton.onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.ALGAE)));
-       
-    }   
+
+    }
 
     /**
      * If both controllers are plugged in (pi and op)
@@ -236,29 +238,27 @@ public class JoystickIO {
     public static void testBindings() {
         // // Checking voltage for all subsystems
         // operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(1.5),
-        // Robot.elevator))
-        // .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
-        // Robot.elevator));
+        //         Robot.elevator))
+        //         .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
+        //                 Robot.elevator));
         // operator.x().onTrue(Commands.run(() -> Robot.elevator.setVoltage(3),
-        // Robot.elevator))
-        // .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
-        // Robot.elevator));
+        //         Robot.elevator))
+        //         .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
+        //                 Robot.elevator));
         // operator.b().onTrue(Commands.run(() -> Robot.elevator.setVoltage(10),
-        // Robot.elevator))
-        // .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
-        // Robot.elevator));
+        //         Robot.elevator))
+        //         .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
+        //                 Robot.elevator));
         // operator.y().onTrue(Commands.run(() -> Robot.elevator.setVoltage(9),
-        // Robot.elevator))
-        // .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
-        // Robot.elevator));
-        // operator.leftBumper().onTrue(Commands.run(() ->
-        // Robot.elevator.setVoltage(12), Robot.elevator))
-        // .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
-        // Robot.elevator));
-        // operator.a().whileTrue(Robot.elevator.setVoltage())
-        // operator.rightBumper().onTrue(Commands.run(() ->
-        // Robot.elevator.setVoltage(-3))).onFalse(Commands.run(() ->
-        // Robot.elevator.setVoltage(0), Robot.elevator));
+        //         Robot.elevator))
+        //         .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
+        //                 Robot.elevator));
+        // operator.leftBumper().onTrue(Commands.run(() -> Robot.elevator.setVoltage(12), Robot.elevator))
+        //         .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
+        //                 Robot.elevator));
+        // operator.rightBumper().onTrue(Commands.run(() -> Robot.elevator.setVoltage(-3)))
+        //         .onFalse(Commands.run(() -> Robot.elevator.setVoltage(0), Robot.elevator));
+
         // operator.b().onTrue(Commands.run(() ->
         // Robot.coralArm.setVoltage(Robot.subsystemVoltageSetter.get())));
         // operator.x().onTrue(Commands.run(() ->
@@ -278,10 +278,10 @@ public class JoystickIO {
         // Robot.climbArm.setVoltage(Robot.subsystemVoltageSetter.get())));
         // operator.y().whileTrue(Commands.run(() ->
         // Robot.algaeRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
-        // operator.leftBumper().whileTrue(Commands.run(() -P>
-        // Robot.coralRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
-        // operator.leftBumper().whileFalse(Commands.runOnce(() ->
-        // Robot.coralRoller.stop()));
+        operator.povUp()
+                .onTrue(Commands.run(() -> Robot.coralRoller.setVoltage(3),
+                        Robot.coralRoller));
+        operator.povUp().whileFalse(Commands.runOnce(() -> Robot.coralRoller.stop(), Robot.coralRoller));
         // operator.rightBumper().onTrue(Commands.run(() ->
         // Robot.scoringRoller.setVoltage(Robot.subsystemVoltageSetter.get())));//.onFalse(Commands.run(()
         // -> Robot.scoringRoller.setVoltage(0)));
@@ -296,11 +296,11 @@ public class JoystickIO {
         // Robot.scoringRoller.setVoltage(0)));
 
         // All elevator stages
-        // operator.a().onTrue(l1);
+        operator.a().onTrue(l1);
         operator.y().onTrue(l4);
-        // operator.x().onTrue(l2);
-        // operator.b().onTrue(l3);
-        // operator.a().onTrue(stow);
+        operator.x().onTrue(l2);
+        operator.b().onTrue(l3);
+        operator.a().onTrue(stow);
         // operator.x().onTrue(l3);
         // operator.y().onTrue(l4);
 
@@ -310,15 +310,15 @@ public class JoystickIO {
 
         // Run
         // operator.a().whileTrue(algaeRun);
-        operator.b().onTrue(new IntakeFloor());
+        // operator.b().onTrue(new IntakeFloor());
 
+        // operator.x().onTrue(coralHandOff);
         // operator.b().onTrue(coralRunIntake);
         // operator.a().onTrue(coralRunOuttake);
         // operator.a().onTrue(coralL1);
-        operator.x().onTrue(coralHandOff);
         // operator.y().onTrue(coralPickUp);
 
-        operator.leftBumper().whileTrue(scoringRun);
+        // operator.leftBumper().whileTrue(scoringRun);
 
         // Maintain
         // operator.a().whileTrue(algaeMaintain);
