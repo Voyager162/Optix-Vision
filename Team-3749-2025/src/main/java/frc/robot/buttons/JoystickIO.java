@@ -38,6 +38,7 @@ import frc.robot.subsystems.arm.climb.ClimbArmConstants;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.swerve.ToPos;
+import frc.robot.commands.integration.Climb;
 import frc.robot.utils.MiscConstants.ControllerConstants;
 
 /**
@@ -240,6 +241,8 @@ public class JoystickIO {
     }
 
     public static void testBindings() {
+        operator.a().onTrue(new Climb());
+        operator.b().whileTrue(Commands.runOnce(() -> Robot.climbArm.setVoltage(6)));
         // // Checking voltage for all subsystems
         // operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(1.5),
         // Robot.elevator))
@@ -284,10 +287,10 @@ public class JoystickIO {
         // Robot.climbArm.setVoltage(Robot.subsystemVoltageSetter.get())));
         // operator.y().whileTrue(Commands.run(() ->
         // Robot.algaeRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
-        operator.povUp()
-                .onTrue(Commands.run(() -> Robot.coralRoller.setVoltage(3),
-                        Robot.coralRoller));
-        operator.povUp().whileFalse(Commands.runOnce(() -> Robot.coralRoller.stop(), Robot.coralRoller));
+        // operator.povUp()
+        //         .onTrue(Commands.run(() -> Robot.coralRoller.setVoltage(3),
+        //                 Robot.coralRoller));
+        // operator.povUp().whileFalse(Commands.runOnce(() -> Robot.coralRoller.stop(), Robot.coralRoller));
         // operator.rightBumper().onTrue(Commands.run(() ->
         // Robot.scoringRoller.setVoltage(Robot.subsystemVoltageSetter.get())));//.onFalse(Commands.run(()
         // -> Robot.scoringRoller.setVoltage(0)));
@@ -305,8 +308,8 @@ public class JoystickIO {
         // operator.a().onTrue(el1);
         // operator.y().onTrue(el2);
         // operator.x().onTrue(el3);
-        operator.rightBumper().onTrue(el4);
-        operator.leftBumper().onTrue(stow);
+        // operator.rightBumper().onTrue(el4);
+        // operator.leftBumper().onTrue(stow);
         // // operator.x().onTrue(l3);
         // operator.y().onTrue(l4);
 
@@ -316,9 +319,9 @@ public class JoystickIO {
 
         // Run
         // operator.a().whileTrue(algaeRun);
-        operator.b().onTrue(new IntakeFloor());
-        operator.x().onTrue(handoff);
-        operator.y().onTrue(scoreL4);
+        // operator.b().onTrue(new IntakeFloor());
+        // operator.x().onTrue(handoff);
+        // operator.y().onTrue(scoreL4);
 
         // operator.x().onTrue(coralHandOff);
         // operator.b().onTrue(coralRunIntake);
