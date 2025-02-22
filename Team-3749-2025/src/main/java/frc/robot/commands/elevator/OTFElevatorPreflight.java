@@ -15,8 +15,6 @@ public class OTFElevatorPreflight extends Command {
 
     @Override
     public void execute() {
-        System.out.println(Robot.elevator.getPositionMeters());
-        System.out.println(ElevatorConstants.StateHeights.stowHeight);
     }
 
     @Override

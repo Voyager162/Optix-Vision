@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 import frc.robot.subsystems.leds.LEDConstants.LEDPattern;
 
 /**
@@ -24,7 +23,6 @@ public class LEDs extends SubsystemBase {
 
     private AddressableLEDBuffer LEDBuffer = new AddressableLEDBuffer(LEDConstants.length);
     private LEDPattern currentPattern = LEDPattern.WHITE;
-    private int hue = 0;
     private double brightness = 1;
 
     public LEDs() {
@@ -35,7 +33,7 @@ public class LEDs extends SubsystemBase {
         LED2.setData(LEDBuffer);
         LED2.start();
         setBrightness(brightness);
-        setLEDPattern(LEDPattern.WHITE);
+        setLEDPattern(teamColorLED());
     }
 
     /**
@@ -51,7 +49,7 @@ public class LEDs extends SubsystemBase {
         LED2.setLength(LEDBuffer.getLength());
         LED2.setData(LEDBuffer);
         LED2.start();
-        setLEDPattern(LEDPattern.WHITE);
+        setLEDPattern(teamColorLED());
         setBrightness(brightness);
     }
 
@@ -88,19 +86,19 @@ public class LEDs extends SubsystemBase {
         }
     }
 
-    /**
-     * Takes in the parameters H, S, and V to set the LEDs to one color using an HSV
-     * color code
-     * 
-     * @param H
-     * @param S
-     * @param V
-     */
-    private void setLEDOneColorHSV(int H, int S, int V) {
-        for (int i = 0; i < LEDBuffer.getLength(); i++) {
-            LEDBuffer.setRGB(i, H, S, V);
-        }
-    }
+    // /**
+    //  * Takes in the parameters H, S, and V to set the LEDs to one color using an HSV
+    //  * color code
+    //  * 
+    //  * @param H
+    //  * @param S
+    //  * @param V
+    //  */
+    // private void setLEDOneColorHSV(int H, int S, int V) {
+    //     for (int i = 0; i < LEDBuffer.getLength(); i++) {
+    //         LEDBuffer.setHSV(i, H, S, V);
+    //     }
+    // }
 
     /**
      * Takes in the parameter pattern to set the pattern of the LEDs

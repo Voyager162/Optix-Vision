@@ -52,8 +52,6 @@ public class JoystickIO {
 
     private static final CommandXboxController pilot = new CommandXboxController(0);
     private static final CommandXboxController operator = new CommandXboxController(1);
-    // private static final Command sample = new ExampleSubsystemCommand(); it was
-    // getting on my nerves seeing the warning
     private static final Command onTheFly = new OnTheFly();
 
     private final static GenericHID buttonBoardPlayer1 = new GenericHID(2);
@@ -176,25 +174,6 @@ public class JoystickIO {
     public static void pilotAndOperatorBindings() {
         // gyro reset
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
-
-        /**
-         * otf related bindings:
-         * 
-         * Testing:
-         * x to activate the driving
-         * press b to move through all the setpoints
-         * left bumper to go to the nearest reef related branch based on driver
-         * perspective (left side)
-         * right bumper ^^^ but right
-         * 
-         * left dpad to switch l1, l2, l3, l4 (left up right down)
-         * press l1234 first, then press b to select, and then x
-         * 
-         * On the real bot:
-         * it'll all js be connected to the buttonboard
-         */
-        pilot.x().onTrue(Commands.runOnce(() -> Robot.swerve.setIsOTF(true)));
-
         pilot.leftBumper().onTrue(Commands.runOnce(() -> {
             ToPos.setSetpointByClosestReefBranch(true);
             Robot.swerve.setIsOTF(true);
@@ -203,17 +182,6 @@ public class JoystickIO {
             ToPos.setSetpointByClosestReefBranch(false);
             Robot.swerve.setIsOTF(true);
         }));
-
-        pilot.b().onTrue(Commands.runOnce(() -> {
-            Robot.swerve.setIsOTF(false);
-            Robot.swerve.cyclePPSetpoint();
-            Robot.swerve.showSetpointEndGoal();
-        }));
-
-        pilot.y().onTrue(Commands.runOnce(() -> {
-            buttonBoard.setScoringMode(ScoringMode.ALGAE);
-        })); // y is for testing only for now: so this command will always change
-
         new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
         new Trigger(() -> {
             if (Math.abs(pilot.getLeftX()) > ControllerConstants.deadband
@@ -231,11 +199,6 @@ public class JoystickIO {
         // operator.b().onTrue(intakeSource);
         // operator.x().onTrue(climb);
         // operator.y().onTrue(climbStow);
-
-        pilot.povLeft().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L1)));
-        pilot.povUp().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L2)));
-        pilot.povRight().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L3)));
-        pilot.povDown().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L4)));
         // pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
 
     }

@@ -178,9 +178,7 @@ public class CoralArm extends SubsystemBase {
                 break;
 
             case L1:
-                // System.out.println(profile.getGoal().position);
                 setGoal(CoralArmConstants.scoreL1_rad);
-                // System.out.println(profile.getGoal().position);
             break;
 
             default:
@@ -214,7 +212,6 @@ public class CoralArm extends SubsystemBase {
      * This method combines PID and feedforward to control the arm's movement.
      */
     private void moveToGoal() {
-        // System.out.println(profile.getGoal().position);
         // Get the setpoint from the PID controller
         State firstState = profile.getSetpoint();
 
@@ -228,7 +225,6 @@ public class CoralArm extends SubsystemBase {
         // ffVoltage = CoralArmConstants.kG.get() * Math.cos(data.positionRad);
         // Apply the combined PID and feedforward voltages to the arm
         double volts = ffVoltage + pidVoltage;
-        // System.out.println(volts);
         armIO.setVoltage(volts);
 
     }
