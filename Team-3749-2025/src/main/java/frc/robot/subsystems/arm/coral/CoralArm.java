@@ -137,10 +137,6 @@ public class CoralArm extends SubsystemBase {
             case STOPPED:
                 return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError, 0,
                         data.velocityRadsPerSecond);
-            // ensure velocity is near zero when stopped
-            case L1:
-                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
-                        state.setPointRad, data.positionRad);
             default:
                 return false; // Return false if the state is unrecognized.
         }
