@@ -494,6 +494,7 @@ public class Swerve extends SubsystemBase {
   public void startOnTheFly(int setpointIndex) {
     setIsOTF(false);
     currentPPSetpointIndex = setpointIndex;
+    System.out.println(JoystickIO.buttonBoard.getScoringMode());
 
     if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.ALGAE &&
         currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 25) {
@@ -502,6 +503,7 @@ public class Swerve extends SubsystemBase {
 
     if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L1 &&
         currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 24 && currentPPSetpointIndex % 2 == 0) {
+      System.out.println("test");
       currentPPSetpointIndex++;
     }
     // the ppsetpoints from 2 to 25 are the reef, and alternate between
