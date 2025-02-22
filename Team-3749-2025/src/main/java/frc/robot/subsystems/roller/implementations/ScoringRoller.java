@@ -37,7 +37,7 @@ public class ScoringRoller extends Roller {
         } else {
             this.photoelectricIO = new JTVisiSight();
         }
-        this.photoelectricIO = new JTVisiSight(); 
+        this.photoelectricIO = new JTVisiSight();
     }
 
     public static SimpleMotorFeedforward FF() {
@@ -56,12 +56,10 @@ public class ScoringRoller extends Roller {
                 RollerConstants.Scoring.kDVelocity.get());
     }
 
-
     @Override
     public void outtake() {
         setVelocity(RollerConstants.Coral.intakeVelocity.get());
     }
-
 
     public static PIDController positionController() {
         return new PIDController(RollerConstants.Scoring.kPPosition.get(), RollerConstants.Scoring.kIPosition.get(),
@@ -75,15 +73,15 @@ public class ScoringRoller extends Roller {
     public void intake() {
         if (!rollerData.sensorTripped) {
             setVelocity(RollerConstants.Scoring.scoreVelocity);
-        } else {
-            setVoltage(0.0);
+            return;
         }
-            setVoltage(0.0);
+        setVoltage(0.0);
     }
 
     /**
      * Implemetation of score method
      */
+    @Override
     public void score() {
         setVelocity(RollerConstants.Scoring.scoreVelocity);
     }
@@ -99,31 +97,32 @@ public class ScoringRoller extends Roller {
     @Override
     public void periodic() {
         super.periodic();
-      
+
         photoelectricIO.updateData(photoelectricData);
 
         hasPiece = photoelectricData.sensing;
-        
+        // hasPiece = true;
+
         Logger.recordOutput("subsystems/roller/ScoringRoller/hasPiece", hasPiece);
         Logger.recordOutput("subsystems/roller/ScoringRoller/setInitalState", routineStarted);
 
-        // routineStarted is true when the routine begins in Autos 
-        if (Autos.isRoutineStarted() && !routineStarted) { 
-            routineStarted = true; 
+        // routineStarted is true when the routine begins in Autos
+        if (Autos.isRoutineStarted() && !routineStarted) {
+            routineStarted = true;
             // sets initial state at the start of each routine
-            photoelectricIO.setInitialState(true); 
+            photoelectricIO.setInitialState(true);
         }
-        
-        // routineStarted is false when the routine ends in Autos 
+
+        // routineStarted is false when the routine ends in Autos
         if (!Autos.isRoutineStarted() && routineStarted) {
-            routineStarted = false;  
+            routineStarted = false;
         }
 
         if (this.getCurrentCommand() != null) {
             SmartDashboard.putString("scoring roller command", this.getCurrentCommand().getName());
-        } else {
-            SmartDashboard.putString("scoring roller command", "null");
+            return; //if you add more stuff here then this will cause problems
         }
+        SmartDashboard.putString("scoring roller command", "null");
 
     }
 }

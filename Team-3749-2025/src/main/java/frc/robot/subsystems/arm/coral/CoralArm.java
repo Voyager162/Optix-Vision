@@ -107,6 +107,9 @@ public class CoralArm extends SubsystemBase {
             case CORAL_PICKUP:
                 return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
                         CoralArmConstants.coralPickUpSetPoint_rad, data.positionRad);
+
+            case L1:
+                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,CoralArmConstants.scoreL1_rad,data.positionRad);
             case STOPPED:
                 return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError, 0, data.velocityUnits); // Ensure
                                                                                                                    // velocity
@@ -140,7 +143,7 @@ public class CoralArm extends SubsystemBase {
      * @param state The new state for the arm.
      */
     public void setState(CoralArmConstants.ArmStates state) {
-        this.state = (CoralArmConstants.ArmStates) state;
+        this.state = state;
         switch (this.state) {
             case STOPPED:
                 stop(); // Stop the arm if in STOPPED state.
@@ -155,6 +158,12 @@ public class CoralArm extends SubsystemBase {
             case HAND_OFF:
                 setGoal(CoralArmConstants.handOffSetPoint_rad); // Set the goal to the hand-off position.
                 break;
+
+            case L1:
+                // System.out.println(profile.getGoal().position);
+                setGoal(CoralArmConstants.scoreL1_rad);
+                // System.out.println(profile.getGoal().position);
+            break;
 
             default:
                 stop(); // Stop the arm in any unrecognized state.
@@ -199,6 +208,7 @@ public class CoralArm extends SubsystemBase {
      * This method combines PID and feedforward to control the arm's movement.
      */
     private void moveToGoal() {
+        // System.out.println(profile.getGoal().position);
         // Get the setpoint from the PID controller
         State firstState = profile.getSetpoint();
 
@@ -209,6 +219,7 @@ public class CoralArm extends SubsystemBase {
 
         // Apply the combined PID and feedforward voltages to the arm
         double volts = ffVoltage + pidVoltage;
+        // System.out.println(volts);
         armIO.setVoltage(volts);
 
     }
