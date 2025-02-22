@@ -492,6 +492,7 @@ public class Swerve extends SubsystemBase {
   // button is associated w to drive to
 
   public void startOnTheFly(int setpointIndex) {
+    setIsOTF(false);
     currentPPSetpointIndex = setpointIndex;
 
     if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.ALGAE &&
@@ -514,7 +515,8 @@ public class Swerve extends SubsystemBase {
         currentPPSetpointIndex >= 3 && currentPPSetpointIndex <= 25 && currentPPSetpointIndex % 2 != 0) {
       currentPPSetpointIndex++;
     }
-    // js the same thing i said but L234
+    showSetpointEndGoal();
+    //js the same thing i said but L234 
     isOTF = true;
   }
 
