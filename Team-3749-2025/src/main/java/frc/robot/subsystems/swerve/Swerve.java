@@ -66,8 +66,8 @@ public class Swerve extends SubsystemBase {
   private PIDController turnController = new PIDController(AutoConstants.kPTurn, 0, AutoConstants.kDTurn);
 
   private boolean utilizeVision = true;
-  private double velocity = 0;
-  private double yaw;
+  // private double velocity = 0;
+  // private double yaw;
 
   private LoggedTunableNumber kPDriving = new LoggedTunableNumber("/subsystems/swerve/kP Drive", AutoConstants.kPDrive);
   private LoggedTunableNumber kDDriving = new LoggedTunableNumber("/subsystems/swerve/kD Drive", AutoConstants.kDDrive);
@@ -696,15 +696,15 @@ public class Swerve extends SubsystemBase {
 
     // gyro logging
     Logger.recordOutput("/subsystems/swerve/gyro yaw", gyroData.yawDeg);
-    yaw = gyroData.yawDeg;
+    // yaw = gyroData.yawDeg;
     Logger.recordOutput("/subsystems/swerve/gyro pitch", gyroData.pitchDeg);
     Logger.recordOutput("/subsystems/swerve/gyro roll", gyroData.rollDeg);
     Logger.recordOutput("/subsystems/swerve/is gyro connected", gyroData.isConnected);
     Logger.recordOutput("/subsystems/swerve/heading", getRotation2d().getDegrees());
 
     // velocity and acceleration logging
-    double robotVelocity = Math.hypot(getChassisSpeeds().vxMetersPerSecond,
-        getChassisSpeeds().vyMetersPerSecond);
+    // double robotVelocity = Math.hypot(getChassisSpeeds().vxMetersPerSecond,
+    //     getChassisSpeeds().vyMetersPerSecond);
 
     // Logger.recordOutput("/subsystems/swerve/robot acceleration", (robotVelocity -
     // velocity) / .02);

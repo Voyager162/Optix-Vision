@@ -51,7 +51,6 @@ public abstract class Roller extends SubsystemBase {
     }
 
     public void setVoltage(double volts) {
-        // System.out.println(volts);
         rollerIO.setVoltage(volts);
     }
 
@@ -92,7 +91,6 @@ public abstract class Roller extends SubsystemBase {
      * Stores last position when the state is maintain
      */
     public void setState(RollerStates rollerState) {
-        // System.out.println(rollerState.name());
         this.rollerState = rollerState;
         if (rollerState == RollerConstants.RollerStates.MAINTAIN) {
             setLastKnownPosition(rollerData.rollerPositionRad);
