@@ -19,7 +19,7 @@ public class Climb extends Command {
     @Override
     public void initialize() {
         Robot.elevator.setState(ElevatorStates.L1);
-        Robot.coralArm.setState(CoralArmConstants.ArmStates.CORAL_PICKUP);
+        Robot.coralArm.setState(CoralArmConstants.ArmStates.L1);
     }
 
     @Override

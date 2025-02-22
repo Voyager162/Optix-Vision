@@ -32,6 +32,8 @@ public class CoralRoller extends Roller {
     private RollerData rollerData = new RollerData();
     private boolean routineStarted = false;
     private double intakeStartTime = 0;
+    private double outtakeStartTime = 0;
+
 
     public CoralRoller() {
         super(Implementations.CORAL, FF(), positionPID(), velocityPID());
@@ -55,15 +57,15 @@ public class CoralRoller extends Roller {
     }
 
     public boolean hasPiece() {
-        SmartDashboard.putNumber("time since intake", Timer.getFPGATimestamp() - intakeStartTime);
 
         if (Robot.isSimulation()) {
             return photoelectricData.sensing;
         } else {
             if (!super.getIsStableState() && getState() == RollerStates.INTAKE
-                    && Timer.getFPGATimestamp() - intakeStartTime > 0.45) {
+                    && Timer.getFPGATimestamp() - intakeStartTime > 0.6) {
                 hasPiece = true;
-            } else {
+            } else if (super.getIsStableState() && getState() == RollerStates.OUTTAKE
+            && Timer.getFPGATimestamp() - outtakeStartTime > 0.15){
                 hasPiece = false;
             }
             return hasPiece;
@@ -76,6 +78,8 @@ public class CoralRoller extends Roller {
         super.setState(rollerState);
         if (rollerState.equals(RollerStates.INTAKE)) {
             intakeStartTime = Timer.getFPGATimestamp();
+        } else if (rollerState.equals(RollerStates.OUTTAKE)){
+            outtakeStartTime = Timer.getFPGATimestamp();
         }
 
     }

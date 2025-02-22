@@ -243,9 +243,9 @@ public class JoystickIO {
     public static void testBindings() {
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
 
-        operator.a().onTrue(new Climb());
-        operator.b().whileTrue(Commands.runOnce(() -> Robot.climbArm.setVoltage(6)));
-        // // Checking voltage for all subsystems
+        // operator.a().onTrue(new Climb());
+        // operator.b().whileTrue(Commands.runOnce(() -> Robot.climbArm.setVoltage(12)));
+        // // // Checking voltage for all subsystems
         // operator.a().onTrue(Commands.run(() -> Robot.elevator.setVoltage(1.5),
         // Robot.elevator))
         // .whileFalse(Commands.run(() -> Robot.elevator.setVoltage(0),
@@ -307,11 +307,13 @@ public class JoystickIO {
         // Robot.scoringRoller.setVoltage(0)));
 
         // All elevator stages
-        // operator.a().onTrue(el1);
-        // operator.y().onTrue(el2);
-        // operator.x().onTrue(el3);
-        // operator.rightBumper().onTrue(el4);
-        // operator.leftBumper().onTrue(stow);
+        operator.a().onTrue(scoreL1);
+        operator.y().onTrue(intakeFloor);
+        operator.x().onTrue(el3);
+        operator.rightBumper().onTrue(el4);
+        operator.leftBumper().onTrue(stow);
+
+        // operator.povUp().onTrue(Commands.run(()->Robot.scoringRoller.setState(null);))
         // // operator.x().onTrue(l3);
         // operator.y().onTrue(l4);
 
@@ -331,7 +333,7 @@ public class JoystickIO {
         // operator.a().onTrue(coralL1);
         // operator.y().onTrue(coralPickUp);
 
-        // operator.leftBumper().whileTrue(scoringRun);
+        operator.povUp().onTrue(scoringRun).onFalse(scoringMaintain);
 
         // Maintain
         // operator.a().whileTrue(algaeMaintain);

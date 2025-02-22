@@ -11,6 +11,7 @@ public class MaintainCommand extends Command {
 
     public MaintainCommand(Roller roller) {
         this.roller = roller;
+        addRequirements(roller);
     }
 
     @Override

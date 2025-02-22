@@ -29,7 +29,7 @@ public class MiscConstants {
 
   public static final class ControllerConstants {
 
-    public static final double deadband = 0.05;
+    public static final double deadband = 0.08;
   }
 
   public static final class MotorControllerConstants {
