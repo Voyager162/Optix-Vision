@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.ToPos;
+import frc.robot.utils.UtilityFunctions;
 
 /**
  * The `OnTheFly` command dynamically generates and follows a trajectory
@@ -44,11 +45,10 @@ public class OnTheFly extends Command {
     @Override
     public void initialize() {
         currentlyThreading = true;
+        endpoint = Robot.swerve.getPPSetpoint().setpoint;
         new Thread(() -> {
             timer.reset();
             timer.start();
-
-            endpoint = Robot.swerve.getPPSetpoint().setpoint;
 
             // Create a new dynamic path generator
             ToPos toPos = new ToPos();
@@ -65,6 +65,7 @@ public class OnTheFly extends Command {
 
             // If path generation fails, stop the command
             if (path == null) {
+                System.out.println("EPIC FAIL!");
                 Robot.swerve.setIsOTF(false);
                 currentlyThreading = false;
                 this.cancel();
@@ -83,6 +84,7 @@ public class OnTheFly extends Command {
                     // Placeholder: Optionally store second-to-last waypoint
                 }
             } catch (IOException | ParseException e) {
+                System.out.println("ERROR FAIL!");
                 // If an error occurs during trajectory generation, stop execution
                 e.printStackTrace();
                 Robot.swerve.setIsOTF(false);
@@ -100,12 +102,17 @@ public class OnTheFly extends Command {
      */
     @Override
     public void execute() {
+        if(!Robot.swerve.getPPSetpoint().setpoint.equals(endpoint))
+        {
+            initialize();
+        }
         if(currentlyThreading)
         {
             return;
         }
 
         if ((trajectory == null || !Robot.swerve.getIsOTF())) {
+            System.out.println("THREADING FAIL!");
             this.cancel();
             return;
         }
@@ -133,6 +140,8 @@ public class OnTheFly extends Command {
      */
     @Override
     public void end(boolean interrupted) {
+        System.out.println("END FAIL!");
+        currentlyThreading = false;
         timer.stop();
         Robot.swerve.setIsOTF(false);
     }
@@ -147,7 +156,7 @@ public class OnTheFly extends Command {
      */
     @Override
     public boolean isFinished() {
-        return !currentlyThreading && (trajectory == null || !Robot.swerve.getIsOTF()
-                || !Robot.swerve.getPPSetpoint().setpoint.equals(endpoint));
+        return !currentlyThreading && (trajectory == null ||
+        !Robot.swerve.getIsOTF() || !Robot.swerve.getPPSetpoint().setpoint.equals(endpoint));
     }
 }
