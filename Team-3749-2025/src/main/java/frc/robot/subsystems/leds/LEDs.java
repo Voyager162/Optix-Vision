@@ -19,7 +19,7 @@ import frc.robot.subsystems.leds.LEDConstants.LEDPattern;
 public class LEDs extends SubsystemBase {
 
     private AddressableLED LED1 = new AddressableLED(0); // port
-    private AddressableLED LED2 = new AddressableLED(1); // port
+    // private AddressableLED LED2 = new AddressableLED(1); // port
 
     private AddressableLEDBuffer LEDBuffer = new AddressableLEDBuffer(LEDConstants.length);
     private LEDPattern currentPattern = LEDPattern.WHITE;
@@ -29,9 +29,9 @@ public class LEDs extends SubsystemBase {
         LED1.setLength(LEDBuffer.getLength());
         LED1.setData(LEDBuffer);
         LED1.start();
-        LED2.setLength(LEDBuffer.getLength());
-        LED2.setData(LEDBuffer);
-        LED2.start();
+        // LED2.setLength(LEDBuffer.getLength());
+        // LED2.setData(LEDBuffer);
+        // LED2.start();
         setBrightness(brightness);
         setLEDPattern(teamColorLED());
     }
@@ -46,9 +46,9 @@ public class LEDs extends SubsystemBase {
         LED1.setLength(LEDBuffer.getLength());
         LED1.setData(LEDBuffer);
         LED1.start();
-        LED2.setLength(LEDBuffer.getLength());
-        LED2.setData(LEDBuffer);
-        LED2.start();
+        // LED2.setLength(LEDBuffer.getLength());
+        // LED2.setData(LEDBuffer);
+        // LED2.start();
         setLEDPattern(teamColorLED());
         setBrightness(brightness);
     }

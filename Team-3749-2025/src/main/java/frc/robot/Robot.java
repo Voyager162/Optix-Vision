@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.leds.LEDs;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
 
@@ -50,7 +51,7 @@ private Field2d field2d = new Field2d();
 
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
-  // public static LEDs leds = new LEDs();
+  public static LEDs leds = new LEDs();
   public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("/subsystems/setVoltage", -12);
   
   private RobotContainer m_robotContainer;

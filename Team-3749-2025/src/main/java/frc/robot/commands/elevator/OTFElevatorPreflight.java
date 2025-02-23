@@ -24,6 +24,7 @@ public class OTFElevatorPreflight extends Command {
 
     @Override
     public boolean isFinished() {
-        return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError, Robot.elevator.getPositionMeters(), ElevatorConstants.StateHeights.stowHeight);
+        return true;
+        // return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError, Robot.elevator.getPositionMeters(), ElevatorConstants.StateHeights.stowHeight);
     }
 }

@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.ToPos;
+import frc.robot.utils.UtilityFunctions;
 
 /**
  * The `OnTheFly` command dynamically generates and follows a trajectory
@@ -126,7 +127,7 @@ public class OnTheFly extends Command {
                         goalState.fieldSpeeds.vyMetersPerSecond, // Y velocity
                         new Rotation2d(goalState.fieldSpeeds.omegaRadiansPerSecond) // Angular velocity
                 ));
-
+        Robot.swerve.setIsOTF(!UtilityFunctions.withinMargin(new Pose2d(0.01,0.01,new Rotation2d(0.1)), Robot.swerve.getPose(), endpoint));
     }
 
     /**
@@ -139,6 +140,7 @@ public class OnTheFly extends Command {
         currentlyThreading = false;
         timer.stop();
         Robot.swerve.setIsOTF(false);
+        
     }
 
     /**
