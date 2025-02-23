@@ -21,7 +21,6 @@ import frc.robot.commands.elevator.OTFElevatorPreflight;
 import frc.robot.commands.elevator.SetElevatorState;
 import frc.robot.commands.integration.Handoff;
 import frc.robot.commands.integration.IntakeFloor;
-import frc.robot.commands.integration.CoralIntakeSource;
 import frc.robot.commands.integration.Handoff;
 import frc.robot.commands.integration.IntakeFloor;
 import frc.robot.commands.integration.IntakeSource;
@@ -106,7 +105,6 @@ public class JoystickIO {
     private static final Handoff handoff = new Handoff();
     private static final IntakeFloor intakeFloor = new IntakeFloor();
     private static final IntakeSource intakeSource = new IntakeSource();
-    private static final CoralIntakeSource coralIntakeSource = new CoralIntakeSource();
     private static final OuttakeCoral outtakeCoral = new OuttakeCoral();
     private static final ScoreL1 scoreL1 = new ScoreL1();
     private static final ScoreL234 scoreL4 = new ScoreL234(ElevatorStates.L4);
@@ -204,7 +202,7 @@ public class JoystickIO {
     }
 
     public static void testBindings() {
-        pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
+        // pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
 
         // operator.a().onTrue(new Climb());
         // operator.b().whileTrue(Commands.runOnce(() -> Robot.climbArm.setVoltage(12)));
@@ -270,11 +268,11 @@ public class JoystickIO {
         // Robot.scoringRoller.setVoltage(0)));
 
         // All elevator stages
-        operator.a().onTrue(scoreL1);
-        operator.y().onTrue(intakeFloor);
-        operator.x().onTrue(el3);
-        operator.rightBumper().onTrue(el4);
-        operator.leftBumper().onTrue(stow);
+        // operator.a().onTrue(scoreL1);
+        // operator.y().onTrue(intakeFloor);
+        // operator.x().onTrue(el3);
+        // operator.rightBumper().onTrue(el4);
+        // operator.leftBumper().onTrue(stow);
 
         // operator.povUp().onTrue(Commands.run(()->Robot.scoringRoller.setState(null);))
         // // operator.x().onTrue(l3);
@@ -296,7 +294,7 @@ public class JoystickIO {
         // operator.a().onTrue(coralL1);
         // operator.y().onTrue(coralPickUp);
 
-        operator.povUp().onTrue(scoringRun).onFalse(scoringMaintain);
+        // operator.povUp().onTrue(scoringRun).onFalse(scoringMaintain);
 
         // Maintain
         // operator.a().whileTrue(algaeMaintain);
@@ -307,6 +305,10 @@ public class JoystickIO {
         // operator.rightBumper().onTrue(scoreL234);
         // operator.b().onTrue(Commands.runOnce(() ->
         // Robot.scoringRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
+
+        operator.a().onTrue(new IntakeFloor());
+        operator.b().onTrue(new Handoff());
+        operator.x().onTrue(new ScoreL234(ElevatorStates.STOW));
     }
 
     public static void pilotBindings() {

@@ -2,15 +2,15 @@ package frc.robot.commands.integration;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
-import frc.robot.subsystems.arm.coral.CoralArmConstants.ArmStates;
+import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
-import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
-/*
- * IntakeSource command for intaking coral from source
+
+/**
+ * CoralIntakeSource command for intaking coral from source
  */
 public class IntakeSource extends Command {
-    
+
     public IntakeSource() {
         // ensures other commands do not infere while this is active
         addRequirements(Robot.getAllSuperStructureSubsystems());
@@ -18,19 +18,17 @@ public class IntakeSource extends Command {
 
     @Override
     public void initialize() {
-        if (Robot.scoringRoller.hasPiece()) {
-            this.cancel(); // cancels command if scoringRoller has coral initially
-        }
-        else {
-            Robot.coralArm.setState(ArmStates.STOWED);
-            Robot.elevator.setState(ElevatorStates.SOURCE);
-            Robot.coralRoller.setState(RollerStates.STOP);
-            Robot.scoringRoller.setState(RollerStates.INTAKE); 
-        }
-    }
+        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
+        Robot.elevator.setState(ElevatorStates.SOURCE);
+        Robot.scoringRoller.setState(RollerStates.STOP);
+        Robot.coralRoller.setState(RollerStates.STOP);
+    }    
 
     @Override
     public void execute() {
+        if (Robot.elevator.getIsStableState()) {
+            Robot.scoringRoller.setState(RollerStates.INTAKE);
+        }
         if (Robot.scoringRoller.hasPiece() && Robot.scoringRoller.getState() != RollerStates.MAINTAIN) {
             Robot.scoringRoller.setState(RollerStates.MAINTAIN);
         }
@@ -38,17 +36,14 @@ public class IntakeSource extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        // Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);
-        Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
-      
+        Robot.elevator.setState(ElevatorStates.STOW);
     }
 
     /**
-     * Command finishes when scoringRoller has coral and command is being scheduled
+     * Command finishes when coralRoller has coral and command is being scheduled
      */
     @Override
     public boolean isFinished() {
-        // return Robot.scoringRoller.hasPiece() && this.isScheduled();
-        return false;
+        return Robot.coralRoller.hasPiece() && this.isScheduled();
     }
 }

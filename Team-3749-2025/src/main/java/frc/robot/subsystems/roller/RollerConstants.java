@@ -125,7 +125,7 @@ public class RollerConstants {
         public enum RollerStates {
                 INTAKE(50, 80, 200),
                 MAINTAIN(0, 0, 0),
-                OUTTAKE(-50, -50, 200),
+                OUTTAKE(-50, -30, 200),
                 STOP(0, 0, 0);
 
                 public final double algaeVelocity;
