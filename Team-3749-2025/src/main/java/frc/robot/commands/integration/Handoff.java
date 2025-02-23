@@ -33,9 +33,7 @@ public class Handoff extends Command {
         //         && Robot.elevator.getState() == ElevatorStates.STOW && Robot.elevator.getIsStableState()) { 
         //     Robot.coralRoller.setState(RollerConstants.RollerStates.OUTTAKE); 
         // }
-        if (Robot.scoringRoller.hasPiece() && Robot.scoringRoller.getState() != RollerStates.MAINTAIN) {
-            Robot.scoringRoller.setState(RollerStates.MAINTAIN);
-        }
+
     }
 
     @Override

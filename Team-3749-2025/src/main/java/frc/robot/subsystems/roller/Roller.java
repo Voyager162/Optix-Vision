@@ -57,7 +57,7 @@ public abstract class Roller extends SubsystemBase {
     public void setVelocity(double velocityRadPerSec) {
         double PIDOutput = velocityController.calculate(rollerData.rollerVelocityRadPerSec, velocityRadPerSec);
         double FFOutput = rollerFF.calculate(velocityRadPerSec);
-        double volts = PIDOutput+FFOutput;
+        double volts = PIDOutput + FFOutput;
         volts = MathUtil.clamp(volts, -12, 12);
         rollerIO.setVoltage(volts);
         Logger.recordOutput("subsystems/roller/" + getName() + "/pid", PIDOutput);
@@ -112,6 +112,9 @@ public abstract class Roller extends SubsystemBase {
             case STOP:
                 stop();
                 break;
+            case SCORE:
+                score();
+                break;
             case OUTTAKE:
                 outtake();
                 break;
@@ -119,7 +122,10 @@ public abstract class Roller extends SubsystemBase {
     }
 
     public abstract void outtake();
+
     public abstract void intake();
+
+    public abstract void score();
 
     public abstract void maintain();
 
@@ -130,11 +136,11 @@ public abstract class Roller extends SubsystemBase {
     public boolean getIsStableState() {
         switch (implementation) {
             case CORAL:
-                return UtilityFunctions.withinMargin(10, rollerData.rollerVelocityRadPerSec, rollerState.coralVelocity);
+                return UtilityFunctions.withinMargin(30, rollerData.rollerVelocityRadPerSec, rollerState.coralVelocity);
             case ALGAE:
-                return UtilityFunctions.withinMargin(4, rollerData.rollerVelocityRadPerSec, rollerState.algaeVelocity);
+                return UtilityFunctions.withinMargin(8, rollerData.rollerVelocityRadPerSec, rollerState.algaeVelocity);
             case SCORING:
-                return UtilityFunctions.withinMargin(4, rollerData.rollerVelocityRadPerSec,
+                return UtilityFunctions.withinMargin(8, rollerData.rollerVelocityRadPerSec,
                         rollerState.scoringVelocity);
             default:
                 return false;
@@ -144,7 +150,8 @@ public abstract class Roller extends SubsystemBase {
     @Override
     public void periodic() {
 
-        velocityController = new PIDController(RollerConstants.Coral.kPVelocity.get(), RollerConstants.Coral.kIVelocity.get(), RollerConstants.Coral.kDVelocity.get());
+        velocityController = new PIDController(RollerConstants.Coral.kPVelocity.get(),
+                RollerConstants.Coral.kIVelocity.get(), RollerConstants.Coral.kDVelocity.get());
         rollerIO.updateData(rollerData);
         runRollerStates();
 

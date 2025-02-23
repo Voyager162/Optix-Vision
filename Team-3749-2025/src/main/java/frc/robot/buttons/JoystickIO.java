@@ -214,17 +214,17 @@ public class JoystickIO {
     }
 
     public static void testBindings() {
-        // bindButtonBoard();
+        bindButtonBoard();
         // pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
-        // new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
-        // new Trigger(() -> {
-        //     if (Math.abs(pilot.getLeftX()) > ControllerConstants.deadband
-        //             || Math.abs(pilot.getLeftY()) > ControllerConstants.deadband
-        //             || Math.abs(pilot.getRightX()) > ControllerConstants.deadband) {
-        //         return true;
-        //     }
-        //     return false;
-        // }).onTrue(Commands.runOnce(() -> Robot.swerve.setIsOTF(false)));
+        new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
+        new Trigger(() -> {
+            if (Math.abs(pilot.getLeftX()) > ControllerConstants.deadband
+                    || Math.abs(pilot.getLeftY()) > ControllerConstants.deadband
+                    || Math.abs(pilot.getRightX()) > ControllerConstants.deadband) {
+                return true;
+            }
+            return false;
+        }).onTrue(Commands.runOnce(() -> Robot.swerve.setIsOTF(false)));
 
         // operator.a().onTrue(new Climb());
         // operator.b().whileTrue(Commands.runOnce(() ->
@@ -332,7 +332,11 @@ public class JoystickIO {
 
         operator.a().onTrue(new IntakeFloor());
         operator.b().onTrue(new Handoff());
-        operator.x().onTrue(new ScoreL234(ElevatorStates.STOW));
+        operator.x().onTrue(new IntakeSource());
+        operator.y().onTrue(new ScoreL234(ElevatorStates.L4));
+        operator.leftBumper().onTrue(new ScoreL1());
+
+
     }
 
     public static void pilotBindings() {

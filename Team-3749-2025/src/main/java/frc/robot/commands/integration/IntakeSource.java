@@ -18,10 +18,10 @@ public class IntakeSource extends Command {
 
     @Override
     public void initialize() {
-        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
         Robot.elevator.setState(ElevatorStates.SOURCE);
-        Robot.scoringRoller.setState(RollerStates.INTAKE);
+        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
         Robot.coralRoller.setState(RollerStates.STOP);
+        Robot.scoringRoller.setState(RollerStates.INTAKE);
     }
 
     @Override
@@ -41,6 +41,6 @@ public class IntakeSource extends Command {
      */
     @Override
     public boolean isFinished() {
-        return Robot.coralRoller.hasPiece() && this.isScheduled();
+        return Robot.scoringRoller.hasPiece() && this.isScheduled();
     }
 }

@@ -66,7 +66,7 @@ public class ScoreL234 extends Command {
         // }
         // scores when elevator reaches desired state
         if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState()) {
-            Robot.scoringRoller.setState(RollerStates.OUTTAKE);
+            Robot.scoringRoller.setState(RollerStates.SCORE);
         }
     }
 

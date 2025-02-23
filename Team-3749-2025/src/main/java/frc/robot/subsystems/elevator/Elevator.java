@@ -106,7 +106,8 @@ public class Elevator extends SubsystemBase {
     public boolean getIsStableState() {
         switch (state) {
             case L1:
-                return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError, ElevatorConstants.StateHeights.l1Height.getAsDouble(),
+                return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError,
+                        ElevatorConstants.StateHeights.l1Height.getAsDouble(),
                         data.positionMeters);
             case L2:
                 return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError, data.positionMeters,
@@ -144,8 +145,8 @@ public class Elevator extends SubsystemBase {
             case L4:
                 setGoal(ElevatorConstants.StateHeights.l4Height.getAsDouble());
                 break;
-            case MAX:
-                // fill in later
+            case SOURCE:
+                setGoal(ElevatorConstants.StateHeights.sourceHeight.getAsDouble());
                 break;
             case STOW:
                 setGoal(ElevatorConstants.StateHeights.stowHeight);

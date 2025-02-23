@@ -60,6 +60,10 @@ public class ScoringRoller extends Roller {
     public void outtake() {
         setVelocity(RollerStates.OUTTAKE.scoringVelocity);
     }
+    @Override
+    public void score() {
+        setVelocity(RollerStates.SCORE.scoringVelocity);
+    }
 
     public static PIDController positionController() {
         return new PIDController(RollerConstants.Scoring.kPPosition.get(), RollerConstants.Scoring.kIPosition.get(),

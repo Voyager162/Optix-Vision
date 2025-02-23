@@ -1,5 +1,6 @@
 package frc.robot.commands.integration;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
@@ -12,6 +13,8 @@ import frc.robot.subsystems.roller.RollerConstants.RollerStates;
  */
 public class ScoreL1 extends Command {
 
+    private double outtakeTimestamp = 0;
+
     public ScoreL1() {
         // ensures other commands do not infere while this is active
         addRequirements(Robot.getAllSuperStructureSubsystems());
@@ -19,21 +22,18 @@ public class ScoreL1 extends Command {
 
     @Override
     public void initialize() {
-        if (Robot.coralRoller.hasPiece()) {
-            Robot.elevator.setState(ElevatorConstants.ElevatorStates.STOW);
-            Robot.coralArm.setState(CoralArmConstants.ArmStates.L1);
-            Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
-            Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);
-        }
-        else {
-            this.cancel();
-        }
+        Robot.elevator.setState(ElevatorConstants.ElevatorStates.STOW);
+        Robot.coralArm.setState(CoralArmConstants.ArmStates.L1);
+        Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
+        Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);
+
     }
 
     @Override
     public void execute() {
         if (Robot.coralArm.getState() == CoralArmConstants.ArmStates.L1 && Robot.coralArm.getIsStableState()) {
-            Robot.coralRoller.setState(RollerConstants.RollerStates.OUTTAKE);
+            Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE);
+            outtakeTimestamp = Timer.getFPGATimestamp();
         }
     }
 
@@ -41,13 +41,16 @@ public class ScoreL1 extends Command {
     public void end(boolean interrupted) {
         Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
         Robot.coralRoller.setState(RollerStates.STOP);
+        outtakeTimestamp = 0;
     }
 
-    /** 
-     * Command finishes when coralRoller does not have coral and command is being scheduled
+    /**
+     * Command finishes when coralRoller does not have coral and command is being
+     * scheduled
      */
     @Override
     public boolean isFinished() {
-        return !Robot.coralRoller.hasPiece() && this.isScheduled();
+        return Robot.coralRoller.getState() == RollerStates.SCORE && Robot.coralRoller.getIsStableState()
+                && Timer.getFPGATimestamp() - outtakeTimestamp > 0.5;
     }
 }

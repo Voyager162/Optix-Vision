@@ -123,9 +123,10 @@ public class RollerConstants {
         }
 
         public enum RollerStates {
-                INTAKE(50, 80, 200),
+                INTAKE(50, 140, 200),
                 MAINTAIN(0, 0, 0),
-                OUTTAKE(-50, -42.5, 200),
+                OUTTAKE(-50, -42.5, Scoring.maxVelocity.get()), // -42.5
+                SCORE(0, -100, Scoring.maxVelocity.get()), // -42.5
                 STOP(0, 0, 0);
 
                 public final double algaeVelocity;
