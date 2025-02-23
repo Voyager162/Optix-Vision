@@ -233,7 +233,7 @@ public class Swerve extends SubsystemBase {
             modules[3].getPosition()
         },
         new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
-        VecBuilder.fill(0.045, 0.045, 0.005), // 6328's 2024 numbers with factors of 1.5x, 1.5x, 2x
+        VecBuilder.fill(0.045, 0.045, 0.0005), // 6328's 2024 numbers with factors of 1.5x, 1.5x, 2x
         VecBuilder.fill(VisionConstants.StandardDeviations.PreMatch.xy,
             VisionConstants.StandardDeviations.PreMatch.xy,
             VisionConstants.StandardDeviations.PreMatch.thetaRads));
@@ -704,6 +704,8 @@ public class Swerve extends SubsystemBase {
     // Logger.recordOutput("/subsystems/swerve/gyro rotation", robotVelocity);
     String currentCommand = this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName();
     Logger.recordOutput("/subsystems/swerve/current command", currentCommand);
+
+    Logger.recordOutput("/subsystems/swerve/isOTF", getIsOTF());
 
     AutoConstants.kPDrive = kPDriving.get();
     AutoConstants.kDDrive = kDDriving.get();

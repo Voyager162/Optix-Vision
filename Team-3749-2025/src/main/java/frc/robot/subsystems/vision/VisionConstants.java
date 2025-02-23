@@ -43,13 +43,15 @@ public class VisionConstants {
                 public static Transform3d cam1 = new Transform3d(Units.inchesToMeters(11.612),
                                 Units.inchesToMeters(14.891), Units.inchesToMeters(10.791),
                                 new Rotation3d(0, Units.degreesToRadians(
-                                                -15), Units.degreesToRadians(60)));
+                                                15), Units.degreesToRadians(60)));
 
                 public static Transform3d cam2 = new Transform3d(Units.inchesToMeters(10.403),
                                 Units.inchesToMeters(11.783), Units.inchesToMeters(10.501),
                                 new Rotation3d(0, 0, Units.degreesToRadians(-40)));
 
-                public static Transform3d cam3 = new Transform3d(Units.inchesToMeters(-9.187), Units.inchesToMeters(-4.529), Units.inchesToMeters(4.614), new Rotation3d(0, Units.degreesToRadians(4.9), Units.degreesToRadians(10)));
+                public static Transform3d cam3 = new Transform3d(Units.inchesToMeters(9.187),
+                                Units.inchesToMeters(4.529), Units.inchesToMeters(4.614),
+                                new Rotation3d(0, Units.degreesToRadians(4.9), Units.degreesToRadians(-10)));
 
                 public static Transform3d cam4 = new Transform3d(Units.inchesToMeters(-11.586),
                                 Units.inchesToMeters(14.161), Units.inchesToMeters(10.711),
