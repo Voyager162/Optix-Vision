@@ -205,7 +205,7 @@ public class JoystickIO {
         }).onTrue(Commands.runOnce(() -> Robot.swerve.setIsOTF(false)));
 
         bindButtonBoard();
-        ToPosTriggers.createOTFTriggers();
+        // ToPosTriggers.createOTFTriggers();
 
         // operator.b().onTrue(Commands.runOnce(() -> Robot.elevator.setVoltage(12)));
         // operator.b().onTrue(intakeSource);
@@ -216,7 +216,17 @@ public class JoystickIO {
     }
 
     public static void testBindings() {
+        bindButtonBoard();
         pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
+        new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
+        new Trigger(() -> {
+            if (Math.abs(pilot.getLeftX()) > ControllerConstants.deadband
+                    || Math.abs(pilot.getLeftY()) > ControllerConstants.deadband
+                    || Math.abs(pilot.getRightX()) > ControllerConstants.deadband) {
+                return true;
+            }
+            return false;
+        }).onTrue(Commands.runOnce(() -> Robot.swerve.setIsOTF(false)));
 
         // operator.a().onTrue(new Climb());
         // operator.b().whileTrue(Commands.runOnce(() ->

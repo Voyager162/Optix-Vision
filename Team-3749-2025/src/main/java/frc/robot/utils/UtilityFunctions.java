@@ -59,7 +59,9 @@ public class UtilityFunctions {
     public static boolean withinMargin(Pose2d poseMargin, Pose2d poseA, Pose2d poseB) {
 
         Pose2d relativeMargin = poseA.relativeTo(poseB);
-
+        System.out.println(Math.abs(relativeMargin.getX()));
+        System.out.println(Math.abs(relativeMargin.getY()));
+        System.out.println(Math.abs(relativeMargin.getRotation().getDegrees()));
         return Math.abs(relativeMargin.getX()) < poseMargin.getX() &&
                 Math.abs(relativeMargin.getY()) < poseMargin.getY() &&
                 Math.abs(relativeMargin.getRotation().getDegrees()) < poseMargin.getRotation().getDegrees();

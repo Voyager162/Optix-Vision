@@ -379,7 +379,7 @@ public class ToPosConstants {
             REEFFARRIGHT(reefTrig(reefFarRight, TrigDirection.SHIFT), createApproachPoint(reefFarRight)); // Move to
                                                                                                           // closest
                                                                                                           // right back
-            // reef
+            // BARGE(new Pose2d(6,5,new Rotation2d(Units.degreesToRadians(0))),createApproachPoint(new Pose2d(6,5,new Rotation2d(0))));
 
             // ======= Variables for Each Setpoint =======
             public Pose2d setpoint; // The final scoring position or movement target
