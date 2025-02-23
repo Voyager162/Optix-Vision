@@ -13,7 +13,6 @@ import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
  */
 public class IntakeFloor extends Command {
 
-    private double timeHasPiece = 0;
 
     public IntakeFloor() {
         // ensures other commands do not infere while this is active
@@ -30,9 +29,7 @@ public class IntakeFloor extends Command {
 
     @Override
     public void execute() {
-        if (Robot.coralRoller.hasPiece() && timeHasPiece == 0) {
-            timeHasPiece = Timer.getFPGATimestamp();
-        }
+
     }
 
     @Override
@@ -46,6 +43,6 @@ public class IntakeFloor extends Command {
      */
     @Override
     public boolean isFinished() {
-        return Robot.coralRoller.hasPiece() && this.isScheduled() && Timer.getFPGATimestamp() - timeHasPiece >= 1;
+        return Robot.coralRoller.hasPiece() && this.isScheduled();
     }
 }

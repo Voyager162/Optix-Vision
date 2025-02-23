@@ -26,7 +26,7 @@ import frc.robot.subsystems.roller.sim.PhotoelectricSim;
 @SuppressWarnings("unused")
 public class CoralRoller extends Roller {
     private double lastVelocity = 0.0;
-    private boolean hasPiece = true;
+    private boolean hasPiece = false;
     private PhotoelectricIO photoelectricIO;
     private PhotoelectricData photoelectricData = new PhotoelectricData();
     private RollerData rollerData = new RollerData();
@@ -34,10 +34,13 @@ public class CoralRoller extends Roller {
     private double intakeStartTime = 0;
     private double outtakeStartTime = 0;
 
-
     public CoralRoller() {
         super(Implementations.CORAL, FF(), positionPID(), velocityPID());
         photoelectricIO = new PhotoelectricSim();
+
+        if (Robot.isSimulation()) {
+            hasPiece = true;
+        }
     }
 
     public static SimpleMotorFeedforward FF() {
@@ -65,7 +68,7 @@ public class CoralRoller extends Roller {
                     && Timer.getFPGATimestamp() - intakeStartTime > 0.6) {
                 hasPiece = true;
             } else if (super.getIsStableState() && getState() == RollerStates.OUTTAKE
-            && Timer.getFPGATimestamp() - outtakeStartTime > 0.15){
+                    && Timer.getFPGATimestamp() - outtakeStartTime > 0.15) {
                 hasPiece = false;
             }
             return hasPiece;
@@ -78,7 +81,7 @@ public class CoralRoller extends Roller {
         super.setState(rollerState);
         if (rollerState.equals(RollerStates.INTAKE)) {
             intakeStartTime = Timer.getFPGATimestamp();
-        } else if (rollerState.equals(RollerStates.OUTTAKE)){
+        } else if (rollerState.equals(RollerStates.OUTTAKE)) {
             outtakeStartTime = Timer.getFPGATimestamp();
         }
 

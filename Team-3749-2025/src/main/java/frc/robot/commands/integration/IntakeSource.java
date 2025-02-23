@@ -20,23 +20,20 @@ public class IntakeSource extends Command {
     public void initialize() {
         Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
         Robot.elevator.setState(ElevatorStates.SOURCE);
-        Robot.scoringRoller.setState(RollerStates.STOP);
+        Robot.scoringRoller.setState(RollerStates.INTAKE);
         Robot.coralRoller.setState(RollerStates.STOP);
-    }    
+    }
 
     @Override
     public void execute() {
-        if (Robot.elevator.getIsStableState()) {
-            Robot.scoringRoller.setState(RollerStates.INTAKE);
-        }
-        if (Robot.scoringRoller.hasPiece() && Robot.scoringRoller.getState() != RollerStates.MAINTAIN) {
-            Robot.scoringRoller.setState(RollerStates.MAINTAIN);
-        }
+
     }
 
     @Override
     public void end(boolean interrupted) {
         Robot.elevator.setState(ElevatorStates.STOW);
+        Robot.scoringRoller.setState(RollerStates.MAINTAIN);
+
     }
 
     /**
