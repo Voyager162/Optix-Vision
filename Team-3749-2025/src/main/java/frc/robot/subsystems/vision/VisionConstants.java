@@ -61,9 +61,9 @@ public class VisionConstants {
                                 Units.inchesToMeters(-11.177), Units.inchesToMeters(20.27),
                                 new Rotation3d(0, Units.degreesToRadians(-10), Units.degreesToRadians(-260)));
 
-                public static Transform3d cam6 = new Transform3d(0, 0, 0, null);
+                public static Transform3d cam6 = new Transform3d(0, 0, 0, new Rotation3d());
 
-                public static Transform3d[] cameraList = { cam1, cam2, cam3, cam4, cam5, cam6 };
+                public static Transform3d[] cameraList = { cam1, cam2, cam3, cam4, cam5 };
         }
 
         public class CameraReal {

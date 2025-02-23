@@ -65,7 +65,7 @@ public class Swerve extends SubsystemBase {
   private PIDController yController = new PIDController(AutoConstants.kPDrive, 0, AutoConstants.kDDrive);
   private PIDController turnController = new PIDController(AutoConstants.kPTurn, 0, AutoConstants.kDTurn);
 
-  private boolean utilizeVision = true;
+  private boolean utilizeVision = false;
   // private double velocity = 0;
   // private double yaw;
 
@@ -215,8 +215,8 @@ public class Swerve extends SubsystemBase {
     // if real
     else {
       // gyro = new NavX2Gyro();
-      gyro = new GyroSim();
-      // gyro = new PigeonGyro();
+      // gyro = new GyroSim();
+      gyro = new PigeonGyro();
       for (int i = 0; i < 4; i++) {
 
         modules[i] = new SwerveModule(i, new SwerveModuleSpark(i));

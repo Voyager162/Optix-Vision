@@ -16,6 +16,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.arm.coral.CoralArmConstants.ArmStates;
 import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
 
 import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
@@ -122,23 +123,13 @@ public class CoralArm extends SubsystemBase {
     public boolean getIsStableState() {
 
         switch (state) {
-            case STOWED:
-                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
-                        state.setPointRad, data.positionRad);
-            case HAND_OFF:
-                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
-                        state.setPointRad, data.positionRad);
-            case CORAL_PICKUP:
-                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
-                        CoralArmConstants.coralPickUpSetPoint_rad, data.positionRad);
 
-            case L1:
-                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,CoralArmConstants.scoreL1_rad,data.positionRad);
             case STOPPED:
                 return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError, 0,
                         data.velocityRadsPerSecond);
             default:
-                return false; // Return false if the state is unrecognized.
+                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError, state.setPointRad,
+                        data.positionRad);
         }
     }
 
@@ -166,20 +157,6 @@ public class CoralArm extends SubsystemBase {
             case STOPPED:
                 stop(); // Stop the arm if in STOPPED state.
                 break;
-            case STOWED:
-                setGoal(CoralArmConstants.stowSetPoint_rad); // Set the goal to the stowed position.
-                break;
-            case CORAL_PICKUP:
-                setGoal(CoralArmConstants.coralPickUpSetPoint_rad); // Set the goal to the coral pickup position.
-                break;
-
-            case HAND_OFF:
-                setGoal(CoralArmConstants.handOffSetPoint_rad); // Set the goal to the hand-off position.
-                break;
-
-            case L1:
-                setGoal(CoralArmConstants.scoreL1_rad);
-            break;
 
             default:
                 setGoal(state.setPointRad); // Stop the arm in any unrecognized state.
