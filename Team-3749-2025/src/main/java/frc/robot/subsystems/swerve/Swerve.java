@@ -621,10 +621,8 @@ public class Swerve extends SubsystemBase {
   public void logSetpoints(double posX, double velX, double accX, double posY, double velY, double accY, double heading,
       double omega, double alpha) {
     // setpoint logging for automated driving
-    Double[] positions = new Double[] { posX, posY, heading };
-    Logger.recordOutput("/subsystems/swerve/swerve position x", positions[0]);
-    Logger.recordOutput("/subsystems/swerve/swerve position y", positions[1]);
-    Logger.recordOutput("/subsystems/swerve/swerve position heading", positions[2]);
+    double[] positions = new double[] { posX, posY, heading };
+    Logger.recordOutput("/subsystems/swerve/choreo setpoint", positions );
 
     Double[] velocities = new Double[] { velX, velY, omega };
     double velocity = 0;
@@ -680,6 +678,7 @@ public class Swerve extends SubsystemBase {
 
     Logger.recordOutput("/subsystems/swerve/real states", realStates);
     Logger.recordOutput("/subsystems/swerve/desired states", desiredStates);
+    Logger.recordOutput("/subsystems/swerve/isOTF", isOTF);
 
     double[] odometry = {
         getPose().getX(),

@@ -1,5 +1,7 @@
 package frc.robot.buttons;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -59,6 +61,7 @@ public class ButtonBoard {
 
     public void setScoringMode(ScoringMode scoringMode) {
         this.scoringMode = scoringMode;
+        Logger.recordOutput("/buttons/buttonboard/scoring mode", getScoringMode());
     }
 
 }

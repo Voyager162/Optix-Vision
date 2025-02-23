@@ -143,7 +143,7 @@ public class JoystickIO {
 
     public static void bindButtonBoard() {
         buttonBoard.buttonLeftSource
-                .onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(0))));
+                .onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() ->Robot.swerve.startOnTheFly(0))));
         buttonBoard.buttonRightSource
                 .onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(1))));
         buttonBoard.buttonReefZoneLeft1
@@ -215,7 +215,7 @@ public class JoystickIO {
 
     public static void testBindings() {
         bindButtonBoard();
-        // pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
+        pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
         new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
         new Trigger(() -> {
             if (Math.abs(pilot.getLeftX()) > ControllerConstants.deadband
