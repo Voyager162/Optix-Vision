@@ -215,7 +215,7 @@ public class Swerve extends SubsystemBase {
     // if real
     else {
       // gyro = new NavX2Gyro();
-      gyro = new PigeonGyro();
+      gyro = new GyroSim();
       for (int i = 0; i < 4; i++) {
 
         modules[i] = new SwerveModule(i, new SwerveModuleSpark(i));
