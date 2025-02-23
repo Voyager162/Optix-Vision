@@ -49,7 +49,7 @@ public class VisionConstants {
                                 Units.inchesToMeters(11.783), Units.inchesToMeters(10.501),
                                 new Rotation3d(0, 0, Units.degreesToRadians(-40)));
 
-                public static Transform3d cam3 = new Transform3d(0, 0, 0, null);
+                public static Transform3d cam3 = new Transform3d(-9.187, -4.529, 4.614, new Rotation3d(0, 4.9, 10));
 
                 public static Transform3d cam4 = new Transform3d(Units.inchesToMeters(-11.586),
                                 Units.inchesToMeters(14.161), Units.inchesToMeters(10.711),
