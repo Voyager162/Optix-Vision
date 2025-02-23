@@ -19,10 +19,15 @@ public class ScoreL1 extends Command {
 
     @Override
     public void initialize() {
-        Robot.elevator.setState(ElevatorConstants.ElevatorStates.STOW);
-        Robot.coralArm.setState(CoralArmConstants.ArmStates.L1);
-        Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
-        Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);
+        if (Robot.coralRoller.hasPiece()) {
+            Robot.elevator.setState(ElevatorConstants.ElevatorStates.STOW);
+            Robot.coralArm.setState(CoralArmConstants.ArmStates.L1);
+            Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
+            Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);
+        }
+        else {
+            this.cancel();
+        }
     }
 
     @Override

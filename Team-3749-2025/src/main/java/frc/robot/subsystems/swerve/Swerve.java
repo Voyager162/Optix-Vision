@@ -216,6 +216,7 @@ public class Swerve extends SubsystemBase {
     else {
       // gyro = new NavX2Gyro();
       gyro = new GyroSim();
+      // gyro = new PigeonGyro();
       for (int i = 0; i < 4; i++) {
 
         modules[i] = new SwerveModule(i, new SwerveModuleSpark(i));
@@ -504,19 +505,12 @@ public class Swerve extends SubsystemBase {
         currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 24 && currentPPSetpointIndex % 2 == 0) {
       currentPPSetpointIndex++;
     }
-    // the ppsetpoints from 2 to 25 are the reef, and alternate between
-    // L234 (even index) //L1 (odd index == L234 index+1)
-    // if we're on l1, within the range, and on an equal index, add one to get to
-    // the L1 setpoint,
-    // this becomes problematic only when switching between l1-l4 on testing, should
-    // be ok on the real bot
 
     if (JoystickIO.buttonBoard.getScoringMode() != ScoringMode.L1 &&
         currentPPSetpointIndex >= 3 && currentPPSetpointIndex <= 25 && currentPPSetpointIndex % 2 != 0) {
       currentPPSetpointIndex++;
     }
     showSetpointEndGoal();
-    //js the same thing i said but L234 
     isOTF = true;
   }
 
