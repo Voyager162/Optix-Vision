@@ -104,23 +104,12 @@ public class Elevator extends SubsystemBase {
     }
 
     public boolean getIsStableState() {
-        switch (state) {
-            case L1:
-                return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError,
-                        ElevatorConstants.StateHeights.l1Height.getAsDouble(),
-                        data.positionMeters);
-            case L2:
-                return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError, data.positionMeters,
-                        ElevatorConstants.StateHeights.l2Height.getAsDouble());
-            case L3:
-                return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError, data.positionMeters,
-                        ElevatorConstants.StateHeights.l3Height.getAsDouble());
-            case L4:
-                return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError, data.positionMeters,
-                        ElevatorConstants.StateHeights.l4Height.getAsDouble());
-            default:
-                return false;
+        if(state==null)
+        {
+            return false;
         }
+        return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError,
+         this.state.heightMeters, data.positionMeters);
     }
 
     public void setVoltage(double volts) {
@@ -129,32 +118,12 @@ public class Elevator extends SubsystemBase {
 
     public void setState(ElevatorStates state) {
         this.state = state;
-        switch (state) {
-            case STOP:
-                stop();
-                break;
-            case L1:
-                setGoal(ElevatorConstants.StateHeights.l1Height.getAsDouble());
-                break;
-            case L2:
-                setGoal(ElevatorConstants.StateHeights.l2Height.getAsDouble());
-                break;
-            case L3:
-                setGoal(ElevatorConstants.StateHeights.l3Height.getAsDouble());
-                break;
-            case L4:
-                setGoal(ElevatorConstants.StateHeights.l4Height.getAsDouble());
-                break;
-            case SOURCE:
-                setGoal(ElevatorConstants.StateHeights.sourceHeight.getAsDouble());
-                break;
-            case STOW:
-                setGoal(ElevatorConstants.StateHeights.stowHeight);
-                break;
-            default:
-                setGoal(0);
-                break;
+        if(state==ElevatorStates.STOP)
+        {
+            stop();
+            return;
         }
+        setGoal(state.heightMeters);
     }
 
     public void setGoal(double height) {

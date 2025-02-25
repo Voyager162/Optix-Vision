@@ -50,28 +50,22 @@ public class ElevatorConstants {
     }
 
     public enum ElevatorStates {
-        STOP,
-        L1,
-        L2,
-        L3,
-        L4,
-        SOURCE,
-        ALGAE_LOW,
-        ALGAE_HIGH,
-        MAX,
-        STOW
-    }
+        STOP(Units.inchesToMeters(2)),
+        L1(Units.inchesToMeters(12)),
+        L2(Units.inchesToMeters(15.35)),
+        L3(Units.inchesToMeters(31.25)),
+        L4(Units.inchesToMeters(54.65)),
+        SOURCE(Units.inchesToMeters(30)),
+        ALGAE_LOW(Units.inchesToMeters(31.875)),
+        ALGAE_HIGH(Units.inchesToMeters(47.625)),
+        MAX(Units.feetToMeters(6)),
+        STOW(Units.inchesToMeters(2));
 
-    public static class StateHeights {
-        public static LoggedTunableNumber l1Height = new LoggedTunableNumber("/subsystems/elevator/l1Height", Units.inchesToMeters(12));
+        public double heightMeters;
 
-        public static LoggedTunableNumber l2Height = new LoggedTunableNumber("/subsystems/elevator/l2Height", Units.inchesToMeters(15.35));
-        public static LoggedTunableNumber l3Height = new LoggedTunableNumber("/subsystems/elevator/l3Height", Units.inchesToMeters(31.25));
-        public static LoggedTunableNumber l4Height = new LoggedTunableNumber("/subsystems/elevator/l4Height", Units.inchesToMeters(54.65));
-        public static LoggedTunableNumber algaeLowHeight = new LoggedTunableNumber("/subsystems/elevator/algaeLowHeight", Units.inchesToMeters(31.875));
-        public static LoggedTunableNumber algaeHighHeight = new LoggedTunableNumber("/subsystems/elevator/algaeHighHeight", Units.inchesToMeters(47.625));
-        public static LoggedTunableNumber sourceHeight = new LoggedTunableNumber("/subsystems/elevator/sourceHeight", Units.inchesToMeters(30));
-
-        public static final double stowHeight = Units.inchesToMeters(Units.inchesToMeters(2)); // placedholder
+        private ElevatorStates(double heightMeters)
+        {
+            this.heightMeters = heightMeters;
+        }
     }
 }
