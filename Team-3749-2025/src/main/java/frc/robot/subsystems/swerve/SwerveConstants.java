@@ -18,7 +18,7 @@ public class SwerveConstants {
 
         public static final class ControlConstants {
                 public static final double[] turnPID = new double[] {
-                                3.75, 0, 0 };
+                                4.5, 0, 0 };
                 public static final double[] drivePID = new double[] {
                                 0.27, 0, 0 };
                 // our FF values
