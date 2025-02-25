@@ -159,24 +159,24 @@ public class SwerveModule {
     public void periodic() {
         moduleIO.updateData(moduleData);
         // // Logging
-        Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/drive velocity",
+        Logger.recordOutput("Swerve/SwerveModule " + index + "/driveVelocity",
                 moduleData.driveVelocityMPerSec);
-        Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/drive position", moduleData.drivePositionM);
-        Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/drive temperature",
+        Logger.recordOutput("Swerve/SwerveModule " + index + "/drivePosition", moduleData.drivePositionM);
+        Logger.recordOutput("Swerve/SwerveModule " + index + "/driveTemperature",
                 moduleData.driveTempCelcius);
-        Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/drive applied volts",
+        Logger.recordOutput("Swerve/SwerveModule " + index + "/driveAppliedVolts",
                 moduleData.driveAppliedVolts);
-        Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/drive current amps",
+        Logger.recordOutput("Swerve/SwerveModule " + index + "/driveCurrentAmps",
                 moduleData.driveCurrentAmps);
 
-        Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/turn velocity",
+        Logger.recordOutput("Swerve/SwerveModule " + index + "/turnVelocity",
                 moduleData.turnVelocityRadPerSec);
-        Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/turn position", moduleData.turnPositionRad);
-        Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/turn temperature",
+        Logger.recordOutput("Swerve/SwerveModule " + index + "/turnPosition", moduleData.turnPositionRad);
+        Logger.recordOutput("Swerve/SwerveModule " + index + "/turnTemperature",
                 moduleData.turnTempCelcius);
-        Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/turn applied volts",
+        Logger.recordOutput("Swerve/SwerveModule " + index + "/turnAppliedVolts",
                 moduleData.turnAppliedVolts);
-        Logger.recordOutput("subsystems/swerve/swerveModule " + index + "/turn current amps",
+        Logger.recordOutput("Swerve/SwerveModule " + index + "/turnCurrentAmps",
                 moduleData.turnCurrentAmps);
         drivingFeedFordward = new SimpleMotorFeedforward(ControlConstants.kSDriving.get(),
                 ControlConstants.kVDriving.get(), ControlConstants.kADriving.get());

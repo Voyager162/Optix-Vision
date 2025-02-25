@@ -17,7 +17,6 @@ import frc.robot.Robot;
 import frc.robot.buttons.ButtonBoard.ScoringMode;
 import frc.robot.commands.arm.SetClimbArmState;
 import frc.robot.commands.arm.SetCoralArmState;
-import frc.robot.commands.elevator.OTFElevatorPreflight;
 import frc.robot.commands.elevator.SetElevatorState;
 import frc.robot.commands.integration.Handoff;
 import frc.robot.commands.integration.IntakeFloor;
@@ -143,33 +142,33 @@ public class JoystickIO {
 
     public static void bindButtonBoard() {
         buttonBoard.buttonLeftSource
-                .onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() ->Robot.swerve.startOnTheFly(0))));
+                .onTrue(Commands.runOnce(() ->Robot.swerve.startOnTheFly(0)));
         buttonBoard.buttonRightSource
-                .onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(1))));
+                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(1)));
         buttonBoard.buttonReefZoneLeft1
-                .onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(2))));
+                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(2)));
         buttonBoard.buttonReefZoneRight1
-                .onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(4))));
+                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(4)));
         buttonBoard.buttonReefZoneRight2
-                .onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(6))));
+                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(6)));
         buttonBoard.buttonReefZoneRight3
-                .onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(8))));
+                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(8)));
         buttonBoard.buttonReefZoneRight4
-                .onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(10))));
+                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(10)));
         buttonBoard.buttonReefZoneRight5
-                .onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(12))));
+                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(12)));
         buttonBoard.buttonReefZoneRight6
-                .onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(14))));
+                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(14)));
         buttonBoard.buttonReefZoneLeft6
-                .onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(16))));
+                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(16)));
         buttonBoard.buttonReefZoneLeft5
-                .onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(18))));
+                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(18)));
         buttonBoard.buttonReefZoneLeft4
-                .onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(20))));
+                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(20)));
         buttonBoard.buttonReefZoneLeft3
-                .onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(22))));
+                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(22)));
         buttonBoard.buttonReefZoneLeft2
-                .onTrue(new OTFElevatorPreflight().andThen(Commands.runOnce(() -> Robot.swerve.startOnTheFly(24))));
+                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(24)));
         buttonBoard.buttonl1.onTrue(l1);
         buttonBoard.buttonl2.onTrue(l2);
         buttonBoard.buttonl3.onTrue(l3);

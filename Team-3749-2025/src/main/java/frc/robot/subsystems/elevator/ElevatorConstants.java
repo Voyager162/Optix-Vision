@@ -33,45 +33,39 @@ public class ElevatorConstants {
     public static final double stateMarginOfError = 0.1;
 
     public static class ElevatorControl {
-        public static LoggedTunableNumber kG = new LoggedTunableNumber("/subsystems/elevator/kG", 0.32);
-        public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/elevator/kP", 12);
-        public static LoggedTunableNumber kI = new LoggedTunableNumber("/subsystems/elevator/kI", 0);
-        public static LoggedTunableNumber kD = new LoggedTunableNumber("/subsystems/elevator/kD", 0);
-        public static LoggedTunableNumber kS = new LoggedTunableNumber("/subsystems/elevator/kS", 0.16
+        public static LoggedTunableNumber kG = new LoggedTunableNumber("Elevator/kG", 0.32);
+        public static LoggedTunableNumber kP = new LoggedTunableNumber("Elevator/kP", 12);
+        public static LoggedTunableNumber kI = new LoggedTunableNumber("Elevator/kI", 0);
+        public static LoggedTunableNumber kD = new LoggedTunableNumber("Elevator/kD", 0);
+        public static LoggedTunableNumber kS = new LoggedTunableNumber("Elevator/kS", 0.16
         );
-        public static LoggedTunableNumber kV = new LoggedTunableNumber("/subsystems/elevator/kV", 7.77);
-        public static LoggedTunableNumber kA = new LoggedTunableNumber("/subsystems/elevator/kA", 0.27
+        public static LoggedTunableNumber kV = new LoggedTunableNumber("Elevator/kV", 7.77);
+        public static LoggedTunableNumber kA = new LoggedTunableNumber("Elevator/kA", 0.27
         ); // 1.72
-        public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/elevator/max velocity",
+        public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("Elevator/max velocity",
                 1.415);
         public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
-                "/subsystems/elevator/max acceleration",
+                "Elevator/max acceleration",
                 4.1);
     }
 
     public enum ElevatorStates {
-        STOP,
-        L1,
-        L2,
-        L3,
-        L4,
-        SOURCE,
-        ALGAE_LOW,
-        ALGAE_HIGH,
-        MAX,
-        STOW
-    }
+        STOP(Units.inchesToMeters(2)),
+        L1(Units.inchesToMeters(12)),
+        L2(Units.inchesToMeters(15.35)),
+        L3(Units.inchesToMeters(31.25)),
+        L4(Units.inchesToMeters(54.65)),
+        SOURCE(Units.inchesToMeters(30)),
+        ALGAE_LOW(Units.inchesToMeters(31.875)),
+        ALGAE_HIGH(Units.inchesToMeters(47.625)),
+        MAX(Units.feetToMeters(6)),
+        STOW(Units.inchesToMeters(2));
 
-    public static class StateHeights {
-        public static LoggedTunableNumber l1Height = new LoggedTunableNumber("/subsystems/elevator/l1Height", Units.inchesToMeters(12));
+        public double heightMeters;
 
-        public static LoggedTunableNumber l2Height = new LoggedTunableNumber("/subsystems/elevator/l2Height", Units.inchesToMeters(15.35));
-        public static LoggedTunableNumber l3Height = new LoggedTunableNumber("/subsystems/elevator/l3Height", Units.inchesToMeters(31.25));
-        public static LoggedTunableNumber l4Height = new LoggedTunableNumber("/subsystems/elevator/l4Height", Units.inchesToMeters(54.65));
-        public static LoggedTunableNumber algaeLowHeight = new LoggedTunableNumber("/subsystems/elevator/algaeLowHeight", Units.inchesToMeters(31.875));
-        public static LoggedTunableNumber algaeHighHeight = new LoggedTunableNumber("/subsystems/elevator/algaeHighHeight", Units.inchesToMeters(47.625));
-        public static LoggedTunableNumber sourceHeight = new LoggedTunableNumber("/subsystems/elevator/sourceHeight", Units.inchesToMeters(30));
-
-        public static final double stowHeight = Units.inchesToMeters(Units.inchesToMeters(2)); // placedholder
+        private ElevatorStates(double heightMeters)
+        {
+            this.heightMeters = heightMeters;
+        }
     }
 }

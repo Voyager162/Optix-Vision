@@ -29,23 +29,23 @@ public class ClimbArmConstants {
 	public static final double momentOfInertia = 0.775;
 
 	// control values
-	public static LoggedTunableNumber kG = new LoggedTunableNumber("/subsystems/arms/climbArm/kG", 0.0065);
-	public static LoggedTunableNumber kP = new LoggedTunableNumber("/subsystems/arms/climbArm/kP", 0.0);
-	public static LoggedTunableNumber kI = new LoggedTunableNumber("/subsystems/arms/climbArm/kP" + "/kI", 0);
-	public static LoggedTunableNumber kD = new LoggedTunableNumber("/subsystems/arms/climbArm/kD", 0);
+	public static LoggedTunableNumber kG = new LoggedTunableNumber("Arms/ClimbArm/kG", 0.0065);
+	public static LoggedTunableNumber kP = new LoggedTunableNumber("Arms/ClimbArm/kP", 0.0);
+	public static LoggedTunableNumber kI = new LoggedTunableNumber("Arms/ClimbArm/kP" + "/kI", 0);
+	public static LoggedTunableNumber kD = new LoggedTunableNumber("Arms/ClimbArm/kD", 0);
 
-	public static LoggedTunableNumber kS = new LoggedTunableNumber("/subsystems/arms/climbArm/kS", 0.1115);
-	public static LoggedTunableNumber kV = new LoggedTunableNumber("/subsystems/arms/climbArm/kV", 2.439);
-	public static LoggedTunableNumber kA = new LoggedTunableNumber("/subsystems/arms/climbArm/kA", 0.447);
-	public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("/subsystems/arms/climbArm/max velocity",
+	public static LoggedTunableNumber kS = new LoggedTunableNumber("Arms/ClimbArm/kS", 0.1115);
+	public static LoggedTunableNumber kV = new LoggedTunableNumber("Arms/ClimbArm/kV", 2.439);
+	public static LoggedTunableNumber kA = new LoggedTunableNumber("Arms/ClimbArm/kA", 0.447);
+	public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("Arms/ClimbArm/max velocity",
 			4.6);
 	public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
-			"/subsystems/arms/climbArm/max acceleration",
+			"Arms/ClimbArm/max acceleration",
 			18.4);
 
 	// setpoints
-	public static final LoggedTunableNumber stowSetPointRad = new LoggedTunableNumber("/subsystems/arms/climbArm/stowSetPointRad", Math.PI / 2);
-	public static final LoggedTunableNumber climbVoltage = new LoggedTunableNumber("/subsystems/arms/climbArm/climbVoltage", 10.0);
+	public static final LoggedTunableNumber stowSetPointRad = new LoggedTunableNumber("Arms/ClimbArm/stowSetPointRad", Math.PI / 2);
+	public static final LoggedTunableNumber climbVoltage = new LoggedTunableNumber("Arms/ClimbArm/climbVoltage", 10.0);
 	
 	// extra
 	public static final boolean simulateGravity = true;

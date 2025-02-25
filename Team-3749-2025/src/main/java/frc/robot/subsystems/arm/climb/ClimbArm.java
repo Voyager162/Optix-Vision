@@ -44,7 +44,7 @@ public class ClimbArm extends SubsystemBase {
 
 	private LoggedMechanism2d mechanism2d = new LoggedMechanism2d(60, 60);
 	private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
-	private LoggedMechanismLigament2d armLigament = armRoot.append(new LoggedMechanismLigament2d("Climb Arm", 24, 0));
+	private LoggedMechanismLigament2d armLigament = armRoot.append(new LoggedMechanismLigament2d("ClimbArm", 24, 0));
 
 	StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
 			.getStructTopic("ClimbArm Pose", Pose3d.struct).publish();
@@ -209,24 +209,24 @@ public class ClimbArm extends SubsystemBase {
 	/** Logs data to Shuffleboard. */
 	private void logData() {
 
-		Logger.recordOutput("subsystems/arms/climbArm/Current Command",
+		Logger.recordOutput("Arms/ClimbArm/currentCommand",
 				this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-		Logger.recordOutput("subsystems/arms/climbArm/current state", state.name());
+		Logger.recordOutput("Arms/ClimbArm/currentState", state.name());
 
-		Logger.recordOutput("subsystems/arms/climbArm/position", data.positionRad);
-		Logger.recordOutput("subsystems/arms/climbArm/velocity", data.velocityRadPerSec);
+		Logger.recordOutput("Arms/ClimbArm/position", data.positionRad);
+		Logger.recordOutput("Arms/ClimbArm/velocity", data.velocityRadPerSec);
 
-		Logger.recordOutput("subsystems/arms/climbArm/input volts", data.inputVolts);
-		Logger.recordOutput("subsystems/arms/climbArm/frontMotor/applied volts", data.frontMotorAppliedVolts);
-		Logger.recordOutput("subsystems/arms/climbArm/backMotor/applied volts", data.backMotorAppliedVolts);
+		Logger.recordOutput("Arms/ClimbArm/inputVolts", data.inputVolts);
+		Logger.recordOutput("Arms/ClimbArm/frontMotor/appliedVolts", data.frontMotorAppliedVolts);
+		Logger.recordOutput("Arms/ClimbArm/backMotor/appliedVolts", data.backMotorAppliedVolts);
 
-		Logger.recordOutput("subsystems/arms/climbArm/frontMotor/current amps", data.frontMotorCurrentAmps);
-		Logger.recordOutput("subsystems/arms/climbArm/backMotor/current amps", data.backMotorCurrentAmps);
+		Logger.recordOutput("Arms/ClimbArm/frontMotor/currentAmps", data.frontMotorCurrentAmps);
+		Logger.recordOutput("Arms/ClimbArm/backMotor/currentAmps", data.backMotorCurrentAmps);
 
-		Logger.recordOutput("subsystems/arms/climbArm/frontMotor/temperature", data.frontMotorTempCelcius);
-		Logger.recordOutput("subsystems/arms/climbArm/backMotor/temperature", data.backMotorTempCelcius);
+		Logger.recordOutput("Arms/ClimbArm/frontMotor/temperature", data.frontMotorTempCelcius);
+		Logger.recordOutput("Arms/ClimbArm/backMotor/temperature", data.backMotorTempCelcius);
 
-		Logger.recordOutput("subsystems/arms/climbArm/Climb Arm Mechanism", mechanism2d);
+		Logger.recordOutput("Arms/ClimbArm/climbArmMechanism", mechanism2d);
 
 		armLigament.setAngle(Math.toDegrees(data.positionRad));
 		publisher.set(getPose3d());

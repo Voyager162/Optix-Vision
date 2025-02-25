@@ -108,9 +108,6 @@ public class Photonvision implements VisionIO {
         // cameraUpdatePose(2);
 
         // for (int i = 0; i < cameraList.length; i++) {
-        //     if (i==3 || i==4){ // skip cam4
-        //         continue;
-        //     }
         //     cameraUpdatePose(i);
         // }
     }

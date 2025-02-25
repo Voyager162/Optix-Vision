@@ -93,7 +93,7 @@ public class ScoringRoller extends Roller {
     
     @Override
     public void maintain() {
-        Logger.recordOutput("subsystems/roller/ScoringRoller/setpoint position", getLastKnownPosition() - RollerConstants.Scoring.reverseDistance);
+        Logger.recordOutput("Roller/ScoringRoller/setpointPosition", getLastKnownPosition() - RollerConstants.Scoring.reverseDistance);
         setPosition(getLastKnownPosition() - RollerConstants.Scoring.reverseDistance, RollerConstants.Scoring.kSVelocity.get());
     }
 
@@ -106,8 +106,8 @@ public class ScoringRoller extends Roller {
 
         hasPiece = photoelectricData.sensing;
 
-        Logger.recordOutput("subsystems/roller/ScoringRoller/hasPiece", hasPiece);
-        Logger.recordOutput("subsystems/roller/ScoringRoller/setInitalState", routineStarted);
+        Logger.recordOutput("Roller/ScoringRoller/hasPiece", hasPiece);
+        Logger.recordOutput("Roller/ScoringRoller/setInitalState", routineStarted);
 
         // routineStarted is true when the routine begins in Autos
         if (Autos.isRoutineStarted() && !routineStarted) {

@@ -26,6 +26,7 @@ import frc.robot.buttons.JoystickIO;
 import frc.robot.buttons.ButtonBoard.ScoringMode;
 import frc.robot.commands.auto.AutoConstants;
 import frc.robot.commands.auto.AutoUtils;
+import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.swerve.GyroIO.GyroData;
 import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 import frc.robot.subsystems.swerve.sim.GyroSim;
@@ -71,11 +72,11 @@ public class Swerve extends SubsystemBase {
   // private double velocity = 0;
   // private double yaw;
 
-  private LoggedTunableNumber kPDriving = new LoggedTunableNumber("/subsystems/swerve/kP Drive", AutoConstants.kPDrive);
-  private LoggedTunableNumber kDDriving = new LoggedTunableNumber("/subsystems/swerve/kD Drive", AutoConstants.kDDrive);
-  private LoggedTunableNumber kPTurn = new LoggedTunableNumber("/subsystems/swerve/kP Turn controller",
+  private LoggedTunableNumber kPDriving = new LoggedTunableNumber("Swerve/kP Drive", AutoConstants.kPDrive);
+  private LoggedTunableNumber kDDriving = new LoggedTunableNumber("Swerve/kD Drive", AutoConstants.kDDrive);
+  private LoggedTunableNumber kPTurn = new LoggedTunableNumber("Swerve/kP Turn controller",
       AutoConstants.kPTurn);
-  private LoggedTunableNumber kDTurn = new LoggedTunableNumber("/subsystems/swerve/kD Turn controller",
+  private LoggedTunableNumber kDTurn = new LoggedTunableNumber("Swerve/kD Turn controller",
       AutoConstants.kDTurn);
 
   // // Logging
@@ -496,6 +497,7 @@ public class Swerve extends SubsystemBase {
 
   public void startOnTheFly(int setpointIndex) {
     setIsOTF(false);
+    Robot.elevator.setState(ElevatorStates.STOW);
     currentPPSetpointIndex = setpointIndex;
 
     if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.ALGAE &&
@@ -623,7 +625,7 @@ public class Swerve extends SubsystemBase {
       double omega, double alpha) {
     // setpoint logging for automated driving
     double[] positions = new double[] { posX, posY, heading };
-    Logger.recordOutput("/subsystems/swerve/choreo setpoint", positions);
+    Logger.recordOutput("Swerve/choreoSetpoint", positions );
 
     Double[] velocities = new Double[] { velX, velY, omega };
     double velocity = 0;
@@ -633,8 +635,8 @@ public class Swerve extends SubsystemBase {
     velocity = Math.sqrt(velocity);
     // setpointVelocityLog.set(velocity);
     setpointRotationalVelocityLog.set(velocities[2]);
-    Logger.recordOutput("/subsystems/swerve/setpoint velocity", velocity);
-    Logger.recordOutput("/subsystems/swerve/velocity", velocities[2]);
+    Logger.recordOutput("Swerve/setpointVelocity", velocity);
+    Logger.recordOutput("Swerve/velocity", velocities[2]);
     velocity = velocities[2];
 
     Double[] accelerations = new Double[] { accX, accY, alpha };
@@ -645,8 +647,8 @@ public class Swerve extends SubsystemBase {
     acceleration = Math.sqrt(acceleration);
     // setpointAccelerationLog.set(acceleration);
     setpointRotationalAccelerationLog.set(accelerations[2]);
-    Logger.recordOutput("/subsystems/swerve/setpoint acceleration", acceleration);
-    Logger.recordOutput("/subsystems/swerve/setpoint rotational acceleration", accelerations[2]);
+    Logger.recordOutput("Swerve/setpointAcceleration", acceleration);
+    Logger.recordOutput("Swerve/setpointRotationalAcceleration", accelerations[2]);
 
   }
 
@@ -677,36 +679,36 @@ public class Swerve extends SubsystemBase {
         modules[3].getDesiredState().speedMetersPerSecond
     };
 
-    Logger.recordOutput("/subsystems/swerve/real states", realStates);
-    Logger.recordOutput("/subsystems/swerve/desired states", desiredStates);
-    Logger.recordOutput("/subsystems/swerve/isOTF", isOTF);
+    Logger.recordOutput("Swerve/realStates", realStates);
+    Logger.recordOutput("Swerve/desiredStates", desiredStates);
+    Logger.recordOutput("Swerve/isOTF", isOTF);
 
     double[] odometry = {
         getPose().getX(),
         getPose().getY(),
         getPose().getRotation().getRadians() };
-    Logger.recordOutput("/subsystems/swerve/odometry", odometry);
-    Logger.recordOutput("/subsystems/swerve/utilize vision", utilizeVision);
+    Logger.recordOutput("Swerve/odometry", odometry);
+    Logger.recordOutput("Swerve/utilizeVision", utilizeVision);
 
     // gyro logging
-    Logger.recordOutput("/subsystems/swerve/gyro yaw", gyroData.yawDeg);
+    Logger.recordOutput("Swerve/gyroYaw", gyroData.yawDeg);
     // yaw = gyroData.yawDeg;
-    Logger.recordOutput("/subsystems/swerve/gyro pitch", gyroData.pitchDeg);
-    Logger.recordOutput("/subsystems/swerve/gyro roll", gyroData.rollDeg);
-    Logger.recordOutput("/subsystems/swerve/is gyro connected", gyroData.isConnected);
-    Logger.recordOutput("/subsystems/swerve/heading", getRotation2d().getDegrees());
+    Logger.recordOutput("Swerve/gyroPitch", gyroData.pitchDeg);
+    Logger.recordOutput("Swerve/gyroRoll", gyroData.rollDeg);
+    Logger.recordOutput("Swerve/isGyroConnected", gyroData.isConnected);
+    Logger.recordOutput("Swerve/heading", getRotation2d().getDegrees());
 
     // velocity and acceleration logging
     // double robotVelocity = Math.hypot(getChassisSpeeds().vxMetersPerSecond,
     // getChassisSpeeds().vyMetersPerSecond);
 
-    // Logger.recordOutput("/subsystems/swerve/robot acceleration", (robotVelocity -
+    // Logger.recordOutput(" Swerve/robotAcceleration", (robotVelocity -
     // velocity) / .02);
-    // Logger.recordOutput("/subsystems/swerve/gyro rotation", robotVelocity);
+    // Logger.recordOutput(" Swerve/gyroRotation", robotVelocity);
     String currentCommand = this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName();
-    Logger.recordOutput("/subsystems/swerve/current command", currentCommand);
+    Logger.recordOutput("Swerve/currentCommand", currentCommand);
 
-    Logger.recordOutput("/subsystems/swerve/isOTF", getIsOTF());
+    Logger.recordOutput("Swerve/isOTF", getIsOTF());
 
     AutoConstants.kPDrive = kPDriving.get();
     AutoConstants.kDDrive = kDDriving.get();
