@@ -93,7 +93,7 @@ public class ScoringRoller extends Roller {
     
     @Override
     public void maintain() {
-        Logger.recordOutput("roller/ScoringRoller/setpoint position", getLastKnownPosition() - RollerConstants.Scoring.reverseDistance);
+        Logger.recordOutput("roller/ScoringRoller/setpointPosition", getLastKnownPosition() - RollerConstants.Scoring.reverseDistance);
         setPosition(getLastKnownPosition() - RollerConstants.Scoring.reverseDistance, RollerConstants.Scoring.kSVelocity.get());
     }
 

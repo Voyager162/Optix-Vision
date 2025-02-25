@@ -163,7 +163,7 @@ public class Elevator extends SubsystemBase {
     }
 
     private void logData() {
-        Logger.recordOutput("elevator/Current Command",
+        Logger.recordOutput("elevator/currentCommand",
                 this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
 
         Logger.recordOutput("elevator/state", state.name());
@@ -173,7 +173,7 @@ public class Elevator extends SubsystemBase {
 
         Logger.recordOutput("elevator/acceleration", data.accelerationMetersPerSecondSquared);
 
-        Logger.recordOutput("elevator/applied volts",
+        Logger.recordOutput("elevator/appliedVolts",
                 ((data.leftAppliedVolts + data.rightAppliedVolts) / 2.0));
         Logger.recordOutput("elevator/leftAppliedVolts", data.leftAppliedVolts);
         Logger.recordOutput("elevator/rightAppliedVolts", data.rightAppliedVolts);
@@ -191,7 +191,7 @@ public class Elevator extends SubsystemBase {
         elevatorMiddleStage.set(new Pose3d(getTransform3d(elevatorMiddleStagePos).getTranslation(),
                 getTransform3d(elevatorMiddleStagePos).getRotation()));
 
-        Logger.recordOutput("elevator/elevator mechanism", mech);
+        Logger.recordOutput("elevator/elevatorMechanism", mech);
     }
 
     private Transform3d getTransform3d(double pos) {

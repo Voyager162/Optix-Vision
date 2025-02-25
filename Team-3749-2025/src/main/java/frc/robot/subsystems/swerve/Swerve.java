@@ -624,7 +624,7 @@ public class Swerve extends SubsystemBase {
       double omega, double alpha) {
     // setpoint logging for automated driving
     double[] positions = new double[] { posX, posY, heading };
-    Logger.recordOutput("swerve/choreo setpoint", positions );
+    Logger.recordOutput("swerve/choreoSetpoint", positions );
 
     Double[] velocities = new Double[] { velX, velY, omega };
     double velocity = 0;
@@ -634,7 +634,7 @@ public class Swerve extends SubsystemBase {
     velocity = Math.sqrt(velocity);
     // setpointVelocityLog.set(velocity);
     setpointRotationalVelocityLog.set(velocities[2]);
-    Logger.recordOutput("swerve/setpoint velocity", velocity);
+    Logger.recordOutput("swerve/setpointVelocity", velocity);
     Logger.recordOutput("swerve/velocity", velocities[2]);
     velocity = velocities[2];
 
@@ -646,8 +646,8 @@ public class Swerve extends SubsystemBase {
     acceleration = Math.sqrt(acceleration);
     // setpointAccelerationLog.set(acceleration);
     setpointRotationalAccelerationLog.set(accelerations[2]);
-    Logger.recordOutput("swerve/setpoint acceleration", acceleration);
-    Logger.recordOutput("swerve/setpoint rotational acceleration", accelerations[2]);
+    Logger.recordOutput("swerve/setpointAcceleration", acceleration);
+    Logger.recordOutput("swerve/setpointRotationalAcceleration", accelerations[2]);
 
   }
 
@@ -678,8 +678,8 @@ public class Swerve extends SubsystemBase {
         modules[3].getDesiredState().speedMetersPerSecond
     };
 
-    Logger.recordOutput("swerve/real states", realStates);
-    Logger.recordOutput("swerve/desired states", desiredStates);
+    Logger.recordOutput("swerve/realStates", realStates);
+    Logger.recordOutput("swerve/desiredStates", desiredStates);
     Logger.recordOutput("swerve/isOTF", isOTF);
 
     double[] odometry = {
@@ -687,25 +687,25 @@ public class Swerve extends SubsystemBase {
         getPose().getY(),
         getPose().getRotation().getRadians() };
     Logger.recordOutput("swerve/odometry", odometry);
-    Logger.recordOutput("swerve/utilize vision", utilizeVision);
+    Logger.recordOutput("swerve/utilizeVision", utilizeVision);
 
     // gyro logging
-    Logger.recordOutput("swerve/gyro yaw", gyroData.yawDeg);
+    Logger.recordOutput("swerve/gyroYaw", gyroData.yawDeg);
     // yaw = gyroData.yawDeg;
-    Logger.recordOutput("swerve/gyro pitch", gyroData.pitchDeg);
-    Logger.recordOutput("swerve/gyro roll", gyroData.rollDeg);
-    Logger.recordOutput("swerve/is gyro connected", gyroData.isConnected);
+    Logger.recordOutput("swerve/gyroPitch", gyroData.pitchDeg);
+    Logger.recordOutput("swerve/gyroRoll", gyroData.rollDeg);
+    Logger.recordOutput("swerve/isGyroConnected", gyroData.isConnected);
     Logger.recordOutput("swerve/heading", getRotation2d().getDegrees());
 
     // velocity and acceleration logging
     // double robotVelocity = Math.hypot(getChassisSpeeds().vxMetersPerSecond,
     //     getChassisSpeeds().vyMetersPerSecond);
 
-    // Logger.recordOutput(" swerve/robot acceleration", (robotVelocity -
+    // Logger.recordOutput(" swerve/robotAcceleration", (robotVelocity -
     // velocity) / .02);
-    // Logger.recordOutput(" swerve/gyro rotation", robotVelocity);
+    // Logger.recordOutput(" swerve/gyroRotation", robotVelocity);
     String currentCommand = this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName();
-    Logger.recordOutput("swerve/current command", currentCommand);
+    Logger.recordOutput("swerve/currentCommand", currentCommand);
 
     Logger.recordOutput("/subsystems/swerve/isOTF", getIsOTF());
 

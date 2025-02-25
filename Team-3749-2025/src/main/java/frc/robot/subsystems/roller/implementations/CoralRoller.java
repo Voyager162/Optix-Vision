@@ -128,7 +128,7 @@ public class CoralRoller extends Roller {
 
         Logger.recordOutput("roller/CoralRoller/hasPiece", hasPiece());
         Logger.recordOutput("roller/CoralRoller/setInitalState", routineStarted);
-        Logger.recordOutput("roller/CoralRoller/is stable state", super.getIsStableState());
+        Logger.recordOutput("roller/CoralRoller/isStableState", super.getIsStableState());
 
         // routineStarted is true when the routine begins in Autos
         if (Autos.isRoutineStarted() && !routineStarted) {

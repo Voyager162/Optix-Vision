@@ -60,7 +60,7 @@ public abstract class Roller extends SubsystemBase {
         double volts = PIDOutput + FFOutput;
         volts = MathUtil.clamp(volts, -12, 12);
         rollerIO.setVoltage(volts);
-        Logger.recordOutput("roller/" + getName() + "/pid", PIDOutput);
+        Logger.recordOutput("roller/" + getName() + "/PID", PIDOutput);
         Logger.recordOutput("roller/" + getName() + "/ff", FFOutput);
         // rollerIO.setVelocity(velocityRadPerSec,
         // rollerFF.calculate(velocityRadPerSec));
@@ -68,7 +68,7 @@ public abstract class Roller extends SubsystemBase {
 
     public void setPosition(double position, double kS) {
         double PIDOutput = positionController.calculate(rollerData.rollerPositionRad, position);
-        Logger.recordOutput("roller/" + getName() + "/position pid", PIDOutput);
+        Logger.recordOutput("roller/" + getName() + "/positionPID", PIDOutput);
         double volts = PIDOutput + Math.copySign(kS, PIDOutput);
         rollerIO.setVoltage(volts);
     }
@@ -156,14 +156,14 @@ public abstract class Roller extends SubsystemBase {
         runRollerStates();
 
         Logger.recordOutput("roller/" + getName() + "/velocity", rollerData.rollerVelocityRadPerSec);
-        Logger.recordOutput("roller/" + getName() + "/applied voltage", rollerData.rollerAppliedVolts);
+        Logger.recordOutput("roller/" + getName() + "/appliedVoltage", rollerData.rollerAppliedVolts);
         Logger.recordOutput("roller/" + getName() + "/current", rollerData.currentAmps);
         Logger.recordOutput("roller/" + getName() + "/position", rollerData.rollerPositionRad);
-        Logger.recordOutput("roller/" + getName() + "/last known position", lastKnownPosition);
+        Logger.recordOutput("roller/" + getName() + "/lastKnownPosition", lastKnownPosition);
         Logger.recordOutput("roller/" + getName() + "/state", rollerState.name());
         Logger.recordOutput("roller/" + getName() + "/acceleration", rollerData.acceleration);
-        Logger.recordOutput("roller/" + getName() + "/stable state", getIsStableState());
-        Logger.recordOutput("roller/" + this.getName() + "/position controller values",
+        Logger.recordOutput("roller/" + getName() + "/stableState", getIsStableState());
+        Logger.recordOutput("roller/" + this.getName() + "/positionControllerValues",
                 positionController.getP() + " | " + positionController.getD());
     }
 }

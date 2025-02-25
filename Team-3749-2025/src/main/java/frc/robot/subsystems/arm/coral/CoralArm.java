@@ -252,23 +252,23 @@ public class CoralArm extends SubsystemBase {
      */
     private void logData() {
 
-        Logger.recordOutput("arms/coralArm/Current Command",
+        Logger.recordOutput("arms/coralArm/currentCommand",
                 this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
         Logger.recordOutput("arms/coralArm/state", state.name());
 
         Logger.recordOutput("arms/coralArm/position", data.positionRad);
         Logger.recordOutput("arms/coralArm/velocity", data.velocityRadsPerSecond);
 
-        Logger.recordOutput("arms/coralArm/setpoint position", profile.getSetpoint().position);
-        Logger.recordOutput("arms/coralArm/setpoint velocity", profile.getSetpoint().velocity);
+        Logger.recordOutput("arms/coralArm/setpointPosition", profile.getSetpoint().position);
+        Logger.recordOutput("arms/coralArm/setpointVelocity", profile.getSetpoint().velocity);
 
-        Logger.recordOutput("arms/coralArm/input volts", data.inputVolts);
-        Logger.recordOutput("arms/coralArm/applied volts", data.motorAppliedVolts);
+        Logger.recordOutput("arms/coralArm/inputVolts", data.inputVolts);
+        Logger.recordOutput("arms/coralArm/appliedVolts", data.motorAppliedVolts);
 
-        Logger.recordOutput("arms/coralArm/current amps", data.motorCurrentAmps);
+        Logger.recordOutput("arms/coralArm/currentAmps", data.motorCurrentAmps);
         Logger.recordOutput("arms/coralArm/temperature", data.motorTempCelcius);
 
-        Logger.recordOutput("arms/coralArm/coral arm mechanism", mechanism2d);
+        Logger.recordOutput("arms/coralArm/coralArmMechanism", mechanism2d);
 
         armLigament.setAngle(Math.toDegrees(data.positionRad));
 
