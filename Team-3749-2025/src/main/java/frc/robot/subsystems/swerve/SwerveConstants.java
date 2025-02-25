@@ -20,12 +20,12 @@ public class SwerveConstants {
                 public static final double[] turnPID = new double[] {
                                 3.75, 0, 0 };
                 public static final double[] drivePID = new double[] {
-                                0.      , 0, 0 };
+                                0.27, 0, 0 };
                 // our FF values
                 public static LoggedTunableNumber kSDriving = new LoggedTunableNumber("swerve/kSDriving",
-                                0.26);
+                                0.165);
                 public static LoggedTunableNumber kVDriving = new LoggedTunableNumber("swerve/kVDriving",
-                                2.765);
+                                2.305);
                 public static LoggedTunableNumber kADriving = new LoggedTunableNumber("swerve/kADriving",
                                 0.0);
 
