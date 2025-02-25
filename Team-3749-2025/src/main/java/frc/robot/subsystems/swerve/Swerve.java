@@ -24,6 +24,7 @@ import frc.robot.buttons.JoystickIO;
 import frc.robot.buttons.ButtonBoard.ScoringMode;
 import frc.robot.commands.auto.AutoConstants;
 import frc.robot.commands.auto.AutoUtils;
+import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.swerve.GyroIO.GyroData;
 import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 import frc.robot.subsystems.swerve.sim.GyroSim;
@@ -494,6 +495,7 @@ public class Swerve extends SubsystemBase {
 
   public void startOnTheFly(int setpointIndex) {
     setIsOTF(false);
+    Robot.elevator.setState(ElevatorStates.STOW);
     currentPPSetpointIndex = setpointIndex;
 
     if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.ALGAE &&
