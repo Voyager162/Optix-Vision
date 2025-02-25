@@ -8,7 +8,7 @@ import edu.wpi.first.math.util.Units;
  * @author Noah Simon
  */
 public final class AutoConstants {
-
+        public final class OTF{}
         public static double kPDrive = 2.25; // 3
         public static double kIDrive = 0.0; // 0.1
         public static double kDDrive = 0.65; // 0.5

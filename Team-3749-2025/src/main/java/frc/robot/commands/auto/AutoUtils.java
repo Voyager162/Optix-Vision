@@ -62,9 +62,9 @@ public class AutoUtils {
     }
 
     public static AutoFactory getAutoFactory() {
-        
+
         // if (flippedChooser.getSelected()) {
-        //     return factoryFlipped;
+        // return factoryFlipped;
         // }
         return factory;
 
@@ -197,6 +197,12 @@ public class AutoUtils {
         Command scoreL4 = new ScoreL234(ElevatorStates.L4);
 
         trajectory.atPose(endingPose2d, 1, 1.57).onTrue(scoreL4);
+        trajectory.done().and(() -> scoreL4.isScheduled())
+                .onTrue(
+                        Commands.run(() -> {
+                            Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
+                            System.out.println("contine PID");
+                        }, Robot.swerve));
         return scoreL4;
     }
 
@@ -217,6 +223,12 @@ public class AutoUtils {
         Command scoreL3 = new ScoreL234(ElevatorStates.L3);
 
         trajectory.atPose(endingPose2d, 1, 1.57).onTrue(scoreL3);
+        trajectory.done().and(() -> scoreL3.isScheduled())
+                .onTrue(
+                        Commands.run(() -> {
+                            Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
+                            System.out.println("contine PID");
+                        }, Robot.swerve));
         return scoreL3;
 
     }
@@ -238,6 +250,12 @@ public class AutoUtils {
         Command scoreL1 = new ScoreL1();
 
         trajectory.atPose(endingPose2d, 1, 1.57).onTrue(scoreL1);
+        trajectory.done().and(() -> scoreL1.isScheduled())
+                .onTrue(
+                        Commands.run(() -> {
+                            Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
+                            System.out.println("contine PID");
+                        }, Robot.swerve));
         return scoreL1;
     }
 
@@ -258,6 +276,12 @@ public class AutoUtils {
         Command intake = new IntakeSource();
 
         trajectory.atPose(endingPose2d, 1, 1.57).onTrue(intake);
+        trajectory.done().and(() -> intake.isScheduled())
+                .onTrue(
+                        Commands.run(() -> {
+                            Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
+                            System.out.println("contine PID");
+                        }, Robot.swerve));
         return intake;
 
     }
@@ -270,10 +294,16 @@ public class AutoUtils {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
 
-        Command KnockAlgae = new KnockAlgae(ElevatorStates.L4);
+        Command knockAlgae = new KnockAlgae(ElevatorStates.L4);
 
-        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(KnockAlgae);
-        return KnockAlgae;
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(knockAlgae);
+        trajectory.done().and(() -> knockAlgae.isScheduled())
+                .onTrue(
+                        Commands.run(() -> {
+                            Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
+                            System.out.println("contine PID");
+                        }, Robot.swerve));
+        return knockAlgae;
 
     }
 
@@ -294,6 +324,12 @@ public class AutoUtils {
         }
         Command Coralintake = new CoralIntakeSource();
         trajectory.atPose(endingPose2d, 1, 1.57).onTrue(Coralintake);
+        trajectory.done().and(() -> Coralintake.isScheduled())
+                .onTrue(
+                        Commands.run(() -> {
+                            Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
+                            System.out.println("contine PID");
+                        }, Robot.swerve));
         return Coralintake;
 
     }
@@ -321,6 +357,7 @@ public class AutoUtils {
      */
     public static void goNextAfterCommand(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory,
             Command command) {
+        // continue to move with PID to the final position until the command is done
         new Trigger(() -> command.isFinished()).onTrue(Commands.print(command.getName()).andThen(nextTrajectory.cmd()));
 
     }
@@ -349,11 +386,12 @@ public class AutoUtils {
      */
     public static Pose2d getFinalPose2d(AutoTrajectory trajectory) {
         // if (flippedChooser.getSelected()) {
-        //     System.out.println("Flipped Pose:" + getFlippedPose(trajectory.getFinalPose().get()));
+        // System.out.println("Flipped Pose:" +
+        // getFlippedPose(trajectory.getFinalPose().get()));
 
-        //     return getFlippedPose(trajectory.getFinalPose().get());
+        // return getFlippedPose(trajectory.getFinalPose().get());
         // } else {
-            return trajectory.getFinalPose().get();
+        return trajectory.getFinalPose().get();
         // }
     }
 

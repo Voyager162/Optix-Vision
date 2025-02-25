@@ -327,6 +327,10 @@ public class Swerve extends SubsystemBase {
         heading);
     turnPID = UtilityFunctions.applyDeadband(turnController.getError(), AutoConstants.driveToleranceMeters);
 
+    // xPID = 0;
+    // yPID = 0;
+    // turnPID = 0;
+
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         new ChassisSpeeds(
             xPID + xVel,
@@ -335,7 +339,7 @@ public class Swerve extends SubsystemBase {
                 + omega),
         getPose().getRotation());
     logSetpoints(xPos, xVel, xAcc, yPos, yVel, yAcc, heading, omega, alpha);
-    
+
     setChassisSpeeds(speeds);
   }
 
