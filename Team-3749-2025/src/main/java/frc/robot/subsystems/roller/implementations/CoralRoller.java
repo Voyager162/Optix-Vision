@@ -126,9 +126,9 @@ public class CoralRoller extends Roller {
         super.periodic();
         photoelectricIO.updateData(photoelectricData);
 
-        Logger.recordOutput("subsystems/roller/CoralRoller/hasPiece", hasPiece());
-        Logger.recordOutput("subsystems/roller/CoralRoller/setInitalState", routineStarted);
-        Logger.recordOutput("subsystems/roller/CoralRoller/is stable state", super.getIsStableState());
+        Logger.recordOutput("roller/CoralRoller/hasPiece", hasPiece());
+        Logger.recordOutput("roller/CoralRoller/setInitalState", routineStarted);
+        Logger.recordOutput("roller/CoralRoller/is stable state", super.getIsStableState());
 
         // routineStarted is true when the routine begins in Autos
         if (Autos.isRoutineStarted() && !routineStarted) {

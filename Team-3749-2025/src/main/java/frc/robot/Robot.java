@@ -52,8 +52,7 @@ private Field2d field2d = new Field2d();
 
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
-  // public static LEDs leds = new LEDs();
-  public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("/subsystems/setVoltage", -12);
+  public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("setVoltage", -12);
   
   private RobotContainer m_robotContainer;
   private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);

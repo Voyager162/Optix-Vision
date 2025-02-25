@@ -252,23 +252,23 @@ public class CoralArm extends SubsystemBase {
      */
     private void logData() {
 
-        Logger.recordOutput("subsystems/arms/coralArm/Current Command",
+        Logger.recordOutput("arms/coralArm/Current Command",
                 this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-        Logger.recordOutput("subsystems/arms/coralArm/state", state.name());
+        Logger.recordOutput("arms/coralArm/state", state.name());
 
-        Logger.recordOutput("subsystems/arms/coralArm/position", data.positionRad);
-        Logger.recordOutput("subsystems/arms/coralArm/velocity", data.velocityRadsPerSecond);
+        Logger.recordOutput("arms/coralArm/position", data.positionRad);
+        Logger.recordOutput("arms/coralArm/velocity", data.velocityRadsPerSecond);
 
-        Logger.recordOutput("subsystems/arms/coralArm/setpoint position", profile.getSetpoint().position);
-        Logger.recordOutput("subsystems/arms/coralArm/setpoint velocity", profile.getSetpoint().velocity);
+        Logger.recordOutput("arms/coralArm/setpoint position", profile.getSetpoint().position);
+        Logger.recordOutput("arms/coralArm/setpoint velocity", profile.getSetpoint().velocity);
 
-        Logger.recordOutput("subsystems/arms/coralArm/input volts", data.inputVolts);
-        Logger.recordOutput("subsystems/arms/coralArm/applied volts", data.motorAppliedVolts);
+        Logger.recordOutput("arms/coralArm/input volts", data.inputVolts);
+        Logger.recordOutput("arms/coralArm/applied volts", data.motorAppliedVolts);
 
-        Logger.recordOutput("subsystems/arms/coralArm/current amps", data.motorCurrentAmps);
-        Logger.recordOutput("subsystems/arms/coralArm/temperature", data.motorTempCelcius);
+        Logger.recordOutput("arms/coralArm/current amps", data.motorCurrentAmps);
+        Logger.recordOutput("arms/coralArm/temperature", data.motorTempCelcius);
 
-        Logger.recordOutput("subsystems/arms/coralArm/coral arm mechanism", mechanism2d);
+        Logger.recordOutput("arms/coralArm/coral arm mechanism", mechanism2d);
 
         armLigament.setAngle(Math.toDegrees(data.positionRad));
 

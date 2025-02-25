@@ -147,8 +147,13 @@ public class Elevator extends SubsystemBase {
 
         State nextState = profile.getSetpoint();
         double ffVoltage = feedforward.calculateWithVelocities(firstState.velocity, nextState.velocity);
-        Logger.recordOutput("subsystems/elevator/position setpoint", firstState.position);
-        Logger.recordOutput("subsystems/elevator/velocity setpoint", firstState.velocity);
+        // System.out.println("FF " + ffVoltage);
+        // System.out.println("PID " + PID);
+
+        // PID = 0;
+        // ffVoltage = ElevatorConstants.ElevatorControl.kG.get();
+        Logger.recordOutput("elevator/position setpoint", firstState.position);
+        Logger.recordOutput("elevator/velocity setpoint", firstState.velocity);
 
         setVoltage(ffVoltage + PID);
     }
@@ -158,24 +163,24 @@ public class Elevator extends SubsystemBase {
     }
 
     private void logData() {
-        Logger.recordOutput("subsystems/elevator/Current Command",
+        Logger.recordOutput("elevator/Current Command",
                 this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
 
-        Logger.recordOutput("subsystems/elevator/state", state.name());
+        Logger.recordOutput("elevator/state", state.name());
 
-        Logger.recordOutput("subsystems/elevator/postion", data.positionMeters);
-        Logger.recordOutput("subsystems/elevator/velocity", data.velocityMetersPerSecond);
+        Logger.recordOutput("elevator/postion", data.positionMeters);
+        Logger.recordOutput("elevator/velocity", data.velocityMetersPerSecond);
 
-        Logger.recordOutput("subsystems/elevator/acceleration", data.accelerationMetersPerSecondSquared);
+        Logger.recordOutput("elevator/acceleration", data.accelerationMetersPerSecondSquared);
 
-        Logger.recordOutput("subsystems/elevator/applied volts",
+        Logger.recordOutput("elevator/applied volts",
                 ((data.leftAppliedVolts + data.rightAppliedVolts) / 2.0));
-        Logger.recordOutput("subsystems/elevator/leftAppliedVolts", data.leftAppliedVolts);
-        Logger.recordOutput("subsystems/elevator/rightAppliedVolts", data.rightAppliedVolts);
-        Logger.recordOutput("subsystems/elevator/leftCurrentAmps", data.leftCurrentAmps);
-        Logger.recordOutput("subsystems/elevator/rightCurrentAmps", data.rightCurrentAmps);
-        Logger.recordOutput("subsystems/elevator/leftTempCelcius", data.leftTempCelcius);
-        Logger.recordOutput("subsystems/elevator/rightTempCelcius", data.rightTempCelcius);
+        Logger.recordOutput("elevator/leftAppliedVolts", data.leftAppliedVolts);
+        Logger.recordOutput("elevator/rightAppliedVolts", data.rightAppliedVolts);
+        Logger.recordOutput("elevator/leftCurrentAmps", data.leftCurrentAmps);
+        Logger.recordOutput("elevator/rightCurrentAmps", data.rightCurrentAmps);
+        Logger.recordOutput("elevator/leftTempCelcius", data.leftTempCelcius);
+        Logger.recordOutput("elevator/rightTempCelcius", data.rightTempCelcius);
 
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
 
@@ -186,7 +191,7 @@ public class Elevator extends SubsystemBase {
         elevatorMiddleStage.set(new Pose3d(getTransform3d(elevatorMiddleStagePos).getTranslation(),
                 getTransform3d(elevatorMiddleStagePos).getRotation()));
 
-        Logger.recordOutput("subsystems/elevator/elevator mechanism", mech);
+        Logger.recordOutput("elevator/elevator mechanism", mech);
     }
 
     private Transform3d getTransform3d(double pos) {

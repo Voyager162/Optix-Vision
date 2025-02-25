@@ -16,7 +16,7 @@ import frc.robot.utils.MiscConstants.SimConstants;
  * Simulation implementation for swerve modules
  * Very closely inspired by 6328's Swerve Sim code,
  * 
- * @see https://github.com/Mechanical-Advantage/RobotCode2023/blob/main/src/main/java/org/littletonrobotics/frc2023/subsystems/drive/ModuleIOSim.java
+ * @see https://github.com/Mechanical-Advantage/RobotCode2023/blob/main/src/main/java/org/littletonrobotics/frc2023 drive/ModuleIOSim.java
  * 
  * @author Noah Simon
  */
