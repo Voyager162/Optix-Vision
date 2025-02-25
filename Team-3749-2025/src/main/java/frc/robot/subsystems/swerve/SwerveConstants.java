@@ -22,17 +22,17 @@ public class SwerveConstants {
                 public static final double[] drivePID = new double[] {
                                 0.      , 0, 0 };
                 // our FF values
-                public static LoggedTunableNumber kSDriving = new LoggedTunableNumber("swerve/kSDriving",
+                public static LoggedTunableNumber kSDriving = new LoggedTunableNumber("Swerve/kSDriving",
                                 0.26);
-                public static LoggedTunableNumber kVDriving = new LoggedTunableNumber("swerve/kVDriving",
+                public static LoggedTunableNumber kVDriving = new LoggedTunableNumber("Swerve/kVDriving",
                                 2.765);
-                public static LoggedTunableNumber kADriving = new LoggedTunableNumber("swerve/kADriving",
+                public static LoggedTunableNumber kADriving = new LoggedTunableNumber("Swerve/kADriving",
                                 0.0);
 
-                public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("swerve/maxVelocity",
+                public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("Swerve/maxVelocity",
                                 4.3);
                 public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
-                                "swerve/maxAcceleration", 3.3);
+                                "Swerve/maxAcceleration", 3.3);
 
                 // teleop speed
                 public static final double teleopMaxSpeedReduction = -0.1; // If we can drive a little faster in telop
