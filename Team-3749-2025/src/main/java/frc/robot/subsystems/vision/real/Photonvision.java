@@ -22,6 +22,15 @@ public class Photonvision implements VisionIO {
     // PhotonPoseEstimator poseEstimatorList[] =
     // VisionConstants.CameraReal.poseEstimatorList;
     // PhotonCamera cameraList[] = VisionConstants.CameraReal.cameraList;
+    private final PhotonCamera cam1 = new PhotonCamera("1");
+    private final PhotonCamera cam2 = new PhotonCamera("2");
+    private final PhotonCamera cam3 = new PhotonCamera("3");
+    private final PhotonCamera cam4 = new PhotonCamera("4");
+    private final PhotonCamera cam5 = new PhotonCamera("5");
+    private final PhotonCamera cam6 = new PhotonCamera("6");
+
+    private final PhotonCamera[] cameraList = { cam1, cam2, cam3, cam4, cam5, cam6 };
+    private PhotonPoseEstimator poseEstimatorList[] = VisionConstants.CameraReal.poseEstimatorList;
 
     private VisionData visionData;
 
@@ -39,6 +48,10 @@ public class Photonvision implements VisionIO {
         }
 
         this.visionData = visionData;
+    }
+    @Override
+    public PhotonCamera getCamera(int index) {
+        return cameraList[index];
     }
 
     public void cameraUpdatePose(int index) {
@@ -76,7 +89,7 @@ public class Photonvision implements VisionIO {
             if (pipelineResult.getTargets().size() == 1 &&
                     getHypotenuse(pipelineResult.getTargets().get(
                             0).bestCameraToTarget) > VisionConstants.RejectionRequirements.maxSingleTagDistanceMeters) {
-                                
+
                 SmartDashboard.putBoolean(index + ": single tag far", true);
 
                 continue;
@@ -107,7 +120,7 @@ public class Photonvision implements VisionIO {
         // cameraUpdatePose(1);
 
         // for (int i = 0; i < cameraList.length; i++) {
-        //     cameraUpdatePose(i);
+        // cameraUpdatePose(i);
         // }
     }
 

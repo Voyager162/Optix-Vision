@@ -30,9 +30,9 @@ public class SwerveConstants {
                                 0.0);
 
                 public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("swerve/maxVelocity",
-                                4.3);
+                                4.6);
                 public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
-                                "swerve/maxAcceleration", 3.3);
+                                "swerve/maxAcceleration", 2.2);
 
                 // teleop speed
                 public static final double teleopMaxSpeedReduction = -0.1; // If we can drive a little faster in telop
@@ -45,8 +45,8 @@ public class SwerveConstants {
                 public static final double autoMaxSpeedMetersPerSecond = maxVelocity.get()
                                 * (1 - autoMaxSpeedReduction);
 
-                public static final double maxAngularSpeedRadiansPerSecond = 12.162;
-                public static final double maxAngularAccelerationRadiansPerSecondSquared = 15.543;
+                public static final double maxAngularSpeedRadiansPerSecond = 11;
+                public static final double maxAngularAccelerationRadiansPerSecondSquared = 9.0;
                 // teleop angluar speed
                 public static final double teleopMaxAngularSpeedReduction = 0.4;
                 public static final double teleopMaxAngularSpeedRadPerSecond = maxAngularSpeedRadiansPerSecond

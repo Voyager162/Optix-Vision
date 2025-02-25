@@ -48,7 +48,7 @@ private Field2d field2d = new Field2d();
   public static ScoringRoller scoringRoller = new ScoringRoller();
 
   public static Elevator elevator = new Elevator();
-  public static Vision vision = new Vision();
+  // public static Vision vision = new Vision();
 
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();

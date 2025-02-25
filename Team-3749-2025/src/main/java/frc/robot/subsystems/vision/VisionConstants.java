@@ -67,15 +67,7 @@ public class VisionConstants {
         }
 
         public class CameraReal {
-                public static final PhotonCamera cam1 = new PhotonCamera("1");
-                public static final PhotonCamera cam2 = new PhotonCamera("2");
-                public static final PhotonCamera cam3 = new PhotonCamera("3");
-                public static final PhotonCamera cam4 = new PhotonCamera("4");
-                public static final PhotonCamera cam5 = new PhotonCamera("5");
-                public static final PhotonCamera cam6 = new PhotonCamera("6");
-
-                public static final PhotonCamera[] cameraList = { cam1, cam2, cam3, cam4, cam5, cam6 };
-
+                public static final int numCameras = 6;
                 public static PhotonPoseEstimator poseEstimator1 = new PhotonPoseEstimator(aprilTagFieldLayout,
                                 PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, CameraPositions.cam1);
                 public static PhotonPoseEstimator poseEstimator2 = new PhotonPoseEstimator(aprilTagFieldLayout,
