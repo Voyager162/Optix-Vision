@@ -497,17 +497,17 @@ public class Swerve extends SubsystemBase {
    * When called, makes the robot's current direction "forward"
    */
   public void resetGyro() {
-    System.out.println("reset gyro");
-    // gyro.resetGyro();
+    System.out.println("rest gyro");
+    gyro.resetGyro();
     if (UtilityFunctions.isRedAlliance()) {
-      swerveDrivePoseEstimator.resetPosition(getRotation2d(), new SwerveModulePosition[] {
+      swerveDrivePoseEstimator.resetPosition(new Rotation2d(), new SwerveModulePosition[] {
           modules[0].getPosition(),
           modules[1].getPosition(),
           modules[2].getPosition(),
           modules[3].getPosition()
       }, new Pose2d(swerveDrivePoseEstimator.getEstimatedPosition().getTranslation(), Rotation2d.fromDegrees(180)));
     } else {
-      swerveDrivePoseEstimator.resetPosition(getRotation2d(), new SwerveModulePosition[] {
+      swerveDrivePoseEstimator.resetPosition(new Rotation2d(), new SwerveModulePosition[] {
           modules[0].getPosition(),
           modules[1].getPosition(),
           modules[2].getPosition(),
