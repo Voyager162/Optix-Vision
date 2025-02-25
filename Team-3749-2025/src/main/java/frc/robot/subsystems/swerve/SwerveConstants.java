@@ -25,12 +25,12 @@ public class SwerveConstants {
                 public static LoggedTunableNumber kSDriving = new LoggedTunableNumber("subsystems/swerve/kSDriving",
                                 0.26);
                 public static LoggedTunableNumber kVDriving = new LoggedTunableNumber("subsystems/swerve/kVDriving",
-                                5);
+                                2.76);
                 public static LoggedTunableNumber kADriving = new LoggedTunableNumber("subsystems/swerve/kADriving",
                                 0.0);
 
                 public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("subsystems/swerve/maxVelocity",
-                                4.3);
+                                4.6);
                 public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
                                 "subsystems/swerve/maxAcceleration", 3.3);
 
@@ -68,10 +68,10 @@ public class SwerveConstants {
                 public static final int[] absoluteEncoderIds = { 11, 12, 13, 14 };
 
                 public static final boolean[] driveMotorInverted = {
-                                true,
                                 false,
                                 true,
-                                true
+                                false,
+                                false
                 };
                 public static final boolean[] turningMotorInverted = {
                                 false,

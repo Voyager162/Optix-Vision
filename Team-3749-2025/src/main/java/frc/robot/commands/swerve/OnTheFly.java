@@ -127,7 +127,7 @@ public class OnTheFly extends Command {
                         goalState.fieldSpeeds.vyMetersPerSecond, // Y velocity
                         new Rotation2d(goalState.fieldSpeeds.omegaRadiansPerSecond) // Angular velocity
                 ));
-        Robot.swerve.setIsOTF(!UtilityFunctions.withinMargin(new Pose2d(0.01,0.01,new Rotation2d(0.1)), Robot.swerve.getPose(), endpoint));
+        // Robot.swerve.setIsOTF(!UtilityFunctions.withinMargin(new Pose2d(0.01,0.01,new Rotation2d(0.1)), Robot.swerve.getPose(), endpoint));
     }
 
     /**

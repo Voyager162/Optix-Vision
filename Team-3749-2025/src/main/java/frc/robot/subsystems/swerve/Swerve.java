@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.swerve;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import org.littletonrobotics.junction.Logger;
 
 import choreo.trajectory.SwerveSample;
@@ -65,7 +67,7 @@ public class Swerve extends SubsystemBase {
   private PIDController yController = new PIDController(AutoConstants.kPDrive, 0, AutoConstants.kDDrive);
   private PIDController turnController = new PIDController(AutoConstants.kPTurn, 0, AutoConstants.kDTurn);
 
-  private boolean utilizeVision = false;
+  private boolean utilizeVision = true;
   // private double velocity = 0;
   // private double yaw;
 
@@ -232,8 +234,8 @@ public class Swerve extends SubsystemBase {
             modules[2].getPosition(),
             modules[3].getPosition()
         },
-        new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
-        VecBuilder.fill(0.045, 0.045, 0.0005), // 6328's 2024 numbers with factors of 1.5x, 1.5x, 2x
+        new Pose2d(new Translation2d(5.773, 3.963), Rotation2d.fromDegrees(180)),
+        VecBuilder.fill(0.045, 0.045, 0.24), // 6328's 2024 numbers with factors of 1.5x, 1.5x, 2x
         VecBuilder.fill(VisionConstants.StandardDeviations.PreMatch.xy,
             VisionConstants.StandardDeviations.PreMatch.xy,
             VisionConstants.StandardDeviations.PreMatch.thetaRads));
@@ -541,7 +543,6 @@ public class Swerve extends SubsystemBase {
 
     modules[2].setTurnPosition(225 * Math.PI / 180);
     modules[3].setTurnPosition(315 * Math.PI / 180);
-
   }
 
   /**
@@ -622,7 +623,7 @@ public class Swerve extends SubsystemBase {
       double omega, double alpha) {
     // setpoint logging for automated driving
     double[] positions = new double[] { posX, posY, heading };
-    Logger.recordOutput("/subsystems/swerve/choreo setpoint", positions );
+    Logger.recordOutput("/subsystems/swerve/choreo setpoint", positions);
 
     Double[] velocities = new Double[] { velX, velY, omega };
     double velocity = 0;
@@ -697,7 +698,7 @@ public class Swerve extends SubsystemBase {
 
     // velocity and acceleration logging
     // double robotVelocity = Math.hypot(getChassisSpeeds().vxMetersPerSecond,
-    //     getChassisSpeeds().vyMetersPerSecond);
+    // getChassisSpeeds().vyMetersPerSecond);
 
     // Logger.recordOutput("/subsystems/swerve/robot acceleration", (robotVelocity -
     // velocity) / .02);
