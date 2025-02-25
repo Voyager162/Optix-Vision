@@ -16,6 +16,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.arm.coral.CoralArmConstants.ArmStates;
 import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
 
 import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;
@@ -48,7 +49,7 @@ public class CoralArm extends SubsystemBase {
     private LoggedMechanism2d mechanism2d = new LoggedMechanism2d(3, 3);
     private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 1.8, .4);
     private LoggedMechanismLigament2d armLigament = armRoot
-            .append(new LoggedMechanismLigament2d("Coral Arm", CoralArmConstants.armLengthMeters, 0));
+            .append(new LoggedMechanismLigament2d("CoralArm", CoralArmConstants.armLengthMeters, 0));
 
     private StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
             .getStructTopic("CoralArm Pose", Pose3d.struct).publish();
@@ -122,23 +123,13 @@ public class CoralArm extends SubsystemBase {
     public boolean getIsStableState() {
 
         switch (state) {
-            case STOWED:
-                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
-                        state.setPointRad, data.positionRad);
-            case HAND_OFF:
-                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
-                        state.setPointRad, data.positionRad);
-            case CORAL_PICKUP:
-                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,
-                        CoralArmConstants.coralPickUpSetPoint_rad, data.positionRad);
 
-            case L1:
-                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError,CoralArmConstants.scoreL1_rad,data.positionRad);
             case STOPPED:
                 return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError, 0,
                         data.velocityRadsPerSecond);
             default:
-                return false; // Return false if the state is unrecognized.
+                return UtilityFunctions.withinMargin(CoralArmConstants.stateMarginOfError, state.setPointRad,
+                        data.positionRad);
         }
     }
 
@@ -166,20 +157,6 @@ public class CoralArm extends SubsystemBase {
             case STOPPED:
                 stop(); // Stop the arm if in STOPPED state.
                 break;
-            case STOWED:
-                setGoal(CoralArmConstants.stowSetPoint_rad); // Set the goal to the stowed position.
-                break;
-            case CORAL_PICKUP:
-                setGoal(CoralArmConstants.coralPickUpSetPoint_rad); // Set the goal to the coral pickup position.
-                break;
-
-            case HAND_OFF:
-                setGoal(CoralArmConstants.handOffSetPoint_rad); // Set the goal to the hand-off position.
-                break;
-
-            case L1:
-                setGoal(CoralArmConstants.scoreL1_rad);
-            break;
 
             default:
                 setGoal(state.setPointRad); // Stop the arm in any unrecognized state.
@@ -252,23 +229,23 @@ public class CoralArm extends SubsystemBase {
      */
     private void logData() {
 
-        Logger.recordOutput("arms/coralArm/currentCommand",
+        Logger.recordOutput("Arms/CoralArm/currentCommand",
                 this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-        Logger.recordOutput("arms/coralArm/state", state.name());
+        Logger.recordOutput("Arms/CoralArm/state", state.name());
 
-        Logger.recordOutput("arms/coralArm/position", data.positionRad);
-        Logger.recordOutput("arms/coralArm/velocity", data.velocityRadsPerSecond);
+        Logger.recordOutput("Arms/CoralArm/position", data.positionRad);
+        Logger.recordOutput("Arms/CoralArm/velocity", data.velocityRadsPerSecond);
 
-        Logger.recordOutput("arms/coralArm/setpointPosition", profile.getSetpoint().position);
-        Logger.recordOutput("arms/coralArm/setpointVelocity", profile.getSetpoint().velocity);
+        Logger.recordOutput("Arms/CoralArm/setpointPosition", profile.getSetpoint().position);
+        Logger.recordOutput("Arms/CoralArm/setpointVelocity", profile.getSetpoint().velocity);
 
-        Logger.recordOutput("arms/coralArm/inputVolts", data.inputVolts);
-        Logger.recordOutput("arms/coralArm/appliedVolts", data.motorAppliedVolts);
+        Logger.recordOutput("Arms/CoralArm/inputVolts", data.inputVolts);
+        Logger.recordOutput("Arms/CoralArm/appliedVolts", data.motorAppliedVolts);
 
-        Logger.recordOutput("arms/coralArm/currentAmps", data.motorCurrentAmps);
-        Logger.recordOutput("arms/coralArm/temperature", data.motorTempCelcius);
+        Logger.recordOutput("Arms/CoralArm/currentAmps", data.motorCurrentAmps);
+        Logger.recordOutput("Arms/CoralArm/temperature", data.motorTempCelcius);
 
-        Logger.recordOutput("arms/coralArm/coralArmMechanism", mechanism2d);
+        Logger.recordOutput("Arms/CoralArm/coralArmMechanism", mechanism2d);
 
         armLigament.setAngle(Math.toDegrees(data.positionRad));
 

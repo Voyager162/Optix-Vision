@@ -27,22 +27,18 @@ public class CoralArmConstants {
 	public static final double armGearing = 45;
 
 	// control values
-	public static LoggedTunableNumber kG = new LoggedTunableNumber("arms/coralArm/kG", 0.39);
-	public static LoggedTunableNumber kP = new LoggedTunableNumber("arms/coralArm/kP", 0.7);
-	public static LoggedTunableNumber kI = new LoggedTunableNumber("arms/coralArm/kI", 0);
-	public static LoggedTunableNumber kD = new LoggedTunableNumber("arms/coralArm/kD", 0);
-	public static LoggedTunableNumber kS = new LoggedTunableNumber("arms/coralArm/kS", 0.16);
-	public static LoggedTunableNumber kV = new LoggedTunableNumber("arms/coralArm/kV", 0.8);
-	public static LoggedTunableNumber kA = new LoggedTunableNumber("arms/coralArm/kA", 0);
-	public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("arms/coralArm/max velocity",
+	public static LoggedTunableNumber kG = new LoggedTunableNumber("Arms/CoralArm/kG", 0.39);
+	public static LoggedTunableNumber kP = new LoggedTunableNumber("Arms/CoralArm/kP", 0.7);
+	public static LoggedTunableNumber kI = new LoggedTunableNumber("Arms/CoralArm/kI", 0);
+	public static LoggedTunableNumber kD = new LoggedTunableNumber("Arms/CoralArm/kD", 0);
+	public static LoggedTunableNumber kS = new LoggedTunableNumber("Arms/CoralArm/kS", 0.16);
+	public static LoggedTunableNumber kV = new LoggedTunableNumber("Arms/CoralArm/kV", 0.8);
+	public static LoggedTunableNumber kA = new LoggedTunableNumber("Arms/CoralArm/kA", 0);
+	public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("Arms/CoralArm/max velocity",
 			6);
-	public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("arms/coralArm/max acceleration",
+	public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("Arms/CoralArm/max acceleration",
 			12);
 
-	public static final double stowSetPoint_rad = 2.51; // 70, 1.2217304764
-	public static final double handOffSetPoint_rad = 2.51; // 40
-	public static final double coralPickUpSetPoint_rad = -0.57; // 175, 3.05432619099
-	public static final double scoreL1_rad = 80 * Math.PI / 180;
 
 	public static final double momentOfInertia = 0.775;
 
@@ -51,7 +47,7 @@ public class CoralArmConstants {
 
 	public enum ArmStates {
 		CORAL_PICKUP(-Units.degreesToRadians(38.5)),
-		L1(0),
+		L1(Math.PI/6),
 		HAND_OFF(2.2),
 		STOWED(2.2),
 		STOPPED(0);

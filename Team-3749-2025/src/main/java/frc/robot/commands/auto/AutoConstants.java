@@ -11,6 +11,6 @@ public final class AutoConstants {
         public static double kDDrive = 0; // 0.5
 
         public static double kPTurn = 0; // 4.75
-        public static double kDTurn = 0; // 0.2
+        public static double kDTurn = 0;// 0.2
 
 }

@@ -60,15 +60,15 @@ public abstract class Roller extends SubsystemBase {
         double volts = PIDOutput + FFOutput;
         volts = MathUtil.clamp(volts, -12, 12);
         rollerIO.setVoltage(volts);
-        Logger.recordOutput("roller/" + getName() + "/PID", PIDOutput);
-        Logger.recordOutput("roller/" + getName() + "/ff", FFOutput);
+        Logger.recordOutput("Roller/" + getName() + "/PID", PIDOutput);
+        Logger.recordOutput("Roller/" + getName() + "/ff", FFOutput);
         // rollerIO.setVelocity(velocityRadPerSec,
         // rollerFF.calculate(velocityRadPerSec));
     }
 
     public void setPosition(double position, double kS) {
         double PIDOutput = positionController.calculate(rollerData.rollerPositionRad, position);
-        Logger.recordOutput("roller/" + getName() + "/positionPID", PIDOutput);
+        Logger.recordOutput("Roller/" + getName() + "/positionPID", PIDOutput);
         double volts = PIDOutput + Math.copySign(kS, PIDOutput);
         rollerIO.setVoltage(volts);
     }
@@ -136,7 +136,7 @@ public abstract class Roller extends SubsystemBase {
     public boolean getIsStableState() {
         switch (implementation) {
             case CORAL:
-                return UtilityFunctions.withinMargin(30, rollerData.rollerVelocityRadPerSec, rollerState.coralVelocity);
+                return UtilityFunctions.withinMargin(22.5, rollerData.rollerVelocityRadPerSec, rollerState.coralVelocity);
             case ALGAE:
                 return UtilityFunctions.withinMargin(8, rollerData.rollerVelocityRadPerSec, rollerState.algaeVelocity);
             case SCORING:
@@ -155,15 +155,15 @@ public abstract class Roller extends SubsystemBase {
         rollerIO.updateData(rollerData);
         runRollerStates();
 
-        Logger.recordOutput("roller/" + getName() + "/velocity", rollerData.rollerVelocityRadPerSec);
-        Logger.recordOutput("roller/" + getName() + "/appliedVoltage", rollerData.rollerAppliedVolts);
-        Logger.recordOutput("roller/" + getName() + "/current", rollerData.currentAmps);
-        Logger.recordOutput("roller/" + getName() + "/position", rollerData.rollerPositionRad);
-        Logger.recordOutput("roller/" + getName() + "/lastKnownPosition", lastKnownPosition);
-        Logger.recordOutput("roller/" + getName() + "/state", rollerState.name());
-        Logger.recordOutput("roller/" + getName() + "/acceleration", rollerData.acceleration);
-        Logger.recordOutput("roller/" + getName() + "/stableState", getIsStableState());
-        Logger.recordOutput("roller/" + this.getName() + "/positionControllerValues",
+        Logger.recordOutput("Roller/" + getName() + "/velocity", rollerData.rollerVelocityRadPerSec);
+        Logger.recordOutput("Roller/" + getName() + "/appliedVoltage", rollerData.rollerAppliedVolts);
+        Logger.recordOutput("Roller/" + getName() + "/current", rollerData.currentAmps);
+        Logger.recordOutput("Roller/" + getName() + "/position", rollerData.rollerPositionRad);
+        Logger.recordOutput("Roller/" + getName() + "/lastKnownPosition", lastKnownPosition);
+        Logger.recordOutput("Roller/" + getName() + "/state", rollerState.name());
+        Logger.recordOutput("Roller/" + getName() + "/acceleration", rollerData.acceleration);
+        Logger.recordOutput("Roller/" + getName() + "/stableState", getIsStableState());
+        Logger.recordOutput("Roller/" + this.getName() + "/positionControllerValues",
                 positionController.getP() + " | " + positionController.getD());
     }
 }

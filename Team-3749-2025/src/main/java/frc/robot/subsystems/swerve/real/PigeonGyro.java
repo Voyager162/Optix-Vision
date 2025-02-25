@@ -31,6 +31,7 @@ public class PigeonGyro implements GyroIO {
             while (yaw < 0) {
                 yaw+=360;
             }
+
             data.yawDeg = pigeonGyro.getYaw().getValueAsDouble() ;
             data.pitchDeg = pigeonGyro.getPitch().getValueAsDouble();
             data.rollDeg = pigeonGyro.getRoll().getValueAsDouble();

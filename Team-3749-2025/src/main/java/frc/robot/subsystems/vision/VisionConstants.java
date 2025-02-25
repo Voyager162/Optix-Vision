@@ -24,7 +24,7 @@ public class VisionConstants {
                 }
 
                 public class OneTag {
-                        public static final double xy = Math.hypot(0.015, 0.033);
+                        public static final double xy = Math.hypot(0.15, 0.33);
                         public static final double thetaRads = Units.degreesToRadians(7);
                 }
 
@@ -52,16 +52,16 @@ public class VisionConstants {
                 public static Transform3d cam3 = new Transform3d(Units.inchesToMeters(9.187),
                                 Units.inchesToMeters(4.529), Units.inchesToMeters(4.614),
                                 new Rotation3d(0, Units.degreesToRadians(4.9), Units.degreesToRadians(-10)));
+                
+                public static Transform3d cam4 = new Transform3d(0, 0, 0, new Rotation3d());
 
-                public static Transform3d cam4 = new Transform3d(Units.inchesToMeters(-11.586),
-                                Units.inchesToMeters(14.161), Units.inchesToMeters(10.711),
-                                new Rotation3d(0, Units.degreesToRadians(15), Units.degreesToRadians(200)));
+                public static Transform3d cam5 = new Transform3d(Units.inchesToMeters(11.586),
+                                Units.inchesToMeters(-14.161), Units.inchesToMeters(10.711),
+                                new Rotation3d(0, Units.degreesToRadians(15), Units.degreesToRadians(200+90)));
 
-                public static Transform3d cam5 = new Transform3d(Units.inchesToMeters(-9.745),
+                public static Transform3d cam6 = new Transform3d(Units.inchesToMeters(-9.745),
                                 Units.inchesToMeters(-11.177), Units.inchesToMeters(20.27),
-                                new Rotation3d(0, Units.degreesToRadians(-10), Units.degreesToRadians(-260)));
-
-                public static Transform3d cam6 = new Transform3d(0, 0, 0, null);
+                                new Rotation3d(0, Units.degreesToRadians(-10), Units.degreesToRadians(-260+90)));
 
                 public static Transform3d[] cameraList = { cam1, cam2, cam3, cam4, cam5, cam6 };
         }

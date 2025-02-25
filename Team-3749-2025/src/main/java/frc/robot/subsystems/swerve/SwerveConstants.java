@@ -68,10 +68,10 @@ public class SwerveConstants {
                 public static final int[] absoluteEncoderIds = { 11, 12, 13, 14 };
 
                 public static final boolean[] driveMotorInverted = {
-                                true,
                                 false,
                                 true,
-                                true
+                                false,
+                                false
                 };
                 public static final boolean[] turningMotorInverted = {
                                 false,

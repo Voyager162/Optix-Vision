@@ -329,11 +329,14 @@ public class JoystickIO {
         // operator.b().onTrue(Commands.runOnce(() ->
         // Robot.scoringRoller.setVoltage(Robot.subsystemVoltageSetter.get())));
 
-        operator.a().onTrue(new IntakeFloor());
-        operator.b().onTrue(new Handoff());
+        // pilot.a().onTrue(new IntakeFloor());
+        // operator.b().onTrue(new Handoff());
         operator.x().onTrue(new IntakeSource());
         operator.y().onTrue(new ScoreL234(ElevatorStates.L4));
-        operator.leftBumper().onTrue(new ScoreL1());
+        operator.a().onTrue(new ScoreL234(ElevatorStates.L3));
+        operator.b().onTrue(new ScoreL234(ElevatorStates.L2));
+
+        // pilot.y().onTrue(new ScoreL1());
 
 
     }

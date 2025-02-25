@@ -33,19 +33,19 @@ public class ElevatorConstants {
     public static final double stateMarginOfError = 0.1;
 
     public static class ElevatorControl {
-        public static LoggedTunableNumber kG = new LoggedTunableNumber("elevator/kG", 0.32);
-        public static LoggedTunableNumber kP = new LoggedTunableNumber("elevator/kP", 12);
-        public static LoggedTunableNumber kI = new LoggedTunableNumber("elevator/kI", 0);
-        public static LoggedTunableNumber kD = new LoggedTunableNumber("elevator/kD", 0);
-        public static LoggedTunableNumber kS = new LoggedTunableNumber("elevator/kS", 0.16
+        public static LoggedTunableNumber kG = new LoggedTunableNumber("Elevator/kG", 0.32);
+        public static LoggedTunableNumber kP = new LoggedTunableNumber("Elevator/kP", 12);
+        public static LoggedTunableNumber kI = new LoggedTunableNumber("Elevator/kI", 0);
+        public static LoggedTunableNumber kD = new LoggedTunableNumber("Elevator/kD", 0);
+        public static LoggedTunableNumber kS = new LoggedTunableNumber("Elevator/kS", 0.16
         );
-        public static LoggedTunableNumber kV = new LoggedTunableNumber("elevator/kV", 7.77);
-        public static LoggedTunableNumber kA = new LoggedTunableNumber("elevator/kA", 0.27
+        public static LoggedTunableNumber kV = new LoggedTunableNumber("Elevator/kV", 7.77);
+        public static LoggedTunableNumber kA = new LoggedTunableNumber("Elevator/kA", 0.27
         ); // 1.72
-        public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("elevator/max velocity",
+        public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("Elevator/max velocity",
                 1.415);
         public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
-                "elevator/max acceleration",
+                "Elevator/max acceleration",
                 4.1);
     }
 

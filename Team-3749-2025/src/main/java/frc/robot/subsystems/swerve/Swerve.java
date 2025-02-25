@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.swerve;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import org.littletonrobotics.junction.Logger;
 
 import choreo.trajectory.SwerveSample;
@@ -69,11 +71,11 @@ public class Swerve extends SubsystemBase {
   private boolean utilizeVision = true;
   private double velocity = 0;
 
-  private LoggedTunableNumber kPDriving = new LoggedTunableNumber("swerve/kP Drive", AutoConstants.kPDrive);
-  private LoggedTunableNumber kDDriving = new LoggedTunableNumber("swerve/kD Drive", AutoConstants.kDDrive);
-  private LoggedTunableNumber kPTurn = new LoggedTunableNumber("swerve/kP Turn controller",
+  private LoggedTunableNumber kPDriving = new LoggedTunableNumber("Swerve/kP Drive", AutoConstants.kPDrive);
+  private LoggedTunableNumber kDDriving = new LoggedTunableNumber("Swerve/kD Drive", AutoConstants.kDDrive);
+  private LoggedTunableNumber kPTurn = new LoggedTunableNumber("Swerve/kP Turn controller",
       AutoConstants.kPTurn);
-  private LoggedTunableNumber kDTurn = new LoggedTunableNumber("swerve/kD Turn controller",
+  private LoggedTunableNumber kDTurn = new LoggedTunableNumber("Swerve/kD Turn controller",
       AutoConstants.kDTurn);
 
   private int currentPPSetpointIndex = 0; // what "index" do we currently want to go to for OTF
@@ -93,8 +95,8 @@ public class Swerve extends SubsystemBase {
     // if real
     else {
       // gyro = new NavX2Gyro();
-      gyro = new GyroSim();
-      // gyro = new PigeonGyro();
+      // gyro = new GyroSim();
+      gyro = new PigeonGyro();
       for (int i = 0; i < 4; i++) {
 
         modules[i] = new SwerveModule(i, new SwerveModuleSpark(i));
@@ -110,8 +112,8 @@ public class Swerve extends SubsystemBase {
             modules[2].getPosition(),
             modules[3].getPosition()
         },
-        new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
-        VecBuilder.fill(0.045, 0.045, 0.0005), // 6328's 2024 numbers with factors of 1.5x, 1.5x, 2x
+        new Pose2d(new Translation2d(5.773, 3.963), Rotation2d.fromDegrees(180)),
+        VecBuilder.fill(0.045, 0.045, 0.24), // 6328's 2024 numbers with factors of 1.5x, 1.5x, 2x
         VecBuilder.fill(VisionConstants.StandardDeviations.PreMatch.xy,
             VisionConstants.StandardDeviations.PreMatch.xy,
             VisionConstants.StandardDeviations.PreMatch.thetaRads));
@@ -423,7 +425,6 @@ public class Swerve extends SubsystemBase {
 
     modules[2].setTurnPosition(225 * Math.PI / 180);
     modules[3].setTurnPosition(315 * Math.PI / 180);
-
   }
 
   /**
@@ -564,8 +565,8 @@ public class Swerve extends SubsystemBase {
         modules[3].getDesiredState().speedMetersPerSecond
     };
 
-    Logger.recordOutput("swerve/realStates", realStates);
-    Logger.recordOutput("swerve/desiredStates", desiredStates);
+    Logger.recordOutput("swerve/real states", realStates);
+    Logger.recordOutput("swerve/desired states", desiredStates);
     Logger.recordOutput("swerve/auto/isOTF", isOTF);
 
     double[] odometry = {
@@ -596,7 +597,7 @@ public class Swerve extends SubsystemBase {
     velocity = robotVelocity;
 
     String currentCommand = this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName();
-    Logger.recordOutput("swerve/currentCommand", currentCommand);
+    Logger.recordOutput("Swerve/currentCommand", currentCommand);
 
   }
 
