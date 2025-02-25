@@ -27,7 +27,7 @@ public class OnTheFly extends Command {
     private final Timer timer = new Timer(); // Timer to track trajectory progress
 
     private Pose2d endpoint = new Pose2d();
-    private static boolean currentlyThreading = false; //threads make funky async stuff: this normalizes it
+    private static boolean currentlyThreading = false; // threads make funky async stuff: this normalizes it
 
     /**
      * Constructs the OnTheFly command.
@@ -47,8 +47,6 @@ public class OnTheFly extends Command {
         currentlyThreading = true;
         endpoint = Robot.swerve.getPPSetpoint().setpoint;
         new Thread(() -> {
-            timer.reset();
-            timer.start();
 
             // Create a new dynamic path generator
             ToPos toPos = new ToPos();
@@ -90,6 +88,8 @@ public class OnTheFly extends Command {
                 this.cancel();
             }
             currentlyThreading = false;
+            timer.reset();
+            timer.start();
         }).start();
     }
 
@@ -100,12 +100,10 @@ public class OnTheFly extends Command {
      */
     @Override
     public void execute() {
-        if(!Robot.swerve.getPPSetpoint().setpoint.equals(endpoint))
-        {
+        if (!Robot.swerve.getPPSetpoint().setpoint.equals(endpoint)) {
             initialize();
         }
-        if(currentlyThreading)
-        {
+        if (currentlyThreading) {
             return;
         }
 
@@ -113,7 +111,6 @@ public class OnTheFly extends Command {
             this.cancel();
             return;
         }
-
 
         // Get the current elapsed time in the trajectory
         double currentTime = timer.get();
@@ -127,7 +124,7 @@ public class OnTheFly extends Command {
                         goalState.fieldSpeeds.vyMetersPerSecond, // Y velocity
                         new Rotation2d(goalState.fieldSpeeds.omegaRadiansPerSecond) // Angular velocity
                 ));
-        // Robot.swerve.setIsOTF(!UtilityFunctions.withinMargin(new Pose2d(0.01,0.01,new Rotation2d(0.1)), Robot.swerve.getPose(), endpoint));
+
     }
 
     /**
@@ -140,7 +137,7 @@ public class OnTheFly extends Command {
         currentlyThreading = false;
         timer.stop();
         Robot.swerve.setIsOTF(false);
-        
+
     }
 
     /**
@@ -153,7 +150,7 @@ public class OnTheFly extends Command {
      */
     @Override
     public boolean isFinished() {
-        return !currentlyThreading && (trajectory == null ||
-        !Robot.swerve.getIsOTF() || !Robot.swerve.getPPSetpoint().setpoint.equals(endpoint));
+        return !currentlyThreading && (trajectory == null || !Robot.swerve.getPPSetpoint().setpoint.equals(endpoint)) ||
+                !Robot.swerve.getIsOTF();
     }
 }
