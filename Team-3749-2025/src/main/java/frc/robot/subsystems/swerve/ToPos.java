@@ -10,6 +10,7 @@ import com.pathplanner.lib.path.Waypoint;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Robot;
 import frc.robot.buttons.JoystickIO;
 import frc.robot.buttons.ToPosTriggers;
@@ -23,6 +24,7 @@ import frc.robot.buttons.ButtonBoard.ScoringMode;
  */
 public class ToPos {
 
+    private Timer debugTimer = new Timer();
     /**
      * Generates a dynamic path for the robot from an initial pose to a final pose.
      *
@@ -39,6 +41,8 @@ public class ToPos {
      */
     public PathPlannerPath generateDynamicPath(Pose2d initialPose, Pose2d approachPoint, Pose2d finalPose,
             double maxVelocity, double maxAcceleration, double maxAngularVelocity, double maxAngularAcceleration) {
+        debugTimer.reset();
+        debugTimer.start();
         if (initialPose == null || finalPose == null || approachPoint == null) {
             throw new IllegalArgumentException("Pose arguments cannot be null!");
         }
@@ -65,6 +69,8 @@ public class ToPos {
             System.out.println("epic waypoint size fail");
             return null;
         }
+        System.out.println("path optimization took: " + debugTimer.get());
+        debugTimer.stop();
 
         return new PathPlannerPath(waypoints,
                 new PathConstraints(maxVelocity, maxAcceleration, maxAngularVelocity, maxAngularAcceleration), null,

@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.ToPos;
-import frc.robot.utils.UtilityFunctions;
 
 /**
  * The `OnTheFly` command dynamically generates and follows a trajectory
@@ -25,6 +24,8 @@ import frc.robot.utils.UtilityFunctions;
 public class OnTheFly extends Command {
     private PathPlannerTrajectory trajectory; // The generated trajectory for movement
     private final Timer timer = new Timer(); // Timer to track trajectory progress
+    private final ToPos toPos = new ToPos();
+    private final Timer debugTimer = new Timer();
 
     private Pose2d endpoint = new Pose2d();
     private static boolean currentlyThreading = false; // threads make funky async stuff: this normalizes it
@@ -44,12 +45,14 @@ public class OnTheFly extends Command {
      */
     @Override
     public void initialize() {
+        System.out.println("epic fail");
         currentlyThreading = true;
         endpoint = Robot.swerve.getPPSetpoint().setpoint;
+        
         new Thread(() -> {
-
+            debugTimer.reset();
+            debugTimer.start();
             // Create a new dynamic path generator
-            ToPos toPos = new ToPos();
             PathPlannerPath path = toPos.generateDynamicPath(
                     Robot.swerve.getPose(), // Current robot position
                     Robot.swerve.getPPSetpoint().approachPoint, // Intermediate approach point
@@ -60,6 +63,8 @@ public class OnTheFly extends Command {
                     SwerveConstants.ControlConstants.maxAngularAccelerationRadiansPerSecondSquared // Max angular
                                                                                                    // acceleration
             );
+            System.out.println("path generation took: " + debugTimer.get());
+            debugTimer.stop();
 
             // If path generation fails, stop the command
             if (path == null) {
@@ -90,6 +95,7 @@ public class OnTheFly extends Command {
             currentlyThreading = false;
             timer.reset();
             timer.start();
+            // System.out.println(debugTimer.get());
         }).start();
     }
 
