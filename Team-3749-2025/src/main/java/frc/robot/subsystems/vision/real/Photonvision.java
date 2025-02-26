@@ -117,7 +117,7 @@ public class Photonvision implements VisionIO {
 
     public void updatePose() {
         // cameraUpdatePose(0);
-        cameraUpdatePose(1);
+        // cameraUpdatePose(1);
         // cameraUpdatePose(2);
 
         // for (int i = 0; i < cameraList.length; i++) {

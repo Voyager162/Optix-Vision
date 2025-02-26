@@ -2,6 +2,8 @@ package frc.robot.buttons;
 
 import org.opencv.core.Point;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.event.EventLoop;
@@ -225,6 +227,7 @@ public class JoystickIO {
             return false;
         }).onTrue(Commands.runOnce(() -> Robot.swerve.setIsOTF(false)));
 
+        pilot.back().onTrue(Commands.runOnce(()->Robot.swerve.setOdometry(new Pose2d(3,4.25,new Rotation2d()))));
         // operator.a().onTrue(new Climb());
         // operator.b().whileTrue(Commands.runOnce(() ->
         // Robot.climbArm.setVoltage(12)));

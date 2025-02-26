@@ -15,6 +15,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -65,9 +66,12 @@ public class Swerve extends SubsystemBase {
   // equivilant to a odometer, but also intakes vision
   private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
-  private PIDController xController = new PIDController(AutoConstants.kPDrive, 0, AutoConstants.kDDrive);
-  private PIDController yController = new PIDController(AutoConstants.kPDrive, 0, AutoConstants.kDDrive);
-  private PIDController turnController = new PIDController(AutoConstants.kPTurn, 0, AutoConstants.kDTurn);
+  private PIDController xController = new PIDController(AutoConstants.kPDrive, AutoConstants.kIDrive,
+      AutoConstants.kDDrive);
+  private PIDController yController = new PIDController(AutoConstants.kPDrive, AutoConstants.kIDrive,
+      AutoConstants.kDDrive);
+  private PIDController turnController = new PIDController(AutoConstants.kPTurn, AutoConstants.kITurn,
+      AutoConstants.kDTurn);
 
   private boolean utilizeVision = true;
   private double velocity = 0;
@@ -119,11 +123,18 @@ public class Swerve extends SubsystemBase {
             VisionConstants.StandardDeviations.PreMatch.xy,
             VisionConstants.StandardDeviations.PreMatch.thetaRads));
 
+    // auto PID settings
     turnController.enableContinuousInput(-Math.PI, Math.PI);
+    turnController.setTolerance(AutoConstants.turnToleranceRad);
+    turnController.setIZone(AutoConstants.turnIZone);
+    xController.setTolerance(AutoConstants.driveToleranceMeters);
+    yController.setTolerance(AutoConstants.driveToleranceMeters);
+    xController.setIZone(AutoConstants.driveIZone);
+    yController.setIZone(AutoConstants.driveIZone);
 
     // put us on the field with a default orientation
     resetGyro();
-    setOdometry(new Pose2d(3, 3, new Rotation2d(0)));
+    setOdometry(new Pose2d(3,3,new Rotation2d(0)));
     logSetpoints(1.33, 0, 0, 5.53, 0, 0, 0, 0, 0);
 
   }
@@ -267,15 +278,26 @@ public class Swerve extends SubsystemBase {
   // dynamic path:
   // calc the speeds and throw them into the speed
   public void followSample(Pose2d positions, Pose2d velocities) {
+    double xPID = xController.calculate(getPose().getX(), positions.getX());
+    xPID = UtilityFunctions.applyDeadband(xController.getError(), AutoConstants.driveToleranceMeters);
+
+    double yPID = yController.calculate(getPose().getY(), positions.getY());
+    yPID = UtilityFunctions.applyDeadband(yController.getError(), AutoConstants.driveToleranceMeters);
+
+    double turnPID = turnController.calculate(getPose().getRotation().getRadians(),
+        positions.getRotation().getRadians());
+    turnPID = UtilityFunctions.applyDeadband(turnController.getError(), AutoConstants.driveToleranceMeters);
+
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         new ChassisSpeeds(
-            xController.calculate(getPose().getX(), positions.getX()) + velocities.getX(),
-            yController.calculate(getPose().getY(), positions.getY()) + velocities.getY(),
-            turnController.calculate(getPose().getRotation().getRadians(), positions.getRotation().getRadians())
+            xPID + velocities.getX(),
+            yPID + velocities.getY(),
+            turnPID
                 + velocities.getRotation().getRadians()),
         getPose().getRotation());
     logSetpoints(positions, velocities);
-
+    Logger.recordOutput("Swerve/auto/velocity hypt", Math.sqrt(
+        speeds.vxMetersPerSecond * speeds.vxMetersPerSecond + speeds.vyMetersPerSecond * speeds.vyMetersPerSecond));
     Robot.swerve.setChassisSpeeds(speeds);
   }
 
@@ -298,16 +320,28 @@ public class Swerve extends SubsystemBase {
     double omega = isFlipped ? -sample.omega : sample.omega;
     double alpha = isFlipped ? -sample.alpha : sample.alpha;
 
-    Robot.swerve.logSetpoints(xPos, xVel, xAcc, yPos, yVel, yAcc, heading, omega, alpha);
+    double xPID = xController.calculate(getPose().getX(), xPos);
+    xPID = UtilityFunctions.applyDeadband(xController.getError(), AutoConstants.driveToleranceMeters);
+    double yPID = xController.calculate(getPose().getY(), yPos);
+    yPID = UtilityFunctions.applyDeadband(yController.getError(), AutoConstants.driveToleranceMeters);
+    double turnPID = turnController.calculate(getPose().getRotation().getRadians(),
+        heading);
+    turnPID = UtilityFunctions.applyDeadband(turnController.getError(), AutoConstants.driveToleranceMeters);
+
+    // xPID = 0;
+    // yPID = 0;
+    // turnPID = 0;
 
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         new ChassisSpeeds(
-            xController.calculate(getPose().getX(), xPos) + xVel,
-            yController.calculate(getPose().getY(), yPos) + yVel,
-            turnController.calculate(getPose().getRotation().getRadians(), heading) + omega),
+            xPID + xVel,
+            yPID + yVel,
+            turnPID
+                + omega),
         getPose().getRotation());
+    logSetpoints(xPos, xVel, xAcc, yPos, yVel, yAcc, heading, omega, alpha);
 
-    Robot.swerve.setChassisSpeeds(speeds);
+    setChassisSpeeds(speeds);
   }
 
   public void setBreakMode(boolean enable) {
@@ -395,7 +429,8 @@ public class Swerve extends SubsystemBase {
         currentPPSetpointIndex >= 3 && currentPPSetpointIndex <= 25 && currentPPSetpointIndex % 2 != 0) {
       currentPPSetpointIndex++;
     }
-    showSetpointEndGoal();
+    showOTFEndPoint();
+    showOTFApproachPoint();
     isOTF = true;
   }
 
@@ -501,7 +536,9 @@ public class Swerve extends SubsystemBase {
       double omega, double alpha) {
     // setpoint logging for automated driving
     double[] positions = new double[] { posX, posY, heading };
-    Logger.recordOutput("swerve/choreoSetpoint", positions);
+    Logger.recordOutput("Swerve/auto/position setpoint", positions);
+    Transform2d poseDiff = new Pose2d(posX, posY, new Rotation2d(heading)).minus(getPose());
+    Logger.recordOutput("Swerve/auto/position error", poseDiff);
 
     Double[] velocities = new Double[] { velX, velY, omega };
     double velocity = 0;
@@ -509,9 +546,11 @@ public class Swerve extends SubsystemBase {
     velocity += Math.pow(velocities[1], 2);
 
     velocity = Math.sqrt(velocity);
-    Logger.recordOutput("swerve/autos/setpoint velocity", velocity);
-    Logger.recordOutput("swerve/autos/setpoint rotational velocity", velocities[2]);
+    Logger.recordOutput("Swerve/auto/setpoint velocity", velocity);
+    Logger.recordOutput("Swerve/auto/setpoint rotational velocity", velocities[2]);
     velocity = velocities[2];
+    Logger.recordOutput("Swerve/auto/velocity hypt", Math.sqrt(
+        velX * velX + velY * velY));
 
     Double[] accelerations = new Double[] { accX, accY, alpha };
     double acceleration = 0;
@@ -519,22 +558,22 @@ public class Swerve extends SubsystemBase {
     acceleration += Math.pow(accelerations[1], 2);
 
     acceleration = Math.sqrt(acceleration);
-    Logger.recordOutput("swerve/autos/setpoint acceleration", acceleration);
-    Logger.recordOutput("swerve/autos/setpoint rotational acceleration", accelerations[2]);
+    Logger.recordOutput("Swerve/auto/setpoint acceleration", acceleration);
+    Logger.recordOutput("Swerve/auto/setpoint rotational acceleration", accelerations[2]);
 
   }
 
   // this is only really relevant for testing purposes: as this is logged as
   // endgoal position or smth like that
   // shows what the end position will be like in advantage scope
-  public void showSetpointEndGoal() {
-    Logger.recordOutput("swerve/auto/otf end goal",
+  public void showOTFEndPoint() {
+    Logger.recordOutput("Swerve/auto/otf end goal",
         new double[] { getPPSetpoint().setpoint.getX(), getPPSetpoint().setpoint.getY(),
             getPPSetpoint().setpoint.getRotation().getRadians() });
   }
 
-  public void showApproachSetpointEndGoal() {
-    Logger.recordOutput("swerve/auto/otf approach point",
+  public void showOTFApproachPoint() {
+    Logger.recordOutput("Swerve/auto/otf approach point",
         new double[] { getPPSetpoint().approachPoint.getX(), getPPSetpoint().approachPoint.getY(),
             getPPSetpoint().approachPoint.getRotation().getRadians() });
   }
@@ -566,9 +605,9 @@ public class Swerve extends SubsystemBase {
         modules[3].getDesiredState().speedMetersPerSecond
     };
 
-    Logger.recordOutput("swerve/real states", realStates);
-    Logger.recordOutput("swerve/desired states", desiredStates);
-    Logger.recordOutput("swerve/auto/isOTF", isOTF);
+    Logger.recordOutput("Swerve/real states", realStates);
+    Logger.recordOutput("Swerve/desired states", desiredStates);
+    Logger.recordOutput("Swerve/auto/isOTF", isOTF);
 
     double[] odometry = {
         getPose().getX(),
@@ -576,26 +615,26 @@ public class Swerve extends SubsystemBase {
         getPose().getRotation().getRadians() };
     Pose3d pose = new Pose3d(getPose());
 
-    Logger.recordOutput("swerve/odometry", odometry);
+    Logger.recordOutput("Swerve/odometry", odometry);
     Logger.recordOutput("swerve/odometry pose3d", pose);
-    Logger.recordOutput("swerve/utilizeVision", utilizeVision);
+    Logger.recordOutput("Swerve/utilizeVision", utilizeVision);
 
     // gyro logging
-    Logger.recordOutput("swerve/gyro/Yaw", gyroData.yawDeg);
+    Logger.recordOutput("Swerve/gyro/Yaw", gyroData.yawDeg);
     // yaw = gyroData.yawDeg;
-    Logger.recordOutput("swerve/gyro/Pitch", gyroData.pitchDeg);
-    Logger.recordOutput("swerve/gyro/Roll", gyroData.rollDeg);
-    Logger.recordOutput("swerve/gyro/isConnected", gyroData.isConnected);
-    Logger.recordOutput("swerve/heading", getRotation2d().getDegrees());
+    Logger.recordOutput("Swerve/gyro/Pitch", gyroData.pitchDeg);
+    Logger.recordOutput("Swerve/gyro/Roll", gyroData.rollDeg);
+    Logger.recordOutput("Swerve/gyro/isConnected", gyroData.isConnected);
+    Logger.recordOutput("Swerve/heading", getRotation2d().getDegrees());
 
     // velocity and acceleration logging
     double robotVelocity = Math.hypot(getChassisSpeeds().vxMetersPerSecond,
         getChassisSpeeds().vyMetersPerSecond);
 
-    Logger.recordOutput("swerve/robot velocity", robotVelocity);
-    Logger.recordOutput("swerve/robot rotational velocity", getChassisSpeeds().omegaRadiansPerSecond);
+    Logger.recordOutput("Swerve/robot velocity", robotVelocity);
+    Logger.recordOutput("Swerve/robot rotational velocity", getChassisSpeeds().omegaRadiansPerSecond);
 
-    Logger.recordOutput("swerve/robot acceleration", (robotVelocity -
+    Logger.recordOutput("Swerve/robot acceleration", (robotVelocity -
         velocity) / .02);
 
     velocity = robotVelocity;
