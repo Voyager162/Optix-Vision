@@ -1,6 +1,6 @@
 package frc.robot.subsystems.leds;
 
-public class LEDConstants {
+public class LedConstants {
 
     public static final int length = 18;
 

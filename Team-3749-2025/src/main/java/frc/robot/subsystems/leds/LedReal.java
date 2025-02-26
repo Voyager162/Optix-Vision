@@ -7,8 +7,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.leds.LEDConstants.LEDPattern;
+import frc.robot.subsystems.leds.LedConstants.LEDPattern;
 
 /**
  * 
@@ -16,16 +15,16 @@ import frc.robot.subsystems.leds.LEDConstants.LEDPattern;
  * WHITE, and NOTHING)
  * The LEDs are used to indicate when the robot does different actions
  */
-public class LEDs extends SubsystemBase {
+public class LedReal implements LedBase {
 
     private AddressableLED LED1 = new AddressableLED(0); // port
     // private AddressableLED LED2 = new AddressableLED(1); // port
 
-    private AddressableLEDBuffer LEDBuffer = new AddressableLEDBuffer(LEDConstants.length);
+    private AddressableLEDBuffer LEDBuffer = new AddressableLEDBuffer(LedConstants.length);
     private LEDPattern currentPattern = LEDPattern.WHITE;
     private double brightness = 1;
 
-    public LEDs() {
+    public LedReal() {
         LED1.setLength(LEDBuffer.getLength());
         LED1.setData(LEDBuffer);
         LED1.start();
@@ -41,7 +40,7 @@ public class LEDs extends SubsystemBase {
      * 
      * @param brightness
      */
-    public LEDs(double brightness) {
+    public LedReal(double brightness) {
         this.brightness = brightness;
         LED1.setLength(LEDBuffer.getLength());
         LED1.setData(LEDBuffer);
@@ -86,20 +85,6 @@ public class LEDs extends SubsystemBase {
         }
     }
 
-    // /**
-    //  * Takes in the parameters H, S, and V to set the LEDs to one color using an HSV
-    //  * color code
-    //  * 
-    //  * @param H
-    //  * @param S
-    //  * @param V
-    //  */
-    // private void setLEDOneColorHSV(int H, int S, int V) {
-    //     for (int i = 0; i < LEDBuffer.getLength(); i++) {
-    //         LEDBuffer.setHSV(i, H, S, V);
-    //     }
-    // }
-
     /**
      * Takes in the parameter pattern to set the pattern of the LEDs
      * If the pattern is WHITE and the battery voltage is less than 8, the
@@ -133,7 +118,7 @@ public class LEDs extends SubsystemBase {
 
     // runs every 0.02 sec
     @Override
-    public void periodic() {
+    public void loop() {
 
         setLEDOneColorRGB(this.currentPattern.R, this.currentPattern.G, this.currentPattern.B);
 
