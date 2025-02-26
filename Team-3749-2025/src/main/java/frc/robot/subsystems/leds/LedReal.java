@@ -15,7 +15,7 @@ import frc.robot.subsystems.leds.LEDConstants.LEDPattern;
  * WHITE, and NOTHING)
  * The LEDs are used to indicate when the robot does different actions
  */
-public class LedReal implements LedBase {
+public class LedReal implements LedIO {
 
     private AddressableLED LED1 = new AddressableLED(0); // port
     // private AddressableLED LED2 = new AddressableLED(1); // port
@@ -135,7 +135,6 @@ public class LedReal implements LedBase {
         // }
 
         LED1.setData(LEDBuffer);
-        LED1.start();
         // LED2.setData(LEDBuffer);
 
     }

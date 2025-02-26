@@ -6,7 +6,7 @@ import frc.robot.subsystems.leds.LEDConstants.LEDPattern;
 
 public class Led extends SubsystemBase {
 
-    private LedBase led;
+    private LedIO led;
 
     public Led() {
        if(Robot.isReal())
