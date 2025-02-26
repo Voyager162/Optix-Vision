@@ -52,7 +52,6 @@ public class Autos {
         AutoUtils.addScoreL4(trajectory2); // first score is the end of the routine, so no need for reference
 
         // reverse order here (ex. connect 3 to 2, THEN 2 to 1)
-     
         AutoUtils.goNextAfterCommand(trajectory1, trajectory2, intake1);
 
         // Trigger to update routineStarted when routine ends
