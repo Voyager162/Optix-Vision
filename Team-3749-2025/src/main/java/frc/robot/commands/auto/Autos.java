@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class Autos {
     private static boolean routineStarted = false;
+    
 
     public static Command test() {
         AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("Test");
@@ -36,7 +37,33 @@ public class Autos {
                 .andThen(Commands.runOnce(() -> startRoutineTracking()) // Track routine start
                         .andThen(AutoUtils.startRoutine(routine, "test", trajectory1)));
 
-    }
+    } 
+    public static Command test2() {
+        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("Test2");
+
+        // loop.trajectory, or the new name
+        AutoTrajectory trajectory1 = routine.trajectory("Start-TestIntake");
+        AutoTrajectory trajectory2 = routine.trajectory("TestIntake-ScoreTest");
+
+
+
+        // Commands to scoreL4 and intake from source
+        Command intake1 = AutoUtils.addIntake(trajectory1);
+        AutoUtils.addScoreL4(trajectory2); // third score is the end of the routine, so no need for reference
+
+        // reverse order here (ex. connect 3 to 2, THEN 2 to 1)
+     
+        AutoUtils.goNextAfterCommand(trajectory1, trajectory2, intake1);
+
+        // Trigger to update routineStarted when routine ends
+        new Trigger(() -> trajectory2.cmd().isFinished())
+                .onTrue(Commands.runOnce(() -> stopRoutineTracking()));
+
+        return Commands.print("3 piece auto!")
+                .andThen(Commands.runOnce(() -> startRoutineTracking())) // Track routine start
+                .andThen(AutoUtils.startRoutine(routine, "Start-5", trajectory1));
+    } 
+      
 
     /***
      * 
