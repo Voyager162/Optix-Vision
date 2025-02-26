@@ -2,6 +2,7 @@ package frc.robot.subsystems.leds;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.subsystems.leds.LEDConstants.LEDPattern;
 
 public class Led extends SubsystemBase {
 
@@ -19,6 +20,10 @@ public class Led extends SubsystemBase {
     @Override
     public void periodic() {
         led.loop();
+    }
+
+    public void setLEDPattern(LEDPattern pattern) {
+        led.setLEDPattern(pattern);
     }
 
 }

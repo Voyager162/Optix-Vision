@@ -21,7 +21,7 @@ public class LedReal implements LedBase {
     // private AddressableLED LED2 = new AddressableLED(1); // port
 
     private AddressableLEDBuffer LEDBuffer = new AddressableLEDBuffer(LEDConstants.length);
-    private LEDPattern currentPattern = LEDPattern.WHITE;
+    private LEDPattern currentPattern = getTeamColorLED();
     private double brightness = 1;
 
     public LedReal() {
@@ -32,7 +32,8 @@ public class LedReal implements LedBase {
         // LED2.setData(LEDBuffer);
         // LED2.start();
         setBrightness(brightness);
-        setLEDPattern(teamColorLED());
+        // setLEDPattern(LEDPattern.WHITE);
+        setLEDPattern(getTeamColorLED());
     }
 
     /**
@@ -48,7 +49,8 @@ public class LedReal implements LedBase {
         // LED2.setLength(LEDBuffer.getLength());
         // LED2.setData(LEDBuffer);
         // LED2.start();
-        setLEDPattern(teamColorLED());
+        // setLEDPattern(getTeamColorLED());
+        setLEDPattern(LEDPattern.WHITE);
         setBrightness(brightness);
     }
 
@@ -57,7 +59,7 @@ public class LedReal implements LedBase {
      * 
      * @return
      */
-    private LEDPattern teamColorLED() {
+    private LEDPattern getTeamColorLED() {
         Optional<Alliance> team = DriverStation.getAlliance(); // i hate doing it this way but it throws an error
                                                                // without it
         return team.get() == Alliance.Blue ? LEDPattern.BLUE : LEDPattern.RED;
@@ -133,6 +135,7 @@ public class LedReal implements LedBase {
         // }
 
         LED1.setData(LEDBuffer);
+        LED1.start();
         // LED2.setData(LEDBuffer);
 
     }

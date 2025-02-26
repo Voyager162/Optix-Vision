@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
+import frc.robot.subsystems.leds.LEDConstants.LEDPattern;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -37,6 +38,7 @@ import frc.robot.commands.swerve.SwerveDefaultCommand;
 import frc.robot.subsystems.arm.climb.ClimbArmConstants;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
+import frc.robot.subsystems.leds.LEDConstants;
 import frc.robot.subsystems.swerve.ToPos;
 import frc.robot.commands.integration.Climb;
 import frc.robot.utils.MiscConstants.ControllerConstants;
@@ -334,10 +336,10 @@ public class JoystickIO {
 
         // pilot.a().onTrue(new IntakeFloor());
         // operator.b().onTrue(new Handoff());
-        operator.x().onTrue(new IntakeSource());
-        operator.y().onTrue(new ScoreL234(ElevatorStates.L4));
-        operator.a().onTrue(new ScoreL234(ElevatorStates.L3));
-        operator.b().onTrue(new ScoreL234(ElevatorStates.L2));
+        operator.a().onTrue(Commands.runOnce(() -> Robot.led.setLEDPattern(LEDPattern.WHITE)));
+        operator.b().onTrue(Commands.runOnce(() -> Robot.led.setLEDPattern(LEDPattern.RED)));
+        operator.x().onTrue(Commands.runOnce(() -> Robot.led.setLEDPattern(LEDPattern.GREEN)));
+        operator.y().onTrue(Commands.runOnce(() -> Robot.led.setLEDPattern(LEDPattern.BLUE)));
 
         // pilot.y().onTrue(new ScoreL1());
 
