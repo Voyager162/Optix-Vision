@@ -13,6 +13,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -133,7 +134,7 @@ public class Swerve extends SubsystemBase {
 
     // put us on the field with a default orientation
     resetGyro();
-    setOdometry(new Pose2d(3, 3, new Rotation2d(0)));
+    setOdometry(new Pose2d(3,3,new Rotation2d(0)));
     logSetpoints(1.33, 0, 0, 5.53, 0, 0, 0, 0, 0);
 
   }
@@ -613,7 +614,10 @@ public class Swerve extends SubsystemBase {
         getPose().getX(),
         getPose().getY(),
         getPose().getRotation().getRadians() };
+    Pose3d pose = new Pose3d(getPose());
+
     Logger.recordOutput("Swerve/odometry", odometry);
+    Logger.recordOutput("swerve/odometry pose3d", pose);
     Logger.recordOutput("Swerve/utilizeVision", utilizeVision);
 
     // gyro logging
