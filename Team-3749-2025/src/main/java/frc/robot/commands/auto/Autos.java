@@ -38,7 +38,7 @@ public class Autos {
                         .andThen(AutoUtils.startRoutine(routine, "test", trajectory1)));
 
     } 
-    public static Command test2() {
+    public static Command gettest2() {
         AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("Test2");
 
         // loop.trajectory, or the new name
@@ -49,7 +49,7 @@ public class Autos {
 
         // Commands to scoreL4 and intake from source
         Command intake1 = AutoUtils.addIntake(trajectory1);
-        AutoUtils.addScoreL4(trajectory2); // third score is the end of the routine, so no need for reference
+        AutoUtils.addScoreL4(trajectory2); // first score is the end of the routine, so no need for reference
 
         // reverse order here (ex. connect 3 to 2, THEN 2 to 1)
      
@@ -59,9 +59,9 @@ public class Autos {
         new Trigger(() -> trajectory2.cmd().isFinished())
                 .onTrue(Commands.runOnce(() -> stopRoutineTracking()));
 
-        return Commands.print("3 piece auto!")
+        return Commands.print("Test2")
                 .andThen(Commands.runOnce(() -> startRoutineTracking())) // Track routine start
-                .andThen(AutoUtils.startRoutine(routine, "Start-5", trajectory1));
+                .andThen(AutoUtils.startRoutine(routine, "Start-TestIntake", trajectory1));
     } 
       
 
@@ -169,7 +169,7 @@ public class Autos {
 
         // Commands to scoreL1 and intake from source
         Command score1 = AutoUtils.addScoreL1(trajectory1);
-        Command intake1 = AutoUtils.addCoralIntakeSource(trajectory2);
+        Command intake1 = AutoUtils.addGroundIntake(trajectory2);
         AutoUtils.addScoreL1(trajectory3); // second score is the end of the routine, so no need for reference
 
         // reverse order here

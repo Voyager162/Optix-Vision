@@ -301,6 +301,7 @@ public class Swerve extends SubsystemBase {
   }
 
   public void followSample(SwerveSample sample, boolean isFlipped) {
+    System.out.println("folowing sample");
 
     // ternaries are for x-axis flipping
 

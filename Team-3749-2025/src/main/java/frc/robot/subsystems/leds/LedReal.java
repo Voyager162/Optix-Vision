@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.subsystems.leds.LedConstants.LEDPattern;
+import frc.robot.subsystems.leds.LEDConstants.LEDPattern;
 
 /**
  * 
@@ -20,7 +20,7 @@ public class LedReal implements LedBase {
     private AddressableLED LED1 = new AddressableLED(0); // port
     // private AddressableLED LED2 = new AddressableLED(1); // port
 
-    private AddressableLEDBuffer LEDBuffer = new AddressableLEDBuffer(LedConstants.length);
+    private AddressableLEDBuffer LEDBuffer = new AddressableLEDBuffer(LEDConstants.length);
     private LEDPattern currentPattern = LEDPattern.WHITE;
     private double brightness = 1;
 

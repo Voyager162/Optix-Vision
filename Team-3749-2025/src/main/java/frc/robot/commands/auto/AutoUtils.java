@@ -124,6 +124,7 @@ public class AutoUtils {
         chooser.addCmd("3 Coral and 2 Algae", () -> Autos.get3CoralAnd2Algae());
         chooser.addCmd("Two Piece Score L1", () -> Autos.getTwoPieceScoreL1());
         chooser.select("4-Piece");
+        chooser.addCmd("Test2", () -> Autos.gettest2());
         SmartDashboard.putData("Auto: Auto Chooser", chooser);
 
     }
@@ -314,7 +315,7 @@ public class AutoUtils {
      * @param trajectory
      * @return
      */
-    public static Command addCoralIntakeSource(AutoTrajectory trajectory) {
+    public static Command addGroundIntake(AutoTrajectory trajectory) {
         Pose2d endingPose2d = getFinalPose2d(trajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
