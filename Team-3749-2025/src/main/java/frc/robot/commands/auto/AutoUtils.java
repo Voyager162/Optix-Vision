@@ -227,7 +227,6 @@ public class AutoUtils {
                 .onTrue(
                         Commands.run(() -> {
                             Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
-                            System.out.println("contine PID");
                         }, Robot.swerve));
         return scoreL3;
 
