@@ -63,7 +63,8 @@ public class Photonvision implements VisionIO {
     public void updatePose() {
         // Cam # minus 1
         cameraUpdatePose(0);
-        cameraUpdatePose(1);
+        // Cam 3 missing, cam 2 is bad because of mount droop
+        // cameraUpdatePose(1);
         // cameraUpdatePose(2);
         cameraUpdatePose(3);
         cameraUpdatePose(4);
