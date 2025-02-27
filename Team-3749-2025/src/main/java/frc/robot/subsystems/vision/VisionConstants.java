@@ -40,32 +40,54 @@ public class VisionConstants {
         }
 
         public class CameraPositions {
-                public static Transform3d cam1 = new Transform3d(Units.inchesToMeters(-10.498),
-                                Units.inchesToMeters(15.274), Units.inchesToMeters(-10.354),
-                                new Rotation3d(0, Units.degreesToRadians(
-                                                15), Units.degreesToRadians(112)));
+                public static Transform3d cam1 = new Transform3d(
+                                Units.inchesToMeters(10.498),
+                                Units.inchesToMeters(15.274),
+                                Units.inchesToMeters(10.354),
+                                new Rotation3d(0,
+                                                Units.degreesToRadians(15),
+                                                Units.degreesToRadians(90-22)));
 
-                public static Transform3d cam2 = new Transform3d(Units.inchesToMeters(-11.339),
-                                Units.inchesToMeters(11.366), Units.inchesToMeters(-10.357),
-                                new Rotation3d(0, Units.degreesToRadians(15), Units.degreesToRadians(49.9)));
-
-                // DOES NOT EXIST YET
-                public static Transform3d cam3 = new Transform3d(Units.inchesToMeters(9.187),
-                                Units.inchesToMeters(4.529), Units.inchesToMeters(4.614),
-                                new Rotation3d(0, Units.degreesToRadians(4.9), Units.degreesToRadians(-10)));
-
-                public static Transform3d cam4 = new Transform3d(Units.inchesToMeters(11.886),
-                                Units.inchesToMeters(14.995), Units.inchesToMeters(-10.461),
-                                new Rotation3d(0, Units.degreesToRadians(4.9), Units.degreesToRadians(-10)));
-
-                public static Transform3d cam5 = new Transform3d(Units.inchesToMeters(12.839),
-                                Units.inchesToMeters(10.925), Units.inchesToMeters(10.447),
-                                new Rotation3d(0, Units.degreesToRadians(15), Units.degreesToRadians(35)));
+                public static Transform3d cam2 = new Transform3d(
+                                Units.inchesToMeters(11.339),
+                                Units.inchesToMeters(11.366),
+                                Units.inchesToMeters(10.357),
+                                new Rotation3d(0,
+                                                Units.degreesToRadians(-15),
+                                                Units.degreesToRadians(40 - 90)));
 
                 // DOES NOT EXIST YET
-                public static Transform3d cam6 = new Transform3d(Units.inchesToMeters(-9.745),
-                                Units.inchesToMeters(-11.177), Units.inchesToMeters(20.27),
-                                new Rotation3d(0, Units.degreesToRadians(-10), Units.degreesToRadians(-260 + 90)));
+                public static Transform3d cam3 = new Transform3d(
+                                Units.inchesToMeters(9.187),
+                                Units.inchesToMeters(-4.529),
+                                Units.inchesToMeters(4.614),
+                                new Rotation3d(0,
+                                                Units.degreesToRadians(4.9),
+                                                Units.degreesToRadians(-10)));
+
+                public static Transform3d cam4 = new Transform3d(
+                                Units.inchesToMeters(11.886),
+                                Units.inchesToMeters(14.995),
+                                Units.inchesToMeters(10.461),
+                                new Rotation3d(0,
+                                                Units.degreesToRadians(4.9),
+                                                Units.degreesToRadians(30)));
+
+                public static Transform3d cam5 = new Transform3d(
+                                Units.inchesToMeters(-12.839),
+                                Units.inchesToMeters(10.925),
+                                Units.inchesToMeters(10.447),
+                                new Rotation3d(0,
+                                                Units.degreesToRadians(15),
+                                                Units.degreesToRadians(35)));
+
+                public static Transform3d cam6 = new Transform3d(
+                                Units.inchesToMeters(-9.745),
+                                Units.inchesToMeters(-11.177),
+                                Units.inchesToMeters(20.27),
+                                new Rotation3d(0,
+                                                Units.degreesToRadians(10),
+                                                Units.degreesToRadians(-260 + 90)));
 
                 public static Transform3d[] cameraList = { cam1, cam2, cam3, cam4, cam5, cam6 };
         }

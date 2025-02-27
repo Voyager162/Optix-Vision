@@ -617,7 +617,7 @@ public class Swerve extends SubsystemBase {
     Pose3d pose = new Pose3d(getPose());
 
     Logger.recordOutput("Swerve/odometry", odometry);
-    Logger.recordOutput("swerve/odometry pose3d", pose);
+    Logger.recordOutput("Swerve/odometry pose3d", pose);
     Logger.recordOutput("Swerve/utilizeVision", utilizeVision);
 
     // gyro logging
