@@ -25,7 +25,7 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.ToPosConstants;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.utils.MiscConstants;
-import frc.robot.subsystems.leds.Led;
+import frc.robot.subsystems.leds.LED;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ private Field2d field2d = new Field2d();
   public static AlgaeRoller algaeRoller = new AlgaeRoller();
   public static CoralRoller coralRoller = new CoralRoller();
   public static ScoringRoller scoringRoller = new ScoringRoller();
-  public static Led led = new Led();
+  public static LED led = new LED();
   
 
   public static Elevator elevator = new Elevator();
