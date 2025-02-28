@@ -17,22 +17,17 @@ import frc.robot.subsystems.leds.LEDConstants.LEDPattern;
  */
 public class LedReal implements LedIO {
 
-    private AddressableLED LED1 = new AddressableLED(0); // port
-    // private AddressableLED LED2 = new AddressableLED(1); // port
+    private AddressableLED LED = new AddressableLED(0); // port
 
     private AddressableLEDBuffer LEDBuffer = new AddressableLEDBuffer(LEDConstants.length);
     private LEDPattern currentPattern = getTeamColorLED();
     private double brightness = 1;
 
     public LedReal() {
-        LED1.setLength(LEDBuffer.getLength());
-        LED1.setData(LEDBuffer);
-        LED1.start();
-        // LED2.setLength(LEDBuffer.getLength());
-        // LED2.setData(LEDBuffer);
-        // LED2.start();
+        LED.setLength(LEDBuffer.getLength());
+        LED.setData(LEDBuffer);
+        LED.start();
         setBrightness(brightness);
-        // setLEDPattern(LEDPattern.WHITE);
         setLEDPattern(getTeamColorLED());
     }
 
@@ -43,13 +38,10 @@ public class LedReal implements LedIO {
      */
     public LedReal(double brightness) {
         this.brightness = brightness;
-        LED1.setLength(LEDBuffer.getLength());
-        LED1.setData(LEDBuffer);
-        LED1.start();
-        // LED2.setLength(LEDBuffer.getLength());
-        // LED2.setData(LEDBuffer);
-        // LED2.start();
-        // setLEDPattern(getTeamColorLED());
+        LED.setLength(LEDBuffer.getLength());
+        LED.setData(LEDBuffer);
+        LED.start();
+        setLEDPattern(getTeamColorLED());
         setLEDPattern(LEDPattern.WHITE);
         setBrightness(brightness);
     }
@@ -134,8 +126,7 @@ public class LedReal implements LedIO {
         //     led.setLEDPattern(LEDPattern.WHITE);
         // }
 
-        LED1.setData(LEDBuffer);
-        // LED2.setData(LEDBuffer);
+        LED.setData(LEDBuffer);
 
     }
 
