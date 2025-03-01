@@ -62,9 +62,8 @@ public class SwerveDefaultCommand extends Command {
    linearMagnitude = Math.copySign(linearMagnitude * linearMagnitude, linearMagnitude);
    turningMagnitude = Math.copySign(turningMagnitude * turningMagnitude, turningMagnitude);
 
-
-
    double driveSpeedMPS = linearMagnitude * Robot.swerve.getMaxDriveSpeed();
+
    double turningSpeedRadPerSecond = turningMagnitude * Robot.swerve.getMaxAngularSpeed();
 
    // Calcaulate new linear components
