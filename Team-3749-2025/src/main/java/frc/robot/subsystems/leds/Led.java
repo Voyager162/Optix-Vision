@@ -9,16 +9,17 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.simulation.AddressableLEDSim;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.leds.LEDConstants.LEDColor;
 import frc.robot.subsystems.leds.LEDConstants.StatusIndicator;
 import edu.wpi.first.wpilibj.LEDPattern;
 
+import frc.robot.subsystems.leds.real.LedReal;
+import frc.robot.subsystems.leds.sim.LedSim;
+
 public class Led extends SubsystemBase {
-
-    private AddressableLED leds;
-
     private AddressableLEDBuffer ledBuffer;
 
     private LEDColor desiredPattern = getTeamColorLED();
@@ -29,11 +30,13 @@ public class Led extends SubsystemBase {
     private double brightness = 1;
 
     public Led() {
-        leds = new AddressableLED(LEDConstants.ledPort);
         ledBuffer = new AddressableLEDBuffer(LEDConstants.length);
-        leds.setLength(LEDConstants.length);
-        leds.setData(ledBuffer);
-        leds.start();
+
+        if (Robot.isReal()) {
+            new LedReal(LEDConstants.ledPort, ledBuffer);
+        } else {
+            new LedSim(LEDConstants.ledPort, ledBuffer);
+        }
     }
 
     /**
@@ -54,6 +57,10 @@ public class Led extends SubsystemBase {
     private LEDColor getTeamColorLED() {
         Optional<Alliance> team = DriverStation.getAlliance(); // i hate doing it this way but it throws an error
                                                                // without it
+        if (!team.isPresent()) {
+            return LEDColor.NO_TEAM;
+        }
+
         return team.get() == Alliance.Blue ? LEDColor.BLUE_ALLIANCE : LEDColor.RED_ALLIANCE;
     }
 
@@ -93,7 +100,6 @@ public class Led extends SubsystemBase {
         brightness = setBrightness;
     }
 
-    // runs every 0.02 sec
     @Override
     public void periodic() {
         switch (statusIndicator) {
@@ -103,7 +109,7 @@ public class Led extends SubsystemBase {
                     return;
                 }
                 setLEDColor(LEDColor.BATTERY_GOOD);
-            break;
+                break;
             case PIECE:
                 if (Robot.coralRoller.hasPiece()) {
                     setLEDColor(LEDColor.CORAL_ARM_HAS_PIECE);
@@ -114,16 +120,16 @@ public class Led extends SubsystemBase {
                     return;
                 }
                 setLEDColor(LEDColor.OFF);
-            break;
+                break;
             case COLOR:
                 setLEDColor(getCurrentPattern());
-            break;
+                break;
             case TEAM:
                 setLEDColor(getTeamColorLED());
-            break;
+                break;
             default:
                 setLEDColor(getTeamColorLED());
-            break;
+                break;
         }
         setStripColor();
     }

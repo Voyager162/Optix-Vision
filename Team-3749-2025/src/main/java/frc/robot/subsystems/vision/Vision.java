@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.subsystems.vision.VisionIO.*;
 import frc.robot.subsystems.vision.real.Photonvision;
+import frc.robot.subsystems.vision.sim.VisionSim;
 
 public class Vision extends SubsystemBase {
     @SuppressWarnings("unused")
@@ -14,7 +15,7 @@ public class Vision extends SubsystemBase {
         if (Robot.isReal()) {
             visionIO = new Photonvision(visionData);
         } else {
-            throw new Error("Vision simulation not implemented");
+            visionIO = new VisionSim();
         }
         
     }
