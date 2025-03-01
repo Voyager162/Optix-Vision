@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.util.Color;
 public class LEDConstants {
 
     public static final int length = 18;
-    public static final int[] ledPorts = {0, 1};
+    public static final int ledPort = 0;
 
     public static enum StatusIndicator {
         BATTERY,

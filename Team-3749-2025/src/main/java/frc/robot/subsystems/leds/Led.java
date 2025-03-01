@@ -15,11 +15,11 @@ import frc.robot.subsystems.leds.LEDConstants.LEDColor;
 import frc.robot.subsystems.leds.LEDConstants.StatusIndicator;
 import edu.wpi.first.wpilibj.LEDPattern;
 
-public class LED extends SubsystemBase {
+public class Led extends SubsystemBase {
 
-    private AddressableLED[] leds;
+    private AddressableLED leds;
 
-    private AddressableLEDBuffer[] ledBuffers;
+    private AddressableLEDBuffer ledBuffer;
 
     private LEDColor desiredPattern = getTeamColorLED();
     private LEDColor currentPattern = LEDColor.OFF;
@@ -28,16 +28,12 @@ public class LED extends SubsystemBase {
 
     private double brightness = 1;
 
-    public LED() {
-        for (int port : LEDConstants.ledPorts) {
-            leds[port] = new AddressableLED(port);
-            ledBuffers[port] = new AddressableLEDBuffer(LEDConstants.length);
-
-            leds[port].setLength(ledBuffers[port].getLength());
-            leds[port].setData(ledBuffers[port]);
-
-            leds[port].start();
-        }
+    public Led() {
+        leds = new AddressableLED(LEDConstants.ledPort);
+        ledBuffer = new AddressableLEDBuffer(LEDConstants.length);
+        leds.setLength(LEDConstants.length);
+        leds.setData(ledBuffer);
+        leds.start();
     }
 
     /**
@@ -45,9 +41,8 @@ public class LED extends SubsystemBase {
      * 
      * @param brightness
      */
-    public LED(double brightness) {
+    public Led(double brightness) {
         this();
-
         this.brightness = brightness;
     }
 
@@ -62,25 +57,15 @@ public class LED extends SubsystemBase {
         return team.get() == Alliance.Blue ? LEDColor.BLUE_ALLIANCE : LEDColor.RED_ALLIANCE;
     }
 
-    private void setStripColor(int strip) {
+    private void setStripColor() {
         if (desiredPattern == currentPattern) {
             return;
         }
 
-        if (DriverStation.isEnabled()) {
-            brightness = 1;
-        }
-
         LEDPattern setPattern = LEDPattern.solid(desiredPattern.color).atBrightness(Percent.of(brightness * 100));
-        setPattern.applyTo(ledBuffers[strip]);
+        setPattern.applyTo(ledBuffer);
 
         currentPattern = desiredPattern;
-    }
-
-    private void setAllStrips() {
-        for (int strip : LEDConstants.ledPorts) {
-            setStripColor(strip);
-        }
     }
 
     public void setLEDColor(LEDColor color) {
@@ -115,27 +100,32 @@ public class LED extends SubsystemBase {
             case BATTERY:
                 if (RobotController.getBatteryVoltage() < 8) {
                     setLEDColor(LEDColor.BATTERY_LOW);
-                } else {
-                    setLEDColor(LEDColor.BATTERY_GOOD);
+                    return;
                 }
-                break;
+                setLEDColor(LEDColor.BATTERY_GOOD);
+            break;
             case PIECE:
                 if (Robot.coralRoller.hasPiece()) {
                     setLEDColor(LEDColor.CORAL_ARM_HAS_PIECE);
-                } else if (Robot.scoringRoller.hasPiece()) {
-                    setLEDColor(LEDColor.CHUTE_HAS_PIECE);
-                } else {
-                    setLEDColor(LEDColor.OFF);
+                    return;
                 }
-                break;
+                if (Robot.scoringRoller.hasPiece()) {
+                    setLEDColor(LEDColor.CHUTE_HAS_PIECE);
+                    return;
+                }
+                setLEDColor(LEDColor.OFF);
+            break;
             case COLOR:
-                break;
+                setLEDColor(getCurrentPattern());
+            break;
             case TEAM:
+                setLEDColor(getTeamColorLED());
+            break;
             default:
                 setLEDColor(getTeamColorLED());
+            break;
         }
-
-        setAllStrips();
+        setStripColor();
     }
 
 }
