@@ -24,7 +24,14 @@ public class SwerveModuleSpark implements SwerveModuleIO {
     private double absoluteEncoderOffsetRad;
 
     public SwerveModuleSpark(int index) {
-        drive = new OptixSpark(MotorConstants.driveMotorIds[index], OptixSpark.Type.SPARKFLEX);
+        if (index == 1){
+            drive = new OptixSpark(MotorConstants.driveMotorIds[index], OptixSpark.Type.SPARKFLEX);
+
+        } else {
+
+            drive = new OptixSpark(MotorConstants.driveMotorIds[index], OptixSpark.Type.SPARKMAX);
+        }
+
         drive.setPositionConversionFactor(
                 1 / MotorConstants.driveMotorGearRatio * Math.PI * DrivetrainConstants.wheelDiameterMeters);
         drive.setVelocityConversionFactor(

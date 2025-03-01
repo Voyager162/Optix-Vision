@@ -339,11 +339,7 @@ public class JoystickIO {
 
                 // pilot.a().onTrue(new IntakeFloor());
                 // operator.b().onTrue(new Handoff());
-                operator.a().onTrue(Commands.runOnce(() -> Robot.led.setLEDColor(LEDColor.BATTERY_GOOD)));
-                operator.b().onTrue(Commands.runOnce(() -> Robot.led.setLEDColor(LEDColor.BATTERY_LOW)));
-                operator.x().onTrue(Commands.runOnce(() -> Robot.led.setLEDColor(LEDColor.BLUE_ALLIANCE)));
-                operator.y().onTrue(Commands.runOnce(() -> Robot.led.setLEDColor(LEDColor.RED_ALLIANCE)));
-
+                operator.a().onTrue(Commands.runOnce(() -> Robot.elevator.setState(ElevatorStates.L2)));
                 // pilot.y().onTrue(new ScoreL1());
 
         }
