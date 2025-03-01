@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.leds.Led;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
 
@@ -25,8 +26,6 @@ import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.ToPosConstants;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.utils.MiscConstants;
-import frc.robot.subsystems.leds.Led;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +45,8 @@ private Field2d field2d = new Field2d();
   public static AlgaeRoller algaeRoller = new AlgaeRoller();
   public static CoralRoller coralRoller = new CoralRoller();
   public static ScoringRoller scoringRoller = new ScoringRoller();
-  public static Led led = new Led();
+  public static Led led = new Led(); //my old LedIO code got deleted so i guess 
+  //just comment out this subsystem when you do sim or this will crash
   
 
   public static Elevator elevator = new Elevator();

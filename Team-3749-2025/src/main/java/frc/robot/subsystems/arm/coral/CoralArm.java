@@ -16,7 +16,6 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.arm.coral.CoralArmConstants.ArmStates;
 import frc.robot.subsystems.arm.coral.CoralArmIO.ArmData;
 
 import frc.robot.subsystems.arm.coral.real.CoralArmSparkMax;

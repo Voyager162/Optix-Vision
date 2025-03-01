@@ -1,33 +1,32 @@
 package frc.robot.subsystems.leds;
 
+import edu.wpi.first.wpilibj.util.Color;
+
 public class LEDConstants {
 
     public static final int length = 18;
+    public static final int ledPort = 0;
 
-    public static enum LEDPattern {
-        RED(255, 0, 0), 
-        BLUE(0, 0, 255), 
-        GREEN(0, 255, 0), 
-        YELLOW(255, 255, 0), 
-        WHITE(255, 255, 255), 
-        NOTHING(0, 0, 0);
-
-        final int R;
-        final int G;
-        final int B;
-
-        /**
-         * Takes in the parameters of R, G, and B to set the RGB color of a color in the enum
-         * 
-         * @param R
-         * @param G
-         * @param B
-         */
-        LEDPattern (int R, int G, int B){
-            this.R = R;
-            this.G = G;
-            this.B = B;
-        }
+    public static enum StatusIndicator {
+        BATTERY,
+        PIECE,
+        COLOR,
+        TEAM
     }
 
+    public static enum LEDColor {
+        RED_ALLIANCE(Color.kRed),
+        BLUE_ALLIANCE(Color.kBlue),
+        CHUTE_HAS_PIECE(Color.kGreen),
+        CORAL_ARM_HAS_PIECE(Color.kPurple),
+        OFF(Color.kBlack),
+        BATTERY_LOW(Color.kOrange),
+        BATTERY_GOOD(Color.kWhite);
+
+        Color color;
+
+        LEDColor(Color color) {
+            this.color = color;
+        }
+    }
 }

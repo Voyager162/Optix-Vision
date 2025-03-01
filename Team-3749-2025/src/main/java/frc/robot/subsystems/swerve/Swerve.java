@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.swerve;
 
-import static edu.wpi.first.units.Units.Rotation;
-
 import org.littletonrobotics.junction.Logger;
 
 import choreo.trajectory.SwerveSample;
@@ -34,7 +32,6 @@ import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 import frc.robot.subsystems.swerve.sim.GyroSim;
 import frc.robot.subsystems.swerve.sim.SwerveModuleSim;
 import frc.robot.utils.LoggedTunableNumber;
-import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 import frc.robot.subsystems.swerve.SwerveConstants.ControlConstants;
 import frc.robot.subsystems.swerve.SwerveConstants.DrivetrainConstants;
