@@ -85,7 +85,7 @@ public class CoralArmSparkMax implements CoralArmIO {
 	public void setVoltage(double volts) {
 		double inputVolts = UtilityFunctions.applyDeadband(volts, MotorControllerConstants.deadbandVoltage / 3.0);
 		inputVolts = MathUtil.clamp(volts, -12, 12);
-		// motor.setVoltage(inputVolts);
+		motor.setVoltage(inputVolts);
 	}
 
 	private double getPosition() {

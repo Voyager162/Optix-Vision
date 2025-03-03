@@ -362,6 +362,7 @@ public class JoystickIO {
                 pilot.y().onTrue(new ScoreL234(ElevatorStates.L4));
                 pilot.leftTrigger().onTrue(new IntakeFloor());
                 pilot.rightTrigger().onTrue(new CoralIntakeSource());
+                
                 pilot.povUp().onTrue(new Handoff());
 
         }
