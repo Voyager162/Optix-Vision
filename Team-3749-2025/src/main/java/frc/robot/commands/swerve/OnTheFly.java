@@ -45,7 +45,7 @@ public class OnTheFly extends Command {
      */
     @Override
     public void initialize() {
-        System.out.println("epic fail");
+        // System.out.println("epic fail");
         currentlyThreading = true;
         endpoint = Robot.swerve.getPPSetpoint().setpoint;
         
@@ -63,7 +63,7 @@ public class OnTheFly extends Command {
                     SwerveConstants.ControlConstants.maxAngularAccelerationRadiansPerSecondSquared // Max angular
                                                                                                    // acceleration
             );
-            System.out.println("path generation took: " + debugTimer.get());
+            // System.out.println("path generation took: " + debugTimer.get());
             debugTimer.stop();
 
             // If path generation fails, stop the command

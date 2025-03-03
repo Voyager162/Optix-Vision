@@ -16,7 +16,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -372,6 +371,7 @@ public class Swerve extends SubsystemBase {
 
   // this is only used for testing, pressing B to cycle through all of the stuff
   public void cyclePPSetpoint() {
+    isOTF = false;
     currentPPSetpointIndex++;
     if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.ALGAE &&
         currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 25) {
@@ -389,6 +389,8 @@ public class Swerve extends SubsystemBase {
     if (currentPPSetpointIndex >= ToPosConstants.Setpoints.PPSetpoints.values().length) {
       currentPPSetpointIndex = 0;
     }
+    showOTFEndPoint();
+    showOTFApproachPoint();
   }
 
   public PPSetpoints getPPSetpoint() {

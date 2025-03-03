@@ -96,6 +96,19 @@ public class ToPosConstants {
         }
 
         /**
+         * Return the correct offset position based on a distance to offset relative to the angle
+         * @param coralPose Pose2d of the original coralstation Pose2d
+         *
+         */
+        public static Pose2d coralTrig(Pose2d coralPose)
+        {
+            double angle = coralPose.getRotation().getRadians()+Math.PI/2;
+            double offsetDistance = -Units.inchesToMeters(15); //meters
+            return new Pose2d(coralPose.getX() + offsetDistance*Math.cos(angle),
+            coralPose.getY() + offsetDistance*Math.sin(angle),new Rotation2d(angle-Math.PI/2));
+        }
+
+        /**
          * @param reefPose  the center point of the side of the reef
          * @param direction translate the position left, right, or backward
          */
@@ -216,9 +229,9 @@ public class ToPosConstants {
 
         // ======= Coral Station Setpoints =======
         // Positions for placing game elements at the coral stations
-        public static Pose2d coralLeft = adjustPose(0.851154, 7.39648, Math.toRadians(-55), true); // Left side of coral
+        public static Pose2d coralLeft = coralTrig(rotatePose(adjustPose(0.851154, 7.39648, Math.toRadians(-55), true),90)); // Left side of coral
                                                                                                    // station
-        public static Pose2d coralRight = adjustPose(0.851154, 0.65532, Math.toRadians(55), true); // Right side of
+        public static Pose2d coralRight = coralTrig(rotatePose(adjustPose(0.851154, 0.65532, Math.toRadians(55), true),90)); // Right side of
                                                                                                    // coral station
         public static Pose2d processor = adjustPose(5.987542, -0.00381, Math.toRadians(-90), false); // Processor
                                                                                                      // location
