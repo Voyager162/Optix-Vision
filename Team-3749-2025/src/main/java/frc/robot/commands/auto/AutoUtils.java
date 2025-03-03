@@ -49,8 +49,8 @@ public class AutoUtils {
         // for us to choose before hitting the automonous button
 
         setupFactory();
-        setupChooser();
         setupFlipChooser();
+        setupChooser();
     }
 
     /**
@@ -66,7 +66,7 @@ public class AutoUtils {
         if (flippedChooser.getSelected()) {
         return factoryFlipped;
         }
-        return factory;
+        return factory; 
 
     }
 
@@ -328,6 +328,7 @@ public class AutoUtils {
         }
         Command Coralintake = new CoralIntakeSource();
         trajectory.atPose(endingPose2d, 1, 1.57).onTrue(Coralintake);
+
         trajectory.done().and(() -> Coralintake.isScheduled())
                 .onTrue(
                         Commands.run(() -> {

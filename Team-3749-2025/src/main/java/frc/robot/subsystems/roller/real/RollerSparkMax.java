@@ -79,6 +79,7 @@ public class RollerSparkMax implements RollerIO {
     public void setVoltage(double volts) {
         volts = MathUtil.clamp(volts, -12, 12);
         volts = UtilityFunctions.applyDeadband(volts, MotorControllerConstants.deadbandVoltage);
+        
         rollerMotor.setVoltage(volts);
     }
 

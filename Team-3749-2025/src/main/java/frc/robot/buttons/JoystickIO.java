@@ -40,7 +40,7 @@ import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.leds.LEDConstants;
 import frc.robot.subsystems.swerve.ToPos;
-import frc.robot.commands.integration.Climb;
+import frc.robot.commands.integration.PrepareClimb;
 import frc.robot.utils.MiscConstants.ControllerConstants;
 
 /**
@@ -339,14 +339,29 @@ public class JoystickIO {
 
                 // pilot.a().onTrue(new IntakeFloor());
                 // operator.b().onTrue(new Handoff());
-                
-                pilot.a().onTrue(new ScoreL1());
-                pilot.x().onTrue(new ScoreL234(ElevatorStates.L2));
-                pilot.b().onTrue(new ScoreL234(ElevatorStates.L3));
-                pilot.y().onTrue(new ScoreL234(ElevatorStates.L4));
-                pilot.leftTrigger().onTrue(new IntakeFloor());
-                pilot.rightTrigger().onTrue(new IntakeSource());
-                pilot.povUp().onTrue(new Handoff());
+
+                pilot.a().onTrue(new PrepareClimb());
+                pilot.b().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(3), Robot.climbArm))
+                                .onFalse(Commands.runOnce(() -> Robot.climbArm.setVoltage(0), Robot.climbArm));
+
+                pilot.x().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(6), Robot.climbArm))
+                                .onFalse(Commands.runOnce(() -> Robot.climbArm.setVoltage(0), Robot.climbArm));
+                pilot.y().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(-1.5), Robot.climbArm))
+                                .onFalse(Commands.runOnce(() -> Robot.climbArm.setVoltage(0), Robot.climbArm));
+                pilot.leftBumper().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(9), Robot.climbArm))
+                                .onFalse(Commands.runOnce(() -> Robot.climbArm.setVoltage(0), Robot.climbArm));
+                pilot.rightBumper().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(12), Robot.climbArm))
+                                .onFalse(Commands.runOnce(() -> Robot.climbArm.setVoltage(0), Robot.climbArm));
+
+                // pilot.a().and()
+
+                // pilot.a().onTrue(new ScoreL1());
+                // pilot.x().onTrue(new ScoreL234(ElevatorStates.L2));
+                // pilot.b().onTrue(new ScoreL234(ElevatorStates.L3));
+                // pilot.y().onTrue(new ScoreL234(ElevatorStates.L4));
+                // pilot.leftTrigger().onTrue(new IntakeFloor());
+                // pilot.rightTrigger().onTrue(new IntakeSource());
+                // pilot.povUp().onTrue(new Handoff());
                 // pilot.leftBumper().onTrue(new ScoreL1());
                 // pilot.rightBumper().onTrue(new ScoreL1());
 

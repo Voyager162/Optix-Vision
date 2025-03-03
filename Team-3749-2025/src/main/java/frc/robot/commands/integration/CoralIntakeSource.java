@@ -1,5 +1,6 @@
 package frc.robot.commands.integration;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
@@ -11,27 +12,34 @@ import frc.robot.subsystems.roller.RollerConstants.RollerStates;
  */
 public class CoralIntakeSource extends Command {
 
+    private double hasPieceTimeStamp = 0;
+
     public CoralIntakeSource() {
         // ensures other commands do not infere while this is active
-        addRequirements(Robot.getAllSuperStructureSubsystems()); 
+        addRequirements(Robot.getAllSuperStructureSubsystems());
     }
 
     @Override
     public void initialize() {
-        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
+        Robot.coralArm.setState(CoralArmConstants.ArmStates.CORAL_STATION);
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.scoringRoller.setState(RollerStates.STOP);
         Robot.coralRoller.setState(RollerStates.INTAKE);
-    }    
+    }
 
     @Override
     public void execute() {
+        if (Robot.coralRoller.hasPiece()) {
+            hasPieceTimeStamp = Timer.getFPGATimestamp();
+        }
     }
 
     @Override
     public void end(boolean interrupted) {
-        Robot.coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
+        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
         Robot.coralRoller.setState(RollerStates.MAINTAIN);
+        hasPieceTimeStamp = 0;
+
     }
 
     /**
@@ -39,6 +47,6 @@ public class CoralIntakeSource extends Command {
      */
     @Override
     public boolean isFinished() {
-        return Robot.coralRoller.hasPiece() && this.isScheduled();
+        return hasPieceTimeStamp - Timer.getFPGATimestamp() > 0.2 && this.isScheduled();
     }
 }

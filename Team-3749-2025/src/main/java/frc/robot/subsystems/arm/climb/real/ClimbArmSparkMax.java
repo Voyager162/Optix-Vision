@@ -41,7 +41,7 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 		frontMotor.setCurrentLimit(MotorControllerConstants.standardStallLimit,
 				MotorControllerConstants.standardFreeLimit);
 		frontMotor.setInverted(true);
-		frontMotor.setBrakeMode(false);
+		frontMotor.setBrakeMode(true);
 
 		frontMotor.setVelocityConversionFactor((1 / ClimbArmConstants.armGearing) *
 				(2 * Math.PI / 60.0));

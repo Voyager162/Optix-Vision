@@ -13,7 +13,7 @@ import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
  */
 public class IntakeFloor extends Command {
 
-    private double pieceRecievedTimestamp = 0;
+    private double hasPieceTimeStamp = 0;
 
     public IntakeFloor() {
         // ensures other commands do not infere while this is active
@@ -30,8 +30,8 @@ public class IntakeFloor extends Command {
 
     @Override
     public void execute() {
-        if (Robot.coralRoller.hasPiece() && pieceRecievedTimestamp == 0) {
-            pieceRecievedTimestamp = Timer.getFPGATimestamp();
+        if (Robot.coralRoller.hasPiece() && hasPieceTimeStamp == 0) {
+            hasPieceTimeStamp = Timer.getFPGATimestamp();
         }
 
     }
@@ -40,7 +40,7 @@ public class IntakeFloor extends Command {
     public void end(boolean interrupted) {
         Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
-        pieceRecievedTimestamp = 0;
+        hasPieceTimeStamp = 0;
     }
 
     /**
@@ -48,7 +48,7 @@ public class IntakeFloor extends Command {
      */
     @Override
     public boolean isFinished() {
-        return Robot.coralRoller.hasPiece() && Timer.getFPGATimestamp() - pieceRecievedTimestamp > 0.15
+        return Timer.getFPGATimestamp() - hasPieceTimeStamp > 0.15
                 && this.isScheduled();
     }
 }
