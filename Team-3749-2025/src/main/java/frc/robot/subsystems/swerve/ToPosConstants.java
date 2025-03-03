@@ -103,7 +103,7 @@ public class ToPosConstants {
         public static Pose2d coralTrig(Pose2d coralPose)
         {
             double angle = coralPose.getRotation().getRadians()+Math.PI/2;
-            double offsetDistance = -Units.inchesToMeters(15); //meters
+            double offsetDistance = -Units.inchesToMeters(2); //meters
             return new Pose2d(coralPose.getX() + offsetDistance*Math.cos(angle),
             coralPose.getY() + offsetDistance*Math.sin(angle),new Rotation2d(angle-Math.PI/2));
         }
