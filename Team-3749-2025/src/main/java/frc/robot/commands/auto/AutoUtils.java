@@ -63,9 +63,9 @@ public class AutoUtils {
 
     public static AutoFactory getAutoFactory() {
 
-        // if (flippedChooser.getSelected()) {
-        // return factoryFlipped;
-        // }
+        if (flippedChooser.getSelected()) {
+        return factoryFlipped;
+        }
         return factory;
 
     }

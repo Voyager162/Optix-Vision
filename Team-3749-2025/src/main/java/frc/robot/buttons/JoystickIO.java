@@ -339,8 +339,16 @@ public class JoystickIO {
 
                 // pilot.a().onTrue(new IntakeFloor());
                 // operator.b().onTrue(new Handoff());
-                operator.a().onTrue(Commands.runOnce(() -> Robot.elevator.setState(ElevatorStates.L2)));
-                // pilot.y().onTrue(new ScoreL1());
+                
+                pilot.a().onTrue(new ScoreL1());
+                pilot.x().onTrue(new ScoreL234(ElevatorStates.L2));
+                pilot.b().onTrue(new ScoreL234(ElevatorStates.L3));
+                pilot.y().onTrue(new ScoreL234(ElevatorStates.L4));
+                pilot.leftTrigger().onTrue(new IntakeFloor());
+                pilot.rightTrigger().onTrue(new IntakeSource());
+                pilot.povUp().onTrue(new Handoff());
+                // pilot.leftBumper().onTrue(new ScoreL1());
+                // pilot.rightBumper().onTrue(new ScoreL1());
 
         }
 

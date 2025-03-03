@@ -126,7 +126,7 @@ public class RollerConstants {
                 INTAKE(50, 140, 200),
                 MAINTAIN(0, 0, 0),
                 OUTTAKE(-50, -42.5, Scoring.maxVelocity.get()), // -42.5
-                SCORE(0, -100, Scoring.maxVelocity.get()), // -42.5
+                SCORE(0, -50, Scoring.maxVelocity.get()), // -42.5
                 STOP(0, 0, 0);
 
                 public final double algaeVelocity;
