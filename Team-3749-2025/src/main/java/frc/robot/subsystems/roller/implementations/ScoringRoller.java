@@ -28,6 +28,7 @@ public class ScoringRoller extends Roller {
     private PhotoelectricIO photoelectricIO;
     private boolean hasPiece = true;
     private boolean routineStarted = false;
+    private boolean isAlgaeMode = false;
 
     public ScoringRoller() {
         super(Implementations.SCORING, FF(), positionPID(), velocityPID());
@@ -56,8 +57,23 @@ public class ScoringRoller extends Roller {
                 RollerConstants.Scoring.kDVelocity.get());
     }
 
+    public boolean getIsAlgaeMode()
+    {
+        return isAlgaeMode;
+    }
+
+    public void setIsAlgaeMode(boolean isAlgaeMode)
+    {
+        this.isAlgaeMode = isAlgaeMode;
+    }
+
     @Override
     public void outtake() {
+        if(isAlgaeMode)
+        {
+            setVelocity(RollerStates.OUTTAKE.algaeVelocity);
+            return;
+        }
         setVelocity(RollerStates.OUTTAKE.scoringVelocity);
     }
     @Override
@@ -75,6 +91,11 @@ public class ScoringRoller extends Roller {
      */
     @Override
     public void intake() {
+        if(isAlgaeMode)
+        {
+            setVelocity(RollerConstants.RollerStates.INTAKE.algaeVelocity);
+            return;
+        }
         if (!rollerData.sensorTripped) {
             setVelocity(RollerConstants.RollerStates.INTAKE.scoringVelocity);
             return;
@@ -108,6 +129,8 @@ public class ScoringRoller extends Roller {
 
         Logger.recordOutput("Roller/ScoringRoller/hasPiece", hasPiece);
         Logger.recordOutput("Roller/ScoringRoller/setInitalState", routineStarted);
+        Logger.recordOutput("Roller/ScoringRoller/isAlgaeMode", isAlgaeMode);
+        
 
         // routineStarted is true when the routine begins in Autos
         if (Autos.isRoutineStarted() && !routineStarted) {

@@ -19,7 +19,6 @@ import frc.robot.subsystems.leds.Led;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
 
-import frc.robot.subsystems.roller.implementations.AlgaeRoller;
 import frc.robot.subsystems.roller.implementations.CoralRoller;
 import frc.robot.subsystems.roller.implementations.ScoringRoller;
 import frc.robot.subsystems.swerve.Swerve;
@@ -42,7 +41,6 @@ private Field2d field2d = new Field2d();
   private Command m_autonomousCommand;
 
   public static Swerve swerve = new Swerve();
-  public static AlgaeRoller algaeRoller = new AlgaeRoller();
   public static CoralRoller coralRoller = new CoralRoller();
   public static ScoringRoller scoringRoller = new ScoringRoller();
   public static Led led = new Led();
@@ -106,7 +104,7 @@ private Field2d field2d = new Field2d();
   }
 
   public static Subsystem[] getAllSuperStructureSubsystems() {
-    return new Subsystem[] {algaeRoller, coralRoller, scoringRoller, elevator, coralArm, climbArm};
+    return new Subsystem[] {coralRoller, scoringRoller, elevator, coralArm, climbArm};
   }
 
   @Override

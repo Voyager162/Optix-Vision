@@ -137,8 +137,8 @@ public abstract class Roller extends SubsystemBase {
         switch (implementation) {
             case CORAL:
                 return UtilityFunctions.withinMargin(22.5, rollerData.rollerVelocityRadPerSec, rollerState.coralVelocity);
-            case ALGAE:
-                return UtilityFunctions.withinMargin(8, rollerData.rollerVelocityRadPerSec, rollerState.algaeVelocity);
+            // case ALGAE:
+            //     return UtilityFunctions.withinMargin(8, rollerData.rollerVelocityRadPerSec, rollerState.algaeVelocity);
             case SCORING:
                 return UtilityFunctions.withinMargin(8, rollerData.rollerVelocityRadPerSec,
                         rollerState.scoringVelocity);

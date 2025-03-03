@@ -113,12 +113,12 @@ public class JoystickIO {
         private static final OuttakeCoral outtakeCoral = new OuttakeCoral();
         private static final ScoreL1 scoreL1 = new ScoreL1();
         private static final ScoreL234 scoreL4 = new ScoreL234(ElevatorStates.L4);
-        private static final RunRoller algaeRun = new RunRoller(Robot.algaeRoller);
+        // private static final RunRoller algaeRun = new RunRoller(Robot.algaeRoller);
         private static final RunRoller coralRunIntake = new RunRoller(Robot.coralRoller);
         private static final OuttakeRoller coralRunOuttake = new OuttakeRoller(Robot.coralRoller);
         private static final RunRoller scoringRun = new RunRoller(Robot.scoringRoller);
 
-        private static final MaintainCommand algaeMaintain = new MaintainCommand(Robot.algaeRoller);
+        // private static final MaintainCommand algaeMaintain = new MaintainCommand(Robot.algaeRoller);
         private static final MaintainCommand coralMaintain = new MaintainCommand(Robot.coralRoller);
         private static final MaintainCommand scoringMaintain = new MaintainCommand(Robot.scoringRoller);
 

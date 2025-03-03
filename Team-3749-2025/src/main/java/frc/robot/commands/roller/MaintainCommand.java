@@ -26,7 +26,6 @@ public class MaintainCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        Robot.algaeRoller.setState(RollerStates.STOP);
         Robot.coralRoller.setState(RollerStates.STOP);
         Robot.scoringRoller.setState(RollerStates.STOP);
     }

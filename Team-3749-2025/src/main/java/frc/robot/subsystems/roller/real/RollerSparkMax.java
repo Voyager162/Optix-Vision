@@ -4,7 +4,6 @@ import com.revrobotics.spark.ClosedLoopSlot;
 
 import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.roller.RollerIO;
-import frc.robot.subsystems.roller.RollerConstants.Algae;
 import frc.robot.subsystems.roller.RollerConstants.Coral;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
 import frc.robot.subsystems.roller.RollerConstants.Scoring;
@@ -24,14 +23,14 @@ public class RollerSparkMax implements RollerIO {
     public RollerSparkMax(Implementations implementation) {
 
         switch (implementation) {
-            case ALGAE:
-                rollerMotor = new OptixSpark(Algae.motorId, OptixSpark.Type.SPARKMAX);
-                rollerMotor.setPositionConversionFactor(2 * Math.PI / Algae.gearRatio);
-                rollerMotor.setVelocityConversionFactor((2 * Math.PI / Algae.gearRatio) / 60.0);
-                rollerMotor.setInverted(Algae.inverted);
-                rollerMotor.setCurrentLimit(MotorControllerConstants.relaxedStallLimit,
-                        MotorControllerConstants.relaxedFreeLimit);
-                break;
+            // case ALGAE:
+            //     rollerMotor = new OptixSpark(Algae.motorId, OptixSpark.Type.SPARKMAX);
+            //     rollerMotor.setPositionConversionFactor(2 * Math.PI / Algae.gearRatio);
+            //     rollerMotor.setVelocityConversionFactor((2 * Math.PI / Algae.gearRatio) / 60.0);
+            //     rollerMotor.setInverted(Algae.inverted);
+            //     rollerMotor.setCurrentLimit(MotorControllerConstants.relaxedStallLimit,
+            //             MotorControllerConstants.relaxedFreeLimit);
+            //     break;
             case SCORING:
                 rollerMotor = new OptixSpark(Scoring.motorId, OptixSpark.Type.SPARKMAX);
                 rollerMotor.setPositionConversionFactor(2 * Math.PI / Scoring.gearRatio);

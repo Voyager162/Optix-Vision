@@ -9,40 +9,40 @@ package frc.robot.subsystems.roller;
 import frc.robot.utils.LoggedTunableNumber;
 
 public class RollerConstants {
-        public static final class Algae {
-                public static final int motorId = 22;
-                public static final boolean inverted = false;
+        // public static final class Algae {
+        //         // public static final int motorId = 22;
+        //         public static final boolean inverted = false;
 
-        public static final double momentOfInertia = 0.04;
-        public static final double gearRatio = 9.0;
-        public static final double measurementNoise = 0.0;
+        // public static final double momentOfInertia = 0.04;
+        // public static final double gearRatio = 9.0;
+        // public static final double measurementNoise = 0.0;
 
-                public static LoggedTunableNumber kPVelocity = new LoggedTunableNumber(
-                                " rollers/algaeRoller/kPVelocity", 0.0);
-                public static LoggedTunableNumber kIVelocity = new LoggedTunableNumber(
-                                " rollers/algaeRoller/kIVelocity", 0.0);
-                public static LoggedTunableNumber kDVelocity = new LoggedTunableNumber(
-                                " rollers/algaeRoller/kDVelocity", 0.0);
-                public static LoggedTunableNumber kSVelocity = new LoggedTunableNumber(
-                                " rollers/algaeRoller/kSVelocity", 0.35);
-                public static LoggedTunableNumber kVVelocity = new LoggedTunableNumber(
-                                " rollers/algaeRoller/kVVelocity", 0.042);
-                public static LoggedTunableNumber kAVelocity = new LoggedTunableNumber(
-                                " rollers/algaeRoller/kAVelocity", 0.0124);
+        //         public static LoggedTunableNumber kPVelocity = new LoggedTunableNumber(
+        //                         " rollers/algaeRoller/kPVelocity", 0.0);
+        //         public static LoggedTunableNumber kIVelocity = new LoggedTunableNumber(
+        //                         " rollers/algaeRoller/kIVelocity", 0.0);
+        //         public static LoggedTunableNumber kDVelocity = new LoggedTunableNumber(
+        //                         " rollers/algaeRoller/kDVelocity", 0.0);
+        //         public static LoggedTunableNumber kSVelocity = new LoggedTunableNumber(
+        //                         " rollers/algaeRoller/kSVelocity", 0.35);
+        //         public static LoggedTunableNumber kVVelocity = new LoggedTunableNumber(
+        //                         " rollers/algaeRoller/kVVelocity", 0.042);
+        //         public static LoggedTunableNumber kAVelocity = new LoggedTunableNumber(
+        //                         " rollers/algaeRoller/kAVelocity", 0.0124);
 
-                public static LoggedTunableNumber kPPosition = new LoggedTunableNumber(
-                                " rollers/algaeRoller/kPPosition", 0.0);
-                public static LoggedTunableNumber kIPosition = new LoggedTunableNumber(
-                                " rollers/algaeRoller/kIPosition", 0.0);
-                public static LoggedTunableNumber kDPosition = new LoggedTunableNumber(
-                                " rollers/algaeRoller/kDPosition", 0.0);
+        //         public static LoggedTunableNumber kPPosition = new LoggedTunableNumber(
+        //                         " rollers/algaeRoller/kPPosition", 0.0);
+        //         public static LoggedTunableNumber kIPosition = new LoggedTunableNumber(
+        //                         " rollers/algaeRoller/kIPosition", 0.0);
+        //         public static LoggedTunableNumber kDPosition = new LoggedTunableNumber(
+        //                         " rollers/algaeRoller/kDPosition", 0.0);
 
-                public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber(
-                                " rollers/algaeRoller/maxVelocity", 256);
-                public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
-                                " rollers/algaeRoller/maxAcceleration", 0.0);
+        //         public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber(
+        //                         " rollers/algaeRoller/maxVelocity", 256);
+        //         public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
+        //                         " rollers/algaeRoller/maxAcceleration", 0.0);
 
-        }
+        // }
 
         public static final class Coral {
                 public static final int motorId = 15;

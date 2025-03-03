@@ -30,11 +30,11 @@ public class RollerSim implements RollerIO {
      */
     public RollerSim(Implementations implementation) {
         switch (implementation) {
-            case ALGAE:
-                momentOfInertia = RollerConstants.Algae.momentOfInertia;
-                gearRatio = RollerConstants.Algae.gearRatio;
-                measurementNoise = RollerConstants.Algae.measurementNoise;
-                break;
+            // case ALGAE:
+            //     momentOfInertia = RollerConstants.Algae.momentOfInertia;
+            //     gearRatio = RollerConstants.Algae.gearRatio;
+            //     measurementNoise = RollerConstants.Algae.measurementNoise;
+            //     break;
             case CORAL:
                 momentOfInertia = RollerConstants.Coral.momentOfInertia;
                 gearRatio = RollerConstants.Coral.gearRatio;
