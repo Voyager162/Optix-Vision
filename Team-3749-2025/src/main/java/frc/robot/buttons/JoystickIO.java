@@ -210,7 +210,8 @@ public class JoystickIO {
 
                 bindButtonBoard();
                 // ToPosTriggers.createOTFTriggers();
-
+                // pilot.b().onTrue(Commands.runOnce(() -> Robot.swerve.cyclePPSetpoint()));
+                // pilot.x().onTrue(Commands.runOnce(() -> Robot.swerve.setIsOTF(true)));
                 // operator.b().onTrue(Commands.runOnce(() -> Robot.elevator.setVoltage(12)));
                 // operator.b().onTrue(intakeSource);
                 // operator.x().onTrue(climb);
