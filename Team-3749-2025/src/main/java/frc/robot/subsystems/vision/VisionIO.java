@@ -28,6 +28,6 @@ public interface VisionIO {
     }
 
     public default PhotonCamera getCamera(int index) {
-        return new PhotonCamera("Null");
+        return new PhotonCamera("" + index);
     }
 }

@@ -17,6 +17,7 @@ public class LEDConstants {
     public static enum LEDColor {
         RED_ALLIANCE(Color.kRed),
         BLUE_ALLIANCE(Color.kBlue),
+        NO_TEAM(Color.kWhite),
         CHUTE_HAS_PIECE(Color.kGreen),
         CORAL_ARM_HAS_PIECE(Color.kPurple),
         OFF(Color.kBlack),

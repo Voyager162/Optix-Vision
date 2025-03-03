@@ -45,8 +45,7 @@ private Field2d field2d = new Field2d();
   public static AlgaeRoller algaeRoller = new AlgaeRoller();
   public static CoralRoller coralRoller = new CoralRoller();
   public static ScoringRoller scoringRoller = new ScoringRoller();
-  public static Led led = new Led(); //my old LedIO code got deleted so i guess 
-  //just comment out this subsystem when you do sim or this will crash
+  public static Led led = new Led();
   
 
   public static Elevator elevator = new Elevator();
