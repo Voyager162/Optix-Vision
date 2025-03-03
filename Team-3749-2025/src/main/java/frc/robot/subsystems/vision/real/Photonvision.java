@@ -35,16 +35,23 @@ public class Photonvision implements VisionIO {
     private VisionData visionData;
 
     public Photonvision(VisionData visionData) {
+        int index = 0;
         for (PhotonPoseEstimator poseEstimator : poseEstimatorList) {
             // Use MultiTag detection on the coprocessor, and fall back to the least
             // uncertain tag if that fails
             poseEstimator.setPrimaryStrategy(PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR);
-            poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
+            if (index == 1 || index == 2) {
+                poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.PNP_DISTANCE_TRIG_SOLVE);
+
+            } else {
+                poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.AVERAGE_BEST_TARGETS);
+            }
             // redundant, but why not (setting the correct apriltag size/model and correct
             // field layout)
             poseEstimator.setTagModel(TargetModel.kAprilTag36h11);
             poseEstimator.setFieldTags(VisionConstants.aprilTagFieldLayout);
+            index++;
         }
 
         this.visionData = visionData;
@@ -63,8 +70,8 @@ public class Photonvision implements VisionIO {
         // Cam # minus 1
         cameraUpdatePose(0);
         // Cam 3 missing, cam 2 is bad because of mount droop
-        // cameraUpdatePose(1);
-        // cameraUpdatePose(2);
+        cameraUpdatePose(1);
+        cameraUpdatePose(2);
         cameraUpdatePose(3);
         cameraUpdatePose(4);
         cameraUpdatePose(5);
@@ -72,6 +79,12 @@ public class Photonvision implements VisionIO {
     }
 
     public void cameraUpdatePose(int index) {
+
+        if (index == 1 || index == 2) {
+            poseEstimatorList[index].addHeadingData(Timer.getFPGATimestamp(), Robot.swerve.getRotation2d());
+
+        }
+
         PhotonCamera camera = cameraList[index];
         PhotonPoseEstimator poseEstimator = poseEstimatorList[index];
 
@@ -82,7 +95,7 @@ public class Photonvision implements VisionIO {
 
             // skip if no tags found
             if (!pipelineResult.hasTargets()) {
-                Logger.recordOutput("Vision/Cam" + (index+1) +"/ No targets", true);
+                Logger.recordOutput("Vision/Cam" + (index + 1) + "/ No targets", true);
                 logBlank(index);
                 continue;
             }
@@ -94,7 +107,7 @@ public class Photonvision implements VisionIO {
 
             // skip if latency is too high
             if (latencyMillis > VisionConstants.RejectionRequirements.maxLatencyMilliSec) {
-                Logger.recordOutput("Vision/Cam" + (index+1) +"/ High Latency", true);
+                Logger.recordOutput("Vision/Cam" + (index + 1) + "/ High Latency", true);
                 logBlank(index);
 
                 continue;
@@ -104,7 +117,7 @@ public class Photonvision implements VisionIO {
                     getHypotenuse(pipelineResult.getTargets().get(
                             0).bestCameraToTarget) > VisionConstants.RejectionRequirements.maxSingleTagDistanceMeters) {
 
-                Logger.recordOutput("Vision/Cam" + (index+1) +"/ single tag far", true);
+                Logger.recordOutput("Vision/Cam" + (index + 1) + "/ single tag far", true);
                 logBlank(index);
 
                 continue;
@@ -113,15 +126,15 @@ public class Photonvision implements VisionIO {
             var optional_robotPose = poseEstimator.update(pipelineResult);
 
             if (optional_robotPose.isEmpty()) {
-                Logger.recordOutput("Vision/Cam" + (index+1) +"/ pose empty", true);
+                Logger.recordOutput("Vision/Cam" + (index + 1) + "/ pose empty", true);
                 logBlank(index);
 
                 continue;
             }
 
             Pose3d robotPose = optional_robotPose.get().estimatedPose;
-            Logger.recordOutput("Vision/Cam" + (index+1)+"/pitch", robotPose.getRotation().getMeasureY());
-            Logger.recordOutput("Vision/Cam" + (index+1)+"/roll", robotPose.getRotation().getMeasureX());
+            Logger.recordOutput("Vision/Cam" + (index + 1) + "/pitch", robotPose.getRotation().getMeasureY());
+            Logger.recordOutput("Vision/Cam" + (index + 1) + "/roll", robotPose.getRotation().getMeasureX());
 
             visionData.visionEstimatedPoses[index] = robotPose;
 
@@ -137,13 +150,13 @@ public class Photonvision implements VisionIO {
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/latency", visionData.latencyMillis[index]);
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/targetsSeen", visionData.targetsSeen[index]);
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/pose", visionData.visionEstimatedPoses[index]);
-        Logger.recordOutput("Vision/Cam" + (index+1) +"/ No targets", false);
-        Logger.recordOutput("Vision/Cam" + (index+1) +"/ High Latency", false);
-        Logger.recordOutput("Vision/Cam" + (index+1) +"/ single tag far", false);
-        Logger.recordOutput("Vision/Cam" + (index+1) +"/ pose empty", false);
+        Logger.recordOutput("Vision/Cam" + (index + 1) + "/ No targets", false);
+        Logger.recordOutput("Vision/Cam" + (index + 1) + "/ High Latency", false);
+        Logger.recordOutput("Vision/Cam" + (index + 1) + "/ single tag far", false);
+        Logger.recordOutput("Vision/Cam" + (index + 1) + "/ pose empty", false);
     }
 
-    public void logBlank(int index){
+    public void logBlank(int index) {
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/latency", -1.0);
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/targetsSeen", 0.0);
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/pose", new Pose3d());

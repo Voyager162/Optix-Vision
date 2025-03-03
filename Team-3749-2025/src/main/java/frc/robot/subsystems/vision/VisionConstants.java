@@ -53,20 +53,20 @@ public class VisionConstants {
                                 Units.inchesToMeters(11.366),
                                 Units.inchesToMeters(10.357),
                                 new Rotation3d(0,
-                                                Units.degreesToRadians(-15),
+                                                Units.degreesToRadians(15),
                                                 Units.degreesToRadians(40 - 90)));
 
                 // DOES NOT EXIST YET
                 public static Transform3d cam3 = new Transform3d(
-                                Units.inchesToMeters(9.187),
-                                Units.inchesToMeters(-4.529),
-                                Units.inchesToMeters(4.614),
+                                Units.inchesToMeters(9.504),
+                                Units.inchesToMeters(-10.961),
+                                Units.inchesToMeters(15.746),
                                 new Rotation3d(0,
-                                                Units.degreesToRadians(4.9),
-                                                Units.degreesToRadians(-10)));
+                                                Units.degreesToRadians(-20),
+                                                Units.degreesToRadians(0)));
 
                 public static Transform3d cam4 = new Transform3d(
-                                Units.inchesToMeters(11.886),
+                                Units.inchesToMeters(-11.886),
                                 Units.inchesToMeters(14.995),
                                 Units.inchesToMeters(10.461),
                                 new Rotation3d(0,
@@ -79,7 +79,7 @@ public class VisionConstants {
                                 Units.inchesToMeters(10.447),
                                 new Rotation3d(0,
                                                 Units.degreesToRadians(15),
-                                                Units.degreesToRadians(35)));
+                                                Units.degreesToRadians(35+180)));
 
                 public static Transform3d cam6 = new Transform3d(
                                 Units.inchesToMeters(-9.745),

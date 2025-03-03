@@ -19,9 +19,9 @@ public class PigeonGyro implements GyroIO {
     private double yaw = 0;
 
     public PigeonGyro() {
-        mountConfig.withMountPosePitch(0);
         mountConfig.withMountPoseYaw(90);
-        mountConfig.withMountPoseRoll(-90);
+        mountConfig.withMountPosePitch(0);
+        mountConfig.withMountPoseRoll(0);
         trimConfig.withGyroScalarX(-1.21);
         config.withGyroTrim(trimConfig);
         config.withMountPose(mountConfig);
