@@ -12,7 +12,7 @@ import frc.robot.subsystems.roller.RollerConstants.RollerStates;
  */
 public class CoralIntakeSource extends Command {
 
-    private double hasPieceTimeStamp = 0;
+    private double hasPieceTimeStamp = Double.MAX_VALUE;
 
     public CoralIntakeSource() {
         // ensures other commands do not infere while this is active
@@ -25,11 +25,14 @@ public class CoralIntakeSource extends Command {
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.scoringRoller.setState(RollerStates.STOP);
         Robot.coralRoller.setState(RollerStates.INTAKE);
+        System.out.println("Source intake init");
     }
 
     @Override
     public void execute() {
-        if (Robot.coralRoller.hasPiece()) {
+        System.out.println("Source intake ex");
+
+        if (Robot.coralRoller.hasPiece() && hasPieceTimeStamp == Double.MAX_VALUE) {
             hasPieceTimeStamp = Timer.getFPGATimestamp();
         }
     }
@@ -38,7 +41,7 @@ public class CoralIntakeSource extends Command {
     public void end(boolean interrupted) {
         Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
         Robot.coralRoller.setState(RollerStates.MAINTAIN);
-        hasPieceTimeStamp = 0;
+        hasPieceTimeStamp = Double.MAX_VALUE;
 
     }
 
@@ -47,6 +50,6 @@ public class CoralIntakeSource extends Command {
      */
     @Override
     public boolean isFinished() {
-        return hasPieceTimeStamp - Timer.getFPGATimestamp() > 0.2 && this.isScheduled();
+        return Timer.getFPGATimestamp() - hasPieceTimeStamp > 0.2 && this.isScheduled();
     }
 }

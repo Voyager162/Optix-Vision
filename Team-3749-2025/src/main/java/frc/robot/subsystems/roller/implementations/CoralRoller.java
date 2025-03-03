@@ -118,7 +118,7 @@ public class CoralRoller extends Roller {
 
     @Override
     public void maintain() {
-        setVoltage(1);
+        setVoltage(1.25);
     }
 
     @Override
