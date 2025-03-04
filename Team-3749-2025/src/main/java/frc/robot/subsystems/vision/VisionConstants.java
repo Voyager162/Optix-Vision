@@ -56,7 +56,6 @@ public class VisionConstants {
                                                 Units.degreesToRadians(15),
                                                 Units.degreesToRadians(40 - 90)));
 
-                // DOES NOT EXIST YET
                 public static Transform3d cam3 = new Transform3d(
                                 Units.inchesToMeters(9.504),
                                 Units.inchesToMeters(-10.961),
