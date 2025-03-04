@@ -14,6 +14,7 @@ public interface VisionIO {
         public Pose3d[] visionEstimatedPoses = {
                 new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d() };
         public double[] latencyMillis = new double[CameraReal.numCameras];
+        public double[] distance = new double[CameraReal.numCameras];
         public double[] targetsSeen = new double[CameraReal.numCameras];
     }
 

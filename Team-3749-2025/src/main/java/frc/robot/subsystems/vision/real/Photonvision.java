@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Robot;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionConstants.StandardDeviations;
 
 public class Photonvision implements VisionIO {
     // * FROM VisionIO
@@ -112,23 +113,34 @@ public class Photonvision implements VisionIO {
 
                 continue;
             }
+            // removed because we almost always only see one tag per camera, will have
+            // adjustable std dev instead
 
-            if (pipelineResult.getTargets().size() == 1 &&
-                    getHypotenuse(pipelineResult.getTargets().get(
-                            0).bestCameraToTarget) > VisionConstants.RejectionRequirements.maxSingleTagDistanceMeters) {
+            // if (pipelineResult.getTargets().size() == 1 &&
+            // getHypotenuse(pipelineResult.getTargets().get(
+            // 0).bestCameraToTarget) >
+            // VisionConstants.RejectionRequirements.maxSingleTagDistanceMeters) {
 
-                Logger.recordOutput("Vision/Cam" + (index + 1) + "/ single tag far", true);
+            // Logger.recordOutput("Vision/Cam" + (index + 1) + "/ single tag far", true);
+            // logBlank(index);
+
+            // continue;
+            // }
+
+            if (pipelineResult.getBestTarget().poseAmbiguity > 0.2 && pipelineResult.getTargets().size() == 1) {
+                Logger.recordOutput("Vision/Cam" + (index + 1) + "/pose ambiguity rejection", true);
                 logBlank(index);
+                visionData.distance[index] = getHypotenuse(pipelineResult.getTargets().get(
+                        0).bestCameraToTarget);
 
-                continue;
             }
+
             poseEstimator.setReferencePose(getReferencePose());
             var optional_robotPose = poseEstimator.update(pipelineResult);
 
             if (optional_robotPose.isEmpty()) {
                 Logger.recordOutput("Vision/Cam" + (index + 1) + "/ pose empty", true);
                 logBlank(index);
-
                 continue;
             }
 
@@ -138,7 +150,7 @@ public class Photonvision implements VisionIO {
 
             visionData.visionEstimatedPoses[index] = robotPose;
 
-            updateStandardDeviations(pipelineResult);
+            updateStandardDeviations(pipelineResult, index);
 
             double timestamp = Timer.getFPGATimestamp() - latencyMillis / 1000.0;
             Robot.swerve.visionUpdateOdometry(robotPose.toPose2d(), timestamp);
@@ -150,9 +162,11 @@ public class Photonvision implements VisionIO {
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/latency", visionData.latencyMillis[index]);
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/targetsSeen", visionData.targetsSeen[index]);
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/pose", visionData.visionEstimatedPoses[index]);
+        Logger.recordOutput("Vision/Cam" + (index + 1) + "/distance", visionData.distance[index]);
+        Logger.recordOutput("Vision/Cam" + (index + 1) + "/pose ambiguity rejection", false);
+
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/ No targets", false);
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/ High Latency", false);
-        Logger.recordOutput("Vision/Cam" + (index + 1) + "/ single tag far", false);
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/ pose empty", false);
     }
 
@@ -167,25 +181,27 @@ public class Photonvision implements VisionIO {
                 Math.pow(transform3d.getX(), 2) + Math.pow(transform3d.getY(), 2) + Math.pow(transform3d.getZ(), 2));
     }
 
-    public void updateStandardDeviations(PhotonPipelineResult result) {
+    public void updateStandardDeviations(PhotonPipelineResult result, int index) {
         SwerveDrivePoseEstimator poseEstimator = Robot.swerve.getPoseEstimator();
 
         if (result.getTargets().size() == 0) {
             return;
         }
         if (result.getTargets().size() == 1) {
-            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(VisionConstants.StandardDeviations.OneTag.xy,
-                    VisionConstants.StandardDeviations.OneTag.xy, VisionConstants.StandardDeviations.OneTag.thetaRads));
+            double xyStdDev = StandardDeviations.OneTag.regression.apply(visionData.distance[index]);
+
+
+            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xyStdDev,xyStdDev, StandardDeviations.OneTag.thetaRads));
         }
         if (result.getTargets().size() == 2) {
-            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(VisionConstants.StandardDeviations.TwoTag.xy,
-                    VisionConstants.StandardDeviations.TwoTag.xy,
-                    VisionConstants.StandardDeviations.TwoTag.thetaRads));
+            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(StandardDeviations.TwoTag.xy,
+                    StandardDeviations.TwoTag.xy,
+                    StandardDeviations.TwoTag.thetaRads));
         }
         if (result.getTargets().size() > 2) {
-            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(VisionConstants.StandardDeviations.ManyTag.xy,
-                    VisionConstants.StandardDeviations.ManyTag.xy,
-                    VisionConstants.StandardDeviations.ManyTag.thetaRads));
+            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(StandardDeviations.ManyTag.xy,
+                    StandardDeviations.ManyTag.xy,
+                    StandardDeviations.ManyTag.thetaRads));
         }
     }
 }

@@ -1,5 +1,7 @@
 package frc.robot.subsystems.vision;
 
+import java.util.function.Function;
+
 import org.photonvision.*;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
@@ -26,6 +28,7 @@ public class VisionConstants {
                 public class OneTag {
                         public static final double xy = Math.hypot(0.15, 0.33);
                         public static final double thetaRads = Units.degreesToRadians(7);
+                        public static final Function<Double, Double> regression = (distance) -> xy * distance;
                 }
 
                 public class TwoTag {
@@ -46,7 +49,7 @@ public class VisionConstants {
                                 Units.inchesToMeters(10.354),
                                 new Rotation3d(0,
                                                 Units.degreesToRadians(15),
-                                                Units.degreesToRadians(90-22)));
+                                                Units.degreesToRadians(90 - 22)));
 
                 public static Transform3d cam2 = new Transform3d(
                                 Units.inchesToMeters(11.339),
@@ -70,7 +73,7 @@ public class VisionConstants {
                                 Units.inchesToMeters(10.461),
                                 new Rotation3d(0,
                                                 Units.degreesToRadians(4.9),
-                                                Units.degreesToRadians(30+90)));
+                                                Units.degreesToRadians(30 + 90)));
 
                 public static Transform3d cam5 = new Transform3d(
                                 Units.inchesToMeters(-12.839),
@@ -78,7 +81,7 @@ public class VisionConstants {
                                 Units.inchesToMeters(10.447),
                                 new Rotation3d(0,
                                                 Units.degreesToRadians(15),
-                                                Units.degreesToRadians(35+180)));
+                                                Units.degreesToRadians(35 + 180)));
 
                 public static Transform3d cam6 = new Transform3d(
                                 Units.inchesToMeters(-9.745),
