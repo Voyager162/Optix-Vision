@@ -31,7 +31,8 @@ public class ScoreL1 extends Command {
 
     @Override
     public void execute() {
-        if (Robot.coralArm.getState() == CoralArmConstants.ArmStates.L1 && Robot.coralArm.getIsStableState()) {
+        if (Robot.coralArm.getState() == CoralArmConstants.ArmStates.L1 && Robot.coralArm.getIsStableState()
+                && outtakeTimestamp == Double.MAX_VALUE) {
             Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE);
             outtakeTimestamp = Timer.getFPGATimestamp();
         }

@@ -5,6 +5,7 @@ import java.util.function.BooleanSupplier;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.buttons.ButtonBoard.ScoringMode;
+import frc.robot.commands.integration.CoralIntakeSource;
 import frc.robot.commands.integration.IntakeSource;
 import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.ScoreL1;
@@ -109,7 +110,7 @@ public class ToPosTriggers {
         Trigger coralStation = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
             return OTFWithinMargin() && isCoralSupplier.getAsBoolean();
         });
-        coralStation.onTrue(new IntakeSource());
+        coralStation.onTrue(new CoralIntakeSource());
 
         // ======= Reef Level 1 Scoring Trigger =======
         // Scores using the Level 1 elevator state when within range.

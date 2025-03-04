@@ -32,7 +32,7 @@ public class CoralIntakeSource extends Command {
     public void execute() {
         System.out.println("Source intake ex");
 
-        if (Robot.coralRoller.hasPiece() && hasPieceTimeStamp == Double.MAX_VALUE) {
+        if (Robot.coralRoller.hasPiece() && hasPieceTimeStamp == Double.MAX_VALUE && hasPieceTimeStamp == Double.MAX_VALUE) {
             hasPieceTimeStamp = Timer.getFPGATimestamp();
         }
     }

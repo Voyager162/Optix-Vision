@@ -45,7 +45,7 @@ public class ScoreL234 extends Command {
         }
 
         // scores when elevator reaches desired state
-        if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState()) {
+        if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState() && scoreTimestamp == Double.MAX_VALUE) {
             Robot.scoringRoller.setState(RollerStates.SCORE);
             scoreTimestamp = Timer.getFPGATimestamp();
         }

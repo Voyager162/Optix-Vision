@@ -11,6 +11,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
+import frc.robot.subsystems.arm.coral.CoralArmConstants;
+import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.ToPos;
 
@@ -46,6 +48,9 @@ public class OnTheFly extends Command {
     @Override
     public void initialize() {
         // System.out.println("epic fail");
+
+        Robot.elevator.setState(ElevatorStates.STOW);
+        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOW);
         currentlyThreading = true;
         endpoint = Robot.swerve.getPPSetpoint().setpoint;
 

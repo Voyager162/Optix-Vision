@@ -66,7 +66,7 @@ public class JoystickIO {
                         pilotAndOperatorBindings();
                         // simBindings();
                 } else {
-                        testBindings();
+                        pilotAndOperatorBindings();
 
                 }
 
@@ -122,15 +122,18 @@ public class JoystickIO {
                 // gyro reset
                 pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
 
-                // OTF by controller - Closest apriltag
-                pilot.x().onTrue(Commands.runOnce(() -> {
-                        ToPos.setSetpointByClosestReefBranch(true);
-                        Robot.swerve.setIsOTF(true);
-                }));
-                pilot.b().onTrue(Commands.runOnce(() -> {
-                        ToPos.setSetpointByClosestReefBranch(false);
-                        Robot.swerve.setIsOTF(true);
-                }));
+                // // OTF by controller - Closest apriltag
+                // pilot.x().onTrue(Commands.runOnce(() -> {
+                //         ToPos.setSetpointByClosestReefBranch(true);
+                //         Robot.swerve.setIsOTF(true);
+                // }));
+                // pilot.b().onTrue(Commands.runOnce(() -> {
+                //         ToPos.setSetpointByClosestReefBranch(false);
+                //         Robot.swerve.setIsOTF(true);
+                // }));
+
+                pilot.x().onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(0)));
+                pilot.b().onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(2)));
                 // intake floor
                 pilot.leftTrigger().onTrue(new IntakeFloor());
                 // intake source w arm

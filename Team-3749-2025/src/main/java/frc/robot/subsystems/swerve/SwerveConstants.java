@@ -32,7 +32,7 @@ public class SwerveConstants {
                 public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("swerve/maxVelocity",
                                 4.6);
                 public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
-                                "swerve/maxAcceleration", 3); 
+                                "swerve/maxAcceleration", 3);
 
                 // teleop speed
                 public static final double teleopMaxSpeedReduction = -0.1; // If we can drive a little faster in telop
@@ -86,7 +86,7 @@ public class SwerveConstants {
                                 false
                 };
                 public static final double[] absoluteEncoderOffsetRad = {
-                                2.442 - Math.PI /2 ,
+                                5.562 + Math.PI / 2,
                                 2.755 - Math.PI / 2,
                                 0.072 - Math.PI / 2,
                                 1.974 - Math.PI / 2
