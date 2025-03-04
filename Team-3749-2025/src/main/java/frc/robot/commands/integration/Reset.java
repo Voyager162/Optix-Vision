@@ -28,6 +28,7 @@ public class Reset extends Command {
         Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);
         Robot.climbArm.setState(ClimbArmConstants.ArmStates.STOWED);
         Robot.swerve.setIsOTF(false);
+        Robot.coralRoller.setHasPiece(false);
     }
 
     @Override

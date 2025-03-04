@@ -91,6 +91,10 @@ public class CoralRoller extends Roller {
 
     }
 
+    public void setHasPiece(boolean hasPiece){
+        this.hasPiece = hasPiece;
+    }
+
     public boolean getHasPiece() {
         return hasPiece;
     }

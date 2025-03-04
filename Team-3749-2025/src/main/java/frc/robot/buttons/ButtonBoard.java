@@ -39,7 +39,7 @@ public class ButtonBoard {
     // miscellaneous buttons
     public JoystickButton buttonAlgaeKnockoff = new JoystickButton(buttonBoardPlayer3, 8);
     public JoystickButton buttonUtilityA = new JoystickButton(buttonBoardPlayer3, 7);
-    // public JoystickButton buttonUtilityB = new JoystickButton(buttonBoardPlayer3, 6);
+    public JoystickButton buttonUtilityB = new JoystickButton(buttonBoardPlayer3, 6);
     public JoystickButton buttonReset = new JoystickButton(buttonBoardPlayer3, 5);
 
     public ButtonBoard() {
