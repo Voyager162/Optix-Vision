@@ -202,13 +202,15 @@ public class ToPosConstants {
          */
         public static Pose2d adjustPose(Pose2d pose, boolean isCoralStation) {
             // Calculate offsets based on half the robot's dimensions
-            double offsetX = (ROBOT_LENGTH / 2) * Math.cos(pose.getRotation().getRadians());
-            double offsetY = (ROBOT_WIDTH / 2) * Math.sin(pose.getRotation().getRadians());
-
+            
             // If it's a coral station, adjust the pose forward; otherwise, adjust backward
             if (isCoralStation) {
+                double offsetX = (ROBOT_LENGTH / 2) * Math.cos(pose.getRotation().getRadians());
+                double offsetY = (ROBOT_LENGTH / 2) * Math.sin(pose.getRotation().getRadians());
                 return new Pose2d(pose.getX() + offsetX, pose.getY() + offsetY, pose.getRotation());
             }
+            double offsetX = (ROBOT_WIDTH / 2) * Math.cos(pose.getRotation().getRadians());
+            double offsetY = (ROBOT_WIDTH / 2) * Math.sin(pose.getRotation().getRadians());
             return new Pose2d(pose.getX() - offsetX, pose.getY() - offsetY, pose.getRotation());
         }
 
@@ -216,9 +218,10 @@ public class ToPosConstants {
 
             return new Pose2d(
                     reefCenter.getX()
-                            + Math.cos(Units.degreesToRadians(angleOfReef) + 180) * reefCenterToSetpointDistance,
-                    reefCenter.getY() + Math.sin(angleOfReef + 180) * reefCenterToSetpointDistance,
-                    new Rotation2d(angleOfReef));
+                            + Math.cos(Units.degreesToRadians(angleOfReef) + Math.PI) * reefCenterToSetpointDistance,
+                            
+                    reefCenter.getY() + Math.sin(Units.degreesToRadians(angleOfReef) + Math.PI) * reefCenterToSetpointDistance,
+                    Rotation2d.fromDegrees(angleOfReef));
         }
 
         // public static Pose2d shrinkHexagon(Pose2d reefPose){
@@ -276,8 +279,8 @@ public class ToPosConstants {
                                                                                                      // location
 
         // ======= Reef Positions =======
-        public static Translation2d reefCenter = new Translation2d(4.5, 3.995);
-        public static double reefCenterToSetpointDistance = 0.85 - Units.inchesToMeters(2);
+        public static Translation2d reefCenter = new Translation2d(4.48932, 4.02598);
+        public static double reefCenterToSetpointDistance = 0.85 - Units.inchesToMeters(4);
         // Positions marking different reef scoring locations
         public static Pose2d reefClose = adjustPose(getReefPose(0), false); // Center front of the reef
         public static Pose2d reefCloseRight = adjustPose(getReefPose(60), false); // Center front of the reef
