@@ -1,5 +1,6 @@
 package frc.robot.commands.integration;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.roller.RollerConstants;
@@ -16,6 +17,7 @@ public class ScoreL234 extends Command {
     private final ElevatorStates elevatorState;
     private boolean handoffComplete = false;
     private boolean pieceRecognized = false;
+    private double scoreTimestamp = Double.MAX_VALUE;
 
     /**
      * 
@@ -29,7 +31,7 @@ public class ScoreL234 extends Command {
 
     @Override
     public void initialize() {
-        
+
         Robot.elevator.setState(elevatorState);
         Robot.scoringRoller.setState(RollerStates.STOP);
         Robot.coralArm.setState(ArmStates.STOW);
@@ -41,10 +43,11 @@ public class ScoreL234 extends Command {
         if (Robot.scoringRoller.hasPiece()) {
             pieceRecognized = true;
         }
-        
+
         // scores when elevator reaches desired state
         if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState()) {
             Robot.scoringRoller.setState(RollerStates.SCORE);
+            scoreTimestamp = Timer.getFPGATimestamp();
         }
     }
 
@@ -55,6 +58,7 @@ public class ScoreL234 extends Command {
         Robot.scoringRoller.setState(RollerStates.STOP);
         Robot.coralRoller.setState(RollerStates.STOP);
         pieceRecognized = false;
+        scoreTimestamp = Double.MAX_VALUE;
     }
 
     /**
@@ -63,7 +67,8 @@ public class ScoreL234 extends Command {
      */
     @Override
     public boolean isFinished() {
-        return !Robot.scoringRoller.hasPiece() && pieceRecognized && this.isScheduled();
+        return !Robot.scoringRoller.hasPiece() && pieceRecognized && Timer.getFPGATimestamp() - scoreTimestamp > 0.3
+                && this.isScheduled();
         // return false;
     }
 }
