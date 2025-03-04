@@ -40,7 +40,7 @@ public class ClimbArm extends SubsystemBase {
 
 	private ClimbArmIO armIO;
 	private ArmData data = new ArmData();
-	private ClimbArmConstants.ArmStates state = ClimbArmConstants.ArmStates.STOWED;
+	private ClimbArmConstants.ArmStates state = ClimbArmConstants.ArmStates.STOPPED;
 
 	private LoggedMechanism2d mechanism2d = new LoggedMechanism2d(60, 60);
 	private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
@@ -201,7 +201,7 @@ public class ClimbArm extends SubsystemBase {
 				stop();
 				break;
 			default:
-				moveToGoal();
+				// moveToGoal();
 				break;
 		}
 	}
@@ -240,7 +240,7 @@ public class ClimbArm extends SubsystemBase {
 
 		armIO.updateData(data);
 
-		// runState();
+		runState();
 
 		logData();
 	}

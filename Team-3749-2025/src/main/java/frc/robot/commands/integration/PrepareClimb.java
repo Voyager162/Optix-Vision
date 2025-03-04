@@ -28,10 +28,11 @@ public class PrepareClimb extends Command {
 
     @Override
     public void end(boolean interrupted) {
+        
     }
 
     @Override
     public boolean isFinished() {
-        return Robot.elevator.getIsStableState() && Robot.coralArm.getIsStableState();
+        return Robot.elevator.getIsStableState() && Robot.coralArm.getIsStableState()&& this.isScheduled();
     }
 }

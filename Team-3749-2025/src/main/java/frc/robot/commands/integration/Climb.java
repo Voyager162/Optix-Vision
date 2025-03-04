@@ -3,6 +3,7 @@ package frc.robot.commands.integration;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
+import frc.robot.subsystems.arm.climb.ClimbArmConstants;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
 
 /*
@@ -20,6 +21,8 @@ public class Climb extends Command {
     public void initialize() {
         Robot.elevator.setState(ElevatorStates.L1);
         Robot.coralArm.setState(CoralArmConstants.ArmStates.L1);
+        Robot.climbArm.setState(ClimbArmConstants.ArmStates.CLIMB);
+
     }
 
     @Override
@@ -32,6 +35,6 @@ public class Climb extends Command {
 
     @Override
     public boolean isFinished() {
-        return Robot.elevator.getIsStableState() && Robot.coralArm.getIsStableState();
+        return false;
     }
 }

@@ -21,6 +21,7 @@ import frc.robot.buttons.ButtonBoard.ScoringMode;
 import frc.robot.commands.arm.SetClimbArmState;
 import frc.robot.commands.arm.SetCoralArmState;
 import frc.robot.commands.elevator.SetElevatorState;
+import frc.robot.commands.integration.Climb;
 import frc.robot.commands.integration.CoralIntakeSource;
 import frc.robot.commands.integration.Handoff;
 import frc.robot.commands.integration.IntakeFloor;
@@ -184,7 +185,6 @@ public class JoystickIO {
                 buttonBoard.buttonAlgaeKnockoff
                                 .onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.ALGAE)));
 
-
                 buttonBoard.buttonUtilityA.onTrue(new Reset());
 
         }
@@ -205,20 +205,24 @@ public class JoystickIO {
                         ToPos.setSetpointByClosestReefBranch(false);
                         Robot.swerve.setIsOTF(true);
                 }));
+                pilot.leftTrigger().onTrue(new IntakeFloor());
+                pilot.rightTrigger().onTrue(new CoralIntakeSource());
+                pilot.leftBumper().onTrue(new OuttakeCoral());
+                pilot.rightBumper().onTrue(new IntakeSource());
+                pilot.a().onTrue(new Handoff());
+                // Reset to cancel
+                pilot.y().onTrue(new PrepareClimb()).onFalse(new Climb());
+                pilot.povDown().onTrue(new Reset());
 
                 operator.a().onTrue(new ScoreL1());
                 operator.x().onTrue(new ScoreL234(ElevatorStates.L2));
                 operator.b().onTrue(new ScoreL234(ElevatorStates.L3));
                 operator.y().onTrue(new ScoreL234(ElevatorStates.L4));
-                pilot.leftTrigger().onTrue(new IntakeFloor());
-                pilot.rightTrigger().onTrue(new CoralIntakeSource());
-                pilot.leftBumper().onTrue(new OuttakeCoral());
-                pilot.a().onTrue(new Handoff());
-                pilot.y().onTrue(new PrepareClimb());
-                pilot.povDown().onTrue(new Reset());
-                operator.povDown().onTrue(new Reset()); 
-                // pilot.back().onTrue(climb)
+                operator.leftTrigger().onTrue(new KnockAlgae(ElevatorStates.ALGAE_LOW));
+                operator.rightTrigger().onTrue(new KnockAlgae(ElevatorStates.ALGAE_HIGH));
 
+                
+                operator.povDown().onTrue(new Reset());
 
                 // OTF Binding
                 new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);

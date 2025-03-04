@@ -51,6 +51,6 @@ public class ScoreL1 extends Command {
     @Override
     public boolean isFinished() {
         return Robot.coralRoller.getState() == RollerStates.SCORE && Robot.coralRoller.getIsStableState()
-                && Timer.getFPGATimestamp() - outtakeTimestamp > 0.5;
+                && Timer.getFPGATimestamp() - outtakeTimestamp > 0.5 && this.isScheduled();
     }
 }

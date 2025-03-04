@@ -5,6 +5,7 @@ import frc.robot.utils.LoggedTunableNumber;
 
 /**
  * Constants file for the climb arm subsystem
+ * 
  * @author Weston Gardner
  */
 public class ClimbArmConstants {
@@ -44,9 +45,10 @@ public class ClimbArmConstants {
 			18.4);
 
 	// setpoints
-	public static final LoggedTunableNumber stowSetPointRad = new LoggedTunableNumber("Arms/ClimbArm/stowSetPointRad", Math.PI / 2);
-	public static final LoggedTunableNumber climbVoltage = new LoggedTunableNumber("Arms/ClimbArm/climbVoltage", 10.0);
-	
+	public static final LoggedTunableNumber stowSetPointRad = new LoggedTunableNumber("Arms/ClimbArm/stowSetPointRad",
+			Math.PI / 2);
+	public static final LoggedTunableNumber climbVoltage = new LoggedTunableNumber("Arms/ClimbArm/climbVoltage", 4.0);
+
 	// extra
 	public static final boolean simulateGravity = true;
 	public static final double stateMarginOfError = 0.01;

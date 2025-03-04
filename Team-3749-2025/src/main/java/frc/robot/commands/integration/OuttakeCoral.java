@@ -48,6 +48,6 @@ public class OuttakeCoral extends Command {
      */
     @Override
     public boolean isFinished() {
-        return Timer.getFPGATimestamp() - outtakeTimestamp > 0.3;
+        return Timer.getFPGATimestamp() - outtakeTimestamp > 0.3 && this.isScheduled();
     }
 }
