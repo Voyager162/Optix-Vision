@@ -30,7 +30,6 @@ import frc.robot.subsystems.swerve.GyroIO.GyroData;
 import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 import frc.robot.subsystems.swerve.sim.GyroSim;
 import frc.robot.subsystems.swerve.sim.SwerveModuleSim;
-import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.UtilityFunctions;
 import frc.robot.subsystems.swerve.SwerveConstants.ControlConstants;
 import frc.robot.subsystems.swerve.SwerveConstants.DrivetrainConstants;
@@ -71,13 +70,6 @@ public class Swerve extends SubsystemBase {
 
   private boolean utilizeVision = true;
   private double velocity = 0;
-
-  private LoggedTunableNumber kPDriving = new LoggedTunableNumber("Swerve/kP Drive", AutoConstants.kPDrive);
-  private LoggedTunableNumber kDDriving = new LoggedTunableNumber("Swerve/kD Drive", AutoConstants.kDDrive);
-  private LoggedTunableNumber kPTurn = new LoggedTunableNumber("Swerve/kP Turn controller",
-      AutoConstants.kPTurn);
-  private LoggedTunableNumber kDTurn = new LoggedTunableNumber("Swerve/kD Turn controller",
-      AutoConstants.kDTurn);
 
   private int currentPPSetpointIndex = 0; // what "index" do we currently want to go to for OTF
   private int currentPPApproachSetpointIndex = 0;
