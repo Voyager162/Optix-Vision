@@ -46,7 +46,7 @@ public class Photonvision implements VisionIO {
                 poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.PNP_DISTANCE_TRIG_SOLVE);
 
             } else {
-                poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.AVERAGE_BEST_TARGETS);
+                poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
             }
             // redundant, but why not (setting the correct apriltag size/model and correct
             // field layout)
@@ -126,12 +126,12 @@ public class Photonvision implements VisionIO {
 
             // continue;
             // }
+            visionData.distance[index] = getHypotenuse(pipelineResult.getTargets().get(
+                    0).bestCameraToTarget);
 
             if (pipelineResult.getBestTarget().poseAmbiguity > 0.2 && pipelineResult.getTargets().size() == 1) {
                 Logger.recordOutput("Vision/Cam" + (index + 1) + "/pose ambiguity rejection", true);
                 logBlank(index);
-                visionData.distance[index] = getHypotenuse(pipelineResult.getTargets().get(
-                        0).bestCameraToTarget);
 
             }
 
@@ -160,7 +160,7 @@ public class Photonvision implements VisionIO {
 
     public void logTarget(int index) {
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/latency", visionData.latencyMillis[index]);
-        Logger.recordOutput("Vision/Cam" + (index + 1) + "/targetsSeen", visionData.targetsSeen[index]);
+        Logger.recordOutput("Vision/Cam" + (index + 1) + "/targetsSeen", visionData.targetsSeen[index]);    
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/pose", visionData.visionEstimatedPoses[index]);
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/distance", visionData.distance[index]);
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/pose ambiguity rejection", false);
@@ -190,8 +190,8 @@ public class Photonvision implements VisionIO {
         if (result.getTargets().size() == 1) {
             double xyStdDev = StandardDeviations.OneTag.regression.apply(visionData.distance[index]);
 
-
-            poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(xyStdDev,xyStdDev, StandardDeviations.OneTag.thetaRads));
+            poseEstimator.setVisionMeasurementStdDevs(
+                    VecBuilder.fill(xyStdDev, xyStdDev, StandardDeviations.OneTag.thetaRads));
         }
         if (result.getTargets().size() == 2) {
             poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(StandardDeviations.TwoTag.xy,

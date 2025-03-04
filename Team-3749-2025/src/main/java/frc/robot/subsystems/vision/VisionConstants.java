@@ -26,9 +26,9 @@ public class VisionConstants {
                 }
 
                 public class OneTag {
-                        public static final double xy = Math.hypot(0.15, 0.33);
+                        public static final double slope =0.0021889 ;
                         public static final double thetaRads = Units.degreesToRadians(7);
-                        public static final Function<Double, Double> regression = (distance) -> xy * distance;
+                        public static final Function<Double, Double> regression = (distance) -> slope * distance;
                 }
 
                 public class TwoTag {

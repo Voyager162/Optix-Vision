@@ -37,14 +37,12 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import frc.robot.utils.LoggedTunableNumber;
 
 public class Robot extends LoggedRobot {
-private Field2d field2d = new Field2d();
   private Command m_autonomousCommand;
 
   public static Swerve swerve = new Swerve();
   public static CoralRoller coralRoller = new CoralRoller();
   public static ScoringRoller scoringRoller = new ScoringRoller();
   public static Led led = new Led();
-  
 
   public static Elevator elevator = new Elevator();
   public static Vision vision = new Vision();
@@ -52,7 +50,7 @@ private Field2d field2d = new Field2d();
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
   public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("setVoltage", -12);
-  
+
   private RobotContainer m_robotContainer;
   private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
 
@@ -104,7 +102,7 @@ private Field2d field2d = new Field2d();
   }
 
   public static Subsystem[] getAllSuperStructureSubsystems() {
-    return new Subsystem[] {coralRoller, scoringRoller, elevator, coralArm, climbArm};
+    return new Subsystem[] { coralRoller, scoringRoller, elevator, coralArm, climbArm };
   }
 
   @Override
@@ -123,8 +121,6 @@ private Field2d field2d = new Field2d();
       hexagonPoses.add(new Pose2d(vertex, new Rotation2d()));
     }
 
-    // Add hexagon points as "Object" on the field
-    field2d.getObject("Hexagon").setPoses(hexagonPoses);
   }
 
   @Override
@@ -191,5 +187,5 @@ private Field2d field2d = new Field2d();
 
   @Override
   public void simulationInit() {
-}
+  }
 }
