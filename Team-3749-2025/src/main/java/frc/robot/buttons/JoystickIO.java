@@ -233,8 +233,11 @@ public class JoystickIO {
                         return false;
                 }).onTrue(Commands.runOnce(() -> Robot.swerve.setIsOTF(false)));
 
-                pilot.back().onTrue(Commands
-                                .runOnce(() -> Robot.swerve.setOdometry(new Pose2d(3, 4.25, new Rotation2d()))));
+                // pilot.back().onTrue(Commands
+                //                 .runOnce(() -> Robot.swerve.setOdometry(new Pose2d(3, 4.25, new Rotation2d()))));
+
+                pilot.b().onTrue(Commands.runOnce(() -> Robot.swerve.cyclePPSetpoint()));
+                pilot.x().onTrue(Commands.runOnce(() -> Robot.swerve.setIsOTF(true)));
                 // operator.a().onTrue(new Climb());
                 // operator.b().whileTrue(Commands.runOnce(() ->
                 // Robot.climbArm.setVoltage(12)));
@@ -357,14 +360,14 @@ public class JoystickIO {
 
                 // pilot.a().and()
 
-                pilot.a().onTrue(new ScoreL1());
-                pilot.x().onTrue(new ScoreL234(ElevatorStates.L2));
-                pilot.b().onTrue(new ScoreL234(ElevatorStates.L3));
-                pilot.y().onTrue(new ScoreL234(ElevatorStates.L4));
-                pilot.leftTrigger().onTrue(new IntakeFloor());
-                pilot.rightTrigger().onTrue(new CoralIntakeSource());
+                // pilot.a().onTrue(new ScoreL1());
+                // pilot.x().onTrue(new ScoreL234(ElevatorStates.L2));
+                // pilot.b().onTrue(new ScoreL234(ElevatorStates.L3));
+                // pilot.y().onTrue(new ScoreL234(ElevatorStates.L4));
+                // pilot.leftTrigger().onTrue(new IntakeFloor());
+                // pilot.rightTrigger().onTrue(new CoralIntakeSource());
                 
-                pilot.povUp().onTrue(new Handoff());
+                // pilot.povUp().onTrue(new Handoff());
 
         }
 
