@@ -205,23 +205,30 @@ public class JoystickIO {
                         ToPos.setSetpointByClosestReefBranch(false);
                         Robot.swerve.setIsOTF(true);
                 }));
+                // intake floor
                 pilot.leftTrigger().onTrue(new IntakeFloor());
+                // intake source w arm
                 pilot.rightTrigger().onTrue(new CoralIntakeSource());
+                // outtake arm
                 pilot.leftBumper().onTrue(new OuttakeCoral());
+                // intake source w elevator
                 pilot.rightBumper().onTrue(new IntakeSource());
+                // handoff
                 pilot.a().onTrue(new Handoff());
-                // Reset to cancel
+                // Climb - Reset to cancel
                 pilot.y().onTrue(new PrepareClimb()).onFalse(new Climb());
+                // reset
                 pilot.povDown().onTrue(new Reset());
 
+                // scoring
                 operator.a().onTrue(new ScoreL1());
                 operator.x().onTrue(new ScoreL234(ElevatorStates.L2));
                 operator.b().onTrue(new ScoreL234(ElevatorStates.L3));
                 operator.y().onTrue(new ScoreL234(ElevatorStates.L4));
+                // Algae
                 operator.leftTrigger().onTrue(new KnockAlgae(ElevatorStates.ALGAE_LOW));
                 operator.rightTrigger().onTrue(new KnockAlgae(ElevatorStates.ALGAE_HIGH));
-
-                
+                // Reset
                 operator.povDown().onTrue(new Reset());
 
                 // OTF Binding
