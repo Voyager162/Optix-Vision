@@ -38,7 +38,7 @@ public class IntakeFloor extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
+        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOW);
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
         hasPieceTimeStamp = Double.MAX_VALUE;
     }

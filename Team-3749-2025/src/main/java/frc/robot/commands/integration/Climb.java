@@ -10,10 +10,10 @@ import frc.robot.subsystems.arm.coral.CoralArmConstants;
  * 
  * @author Dhyan Soni
  */
-public class PrepareClimb extends Command {
+public class Climb extends Command {
 
-    public PrepareClimb() {
-        addRequirements(Robot.elevator, Robot.coralArm);
+    public Climb() {
+        addRequirements(Robot.climbArm, Robot.elevator, Robot.coralArm);
     }
 
     @Override

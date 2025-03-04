@@ -35,7 +35,7 @@ public class CoralArm extends SubsystemBase {
 
     private CoralArmIO armIO;
     private ArmData data = new ArmData();
-    private CoralArmConstants.ArmStates state = CoralArmConstants.ArmStates.STOWED;
+    private CoralArmConstants.ArmStates state = CoralArmConstants.ArmStates.STOW;
 
     // Profiled PID Controller used only for the motion profile, PID within
 

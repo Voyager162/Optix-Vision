@@ -39,7 +39,7 @@ public class CoralIntakeSource extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
+        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOW);
         Robot.coralRoller.setState(RollerStates.MAINTAIN);
         hasPieceTimeStamp = Double.MAX_VALUE;
 

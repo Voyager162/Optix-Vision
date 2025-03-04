@@ -32,7 +32,7 @@ public class ScoreL234 extends Command {
         
         Robot.elevator.setState(elevatorState);
         Robot.scoringRoller.setState(RollerStates.STOP);
-        Robot.coralArm.setState(ArmStates.STOWED);
+        Robot.coralArm.setState(ArmStates.STOW);
 
     }
 
@@ -50,7 +50,7 @@ public class ScoreL234 extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        Robot.coralArm.setState(ArmStates.STOWED);
+        Robot.coralArm.setState(ArmStates.STOW);
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.scoringRoller.setState(RollerStates.STOP);
         Robot.coralRoller.setState(RollerStates.STOP);

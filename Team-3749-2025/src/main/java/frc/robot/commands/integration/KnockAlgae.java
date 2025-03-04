@@ -24,7 +24,7 @@ public class KnockAlgae extends Command {
 
     @Override
     public void initialize() {
-        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
+        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOW);
         Robot.scoringRoller.setIsAlgaeMode(true);
         Robot.scoringRoller.setState(RollerConstants.RollerStates.INTAKE);
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);

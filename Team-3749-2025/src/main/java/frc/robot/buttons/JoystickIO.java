@@ -42,6 +42,7 @@ import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.leds.LEDConstants;
 import frc.robot.subsystems.swerve.ToPos;
 import frc.robot.commands.integration.PrepareClimb;
+import frc.robot.commands.integration.Reset;
 import frc.robot.utils.MiscConstants.ControllerConstants;
 
 /**
@@ -118,7 +119,8 @@ public class JoystickIO {
         private static final OuttakeRoller coralRunOuttake = new OuttakeRoller(Robot.coralRoller);
         private static final RunRoller scoringRun = new RunRoller(Robot.scoringRoller);
 
-        // private static final MaintainCommand algaeMaintain = new MaintainCommand(Robot.algaeRoller);
+        // private static final MaintainCommand algaeMaintain = new
+        // MaintainCommand(Robot.algaeRoller);
         private static final MaintainCommand coralMaintain = new MaintainCommand(Robot.coralRoller);
         private static final MaintainCommand scoringMaintain = new MaintainCommand(Robot.scoringRoller);
 
@@ -182,6 +184,9 @@ public class JoystickIO {
                 buttonBoard.buttonAlgaeKnockoff
                                 .onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.ALGAE)));
 
+
+                buttonBoard.buttonUtilityA.onTrue(new Reset());
+
         }
 
         /**
@@ -190,15 +195,35 @@ public class JoystickIO {
         public static void pilotAndOperatorBindings() {
                 // gyro reset
                 pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
-                pilot.leftBumper().onTrue(Commands.runOnce(() -> {
+
+                // OTF by controller - Closest apriltag
+                pilot.x().onTrue(Commands.runOnce(() -> {
                         ToPos.setSetpointByClosestReefBranch(true);
                         Robot.swerve.setIsOTF(true);
                 }));
-                pilot.rightBumper().onTrue(Commands.runOnce(() -> {
+                pilot.b().onTrue(Commands.runOnce(() -> {
                         ToPos.setSetpointByClosestReefBranch(false);
                         Robot.swerve.setIsOTF(true);
                 }));
+
+                operator.a().onTrue(new ScoreL1());
+                operator.x().onTrue(new ScoreL234(ElevatorStates.L2));
+                operator.b().onTrue(new ScoreL234(ElevatorStates.L3));
+                operator.y().onTrue(new ScoreL234(ElevatorStates.L4));
+                pilot.leftTrigger().onTrue(new IntakeFloor());
+                pilot.rightTrigger().onTrue(new CoralIntakeSource());
+                pilot.leftBumper().onTrue(new OuttakeCoral());
+                pilot.a().onTrue(new Handoff());
+                pilot.y().onTrue(new PrepareClimb());
+                pilot.povDown().onTrue(new Reset());
+                operator.povDown().onTrue(new Reset()); 
+                // pilot.back().onTrue(climb)
+
+
+                // OTF Binding
                 new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
+
+                // OTF Cancel
                 new Trigger(() -> {
                         if (Math.abs(pilot.getLeftX()) > ControllerConstants.deadband
                                         || Math.abs(pilot.getLeftY()) > ControllerConstants.deadband
@@ -208,15 +233,11 @@ public class JoystickIO {
                         return false;
                 }).onTrue(Commands.runOnce(() -> Robot.swerve.setIsOTF(false)));
 
+                // OTF Triggers
+                ToPosTriggers.createOTFTriggers();
+
+                // Button board
                 bindButtonBoard();
-                // ToPosTriggers.createOTFTriggers();
-                // pilot.b().onTrue(Commands.runOnce(() -> Robot.swerve.cyclePPSetpoint()));
-                // pilot.x().onTrue(Commands.runOnce(() -> Robot.swerve.setIsOTF(true)));
-                // operator.b().onTrue(Commands.runOnce(() -> Robot.elevator.setVoltage(12)));
-                // operator.b().onTrue(intakeSource);
-                // operator.x().onTrue(climb);
-                // operator.y().onTrue(climbStow);
-                // pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
 
         }
 
@@ -234,7 +255,8 @@ public class JoystickIO {
                 }).onTrue(Commands.runOnce(() -> Robot.swerve.setIsOTF(false)));
 
                 // pilot.back().onTrue(Commands
-                //                 .runOnce(() -> Robot.swerve.setOdometry(new Pose2d(3, 4.25, new Rotation2d()))));
+                // .runOnce(() -> Robot.swerve.setOdometry(new Pose2d(3, 4.25, new
+                // Rotation2d()))));
 
                 pilot.b().onTrue(Commands.runOnce(() -> Robot.swerve.cyclePPSetpoint()));
                 pilot.x().onTrue(Commands.runOnce(() -> Robot.swerve.setIsOTF(true)));
@@ -346,17 +368,27 @@ public class JoystickIO {
                 // operator.b().onTrue(new Handoff());
 
                 // pilot.a().onTrue(new PrepareClimb());
-                // pilot.b().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(3), Robot.climbArm))
-                //                 .onFalse(Commands.runOnce(() -> Robot.climbArm.setVoltage(0), Robot.climbArm));
+                // pilot.b().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(3),
+                // Robot.climbArm))
+                // .onFalse(Commands.runOnce(() -> Robot.climbArm.setVoltage(0),
+                // Robot.climbArm));
 
-                // pilot.x().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(6), Robot.climbArm))
-                //                 .onFalse(Commands.runOnce(() -> Robot.climbArm.setVoltage(0), Robot.climbArm));
-                // pilot.y().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(-1.5), Robot.climbArm))
-                //                 .onFalse(Commands.runOnce(() -> Robot.climbArm.setVoltage(0), Robot.climbArm));
-                // pilot.leftBumper().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(9), Robot.climbArm))
-                //                 .onFalse(Commands.runOnce(() -> Robot.climbArm.setVoltage(0), Robot.climbArm));
-                // pilot.rightBumper().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(12), Robot.climbArm))
-                //                 .onFalse(Commands.runOnce(() -> Robot.climbArm.setVoltage(0), Robot.climbArm));
+                // pilot.x().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(6),
+                // Robot.climbArm))
+                // .onFalse(Commands.runOnce(() -> Robot.climbArm.setVoltage(0),
+                // Robot.climbArm));
+                // pilot.y().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(-1.5),
+                // Robot.climbArm))
+                // .onFalse(Commands.runOnce(() -> Robot.climbArm.setVoltage(0),
+                // Robot.climbArm));
+                // pilot.leftBumper().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(9),
+                // Robot.climbArm))
+                // .onFalse(Commands.runOnce(() -> Robot.climbArm.setVoltage(0),
+                // Robot.climbArm));
+                // pilot.rightBumper().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(12),
+                // Robot.climbArm))
+                // .onFalse(Commands.runOnce(() -> Robot.climbArm.setVoltage(0),
+                // Robot.climbArm));
 
                 // pilot.a().and()
 
@@ -366,7 +398,7 @@ public class JoystickIO {
                 // pilot.y().onTrue(new ScoreL234(ElevatorStates.L4));
                 // pilot.leftTrigger().onTrue(new IntakeFloor());
                 // pilot.rightTrigger().onTrue(new CoralIntakeSource());
-                
+
                 // pilot.povUp().onTrue(new Handoff());
 
         }
