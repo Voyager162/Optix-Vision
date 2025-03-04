@@ -52,7 +52,7 @@ public class JoystickIO {
 
         private static final CommandXboxController pilot = new CommandXboxController(0);
         private static final CommandXboxController operator = new CommandXboxController(1);
-        private static final Command onTheFly = new OnTheFly();
+        private static final OnTheFly onTheFly = new OnTheFly();
 
         public static ButtonBoard buttonBoard = new ButtonBoard();
 
@@ -185,22 +185,20 @@ public class JoystickIO {
                 bindButtonBoard();
                 pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
                 new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
+
                 new Trigger(() -> {
-                        if (Math.abs(pilot.getLeftX()) > ControllerConstants.deadband
+                        if ((Math.abs(pilot.getLeftX()) > ControllerConstants.deadband
                                         || Math.abs(pilot.getLeftY()) > ControllerConstants.deadband
-                                        || Math.abs(pilot.getRightX()) > ControllerConstants.deadband) {
+                                        || Math.abs(pilot.getRightX()) > ControllerConstants.deadband)
+                                        && onTheFly.getTime() > 0.5) {
                                 return true;
                         }
                         return false;
                 }).onTrue(Commands.runOnce(() -> Robot.swerve.setIsOTF(false)));
 
-
-
                 pilot.b().onTrue(Commands.runOnce(() -> Robot.swerve.cyclePPSetpoint()));
                 pilot.x().onTrue(Commands.runOnce(() -> Robot.swerve.setIsOTF(true)));
-              
 
-              
         }
 
         public static void pilotBindings() {

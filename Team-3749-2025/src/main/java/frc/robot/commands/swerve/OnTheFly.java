@@ -48,7 +48,7 @@ public class OnTheFly extends Command {
         // System.out.println("epic fail");
         currentlyThreading = true;
         endpoint = Robot.swerve.getPPSetpoint().setpoint;
-        
+
         new Thread(() -> {
             debugTimer.reset();
             debugTimer.start();
@@ -142,6 +142,7 @@ public class OnTheFly extends Command {
     public void end(boolean interrupted) {
         currentlyThreading = false;
         timer.stop();
+        timer.reset();
         Robot.swerve.setIsOTF(false);
 
     }
@@ -157,6 +158,10 @@ public class OnTheFly extends Command {
     @Override
     public boolean isFinished() {
         return !currentlyThreading && (trajectory == null || !Robot.swerve.getPPSetpoint().setpoint.equals(endpoint)) ||
-                !Robot.swerve.getIsOTF();
+                (!Robot.swerve.getIsOTF());
+    }
+
+    public double getTime() {
+        return timer.get();
     }
 }
