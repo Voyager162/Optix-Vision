@@ -51,6 +51,7 @@ public class ScoreL234 extends Command {
         // scores when elevator reaches desired state
         if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState()
                 && scoreTimestamp == Double.MAX_VALUE) {
+                    
             if (Robot.swerve.getIsOTF() && !UtilityFunctions.withinMargin(
                     new Pose2d(ToPosConstants.Setpoints.scoreWithinMarginMeters,
                             ToPosConstants.Setpoints.scoreWithinMarginMeters,

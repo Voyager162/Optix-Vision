@@ -124,17 +124,15 @@ public class CoralRoller extends Roller {
 
     @Override
     public void maintain() {
-        if (Robot.coralArm.getIsStableState()){
-            setVoltage(4);
-        }
-        else {       
+
             setVoltage(1.5);
  
-        }
+        
     }
 
     @Override
     public void periodic() {
+        
         super.periodic();
         photoelectricIO.updateData(photoelectricData);
 

@@ -26,6 +26,8 @@ public class CoralIntakeSource extends Command {
         Robot.scoringRoller.setState(RollerStates.STOP);
         Robot.coralRoller.setState(RollerStates.INTAKE);
         System.out.println("Source intake init");
+        Robot.coralRoller.setHasPiece(false);
+
     }
 
     @Override
@@ -36,7 +38,7 @@ public class CoralIntakeSource extends Command {
                 && hasPieceTimeStamp == Double.MAX_VALUE) {
             hasPieceTimeStamp = Timer.getFPGATimestamp();
         }
-        if (Timer.getFPGATimestamp() - hasPieceTimeStamp > 0.25) {
+        if (Timer.getFPGATimestamp() - hasPieceTimeStamp > 0.4) {
 
             Robot.coralArm.setState(CoralArmConstants.ArmStates.STOW);
         }
