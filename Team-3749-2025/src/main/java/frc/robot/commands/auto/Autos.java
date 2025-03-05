@@ -113,10 +113,10 @@ public class Autos {
 
         // loop.trajectory, or the new name
         AutoTrajectory trajectory1 = routine.trajectory("Start-5");
-        AutoTrajectory trajectory2 = routine.trajectory("5-Station");
-        AutoTrajectory trajectory3 = routine.trajectory("Station-4");
-        AutoTrajectory trajectory4 = routine.trajectory("4-Station");
-        AutoTrajectory trajectory5 = routine.trajectory("Station-3");
+        AutoTrajectory trajectory2 = routine.trajectory("5-ArmIntake");
+        AutoTrajectory trajectory3 = routine.trajectory("ArmIntake-4");
+        AutoTrajectory trajectory4 = routine.trajectory("4-ArmIntake");
+        AutoTrajectory trajectory5 = routine.trajectory("ArmIntake-3");
 
         // Commands to scoreL4 and intake from source
         Command score1 = AutoUtils.addScoreL4(trajectory1);
@@ -163,8 +163,8 @@ public class Autos {
 
         // loop.trajectory, or the new name
         AutoTrajectory trajectory1 = routine.trajectory("Start-5");
-        AutoTrajectory trajectory2 = routine.trajectory("5-Station");
-        AutoTrajectory trajectory3 = routine.trajectory("Station-4");
+        AutoTrajectory trajectory2 = routine.trajectory("5-ArmIntake");
+        AutoTrajectory trajectory3 = routine.trajectory("ArmIntake-4");
 
         // Commands to scoreL1 and intake from source
         Command score1 = AutoUtils.addScoreL1(trajectory1);
@@ -227,12 +227,12 @@ public class Autos {
 
         // loop.trajectory, or the new name
         AutoTrajectory trajectory1 = routine.trajectory("Start-5");
-        AutoTrajectory trajectory2 = routine.trajectory("5-Station");
-        AutoTrajectory trajectory3 = routine.trajectory("Station-4");
-        AutoTrajectory trajectory4 = routine.trajectory("4-Station");
-        AutoTrajectory trajectory5 = routine.trajectory("Station-3");
-        AutoTrajectory trajectory6 = routine.trajectory("3-Station");
-        AutoTrajectory trajectory7 = routine.trajectory("Station-2");
+        AutoTrajectory trajectory2 = routine.trajectory("5-ArmIntake");
+        AutoTrajectory trajectory3 = routine.trajectory("ArmIntake-4");
+        AutoTrajectory trajectory4 = routine.trajectory("4-ArmIntake");
+        AutoTrajectory trajectory5 = routine.trajectory("ArmIntake-3");
+        AutoTrajectory trajectory6 = routine.trajectory("3-ArmIntake");
+        AutoTrajectory trajectory7 = routine.trajectory("ArmIntake-2");
 
         // Commands to scoreL4 and intake from source
         Command score1 = AutoUtils.addScoreL4(trajectory1);
@@ -271,13 +271,13 @@ public class Autos {
 
         // loop.trajectory, or the new name
         AutoTrajectory trajectory1 = routine.trajectory("Start-5");
-        AutoTrajectory trajectory2 = routine.trajectory("5-Station");
-        AutoTrajectory trajectory3 = routine.trajectory("Station-4");
-        AutoTrajectory trajectory4 = routine.trajectory("4-Station");
-        AutoTrajectory trajectory5 = routine.trajectory("Station-3");
+        AutoTrajectory trajectory2 = routine.trajectory("5-ArmIntake");
+        AutoTrajectory trajectory3 = routine.trajectory("ArmIntake-4");
+        AutoTrajectory trajectory4 = routine.trajectory("4-ArmIntake");
+        AutoTrajectory trajectory5 = routine.trajectory("ArmIntake-3");
         AutoTrajectory trajectory6 = routine.trajectory("3-KnockAlgae2");
-        AutoTrajectory trajectory7 = routine.trajectory("KnockAlgae2-Station");
-        AutoTrajectory trajectory8 = routine.trajectory("Station-2");
+        AutoTrajectory trajectory7 = routine.trajectory("KnockAlgae2-ArmIntake");
+        AutoTrajectory trajectory8 = routine.trajectory("ArmIntake-2");
         AutoTrajectory trajectory9 = routine.trajectory("2-KnockAlgae1");
 
         // Commands to scoreL4, intake from source, and knock algae

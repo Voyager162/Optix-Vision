@@ -2,6 +2,7 @@ package frc.robot.commands.integration;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
@@ -37,13 +38,11 @@ public class ScoreL1 extends Command {
     public void execute() {
         if (Robot.coralArm.getState() == CoralArmConstants.ArmStates.L1 && Robot.coralArm.getIsStableState()
                 && outtakeTimestamp == Double.MAX_VALUE) {
-            if (Robot.swerve.getIsOTF() && !UtilityFunctions.withinMargin(
-                    new Pose2d(ToPosConstants.Setpoints.scoreWithinMarginMeters,
-                            ToPosConstants.Setpoints.scoreWithinMarginMeters,
-                            new Rotation2d(ToPosConstants.Setpoints.scoreWithinMarginRadians)),
-                    Robot.swerve.getPose(), Robot.swerve.getPPSetpoint().setpoint)) {
+
+            if ((Robot.swerve.getIsOTF() || DriverStation.isAutonomous()) && !Robot.swerve.reachedSwerveSetpoint()) {
                 return;
             }
+            
             Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE);
             outtakeTimestamp = Timer.getFPGATimestamp();
         }

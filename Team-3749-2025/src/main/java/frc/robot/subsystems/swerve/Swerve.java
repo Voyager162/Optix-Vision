@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
@@ -125,7 +126,7 @@ public class Swerve extends SubsystemBase {
 
     // put us on the field with a default orientation
     resetGyro();
-    setOdometry(new Pose2d(3,3,new Rotation2d(0)));
+    setOdometry(new Pose2d(3, 3, new Rotation2d(0)));
     logSetpoints(1.33, 0, 0, 5.53, 0, 0, 0, 0, 0);
 
   }
@@ -242,8 +243,8 @@ public class Swerve extends SubsystemBase {
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     // SwerveDriveKinematics.desaturateWheelSpeeds(
-    //     desiredStates,
-    //     getMaxDriveSpeed());
+    // desiredStates,
+    // getMaxDriveSpeed());
 
     modules[0].setDesiredState(desiredStates[0]);
     modules[1].setDesiredState(desiredStates[1]);
@@ -273,7 +274,8 @@ public class Swerve extends SubsystemBase {
     velocitySetpoint = velocities;
 
     double xPID = xController.calculate(getPose().getX(), positions.getX());
-    xPID = UtilityFunctions.applyDeadband(xController.getError(), AutoConstants.driveToleranceMeters);
+
+    xPID = Math.abs(xController.getError()) > AutoConstants.driveToleranceMeters ? 0 : xPID;
 
     double yPID = yController.calculate(getPose().getY(), positions.getY());
     yPID = UtilityFunctions.applyDeadband(yController.getError(), AutoConstants.driveToleranceMeters);
@@ -292,7 +294,7 @@ public class Swerve extends SubsystemBase {
     logSetpoints(positions, velocities);
     Logger.recordOutput("Swerve/auto/velocity hypt", Math.sqrt(
         speeds.vxMetersPerSecond * speeds.vxMetersPerSecond + speeds.vyMetersPerSecond * speeds.vyMetersPerSecond));
-    Robot.swerve.setChassisSpeeds(speeds);
+    setChassisSpeeds(speeds);
   }
 
   public void followSample(SwerveSample sample, boolean isFlipped) {
@@ -315,10 +317,8 @@ public class Swerve extends SubsystemBase {
     double omega = isFlipped ? -sample.omega : sample.omega;
     double alpha = isFlipped ? -sample.alpha : sample.alpha;
 
-    positionSetpoint = new Pose2d(sample.x,sample.y,new Rotation2d(sample.heading));
-    velocitySetpoint = new Pose2d(sample.vx,sample.vy,new Rotation2d(sample.omega));
-
-
+    positionSetpoint = new Pose2d(sample.x, sample.y, new Rotation2d(sample.heading));
+    velocitySetpoint = new Pose2d(sample.vx, sample.vy, new Rotation2d(sample.omega));
 
     double xPID = xController.calculate(getPose().getX(), xPos);
     xPID = UtilityFunctions.applyDeadband(xController.getError(), AutoConstants.driveToleranceMeters);
@@ -399,14 +399,39 @@ public class Swerve extends SubsystemBase {
     return PPSetpoints.values()[currentPPSetpointIndex];
   }
 
-  public Pose2d getPositionSetpoint(){
+  public Pose2d getPositionSetpoint() {
     return positionSetpoint;
   }
 
-  public Pose2d getVelocitySetpoint(){
+  public Pose2d getVelocitySetpoint() {
     return velocitySetpoint;
   }
 
+  public boolean reachedSwerveSetpoint() {
+    Pose2d setpoint = getPositionSetpoint();
+    double xMargin = Math.sin(setpoint.getRotation().getRadians())
+        * AutoConstants.driveToleranceMeters + 0.01;
+    double yMargin = Math.cos(setpoint.getRotation().getRadians())
+        * AutoConstants.driveToleranceMeters + 0.01;
+
+    boolean withinPositionMargin = UtilityFunctions.withinMargin(
+        new Pose2d(xMargin,
+            yMargin,
+            new Rotation2d(AutoConstants.turnToleranceRad)),
+        getPose(), setpoint);
+
+    Pose2d velocities = new Pose2d(getChassisSpeeds().vxMetersPerSecond,
+        getChassisSpeeds().vyMetersPerSecond,
+        new Rotation2d(getChassisSpeeds().omegaRadiansPerSecond));
+
+    boolean withinVelocityMargin = UtilityFunctions.withinMargin(
+        new Pose2d(0.1, 0.1, new Rotation2d(Units.degreesToRadians(3))),
+        getVelocitySetpoint(),
+        velocities);
+
+    return withinPositionMargin && withinVelocityMargin;
+
+  }
 
   // called when the button board is pressed with the (ppsetpoint)"index" the
   // button is associated w to drive to

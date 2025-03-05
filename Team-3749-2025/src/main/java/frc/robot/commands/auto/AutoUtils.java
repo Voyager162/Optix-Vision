@@ -64,9 +64,9 @@ public class AutoUtils {
     public static AutoFactory getAutoFactory() {
 
         if (flippedChooser.getSelected()) {
-        return factoryFlipped;
+            return factoryFlipped;
         }
-        return factory; 
+        return factory;
 
     }
 
@@ -127,7 +127,6 @@ public class AutoUtils {
         chooser.addCmd("Coral 4 Piece", () -> Autos.getCoralArm4piece());
         chooser.addCmd("Coral 3 Piece", () -> Autos.getCoralArm3piece());
         chooser.select("4-Piece");
-      
 
         SmartDashboard.putData("Auto: Auto Chooser", chooser);
 
@@ -177,8 +176,6 @@ public class AutoUtils {
      */
     public static Command startRoutine(AutoRoutine routine, String firstTrajectoryName,
             AutoTrajectory firstTrajectory) {
-
-        
 
         routine.active().onTrue(
                 AutoUtils.getAutoFactory().resetOdometry(firstTrajectoryName).andThen(
@@ -238,7 +235,6 @@ public class AutoUtils {
         return scoreL3;
 
     }
-
 
     /**
      * Returns a command to score at L3 when the robot is approaching the end of the
@@ -306,9 +302,9 @@ public class AutoUtils {
         if (DriverStation.getAlliance().get() == Alliance.Red) {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
-        Command intake = new IntakeSource();
+        Command intake = new CoralIntakeSource();
 
-        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(intake);
+        trajectory.atPose(endingPose2d, 1.5, Math.PI / 3).onTrue(intake);
         trajectory.done().and(() -> intake.isScheduled())
                 .onTrue(
                         Commands.run(() -> {

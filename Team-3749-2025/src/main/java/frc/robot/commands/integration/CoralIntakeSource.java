@@ -25,14 +25,13 @@ public class CoralIntakeSource extends Command {
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.scoringRoller.setState(RollerStates.STOP);
         Robot.coralRoller.setState(RollerStates.INTAKE);
-        System.out.println("Source intake init");
         Robot.coralRoller.setHasPiece(false);
+        System.out.println("Source intake init");
 
     }
 
     @Override
     public void execute() {
-        System.out.println("Source intake ex");
 
         if (Robot.coralRoller.hasPiece() && hasPieceTimeStamp == Double.MAX_VALUE
                 && hasPieceTimeStamp == Double.MAX_VALUE) {

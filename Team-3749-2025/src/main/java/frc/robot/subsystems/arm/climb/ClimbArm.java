@@ -126,8 +126,7 @@ public class ClimbArm extends SubsystemBase {
 				stop();
 				break;
 			case STOWED:
-				// setGoal(ClimbArmConstants.stowSetPointRad.get());
-				stop();
+				armIO.setVoltage(-1);
 				break;
 			case CLIMB:
 			

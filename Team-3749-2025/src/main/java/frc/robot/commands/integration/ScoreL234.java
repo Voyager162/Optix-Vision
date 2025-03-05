@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
+import frc.robot.commands.auto.AutoConstants;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 import frc.robot.subsystems.swerve.ToPosConstants;
@@ -53,7 +54,7 @@ public class ScoreL234 extends Command {
         if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState()
                 && scoreTimestamp == Double.MAX_VALUE) {
 
-            if ((Robot.swerve.getIsOTF() || DriverStation.isAutonomous()) && !reachedSwerveSetpoint()) {
+            if ((Robot.swerve.getIsOTF() || DriverStation.isAutonomous()) && !Robot.swerve.reachedSwerveSetpoint()) {
                 return;
             }
 
@@ -83,29 +84,5 @@ public class ScoreL234 extends Command {
         // return false;
     }
 
-    public boolean reachedSwerveSetpoint() {
-        Pose2d setpoint = Robot.swerve.getPositionSetpoint();
-        double xMargin = Math.sin(setpoint.getRotation().getRadians())
-                * ToPosConstants.Setpoints.scoreWithinMarginMeters + 0.01;
-        double yMargin = Math.cos(setpoint.getRotation().getRadians())
-                * ToPosConstants.Setpoints.scoreWithinMarginMeters + 0.01;
 
-        boolean withinPositionMargin = UtilityFunctions.withinMargin(
-                new Pose2d(xMargin,
-                        yMargin,
-                        new Rotation2d(ToPosConstants.Setpoints.scoreWithinMarginRadians)),
-                Robot.swerve.getPose(), setpoint);
-
-        Pose2d velocities = new Pose2d(Robot.swerve.getChassisSpeeds().vxMetersPerSecond,
-                Robot.swerve.getChassisSpeeds().vyMetersPerSecond,
-                new Rotation2d(Robot.swerve.getChassisSpeeds().omegaRadiansPerSecond));
-
-        boolean withinVelocityMargin = UtilityFunctions.withinMargin(
-                new Pose2d(0.1, 0.1, new Rotation2d(Units.degreesToRadians(3))),
-                Robot.swerve.getVelocitySetpoint(),
-                velocities);
-
-        return withinPositionMargin && withinVelocityMargin;
-
-    }
 }
