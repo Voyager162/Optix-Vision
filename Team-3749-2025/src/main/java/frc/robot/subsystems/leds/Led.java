@@ -24,24 +24,25 @@ import frc.robot.subsystems.leds.sim.LedSim;
 public class Led extends SubsystemBase {
     private AddressableLEDBuffer ledBuffer;
 
-    private LEDColor desiredPattern = getTeamColorLED();
-    private LEDColor currentPattern = LEDColor.OFF;
+    private LEDColor desiredPattern = LEDColor.RAINBOW;
+    private LEDColor currentPattern = LEDColor.RAINBOW;
 
     private StatusIndicator statusIndicator = StatusIndicator.TEAM;
 
     private double brightness = 1;
 
     private final LEDPattern rainbowPattern = LEDPattern.rainbow(255, 128);
-    private final Distance ledSpacing = Meters.of(LEDConstants.length / Units.inchesToMeters(11.5));
-    private final LEDPattern scrollingRainbow = rainbowPattern.scrollAtAbsoluteSpeed(MetersPerSecond.of(1), ledSpacing);
+    private final Distance ledSpacing = Meters.of(Units.inchesToMeters(11.5) / 18);
+    private final LEDPattern scrollingRainbow = rainbowPattern.scrollAtAbsoluteSpeed(MetersPerSecond.of(0.5), ledSpacing);
+    private LEDIO ledBase;
 
     public Led() {
         ledBuffer = new AddressableLEDBuffer(LEDConstants.length);
 
         if (Robot.isReal()) {
-            new LedReal(LEDConstants.ledPort, ledBuffer);
+            ledBase = new LedReal(LEDConstants.ledPort, ledBuffer);
         } else {
-            new LedSim(LEDConstants.ledPort, ledBuffer);
+            ledBase = new LedSim(LEDConstants.ledPort, ledBuffer);
         }
     }
 
@@ -71,25 +72,18 @@ public class Led extends SubsystemBase {
     }
 
     private void setStripColor() {
+        if(this.desiredPattern==LEDColor.RAINBOW)
+        {
+            ledBase.setData(scrollingRainbow);
+            currentPattern = desiredPattern;
+            return;
+        }
         if (desiredPattern == currentPattern) {
             return;
         }
 
         LEDPattern setPattern = LEDPattern.solid(desiredPattern.color).atBrightness(Percent.of(brightness * 100));
-        if(this.desiredPattern==LEDColor.RAINBOW)
-        {
-            scrollingRainbow.applyTo(ledBuffer);
-            currentPattern = desiredPattern;
-            //i can't test this right now as LED's dont turn on,
-            //but for whoever finds this and the leds dont change color (like the rainbow moves)
-            //try not doing the desiredpattern==current pattern (this one gets priority)
-            //or,
-            //find a way to setData() in LedReal()
-            //and if this does work first try when electrical fixes it, 
-            //delete this comment
-            return;
-        }
-        setPattern.applyTo(ledBuffer);
+        ledBase.setData(setPattern);
 
         currentPattern = desiredPattern;
     }
