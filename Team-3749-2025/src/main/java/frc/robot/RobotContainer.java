@@ -29,7 +29,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // AutoUtils.initAuto();
-    return Autos.gettest2();
-    // return Autos.getSelectedCommand();
+    // return Autos.gettest2();
+    return Autos.getSelectedCommand();
   }
 }
