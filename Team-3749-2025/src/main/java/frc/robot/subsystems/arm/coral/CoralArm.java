@@ -197,7 +197,7 @@ public class CoralArm extends SubsystemBase {
 
         // pidVoltage = 0;
         // Calculate the feedforward voltage based on velocity
-        double ffVoltage = feedforward.calculate(getPositionRad(), firstState.velocity, nextState.velocity);
+        double ffVoltage = feedforward.calculateWithVelocities(getPositionRad(), firstState.velocity, nextState.velocity);
         // ffVoltage = CoralArmConstants.kG.get() * Math.cos(data.positionRad);
         // Apply the combined PID and feedforward voltages to the arm
         double volts = ffVoltage + pidVoltage;
