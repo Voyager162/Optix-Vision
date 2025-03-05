@@ -13,7 +13,7 @@ public final class AutoConstants {
         public static double kIDrive = 1; // 0.1
         public static double kDDrive = 0.65; // 0.5
         public static double driveIZone = 0.1; //0.1
-        public static double driveToleranceMeters = 0.015;
+        public static double driveToleranceMeters = 0.01;
 
         public static double kPTurn = 7.5; // 4.75
         public static double kITurn = 1; // 3

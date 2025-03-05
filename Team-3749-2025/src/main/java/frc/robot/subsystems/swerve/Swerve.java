@@ -268,32 +268,35 @@ public class Swerve extends SubsystemBase {
    *       field
    */
 
-  // called by OTF, given the position and velocity at the points generated in the
+  // called by OTF and Choreo, given the position and velocity at the points
+  // generated in the
   // dynamic path:
   // calc the speeds and throw them into the speed
   public void followSample(Pose2d positions, Pose2d velocities) {
     positionSetpoint = positions;
     velocitySetpoint = velocities;
 
-    double xPID = xController.calculate(getPose().getX(), positions.getX());
-    xPID = UtilityFunctions.applyDeadband(xController.getError(), AutoConstants.driveToleranceMeters);
+    double xPID = 0;
+    if (!xController.atSetpoint()) {
+      xPID = xController.calculate(getPose().getX(), positions.getX());
+    }
 
     // xPID = Math.abs(xController.getError()) > AutoConstants.driveToleranceMeters
     // ? 0 : xPID;
 
-    double yPID = yController.calculate(getPose().getY(), positions.getY());
-    yPID = UtilityFunctions.applyDeadband(yController.getError(), AutoConstants.driveToleranceMeters);
+    double yPID = 0;
+    if (!yController.atSetpoint()) {
+      yPID = yController.calculate(getPose().getY(), positions.getY());
+    }
 
-    // yPID = UtilityFunctions.applyDeadband(yController.getError(),
-    // AutoConstants.driveToleranceMeters);
-
-    double turnPID = turnController.calculate(getPose().getRotation().getRadians(),
-        positions.getRotation().getRadians());
-    Logger.recordOutput("Swerve/auto/turnPID", turnPID);
-    // turnPID = UtilityFunctions.applyDeadband(turnController.getError(), AutoConstants.turnToleranceRad);
-
-    // turnPID = UtilityFunctions.applyDeadband(turnController.getError(),
-    // AutoConstants.driveToleranceMeters);
+    double turnPID = 0;
+    if (!turnController.atSetpoint()) {
+      turnPID = turnController.calculate(getPose().getRotation().getRadians(),
+          positions.getRotation().getRadians());
+    }
+    Logger.recordOutput("Swerve/auto/turn PID", turnPID);
+    Logger.recordOutput("Swerve/auto/x PID", turnPID);
+    Logger.recordOutput("Swerve/auto/y PID", turnPID);
 
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         new ChassisSpeeds(
@@ -314,45 +317,22 @@ public class Swerve extends SubsystemBase {
     // ternaries are for x-axis flipping
 
     double xPos = sample.x;
-
     double xVel = sample.vx;
     double xAcc = sample.ax;
-    double yPos = isFlipped ? AutoUtils.flipper.flipY(sample.y) : sample.y;
 
+    double yPos = isFlipped ? AutoUtils.flipper.flipY(sample.y) : sample.y;
     double yVel = isFlipped ? -sample.vy : sample.vy;
     double yAcc = isFlipped ? -sample.ay : sample.ay;
 
     double heading = isFlipped ? new Rotation2d(Math.PI - sample.heading).rotateBy(new Rotation2d(Math.PI)).getRadians()
         : sample.heading;
-
     double omega = isFlipped ? -sample.omega : sample.omega;
     double alpha = isFlipped ? -sample.alpha : sample.alpha;
 
-    positionSetpoint = new Pose2d(sample.x, sample.y, new Rotation2d(sample.heading));
-    velocitySetpoint = new Pose2d(sample.vx, sample.vy, new Rotation2d(sample.omega));
+    positionSetpoint = new Pose2d(xPos, yPos, new Rotation2d(heading));
+    velocitySetpoint = new Pose2d(xVel, yVel, new Rotation2d(omega));
 
-    double xPID = xController.calculate(getPose().getX(), xPos);
-    xPID = UtilityFunctions.applyDeadband(xController.getError(), AutoConstants.driveToleranceMeters);
-    double yPID = xController.calculate(getPose().getY(), yPos);
-    yPID = UtilityFunctions.applyDeadband(yController.getError(), AutoConstants.driveToleranceMeters);
-    double turnPID = turnController.calculate(getPose().getRotation().getRadians(),
-        heading);
-    turnPID = UtilityFunctions.applyDeadband(turnController.getError(), AutoConstants.driveToleranceMeters);
-
-    // xPID = 0;
-    // yPID = 0;
-    // turnPID = 0;
-
-    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-        new ChassisSpeeds(
-            xPID + xVel,
-            yPID + yVel,
-            turnPID
-                + omega),
-        getPose().getRotation());
-    logSetpoints(xPos, xVel, xAcc, yPos, yVel, yAcc, heading, omega, alpha);
-
-    setChassisSpeeds(speeds);
+    followSample(positionSetpoint, velocitySetpoint);
   }
 
   public void setBreakMode(boolean enable) {
@@ -419,7 +399,7 @@ public class Swerve extends SubsystemBase {
   }
 
   public boolean reachedSwerveSetpoint() {
-    Pose2d setpoint = getPositionSetpoint();
+    // Pose2d setpoint = getPositionSetpoint();
     // double xMargin = (Math.sin(setpoint.getRotation().getRadians())
     // * AutoConstants.driveToleranceMeters) + 0.015;
 
@@ -448,7 +428,7 @@ public class Swerve extends SubsystemBase {
 
     return UtilityFunctions.withinMargin(
         new Pose2d(AutoConstants.driveToleranceMeters,
-        AutoConstants.driveToleranceMeters,
+            AutoConstants.driveToleranceMeters,
             new Rotation2d(AutoConstants.turnToleranceRad)),
         getPose(), getPPSetpoint().setpoint);
 
