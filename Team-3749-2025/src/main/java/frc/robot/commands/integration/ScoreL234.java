@@ -1,10 +1,15 @@
 package frc.robot.commands.integration;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
+import frc.robot.subsystems.swerve.ToPosConstants;
+import frc.robot.utils.UtilityFunctions;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.arm.coral.CoralArmConstants.ArmStates;
@@ -31,7 +36,6 @@ public class ScoreL234 extends Command {
 
     @Override
     public void initialize() {
-
         Robot.elevator.setState(elevatorState);
         Robot.scoringRoller.setState(RollerStates.STOP);
         Robot.coralArm.setState(ArmStates.STOW);
@@ -45,7 +49,15 @@ public class ScoreL234 extends Command {
         }
 
         // scores when elevator reaches desired state
-        if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState() && scoreTimestamp == Double.MAX_VALUE) {
+        if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState()
+                && scoreTimestamp == Double.MAX_VALUE) {
+            if (Robot.swerve.getIsOTF() && !UtilityFunctions.withinMargin(
+                    new Pose2d(ToPosConstants.Setpoints.scoreWithinMarginMeters,
+                            ToPosConstants.Setpoints.scoreWithinMarginMeters,
+                            new Rotation2d(ToPosConstants.Setpoints.scoreWithinMarginRadians)),
+                    Robot.swerve.getPose(), Robot.swerve.getPPSetpoint().setpoint)) {
+                return;
+            }
             Robot.scoringRoller.setState(RollerStates.SCORE);
             scoreTimestamp = Timer.getFPGATimestamp();
         }
