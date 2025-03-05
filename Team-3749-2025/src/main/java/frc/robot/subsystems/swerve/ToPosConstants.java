@@ -82,10 +82,8 @@ public class ToPosConstants {
      */
     public static final class Setpoints {
 
-        public static final double scoreWithinMarginMeters = 0.03;
-        public static final double scoreWithinMarginRadians = Units.degreesToRadians(3);
 
-        public static final double approachPointDistance = 0.6;
+        public static final double approachPointDistance = 0.75;
 
         /**
          * Assumes a forward vector from the robot front to calculate
@@ -286,7 +284,7 @@ public class ToPosConstants {
 
         // ======= Reef Positions =======
         public static Translation2d reefCenter = new Translation2d(4.48932, 4.02598);
-        public static double reefCenterToSetpointDistance = 0.85 - Units.inchesToMeters(2);
+        public static double reefCenterToSetpointDistance = 0.85+Units.inchesToMeters(4) ;
         // Positions marking different reef scoring locations
         public static Pose2d reefClose = adjustPose(getReefPose(0), false); // Center front of the reef
         public static Pose2d reefCloseRight = adjustPose(getReefPose(60), false); // Center front of the reef

@@ -21,6 +21,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.buttons.JoystickIO;
@@ -118,8 +119,8 @@ public class Swerve extends SubsystemBase {
 
     // auto PID settings
     turnController.enableContinuousInput(-Math.PI, Math.PI);
-    turnController.setTolerance(AutoConstants.turnToleranceRad);
     turnController.setIZone(AutoConstants.turnIZone);
+    turnController.setTolerance(AutoConstants.turnToleranceRad);
     xController.setTolerance(AutoConstants.driveToleranceMeters);
     yController.setTolerance(AutoConstants.driveToleranceMeters);
     xController.setIZone(AutoConstants.driveIZone);
@@ -244,8 +245,8 @@ public class Swerve extends SubsystemBase {
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
-    desiredStates,
-    getMaxDriveSpeed());
+        desiredStates,
+        getMaxDriveSpeed());
 
     modules[0].setDesiredState(desiredStates[0]);
     modules[1].setDesiredState(desiredStates[1]);
@@ -275,16 +276,22 @@ public class Swerve extends SubsystemBase {
     velocitySetpoint = velocities;
 
     double xPID = xController.calculate(getPose().getX(), positions.getX());
+    xPID = UtilityFunctions.applyDeadband(xController.getError(), AutoConstants.driveToleranceMeters);
 
     // xPID = Math.abs(xController.getError()) > AutoConstants.driveToleranceMeters
     // ? 0 : xPID;
 
     double yPID = yController.calculate(getPose().getY(), positions.getY());
+    yPID = UtilityFunctions.applyDeadband(yController.getError(), AutoConstants.driveToleranceMeters);
+
     // yPID = UtilityFunctions.applyDeadband(yController.getError(),
     // AutoConstants.driveToleranceMeters);
 
     double turnPID = turnController.calculate(getPose().getRotation().getRadians(),
         positions.getRotation().getRadians());
+    Logger.recordOutput("Swerve/auto/turnPID", turnPID);
+    // turnPID = UtilityFunctions.applyDeadband(turnController.getError(), AutoConstants.turnToleranceRad);
+
     // turnPID = UtilityFunctions.applyDeadband(turnController.getError(),
     // AutoConstants.driveToleranceMeters);
 
@@ -413,31 +420,37 @@ public class Swerve extends SubsystemBase {
 
   public boolean reachedSwerveSetpoint() {
     Pose2d setpoint = getPositionSetpoint();
-    double xMargin = (Math.sin(setpoint.getRotation().getRadians())
-        * AutoConstants.driveToleranceMeters) + 0.015;
+    // double xMargin = (Math.sin(setpoint.getRotation().getRadians())
+    // * AutoConstants.driveToleranceMeters) + 0.015;
 
-    double yMargin = (Math.cos(setpoint.getRotation().getRadians())
-        * AutoConstants.driveToleranceMeters) + 0.015;
+    // double yMargin = (Math.cos(setpoint.getRotation().getRadians())
+    // * AutoConstants.driveToleranceMeters) + 0.015;
 
-    Logger.recordOutput("Swerve/auto/x margin", xMargin);
-    Logger.recordOutput("Swerve/auto/y margin", yMargin);
+    // Logger.recordOutput("Swerve/auto/x margin", xMargin);
+    // Logger.recordOutput("Swerve/auto/y margin", yMargin);
 
-    boolean withinPositionMargin = UtilityFunctions.withinMargin(
-        new Pose2d(xMargin,
-            yMargin,
+    // boolean withinPositionMargin = UtilityFunctions.withinMargin(
+    // new Pose2d(xMargin,
+    // yMargin,
+    // new Rotation2d(AutoConstants.turnToleranceRad)),
+    // getPose(), setpoint);
+
+    // Pose2d velocities = new Pose2d(getChassisSpeeds().vxMetersPerSecond,
+    // getChassisSpeeds().vyMetersPerSecond,
+    // new Rotation2d(getChassisSpeeds().omegaRadiansPerSecond));
+
+    // boolean withinVelocityMargin = UtilityFunctions.withinMargin(
+    // new Pose2d(0.1, 0.1, new Rotation2d(Units.degreesToRadians(3))),
+    // getVelocitySetpoint(),
+    // velocities);
+
+    // return withinPositionMargin && withinVelocityMargin;
+
+    return UtilityFunctions.withinMargin(
+        new Pose2d(AutoConstants.driveToleranceMeters,
+        AutoConstants.driveToleranceMeters,
             new Rotation2d(AutoConstants.turnToleranceRad)),
-        getPose(), setpoint);
-
-    Pose2d velocities = new Pose2d(getChassisSpeeds().vxMetersPerSecond,
-        getChassisSpeeds().vyMetersPerSecond,
-        new Rotation2d(getChassisSpeeds().omegaRadiansPerSecond));
-
-    boolean withinVelocityMargin = UtilityFunctions.withinMargin(
-        new Pose2d(0.1, 0.1, new Rotation2d(Units.degreesToRadians(3))),
-        getVelocitySetpoint(),
-        velocities);
-
-    return withinPositionMargin && withinVelocityMargin;
+        getPose(), getPPSetpoint().setpoint);
 
   }
 

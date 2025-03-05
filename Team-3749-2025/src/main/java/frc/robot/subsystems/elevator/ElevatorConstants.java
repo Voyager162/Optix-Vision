@@ -37,11 +37,9 @@ public class ElevatorConstants {
         public static LoggedTunableNumber kP = new LoggedTunableNumber("Elevator/kP", 12);
         public static LoggedTunableNumber kI = new LoggedTunableNumber("Elevator/kI", 0);
         public static LoggedTunableNumber kD = new LoggedTunableNumber("Elevator/kD", 0);
-        public static LoggedTunableNumber kS = new LoggedTunableNumber("Elevator/kS", 0.16
-        );
+        public static LoggedTunableNumber kS = new LoggedTunableNumber("Elevator/kS", 0.16);
         public static LoggedTunableNumber kV = new LoggedTunableNumber("Elevator/kV", 7.77);
-        public static LoggedTunableNumber kA = new LoggedTunableNumber("Elevator/kA", 0.27
-        ); // 1.72
+        public static LoggedTunableNumber kA = new LoggedTunableNumber("Elevator/kA", 0.27); // 1.72
         public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("Elevator/max velocity",
                 1.415);
         public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
@@ -54,7 +52,7 @@ public class ElevatorConstants {
         L1(Units.inchesToMeters(12)),
         L2(Units.inchesToMeters(15.35)),
         L3(Units.inchesToMeters(31.25)),
-        L4(Units.inchesToMeters(54.65)),
+        L4(1.28),
         SOURCE(Units.inchesToMeters(30)),
         ALGAE_LOW(Units.inchesToMeters(.4)),
         ALGAE_HIGH(Units.inchesToMeters(16)),
@@ -63,8 +61,7 @@ public class ElevatorConstants {
 
         public double heightMeters;
 
-        private ElevatorStates(double heightMeters)
-        {
+        private ElevatorStates(double heightMeters) {
             this.heightMeters = heightMeters;
         }
     }
