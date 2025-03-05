@@ -37,6 +37,7 @@ import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.leds.LEDConstants;
 import frc.robot.subsystems.swerve.ToPos;
+import frc.robot.subsystems.swerve.ToPosConstants;
 import frc.robot.commands.integration.PrepareClimb;
 import frc.robot.commands.integration.Reset;
 import frc.robot.utils.MiscConstants.ControllerConstants;
@@ -139,10 +140,15 @@ public class JoystickIO {
                 // intake source w arm
                 pilot.rightTrigger().onTrue(new CoralIntakeSource());
                 // outtake arm
-                pilot.leftBumper().onTrue(new ScoreL1());
-                // intake source w elevator
-                pilot.rightBumper().onTrue(new IntakeSource());
-                // handoff
+
+                pilot.leftBumper().onTrue(Commands.runOnce(()->{ToPos.setSetpointByClosestReefBranch(true);Robot.swerve.setIsOTF(true);}));
+                pilot.rightBumper().onTrue(Commands.runOnce(()->{ToPos.setSetpointByClosestReefBranch(false);Robot.swerve.setIsOTF(true);}));
+                // pilot.leftBumper().onTrue(new ScoreL1());
+                // // intake source w elevator
+                // pilot.rightBumper().onTrue(new IntakeSource());
+                // // handoff
+
+
                 pilot.a().onTrue(new Handoff());
                 // Climb - Reset to cancel
                 pilot.y().onTrue(new PrepareClimb()).onFalse(new Climb());

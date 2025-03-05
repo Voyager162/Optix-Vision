@@ -69,7 +69,7 @@ public class ToPos {
             System.out.println("epic waypoint size fail");
             return null;
         }
-        System.out.println("path optimization took: " + debugTimer.get());
+        // System.out.println("path optimization took: " + debugTimer.get());
         debugTimer.stop();
 
         return new PathPlannerPath(waypoints,
@@ -407,6 +407,14 @@ public class ToPos {
      */
     public static void setSetpointByClosestReefBranch(boolean isLeftBranch) {
         int branchIndex = isLeftBranch ? 0 : 1; // Selects the left (0) or right (1) branch
+        if(JoystickIO.buttonBoard.getScoringMode()==null)
+        {
+            JoystickIO.buttonBoard.setScoringMode(ScoringMode.ALGAE);
+        }
+        if(JoystickIO.buttonBoard.getScoringMode().equals(ScoringMode.ALGAE))
+        {
+            branchIndex = 2;
+        }
         int shouldOffsetForL1 = 0; // Offset for Level 1 scoring, default is 0
 
         // Find the closest reef side to the robot's current position
@@ -416,6 +424,7 @@ public class ToPos {
         if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L1) {
             shouldOffsetForL1 = 1;
         }
+        //possible race condition if scoring mode somehow changes that fast
 
         // Iterate through the reef branch mappings to set the correct setpoint
         for (Pose2d side : ToPosConstants.Setpoints.driveRelativeBranches.keySet()) {

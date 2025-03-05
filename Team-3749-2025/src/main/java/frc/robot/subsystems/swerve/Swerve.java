@@ -367,7 +367,6 @@ public class Swerve extends SubsystemBase {
     currentPPSetpointIndex++;
     if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.ALGAE &&
         currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 25) {
-      setSetpointToClosestSideToSetpoint();
     }
     if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L1 &&
         currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 24 && currentPPSetpointIndex % 2 == 0) {
@@ -389,16 +388,6 @@ public class Swerve extends SubsystemBase {
     return PPSetpoints.values()[currentPPSetpointIndex];
   }
 
-  private void setSetpointToClosestSideToSetpoint() {
-    Pose2d closestSide = getPPSetpoint().setpoint.nearest(ToPosConstants.Setpoints.reefSides);
-    // Iterate through the reef branch mappings to set the correct setpoint
-    for (Pose2d side : ToPosConstants.Setpoints.driveRelativeBranches.keySet()) {
-      if (closestSide.equals(side)) {
-        setPPSetpointIndex(ToPosConstants.Setpoints.driveRelativeBranches.get(side)[2]);
-      }
-    }
-  }
-
   // called when the button board is pressed with the (ppsetpoint)"index" the
   // button is associated w to drive to
 
@@ -409,7 +398,6 @@ public class Swerve extends SubsystemBase {
 
     if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.ALGAE &&
         currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 25) {
-      setSetpointToClosestSideToSetpoint();
     }
 
     if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L1 &&
