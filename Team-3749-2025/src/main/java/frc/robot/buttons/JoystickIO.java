@@ -1,3 +1,4 @@
+
 package frc.robot.buttons;
 
 import org.opencv.core.Point;
@@ -157,6 +158,7 @@ public class JoystickIO {
                 // toggle hasPiece
                 pilot.povUp().onTrue(Commands
                                 .runOnce(() -> Robot.coralRoller.setHasPiece(!Robot.coralRoller.getHasPiece())));
+
 
                 // scoring
                 operator.a().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L1)));
