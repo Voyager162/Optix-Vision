@@ -7,6 +7,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.auto.Autos;
+import frc.robot.subsystems.leds.LEDConstants.StatusIndicator;
 import frc.robot.subsystems.roller.PhotoelectricIO;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
@@ -91,6 +92,7 @@ public class ScoringRoller extends Roller {
      */
     @Override
     public void intake() {
+        Robot.led.setLEDStatusIndicator(StatusIndicator.PIECE);
         if(isAlgaeMode)
         {
             setVelocity(RollerConstants.RollerStates.INTAKE.algaeVelocity);

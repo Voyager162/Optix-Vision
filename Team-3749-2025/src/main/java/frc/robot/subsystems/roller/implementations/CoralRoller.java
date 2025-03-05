@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.commands.auto.Autos;
+import frc.robot.subsystems.leds.LEDConstants.StatusIndicator;
 import frc.robot.subsystems.roller.PhotoelectricIO;
 import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
@@ -84,6 +85,7 @@ public class CoralRoller extends Roller {
         System.out.println(rollerState.name());
         super.setState(rollerState);
         if (rollerState.equals(RollerStates.INTAKE)) {
+            Robot.led.setLEDStatusIndicator(StatusIndicator.PIECE);
             intakeTimestamp = Timer.getFPGATimestamp();
         } else if (rollerState.equals(RollerStates.OUTTAKE)) {
             outtakeTimestamp = Timer.getFPGATimestamp();
