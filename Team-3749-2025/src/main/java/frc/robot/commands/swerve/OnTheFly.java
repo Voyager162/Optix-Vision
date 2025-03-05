@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
+import frc.robot.subsystems.leds.LEDConstants.StatusIndicator;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.ToPos;
 
@@ -122,6 +123,7 @@ public class OnTheFly extends Command {
             this.cancel();
             return;
         }
+        Robot.led.setLEDStatusIndicator(StatusIndicator.OTF);
 
         // Get the current elapsed time in the trajectory
         double currentTime = timer.get();
