@@ -67,7 +67,7 @@ public class CoralRoller extends Roller {
             return photoelectricData.sensing;
         } else {
             if (!super.getIsStableState() && getState() == RollerStates.INTAKE
-                    && Timer.getFPGATimestamp() - intakeTimestamp > 0.8) {
+                    && Timer.getFPGATimestamp() - intakeTimestamp > 0.6) {
                 hasPiece = true;
             } else if (super.getIsStableState() && getState() == RollerStates.OUTTAKE
                     && Timer.getFPGATimestamp() - outtakeTimestamp > 0.15) {
@@ -124,17 +124,15 @@ public class CoralRoller extends Roller {
 
     @Override
     public void maintain() {
-        if (Robot.coralArm.getIsStableState()){
-            setVoltage(4);
-        }
-        else {       
+
             setVoltage(1.5);
  
-        }
+        
     }
 
     @Override
     public void periodic() {
+        
         super.periodic();
         photoelectricIO.updateData(photoelectricData);
 
