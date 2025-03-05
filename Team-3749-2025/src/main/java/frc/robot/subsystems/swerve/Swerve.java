@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
@@ -242,9 +243,9 @@ public class Swerve extends SubsystemBase {
    *                      FRT, BLD, BLT, BRD, BRT
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
-    // SwerveDriveKinematics.desaturateWheelSpeeds(
-    // desiredStates,
-    // getMaxDriveSpeed());
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+    desiredStates,
+    getMaxDriveSpeed());
 
     modules[0].setDesiredState(desiredStates[0]);
     modules[1].setDesiredState(desiredStates[1]);
