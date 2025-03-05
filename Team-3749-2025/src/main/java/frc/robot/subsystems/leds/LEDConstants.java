@@ -8,6 +8,7 @@ public class LEDConstants {
     public static final int ledPort = 0;
 
     public static enum StatusIndicator {
+        OTF,
         BATTERY,
         PIECE,
         COLOR,
@@ -22,10 +23,11 @@ public class LEDConstants {
         CORAL_ARM_HAS_PIECE(Color.kPurple),
         OFF(Color.kBlack),
         BATTERY_LOW(Color.kOrange),
-        BATTERY_GOOD(Color.kWhite);
+        BATTERY_GOOD(Color.kWhite),
+        RAINBOW(Color.kTomato); //this is not the actual color i just need to satisfy reqs
 
         Color color;
-
+        boolean isRainbow;
         LEDColor(Color color) {
             this.color = color;
         }

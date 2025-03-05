@@ -183,12 +183,12 @@ public class ClimbArm extends SubsystemBase {
 		State firstState = profile.getSetpoint();
 
 		double pidVoltage = profile.calculate(getPositionRad());
+		State nextState = profile.getSetpoint();
 
-		double ffVoltage = feedforward.calculate(getPositionRad(), firstState.velocity);
+		double ffVoltage = feedforward.calculateWithVelocities(getPositionRad(), firstState.velocity, nextState.velocity);
 
 		double volts = ffVoltage + pidVoltage;
 		armIO.setVoltage(volts);
-
 	}
 
 	// PERIODIC FUNCTIONS

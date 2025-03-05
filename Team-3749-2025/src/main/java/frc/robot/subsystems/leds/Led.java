@@ -1,9 +1,13 @@
 package frc.robot.subsystems.leds;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Percent;
 
 import java.util.Optional;
 
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotController;
@@ -20,20 +24,25 @@ import frc.robot.subsystems.leds.sim.LedSim;
 public class Led extends SubsystemBase {
     private AddressableLEDBuffer ledBuffer;
 
-    private LEDColor desiredPattern = getTeamColorLED();
-    private LEDColor currentPattern = LEDColor.OFF;
+    private LEDColor desiredPattern = LEDColor.RAINBOW;
+    private LEDColor currentPattern = LEDColor.RAINBOW;
 
     private StatusIndicator statusIndicator = StatusIndicator.TEAM;
 
     private double brightness = 1;
 
+    private final LEDPattern rainbowPattern = LEDPattern.rainbow(255, 128);
+    private final Distance ledSpacing = Meters.of(Units.inchesToMeters(11.5) / 18);
+    private final LEDPattern scrollingRainbow = rainbowPattern.scrollAtAbsoluteSpeed(MetersPerSecond.of(0.5), ledSpacing);
+    private LEDIO ledBase;
+
     public Led() {
         ledBuffer = new AddressableLEDBuffer(LEDConstants.length);
 
         if (Robot.isReal()) {
-            new LedReal(LEDConstants.ledPort, ledBuffer);
+            ledBase = new LedReal(LEDConstants.ledPort, ledBuffer);
         } else {
-            new LedSim(LEDConstants.ledPort, ledBuffer);
+            ledBase = new LedSim(LEDConstants.ledPort, ledBuffer);
         }
     }
 
@@ -63,12 +72,18 @@ public class Led extends SubsystemBase {
     }
 
     private void setStripColor() {
+        if(this.desiredPattern==LEDColor.RAINBOW)
+        {
+            ledBase.setData(scrollingRainbow);
+            currentPattern = desiredPattern;
+            return;
+        }
         if (desiredPattern == currentPattern) {
             return;
         }
 
         LEDPattern setPattern = LEDPattern.solid(desiredPattern.color).atBrightness(Percent.of(brightness * 100));
-        setPattern.applyTo(ledBuffer);
+        ledBase.setData(setPattern);
 
         currentPattern = desiredPattern;
     }
@@ -101,6 +116,14 @@ public class Led extends SubsystemBase {
     @Override
     public void periodic() {
         switch (statusIndicator) {
+            case OTF:
+                if(Robot.swerve.getIsOTF())
+                {
+                    setLEDColor(LEDColor.RAINBOW);
+                    return;
+                }
+                setLEDColor(LEDColor.OFF);
+            break;
             case BATTERY:
                 if (RobotController.getBatteryVoltage() < 8) {
                     setLEDColor(LEDColor.BATTERY_LOW);
@@ -130,6 +153,48 @@ public class Led extends SubsystemBase {
                 break;
         }
         setStripColor();
+
+
+
+        // this is the way I (weston) would do it, this way it is a bit simpler and we can prioritize certain colors and is easier to manage
+
+            //     switch (statusIndicator) {
+    //         case COLOR:
+    //             setLEDColor(getCurrentPattern());
+    //             break;
+    //         case TEAM:
+    //             setLEDColor(getTeamColorLED());
+    //             break;
+    //         default:
+    //             break;
+    //     }
+
+    //     if (RobotController.getBatteryVoltage() < 8) {
+    //         setLEDColor(LEDColor.BATTERY_LOW);
+    //         return;
+    //     }
+
+    //     else if(Robot.swerve.getIsOTF())
+    //     {
+    //         setLEDColor(LEDColor.RAINBOW);
+    //         return;
+    //     }
+
+    //     else if (Robot.scoringRoller.hasPiece()) {
+    //         setLEDColor(LEDColor.CHUTE_HAS_PIECE);
+    //         return;
+    //     }
+
+    //     else if (Robot.coralRoller.hasPiece()) {
+    //         setLEDColor(LEDColor.CORAL_ARM_HAS_PIECE);
+    //         return;
+    //     }
+
+    //     else {
+    //         setLEDColor(LEDColor.BATTERY_GOOD);
+    //     }
+    //     setStripColor();
+    // }
     }
 
 }
