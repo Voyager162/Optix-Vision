@@ -122,7 +122,13 @@ public class CoralRoller extends Roller {
 
     @Override
     public void maintain() {
-        setVoltage(0.85);
+        if (Robot.coralArm.getIsStableState()){
+            setVoltage(4);
+        }
+        else {       
+            setVoltage(1.5);
+ 
+        }
     }
 
     @Override

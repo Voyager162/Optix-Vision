@@ -179,12 +179,14 @@ public class ToPosConstants {
          */
         public static Pose2d adjustPose(double x, double y, double heading, boolean isCoralStation) {
             // Calculate offsets based on half the robot's dimensions
+
             double offsetX = (ROBOT_LENGTH / 2) * Math.cos(heading);
             double offsetY = (ROBOT_WIDTH / 2) * Math.sin(heading);
 
             // If it's a coral station, adjust the pose forward; otherwise, adjust backward
             if (isCoralStation) {
-                return new Pose2d(x + offsetX, y + offsetY, new Rotation2d(heading));
+                return new Pose2d(x + offsetX + Units.inchesToMeters(2), y + offsetY + Units.inchesToMeters(2),
+                        new Rotation2d(heading));
             }
             return new Pose2d(x - offsetX, y - offsetY, new Rotation2d(heading));
         }
@@ -202,7 +204,7 @@ public class ToPosConstants {
          */
         public static Pose2d adjustPose(Pose2d pose, boolean isCoralStation) {
             // Calculate offsets based on half the robot's dimensions
-            
+
             // If it's a coral station, adjust the pose forward; otherwise, adjust backward
             if (isCoralStation) {
                 double offsetX = (ROBOT_LENGTH / 2) * Math.cos(pose.getRotation().getRadians());
@@ -219,8 +221,9 @@ public class ToPosConstants {
             return new Pose2d(
                     reefCenter.getX()
                             + Math.cos(Units.degreesToRadians(angleOfReef) + Math.PI) * reefCenterToSetpointDistance,
-                            
-                    reefCenter.getY() + Math.sin(Units.degreesToRadians(angleOfReef) + Math.PI) * reefCenterToSetpointDistance,
+
+                    reefCenter.getY()
+                            + Math.sin(Units.degreesToRadians(angleOfReef) + Math.PI) * reefCenterToSetpointDistance,
                     Rotation2d.fromDegrees(angleOfReef));
         }
 
@@ -289,7 +292,6 @@ public class ToPosConstants {
         public static Pose2d reefFarLeft = adjustPose(getReefPose(240), false); // Center front of the reef
         public static Pose2d reefCloseLeft = adjustPose(getReefPose(300), false); // Center front of the reef
 
-        
         // ======= Reef Scoring Setpoints (Main Scoring Positions) =======
         // Standard scoring positions at the reef
         public static Pose2d aSetpoint = reefTrig(reefClose, TrigDirection.LEFT); // Left of front center reef

@@ -32,15 +32,21 @@ public class CoralIntakeSource extends Command {
     public void execute() {
         System.out.println("Source intake ex");
 
-        if (Robot.coralRoller.hasPiece() && hasPieceTimeStamp == Double.MAX_VALUE && hasPieceTimeStamp == Double.MAX_VALUE) {
+        if (Robot.coralRoller.hasPiece() && hasPieceTimeStamp == Double.MAX_VALUE
+                && hasPieceTimeStamp == Double.MAX_VALUE) {
             hasPieceTimeStamp = Timer.getFPGATimestamp();
+        }
+        if (Timer.getFPGATimestamp() - hasPieceTimeStamp > 0.25) {
+
+            Robot.coralArm.setState(CoralArmConstants.ArmStates.STOW);
         }
     }
 
     @Override
     public void end(boolean interrupted) {
-        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOW);
         Robot.coralRoller.setState(RollerStates.MAINTAIN);
+        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOW);
+
         hasPieceTimeStamp = Double.MAX_VALUE;
 
     }
@@ -50,6 +56,6 @@ public class CoralIntakeSource extends Command {
      */
     @Override
     public boolean isFinished() {
-        return Timer.getFPGATimestamp() - hasPieceTimeStamp > 0.2 && this.isScheduled();
+        return Timer.getFPGATimestamp() - hasPieceTimeStamp > 0.45 && this.isScheduled();
     }
 }

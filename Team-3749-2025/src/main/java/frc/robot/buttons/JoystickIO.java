@@ -164,7 +164,8 @@ public class JoystickIO {
                 operator.a().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L1)));
                 operator.x().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L2)));
                 operator.b().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L3)));
-                operator.y().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L4)));
+                // operator.y().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L4)));
+                operator.y().onTrue(new ScoreL234(ElevatorStates.L4));
                 // Algae
                 operator.leftTrigger().onTrue(new KnockAlgae(ElevatorStates.ALGAE_LOW));
                 operator.rightTrigger().onTrue(new KnockAlgae(ElevatorStates.ALGAE_HIGH));

@@ -45,7 +45,7 @@ public class ButtonBoard {
     public ButtonBoard() {
     }
 
-    private ScoringMode scoringMode;
+    private ScoringMode scoringMode = ScoringMode.L4;
 
     public enum ScoringMode {
         L1,
