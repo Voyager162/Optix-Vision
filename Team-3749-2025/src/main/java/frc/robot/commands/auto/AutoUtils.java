@@ -237,6 +237,33 @@ public class AutoUtils {
 
     }
 
+
+    /**
+     * Returns a command to score at L3 when the robot is approaching the end of the
+     * given trajectory
+     * 
+     * @param trajectory
+     * @return
+     */
+    public static Command addScoreL2(AutoTrajectory trajectory) {
+        Pose2d endingPose2d = getFinalPose2d(trajectory);
+        // unflip the alliance so that atPose can flip it; it's a quirk of referencing
+        // the trajectory
+        if (DriverStation.getAlliance().get() == Alliance.Red) {
+            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
+        }
+        Command scoreL2 = new ScoreL234(ElevatorStates.L2);
+
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(scoreL2);
+        trajectory.done().and(() -> scoreL2.isScheduled())
+                .onTrue(
+                        Commands.run(() -> {
+                            Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
+                        }, Robot.swerve));
+        return scoreL2;
+
+    }
+
     /**
      * Returns a command to score at L1 when the robot is approaching the end of the
      * given trajectory
