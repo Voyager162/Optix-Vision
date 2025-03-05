@@ -12,6 +12,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Robot;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -113,19 +114,16 @@ public class Photonvision implements VisionIO {
 
                 continue;
             }
-            // removed because we almost always only see one tag per camera, will have
-            // adjustable std dev instead
 
-            // if (pipelineResult.getTargets().size() == 1 &&
-            // getHypotenuse(pipelineResult.getTargets().get(
-            // 0).bestCameraToTarget) >
-            // VisionConstants.RejectionRequirements.maxSingleTagDistanceMeters) {
+            if (pipelineResult.getTargets().size() == 1 &&
+                    getHypotenuse(pipelineResult.getTargets().get(
+                            0).bestCameraToTarget) > VisionConstants.RejectionRequirements.maxSingleTagDistanceMeters) {
 
-            // Logger.recordOutput("Vision/Cam" + (index + 1) + "/ single tag far", true);
-            // logBlank(index);
+                Logger.recordOutput("Vision/Cam" + (index + 1) + "/ single tag far", true);
+                logBlank(index);
 
-            // continue;
-            // }
+                continue;
+            }
             visionData.distance[index] = getHypotenuse(pipelineResult.getTargets().get(
                     0).bestCameraToTarget);
 
@@ -152,6 +150,12 @@ public class Photonvision implements VisionIO {
 
             updateStandardDeviations(pipelineResult, index);
 
+            // if ((Robot.swerve.getIsOTF() || DriverStation.isAutonomous())
+            // && Robot.elevator.getCurrentCommand().getName() == "ScoreL234" && !(index ==
+            // 1 || index == 2)) {
+            // continue;
+            // }
+
             double timestamp = Timer.getFPGATimestamp() - latencyMillis / 1000.0;
             Robot.swerve.visionUpdateOdometry(robotPose.toPose2d(), timestamp);
             logTarget(index);
@@ -160,7 +164,7 @@ public class Photonvision implements VisionIO {
 
     public void logTarget(int index) {
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/latency", visionData.latencyMillis[index]);
-        Logger.recordOutput("Vision/Cam" + (index + 1) + "/targetsSeen", visionData.targetsSeen[index]);    
+        Logger.recordOutput("Vision/Cam" + (index + 1) + "/targetsSeen", visionData.targetsSeen[index]);
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/pose", visionData.visionEstimatedPoses[index]);
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/distance", visionData.distance[index]);
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/pose ambiguity rejection", false);

@@ -275,14 +275,17 @@ public class Swerve extends SubsystemBase {
 
     double xPID = xController.calculate(getPose().getX(), positions.getX());
 
-    xPID = Math.abs(xController.getError()) > AutoConstants.driveToleranceMeters ? 0 : xPID;
+    // xPID = Math.abs(xController.getError()) > AutoConstants.driveToleranceMeters
+    // ? 0 : xPID;
 
     double yPID = yController.calculate(getPose().getY(), positions.getY());
-    yPID = UtilityFunctions.applyDeadband(yController.getError(), AutoConstants.driveToleranceMeters);
+    // yPID = UtilityFunctions.applyDeadband(yController.getError(),
+    // AutoConstants.driveToleranceMeters);
 
     double turnPID = turnController.calculate(getPose().getRotation().getRadians(),
         positions.getRotation().getRadians());
-    turnPID = UtilityFunctions.applyDeadband(turnController.getError(), AutoConstants.driveToleranceMeters);
+    // turnPID = UtilityFunctions.applyDeadband(turnController.getError(),
+    // AutoConstants.driveToleranceMeters);
 
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         new ChassisSpeeds(
@@ -409,10 +412,14 @@ public class Swerve extends SubsystemBase {
 
   public boolean reachedSwerveSetpoint() {
     Pose2d setpoint = getPositionSetpoint();
-    double xMargin = Math.sin(setpoint.getRotation().getRadians())
-        * AutoConstants.driveToleranceMeters + 0.01;
-    double yMargin = Math.cos(setpoint.getRotation().getRadians())
-        * AutoConstants.driveToleranceMeters + 0.01;
+    double xMargin = (Math.sin(setpoint.getRotation().getRadians())
+        * AutoConstants.driveToleranceMeters) + 0.015;
+
+    double yMargin = (Math.cos(setpoint.getRotation().getRadians())
+        * AutoConstants.driveToleranceMeters) + 0.015;
+
+    Logger.recordOutput("Swerve/auto/x margin", xMargin);
+    Logger.recordOutput("Swerve/auto/y margin", yMargin);
 
     boolean withinPositionMargin = UtilityFunctions.withinMargin(
         new Pose2d(xMargin,
@@ -586,6 +593,7 @@ public class Swerve extends SubsystemBase {
     Logger.recordOutput("Swerve/auto/setpoint acceleration", acceleration);
     Logger.recordOutput("Swerve/auto/setpoint rotational acceleration", accelerations[2]);
 
+    Logger.recordOutput("at setpoints", reachedSwerveSetpoint());
   }
 
   // this is only really relevant for testing purposes: as this is logged as

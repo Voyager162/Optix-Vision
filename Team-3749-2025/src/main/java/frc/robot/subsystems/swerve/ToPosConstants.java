@@ -286,7 +286,7 @@ public class ToPosConstants {
 
         // ======= Reef Positions =======
         public static Translation2d reefCenter = new Translation2d(4.48932, 4.02598);
-        public static double reefCenterToSetpointDistance = 0.85 - Units.inchesToMeters(4.5);
+        public static double reefCenterToSetpointDistance = 0.85 - Units.inchesToMeters(2);
         // Positions marking different reef scoring locations
         public static Pose2d reefClose = adjustPose(getReefPose(0), false); // Center front of the reef
         public static Pose2d reefCloseRight = adjustPose(getReefPose(60), false); // Center front of the reef

@@ -87,7 +87,7 @@ public class SwerveConstants {
                 };
                 public static final double[] absoluteEncoderOffsetRad = {
                                 5.562 + Math.PI / 2,
-                                2.755 - Math.PI / 2,
+                                1.177,
                                 0.072 - Math.PI / 2,
                                 1.974 - Math.PI / 2
                 };
