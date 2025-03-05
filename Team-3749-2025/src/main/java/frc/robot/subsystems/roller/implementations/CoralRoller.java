@@ -67,7 +67,7 @@ public class CoralRoller extends Roller {
             return photoelectricData.sensing;
         } else {
             if (!super.getIsStableState() && getState() == RollerStates.INTAKE
-                    && Timer.getFPGATimestamp() - intakeTimestamp > 0.6) {
+                    && Timer.getFPGATimestamp() - intakeTimestamp > 0.8) {
                 hasPiece = true;
             } else if (super.getIsStableState() && getState() == RollerStates.OUTTAKE
                     && Timer.getFPGATimestamp() - outtakeTimestamp > 0.15) {
