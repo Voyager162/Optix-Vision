@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.buttons.ButtonBoard.ScoringMode;
 import frc.robot.commands.integration.CoralIntakeSource;
-import frc.robot.commands.integration.IntakeSource;
 import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.ScoreL1;
 import frc.robot.commands.integration.ScoreL234;
@@ -84,7 +83,7 @@ public class ToPosTriggers {
     // ======= Utility Functions =======
 
     /**
-     * Checks if the robot is within the approach point distance of the target setpoint.
+     * Checks if the robot is within a certain margin of the target setpoint.
      * Used to determine when to execute position-based triggers.
      *
      * @return true if the robot is within the defined distance of the target
@@ -92,19 +91,6 @@ public class ToPosTriggers {
      */
     private static boolean OTFWithinMargin() {
         return UtilityFunctions.withinMargin(ToPosConstants.Setpoints.approachPointDistance,
-                Robot.swerve.getPose().getTranslation(),
-                Robot.swerve.getPPSetpoint().setpoint.getTranslation());
-    }
-
-        /**
-     * Checks if the robot is within a certain margin of the target setpoint.
-     * Used to determine when to execute position-based triggers.
-     *
-     * @return true if the robot is within the defined distance of the target
-     *         setpoint.
-     */
-    private static boolean OTFWithinMargin(double margin) {
-        return UtilityFunctions.withinMargin(margin,
                 Robot.swerve.getPose().getTranslation(),
                 Robot.swerve.getPPSetpoint().setpoint.getTranslation());
     }
@@ -160,13 +146,13 @@ public class ToPosTriggers {
 
         // ======= High Algae Knocking Trigger =======
         Trigger highAlgaeTrigger = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
-            return OTFWithinMargin(0.1) && isHighAlgaeSupplier.getAsBoolean();
+            return OTFWithinMargin() && isHighAlgaeSupplier.getAsBoolean();
         });
         highAlgaeTrigger.onTrue(new KnockAlgae(ElevatorStates.ALGAE_HIGH));
 
         // ======= Low Algae Knocking Trigger =======
         Trigger lowAlgaeTrigger = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
-            return OTFWithinMargin(0.1) && isLowAlgaeSupplier.getAsBoolean();
+            return OTFWithinMargin() && isLowAlgaeSupplier.getAsBoolean();
         });
         lowAlgaeTrigger.onTrue(new KnockAlgae(ElevatorStates.ALGAE_LOW));
     }

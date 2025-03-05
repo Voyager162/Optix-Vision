@@ -143,6 +143,7 @@ public class JoystickIO {
 
                 pilot.leftBumper().onTrue(Commands.runOnce(()->{ToPos.setSetpointByClosestReefBranch(true);Robot.swerve.setIsOTF(true);}));
                 pilot.rightBumper().onTrue(Commands.runOnce(()->{ToPos.setSetpointByClosestReefBranch(false);Robot.swerve.setIsOTF(true);}));
+                pilot.povLeft().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L2)));
                 // pilot.leftBumper().onTrue(new ScoreL1());
                 // // intake source w elevator
                 // pilot.rightBumper().onTrue(new IntakeSource());
