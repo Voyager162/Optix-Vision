@@ -82,7 +82,7 @@ public class ToPosConstants {
      */
     public static final class Setpoints {
 
-        public static final double scoreWithinMarginMeters = 0.05;
+        public static final double scoreWithinMarginMeters = 0.03;
         public static final double scoreWithinMarginRadians = Units.degreesToRadians(3);
 
         public static final double approachPointDistance = 0.6;

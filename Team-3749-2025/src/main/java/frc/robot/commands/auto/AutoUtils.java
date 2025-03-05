@@ -178,6 +178,8 @@ public class AutoUtils {
     public static Command startRoutine(AutoRoutine routine, String firstTrajectoryName,
             AutoTrajectory firstTrajectory) {
 
+        
+
         routine.active().onTrue(
                 AutoUtils.getAutoFactory().resetOdometry(firstTrajectoryName).andThen(
                         firstTrajectory.cmd()));

@@ -68,6 +68,9 @@ public class Swerve extends SubsystemBase {
   private PIDController turnController = new PIDController(AutoConstants.kPTurn, AutoConstants.kITurn,
       AutoConstants.kDTurn);
 
+  private Pose2d positionSetpoint = new Pose2d();
+  private Pose2d velocitySetpoint = new Pose2d();
+
   private boolean utilizeVision = true;
   private double velocity = 0;
 
@@ -266,6 +269,9 @@ public class Swerve extends SubsystemBase {
   // dynamic path:
   // calc the speeds and throw them into the speed
   public void followSample(Pose2d positions, Pose2d velocities) {
+    positionSetpoint = positions;
+    velocitySetpoint = velocities;
+
     double xPID = xController.calculate(getPose().getX(), positions.getX());
     xPID = UtilityFunctions.applyDeadband(xController.getError(), AutoConstants.driveToleranceMeters);
 
@@ -308,6 +314,11 @@ public class Swerve extends SubsystemBase {
 
     double omega = isFlipped ? -sample.omega : sample.omega;
     double alpha = isFlipped ? -sample.alpha : sample.alpha;
+
+    positionSetpoint = new Pose2d(sample.x,sample.y,new Rotation2d(sample.heading));
+    velocitySetpoint = new Pose2d(sample.vx,sample.vy,new Rotation2d(sample.omega));
+
+
 
     double xPID = xController.calculate(getPose().getX(), xPos);
     xPID = UtilityFunctions.applyDeadband(xController.getError(), AutoConstants.driveToleranceMeters);
@@ -387,6 +398,15 @@ public class Swerve extends SubsystemBase {
   public PPSetpoints getPPSetpoint() {
     return PPSetpoints.values()[currentPPSetpointIndex];
   }
+
+  public Pose2d getPositionSetpoint(){
+    return positionSetpoint;
+  }
+
+  public Pose2d getVelocitySetpoint(){
+    return velocitySetpoint;
+  }
+
 
   // called when the button board is pressed with the (ppsetpoint)"index" the
   // button is associated w to drive to
