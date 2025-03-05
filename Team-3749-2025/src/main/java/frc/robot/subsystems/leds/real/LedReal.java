@@ -20,7 +20,6 @@ public class LedReal implements LEDIO {
 
     public void setData(LEDPattern pattern)
     {
-        System.out.println("NOOOO");
         pattern.applyTo(buf);
         leds.setData(buf);
     }
