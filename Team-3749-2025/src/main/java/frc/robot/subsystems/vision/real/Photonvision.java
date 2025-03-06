@@ -191,6 +191,11 @@ public class Photonvision implements VisionIO {
         if (result.getTargets().size() == 0) {
             return;
         }
+        if (DriverStation.isDisabled()){
+            
+            poseEstimator.setVisionMeasurementStdDevs(
+                    VecBuilder.fill(StandardDeviations.PreMatch.xy, StandardDeviations.PreMatch.xy, StandardDeviations.PreMatch.thetaRads));
+        }
         if (result.getTargets().size() == 1) {
             double xyStdDev = StandardDeviations.OneTag.regression.apply(visionData.distance[index]);
 
