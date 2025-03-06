@@ -40,10 +40,10 @@ public class Led extends SubsystemBase {
         ledBuffer = new AddressableLEDBuffer(LEDConstants.length);
 
         if (Robot.isReal()) {
-            ledBase = new LedReal(LEDConstants.ledPort, ledBuffer);
+            // ledBase = new LedReal(LEDConstants.ledPort, ledBuffer);
         } else {
-            ledBase = new LedSim(LEDConstants.ledPort, ledBuffer);
         }
+        ledBase = new LedSim(LEDConstants.ledPort, ledBuffer);
     }
 
     /**
