@@ -119,7 +119,7 @@ public class ToPosConstants {
             double angleOffset = 90; // 90 for perpindicular
             double distance = 6.5; // distance between branches, this variable as a whole is essentially the
                                    // "hypotenuse" of the total shift
-            double intialOffset = 6.25; // account for the distance from the arm
+            double intialOffset = 5.85; // account for the distance from the chute
             double intialAngleOffset = 90; // accounting for the first left and right shfit
             switch (direction) {
                 case LEFT:
@@ -284,7 +284,7 @@ public class ToPosConstants {
 
         // ======= Reef Positions =======
         public static Translation2d reefCenter = new Translation2d(4.48932, 4.02598);
-        public static double reefCenterToSetpointDistance = 0.85+Units.inchesToMeters(4) ;
+        public static double reefCenterToSetpointDistance = 0.85+Units.inchesToMeters(3) ;
         // Positions marking different reef scoring locations
         public static Pose2d reefClose = adjustPose(getReefPose(0), false); // Center front of the reef
         public static Pose2d reefCloseRight = adjustPose(getReefPose(60), false); // Center front of the reef

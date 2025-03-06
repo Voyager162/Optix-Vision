@@ -7,6 +7,7 @@ package frc.robot.subsystems.swerve;
 import org.littletonrobotics.junction.Logger;
 
 import choreo.trajectory.SwerveSample;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -120,9 +121,9 @@ public class Swerve extends SubsystemBase {
     // auto PID settings
     turnController.enableContinuousInput(-Math.PI, Math.PI);
     turnController.setIZone(AutoConstants.turnIZone);
-    turnController.setTolerance(AutoConstants.turnToleranceRad);
-    xController.setTolerance(AutoConstants.driveToleranceMeters);
-    yController.setTolerance(AutoConstants.driveToleranceMeters);
+    turnController.setTolerance(AutoConstants.turnToleranceRad / 2);
+    xController.setTolerance(AutoConstants.driveToleranceMeters / 3);
+    yController.setTolerance(AutoConstants.driveToleranceMeters / 3);
     xController.setIZone(AutoConstants.driveIZone);
     yController.setIZone(AutoConstants.driveIZone);
 
@@ -277,23 +278,28 @@ public class Swerve extends SubsystemBase {
     velocitySetpoint = velocities;
 
     double xPID = xController.calculate(getPose().getX(), positions.getX());
+    xPID = MathUtil.clamp(xPID, -1, 1);
     if (xController.atSetpoint()) {
       xPID = 0;
     }
 
     double yPID = yController.calculate(getPose().getY(), positions.getY());
+    yPID = MathUtil.clamp(yPID, -1, 1);
+
     if (yController.atSetpoint()) {
       yPID = 0;
     }
 
     double turnPID = turnController.calculate(getPose().getRotation().getRadians(),
         positions.getRotation().getRadians());
+    // turnPID = MathUtil.clamp(turnPID, -Math.PI/2, Math.PI/2);
+
     if (turnController.atSetpoint()) {
       turnPID = 0;
     }
     Logger.recordOutput("Swerve/auto/turn PID", turnPID);
-    Logger.recordOutput("Swerve/auto/x PID", turnPID);
-    Logger.recordOutput("Swerve/auto/y PID", turnPID);
+    Logger.recordOutput("Swerve/auto/x PID", xPID);
+    Logger.recordOutput("Swerve/auto/y PID", yPID);
 
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         new ChassisSpeeds(

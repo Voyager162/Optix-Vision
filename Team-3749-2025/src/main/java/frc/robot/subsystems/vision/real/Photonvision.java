@@ -115,15 +115,15 @@ public class Photonvision implements VisionIO {
                 continue;
             }
 
-            // if (pipelineResult.getTargets().size() == 1 &&
-            //         getHypotenuse(pipelineResult.getTargets().get(
-            //                 0).bestCameraToTarget) > VisionConstants.RejectionRequirements.maxSingleTagDistanceMeters) {
+            if (pipelineResult.getTargets().size() == 1 &&
+                    getHypotenuse(pipelineResult.getTargets().get(
+                            0).bestCameraToTarget) > VisionConstants.RejectionRequirements.maxSingleTagDistanceMeters) {
 
-            //     Logger.recordOutput("Vision/Cam" + (index + 1) + "/ single tag far", true);
-            //     logBlank(index);
+                Logger.recordOutput("Vision/Cam" + (index + 1) + "/ single tag far", true);
+                logBlank(index);
 
-            //     continue;
-            // }
+                continue;
+            }
             visionData.distance[index] = getHypotenuse(pipelineResult.getTargets().get(
                     0).bestCameraToTarget);
 
