@@ -41,7 +41,7 @@ public class Robot extends LoggedRobot {
   public static Swerve swerve = new Swerve();
   public static CoralRoller coralRoller = new CoralRoller();
   public static ScoringRoller scoringRoller = new ScoringRoller();
-  public static Led led = new Led();
+  // public static Led led = new Led();
 
   public static Elevator elevator = new Elevator();
   public static Vision vision = new Vision();
