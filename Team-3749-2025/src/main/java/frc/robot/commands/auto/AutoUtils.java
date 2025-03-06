@@ -177,8 +177,8 @@ public class AutoUtils {
             AutoTrajectory firstTrajectory) {
 
         routine.active().onTrue(
-                
-                        firstTrajectory.cmd());
+                AutoUtils.getAutoFactory().resetOdometry(firstTrajectoryName).andThen(
+                        firstTrajectory.cmd()));
         return routine.cmd();
     }
 

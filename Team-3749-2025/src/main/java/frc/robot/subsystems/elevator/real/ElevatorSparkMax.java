@@ -79,7 +79,7 @@ public class ElevatorSparkMax implements ElevatorIO {
         inputVolts = UtilityFunctions.applyDeadband(inputVolts, MotorControllerConstants.deadbandVoltage);
         Logger.recordOutput("Elevator/input volts", inputVolts);
 
-        backMotor.setVoltage(inputVolts);
-        frontMotor.setVoltage(inputVolts);
+        // backMotor.setVoltage(inputVolts);
+        // frontMotor.setVoltage(inputVolts);
     }
 }
