@@ -18,7 +18,7 @@ import frc.robot.utils.UtilityFunctions;
  */
 public class ScoreL1 extends Command {
 
-    private double outtakeTimestamp = 0;
+    private double outtakeTimestamp =  Double.MAX_VALUE;
 
     public ScoreL1() {
         // ensures other commands do not infere while this is active
@@ -36,6 +36,7 @@ public class ScoreL1 extends Command {
 
     @Override
     public void execute() {
+
         if (Robot.coralArm.getState() == CoralArmConstants.ArmStates.L1 && Robot.coralArm.getIsStableState()
                 && outtakeTimestamp == Double.MAX_VALUE) {
 
@@ -52,7 +53,7 @@ public class ScoreL1 extends Command {
     public void end(boolean interrupted) {
         Robot.coralArm.setState(CoralArmConstants.ArmStates.STOW);
         Robot.coralRoller.setState(RollerStates.STOP);
-        outtakeTimestamp = 0;
+        outtakeTimestamp = Double.MAX_VALUE;
     }
 
     /**

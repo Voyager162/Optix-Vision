@@ -49,7 +49,7 @@ public class IntakeFloor extends Command {
      */
     @Override
     public boolean isFinished() {
-        return Timer.getFPGATimestamp() - hasPieceTimeStamp > 0.125
+        return Timer.getFPGATimestamp() - hasPieceTimeStamp > 0.3
                 && this.isScheduled();
     }
 }

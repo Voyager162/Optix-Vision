@@ -130,7 +130,7 @@ public class ToPosConstants {
                     angleOffset = -90;
                     break;
                 case BACKWARD:
-                    distance = 3.5; // instead of moving 6.5 between pipes, move 3 inches away from the reef
+                    distance = 5.5; // instead of moving 6.5 between pipes, move 3 inches away from the reef
                     intialOffset = -6.5; // this takes in the l234 setpoint , so we can return to the center
                     angleOffset = -90;
                     intialAngleOffset = 180;
