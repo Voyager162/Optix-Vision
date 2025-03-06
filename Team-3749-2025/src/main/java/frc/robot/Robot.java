@@ -41,13 +41,13 @@ public class Robot extends LoggedRobot {
   public static Swerve swerve = new Swerve();
   public static CoralRoller coralRoller = new CoralRoller();
   public static ScoringRoller scoringRoller = new ScoringRoller();
-  public static Led led = new Led();
-
+  
   public static Elevator elevator = new Elevator();
-  public static Vision vision = new Vision();
-
+  
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
+  public static Vision vision = new Vision();
+  public static Led led = new Led();
   public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("setVoltage", -12);
 
   private RobotContainer m_robotContainer;
