@@ -15,55 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class Autos {
     private static boolean routineStarted = false;
     
-
-    public static Command test() {
-        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("Test");
-
-        // loop.trajectory, or the new name
-        AutoTrajectory trajectory1 = routine.trajectory("test");
-
-        AutoTrajectory trajectory2 = routine.trajectory("MidStart-6");
-        Command score1 = AutoUtils.addScoreL4(trajectory1); // first score is the end of the routine, so no need for
-                                                            // reference
-        AutoUtils.addScoreL4(trajectory2); // first score is the end of the routine, so no need for reference
-
-        AutoUtils.goNextAfterCommand(trajectory1, trajectory2, score1);
-
-        // Trigger to update routineStarted when routine ends
-        new Trigger(() -> trajectory2.cmd().isFinished())
-                .onTrue(Commands.runOnce(() -> stopRoutineTracking()));
-
-        return Commands.print("test")
-                .andThen(Commands.runOnce(() -> startRoutineTracking()) // Track routine start
-                        .andThen(AutoUtils.startRoutine(routine, "test", trajectory1)));
-
-    } 
-    public static Command gettest2() {
-        AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("Test2");
-
-        // loop.trajectory, or the new name
-        AutoTrajectory trajectory1 = routine.trajectory("Start-TestIntake");
-        AutoTrajectory trajectory2 = routine.trajectory("TestIntake-ScoreTest");
-
-
-
-        // Commands to scoreL4 and intake from source
-        Command intake1 = AutoUtils.addIntake(trajectory1);
-        AutoUtils.addScoreL4(trajectory2); // first score is the end of the routine, so no need for reference
-
-        // reverse order here (ex. connect 3 to 2, THEN 2 to 1)
-        AutoUtils.goNextAfterCommand(trajectory1, trajectory2, intake1);
-
-        // Trigger to update routineStarted when routine ends
-        new Trigger(() -> trajectory2.cmd().isFinished())
-                .onTrue(Commands.runOnce(() -> stopRoutineTracking()));
-
-        return Commands.print("Test2")
-                .andThen(Commands.runOnce(() -> startRoutineTracking())) // Track routine start
-                .andThen(AutoUtils.startRoutine(routine, "Start-TestIntake", trajectory1));
-    } 
-      
-
+    
     /***
      * 
      * @return The command current selected by the auto chooser

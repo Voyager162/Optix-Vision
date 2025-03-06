@@ -123,7 +123,6 @@ public class AutoUtils {
         chooser.addCmd("4-Piece", () -> Autos.get4Piece());
         chooser.addCmd("3 Coral and 2 Algae", () -> Autos.get3CoralAnd2Algae());
         chooser.addCmd("Two Piece Score L1", () -> Autos.getTwoPieceScoreL1());
-        chooser.addCmd("Test2", () -> Autos.gettest2());
         chooser.addCmd("Coral 4 Piece", () -> Autos.getCoralArm4piece());
         chooser.addCmd("Coral 3 Piece", () -> Autos.getCoralArm3piece());
         chooser.select("4-Piece");

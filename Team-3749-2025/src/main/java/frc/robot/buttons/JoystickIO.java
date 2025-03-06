@@ -125,17 +125,18 @@ public class JoystickIO {
                 pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
 
                 // // OTF by controller - Closest apriltag
-                pilot.x().onTrue(Commands.runOnce(() -> {
-                        ToPos.setSetpointByClosestReefBranch(true);
-                        Robot.swerve.setIsOTF(true);
-                }));
-                pilot.b().onTrue(Commands.runOnce(() -> {
-                        ToPos.setSetpointByClosestReefBranch(false);
-                        Robot.swerve.setIsOTF(true);
-                }));
+                // pilot.x().onTrue(Commands.runOnce(() -> {
+                //         ToPos.setSetpointByClosestReefBranch(true);
+                //         Robot.swerve.setIsOTF(true);
+                // }));
+                // pilot.b().onTrue(Commands.runOnce(() -> {
+                //         ToPos.setSetpointByClosestReefBranch(false);
+                //         Robot.swerve.setIsOTF(true);
+                // }));
 
                 // pilot.x().onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(0)));
                 // pilot.b().onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(2)));
+
                 // intake floor
                 pilot.leftTrigger().onTrue(new IntakeFloor()).onFalse(
                                 Commands.runOnce(() -> System.out.println("interupt ground intake"), Robot.coralArm));
@@ -168,6 +169,7 @@ public class JoystickIO {
                 operator.rightTrigger().onTrue(new KnockAlgae(ElevatorStates.ALGAE_HIGH));
                 // Reset
                 operator.povDown().onTrue(new Reset());
+                
 
                 // OTF Binding
                 new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
@@ -261,6 +263,8 @@ public class JoystickIO {
 
                 // Button board
                 bindButtonBoard();
+
+                operator.povLeft().onTrue(Commands.runOnce(()->Robot.swerve.cyclePPSetpoint()));
 
         }
 

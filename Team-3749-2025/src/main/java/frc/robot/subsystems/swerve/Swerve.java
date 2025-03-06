@@ -401,7 +401,7 @@ public class Swerve extends SubsystemBase {
     return velocitySetpoint;
   }
 
-  public boolean reachedSwerveSetpoint() {
+  public boolean reachedSwerveSetpoint(Pose2d pose) {
     // Pose2d setpoint = getPositionSetpoint();
     // double xMargin = (Math.sin(setpoint.getRotation().getRadians())
     // * AutoConstants.driveToleranceMeters) + 0.015;
@@ -433,7 +433,7 @@ public class Swerve extends SubsystemBase {
         new Pose2d(AutoConstants.driveToleranceMeters,
             AutoConstants.driveToleranceMeters,
             new Rotation2d(AutoConstants.turnToleranceRad)),
-        getPose(), getPPSetpoint().setpoint);
+        getPose(), pose);
 
   }
 
@@ -590,7 +590,7 @@ public class Swerve extends SubsystemBase {
     Logger.recordOutput("Swerve/auto/setpoint acceleration", acceleration);
     Logger.recordOutput("Swerve/auto/setpoint rotational acceleration", accelerations[2]);
 
-    Logger.recordOutput("at setpoints", reachedSwerveSetpoint());
+    Logger.recordOutput("at setpoints", reachedSwerveSetpoint(positionSetpoint));
   }
 
   // this is only really relevant for testing purposes: as this is logged as
