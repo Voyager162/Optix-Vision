@@ -11,9 +11,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
+import frc.robot.subsystems.arm.coral.CoralArmConstants;
+import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.swerve.SwerveConstants;
 import frc.robot.subsystems.swerve.ToPos;
-import frc.robot.utils.UtilityFunctions;
 
 /**
  * The `OnTheFly` command dynamically generates and follows a trajectory
@@ -25,9 +26,11 @@ import frc.robot.utils.UtilityFunctions;
 public class OnTheFly extends Command {
     private PathPlannerTrajectory trajectory; // The generated trajectory for movement
     private final Timer timer = new Timer(); // Timer to track trajectory progress
+    private final ToPos toPos = new ToPos();
+    private final Timer debugTimer = new Timer();
 
     private Pose2d endpoint = new Pose2d();
-    private static boolean currentlyThreading = false; //threads make funky async stuff: this normalizes it
+    private static boolean currentlyThreading = false; // threads make funky async stuff: this normalizes it
 
     /**
      * Constructs the OnTheFly command.
@@ -44,14 +47,17 @@ public class OnTheFly extends Command {
      */
     @Override
     public void initialize() {
+        // System.out.println("epic fail");
+
+        Robot.elevator.setState(ElevatorStates.STOW);
+        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOW);
         currentlyThreading = true;
         endpoint = Robot.swerve.getPPSetpoint().setpoint;
-        new Thread(() -> {
-            timer.reset();
-            timer.start();
 
+        new Thread(() -> {
+            debugTimer.reset();
+            debugTimer.start();
             // Create a new dynamic path generator
-            ToPos toPos = new ToPos();
             PathPlannerPath path = toPos.generateDynamicPath(
                     Robot.swerve.getPose(), // Current robot position
                     Robot.swerve.getPPSetpoint().approachPoint, // Intermediate approach point
@@ -62,10 +68,11 @@ public class OnTheFly extends Command {
                     SwerveConstants.ControlConstants.maxAngularAccelerationRadiansPerSecondSquared // Max angular
                                                                                                    // acceleration
             );
+            // System.out.println("path generation took: " + debugTimer.get());
+            debugTimer.stop();
 
             // If path generation fails, stop the command
             if (path == null) {
-                System.out.println("EPIC FAIL!");
                 Robot.swerve.setIsOTF(false);
                 currentlyThreading = false;
                 this.cancel();
@@ -84,7 +91,6 @@ public class OnTheFly extends Command {
                     // Placeholder: Optionally store second-to-last waypoint
                 }
             } catch (IOException | ParseException e) {
-                System.out.println("ERROR FAIL!");
                 // If an error occurs during trajectory generation, stop execution
                 e.printStackTrace();
                 Robot.swerve.setIsOTF(false);
@@ -92,6 +98,9 @@ public class OnTheFly extends Command {
                 this.cancel();
             }
             currentlyThreading = false;
+            timer.reset();
+            timer.start();
+            // System.out.println(debugTimer.get());
         }).start();
     }
 
@@ -102,21 +111,17 @@ public class OnTheFly extends Command {
      */
     @Override
     public void execute() {
-        if(!Robot.swerve.getPPSetpoint().setpoint.equals(endpoint))
-        {
+        if (!Robot.swerve.getPPSetpoint().setpoint.equals(endpoint)) {
             initialize();
         }
-        if(currentlyThreading)
-        {
+        if (currentlyThreading) {
             return;
         }
 
         if ((trajectory == null || !Robot.swerve.getIsOTF())) {
-            System.out.println("THREADING FAIL!");
             this.cancel();
             return;
         }
-
 
         // Get the current elapsed time in the trajectory
         double currentTime = timer.get();
@@ -140,10 +145,11 @@ public class OnTheFly extends Command {
      */
     @Override
     public void end(boolean interrupted) {
-        System.out.println("END FAIL!");
         currentlyThreading = false;
         timer.stop();
+        timer.reset();
         Robot.swerve.setIsOTF(false);
+
     }
 
     /**
@@ -156,7 +162,11 @@ public class OnTheFly extends Command {
      */
     @Override
     public boolean isFinished() {
-        return !currentlyThreading && (trajectory == null ||
-        !Robot.swerve.getIsOTF() || !Robot.swerve.getPPSetpoint().setpoint.equals(endpoint));
+        return !currentlyThreading && (trajectory == null || !Robot.swerve.getPPSetpoint().setpoint.equals(endpoint)) ||
+                (!Robot.swerve.getIsOTF());
+    }
+
+    public double getTime() {
+        return timer.get();
     }
 }

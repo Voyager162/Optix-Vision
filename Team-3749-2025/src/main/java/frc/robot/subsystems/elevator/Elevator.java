@@ -50,8 +50,7 @@ import static edu.wpi.first.units.Units.*;
 public class Elevator extends SubsystemBase {
     private ElevatorIO elevatorio;
     private ElevatorData data = new ElevatorData();
-    private ElevatorStates state = ElevatorStates.STOP;
-
+    private ElevatorStates state = ElevatorStates.STOW;
 
     private ProfiledPIDController profile = new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(
             ElevatorConstants.ElevatorControl.maxVelocity.get(),
@@ -69,9 +68,9 @@ public class Elevator extends SubsystemBase {
     private double elevatorInnerStagePos;
     private double elevatorMiddleStagePos;
 
-    StructPublisher<Pose3d> elevatorInnerStage = NetworkTableInstance.getDefault()
+    private StructPublisher<Pose3d> elevatorInnerStage = NetworkTableInstance.getDefault()
             .getStructTopic("Elevator Inner Stage", Pose3d.struct).publish();
-    StructPublisher<Pose3d> elevatorMiddleStage = NetworkTableInstance.getDefault()
+    private StructPublisher<Pose3d> elevatorMiddleStage = NetworkTableInstance.getDefault()
             .getStructTopic("Elevator Middle Stage", Pose3d.struct).publish();
 
     public Elevator() {
@@ -81,15 +80,16 @@ public class Elevator extends SubsystemBase {
             elevatorio = new ElevatorSparkMax();
         }
 
+        feedforward = new ElevatorFeedforward(ElevatorConstants.ElevatorControl.kS.get(),
+                ElevatorConstants.ElevatorControl.kG.get(), ElevatorConstants.ElevatorControl.kV.get(),
+                ElevatorConstants.ElevatorControl.kA.get());
         profile = new ProfiledPIDController(ElevatorConstants.ElevatorControl.kP.get(),
                 ElevatorConstants.ElevatorControl.kI.get(), ElevatorConstants.ElevatorControl.kD.get(),
                 new TrapezoidProfile.Constraints(ElevatorConstants.ElevatorControl.maxVelocity.get(),
                         ElevatorConstants.ElevatorControl.maxAcceleration.get()));
-        feedforward = new ElevatorFeedforward(ElevatorConstants.ElevatorControl.kS.get(),
-                ElevatorConstants.ElevatorControl.kG.get(), ElevatorConstants.ElevatorControl.kV.get(),
-                ElevatorConstants.ElevatorControl.kA.get());
+        profile.reset(data.positionMeters);
+        setState(state);
     }
-
 
     public ElevatorStates getState() {
         return state;
@@ -103,24 +103,13 @@ public class Elevator extends SubsystemBase {
         return data.velocityMetersPerSecond;
     }
 
-    /** returns true when the state is reached */
     public boolean getIsStableState() {
-        switch (state) {
-            case L1:
-                return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError, ElevatorConstants.StateHeights.l1Height,
-                        data.positionMeters);
-            case L2:
-                return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError, data.positionMeters,
-                        ElevatorConstants.StateHeights.l2Height);
-            case L3:
-                return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError, data.positionMeters,
-                        ElevatorConstants.StateHeights.l3Height);
-            case L4:
-                return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError, data.positionMeters,
-                        ElevatorConstants.StateHeights.l4Height);
-            default:
-                return false;
+        if(state==null)
+        {
+            return false;
         }
+        return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError,
+         this.state.heightMeters, data.positionMeters);
     }
 
     public void setVoltage(double volts) {
@@ -129,33 +118,12 @@ public class Elevator extends SubsystemBase {
 
     public void setState(ElevatorStates state) {
         this.state = state;
-        // System.out.println(state);
-        switch (state) {
-            case STOP:
-                stop();
-                break;
-            case L1:
-                setGoal(ElevatorConstants.StateHeights.l1Height);
-                break;
-            case L2:
-                setGoal(ElevatorConstants.StateHeights.l2Height);
-                break;
-            case L3:
-                setGoal(ElevatorConstants.StateHeights.l3Height);
-                break;
-            case L4:
-                setGoal(ElevatorConstants.StateHeights.l4Height);
-                break;
-            case MAX:
-                setGoal(ElevatorConstants.ElevatorSpecs.maxHeightMeters);
-                break;
-            case STOW:
-                setGoal(ElevatorConstants.ElevatorSpecs.baseHeight);
-                break;
-            default:
-                setGoal(0);
-                break;
+        if(state==ElevatorStates.STOP)
+        {
+            stop();
+            return;
         }
+        setGoal(state.heightMeters);
     }
 
     public void setGoal(double height) {
@@ -178,38 +146,41 @@ public class Elevator extends SubsystemBase {
         double PID = profile.calculate(getPositionMeters());
 
         State nextState = profile.getSetpoint();
+        double ffVoltage = feedforward.calculateWithVelocities(firstState.velocity, nextState.velocity);
+        // System.out.println("FF " + ffVoltage);
+        // System.out.println("PID " + PID);
 
-        // System.out.println(firstState.position);
-        // System.out.println(getPositionMeters());
+        // PID = 0;
+        // ffVoltage = ElevatorConstants.ElevatorControl.kG.get();
+        Logger.recordOutput("Elevator/positionSetpoint", firstState.position);
+        Logger.recordOutput("Elevator/velocitySetpoint", firstState.velocity);
 
-        double ffVoltage = feedforward.calculate(firstState.velocity, nextState.velocity);
-        System.out.println("FF " + ffVoltage);
-        System.out.println("PID " + PID);
-        elevatorio.setVoltage(ffVoltage + PID);
+        setVoltage(ffVoltage + PID);
     }
 
     public void stop() {
-        elevatorio.setVoltage(ElevatorConstants.ElevatorControl.kG.get());
+        setVoltage(0);
     }
 
     private void logData() {
- 
-        Logger.recordOutput("subsystems/elevator/Current Command",
+        Logger.recordOutput("Elevator/currentCommand",
                 this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
 
-        Logger.recordOutput("subsystems/elevator/postion", data.positionMeters);
-        Logger.recordOutput("subsystems/elevator/velocity", data.velocityMetersPerSecond);
+        Logger.recordOutput("Elevator/state", state.name());
 
-        Logger.recordOutput("subsystems/elevator/acceleration", data.accelerationMetersPerSecondSquared);
+        Logger.recordOutput("Elevator/postion", data.positionMeters);
+        Logger.recordOutput("Elevator/velocity", data.velocityMetersPerSecond);
 
-        Logger.recordOutput("subsystems/elevator/applied volts",
+        Logger.recordOutput("Elevator/acceleration", data.accelerationMetersPerSecondSquared);
+
+        Logger.recordOutput("Elevator/appliedVolts",
                 ((data.leftAppliedVolts + data.rightAppliedVolts) / 2.0));
-        Logger.recordOutput("subsystems/elevator/leftAppliedVolts", data.leftAppliedVolts);
-        Logger.recordOutput("subsystems/elevator/rightAppliedVolts", data.rightAppliedVolts);
-        Logger.recordOutput("subsystems/elevator/leftCurrentAmps", data.leftCurrentAmps);
-        Logger.recordOutput("subsystems/elevator/rightCurrentAmps", data.rightCurrentAmps);
-        Logger.recordOutput("subsystems/elevator/leftTempCelcius", data.leftTempCelcius);
-        Logger.recordOutput("subsystems/elevator/rightTempCelcius", data.rightTempCelcius);
+        Logger.recordOutput("Elevator/leftAppliedVolts", data.leftAppliedVolts);
+        Logger.recordOutput("Elevator/rightAppliedVolts", data.rightAppliedVolts);
+        Logger.recordOutput("Elevator/leftCurrentAmps", data.leftCurrentAmps);
+        Logger.recordOutput("Elevator/rightCurrentAmps", data.rightCurrentAmps);
+        Logger.recordOutput("Elevator/leftTempCelcius", data.leftTempCelcius);
+        Logger.recordOutput("Elevator/rightTempCelcius", data.rightTempCelcius);
 
         elevatorMech.setLength(ElevatorConstants.ElevatorSpecs.baseHeight + data.positionMeters);
 
@@ -220,7 +191,7 @@ public class Elevator extends SubsystemBase {
         elevatorMiddleStage.set(new Pose3d(getTransform3d(elevatorMiddleStagePos).getTranslation(),
                 getTransform3d(elevatorMiddleStagePos).getRotation()));
 
-        Logger.recordOutput("subsystems/elevator/elevator mechanism", mech);
+        Logger.recordOutput("Elevator/elevatorMechanism", mech);
     }
 
     private Transform3d getTransform3d(double pos) {

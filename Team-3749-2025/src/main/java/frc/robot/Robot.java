@@ -9,22 +9,21 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.leds.Led;
 import frc.robot.subsystems.arm.climb.ClimbArm;
 import frc.robot.subsystems.arm.coral.CoralArm;
 
-import frc.robot.subsystems.roller.implementations.AlgaeRoller;
 import frc.robot.subsystems.roller.implementations.CoralRoller;
 import frc.robot.subsystems.roller.implementations.ScoringRoller;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.ToPosConstants;
+import frc.robot.subsystems.vision.Vision;
 import frc.robot.utils.MiscConstants;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,27 +36,21 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import frc.robot.utils.LoggedTunableNumber;
 
 public class Robot extends LoggedRobot {
-private Field2d field2d = new Field2d();
   private Command m_autonomousCommand;
 
   public static Swerve swerve = new Swerve();
-  public static AlgaeRoller algaeRoller = new AlgaeRoller();
   public static CoralRoller coralRoller = new CoralRoller();
   public static ScoringRoller scoringRoller = new ScoringRoller();
-
   public static Elevator elevator = new Elevator();
-  // public static Vision vision = new Vision();
-
+  
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
-  public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("/subsystems/setVoltage", 1);
-  
+  public static Vision vision = new Vision();
+  public static Led led = new Led();
+  public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("setVoltage", -12);
+
   private RobotContainer m_robotContainer;
   private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
-
-  public static Subsystem[] getAllSuperStructureSubsystems() {
-    return new Subsystem[] {algaeRoller, coralRoller, scoringRoller, elevator, coralArm, climbArm};
-  }
 
   public Robot() {
     pdh.setSwitchableChannel(true);
@@ -106,6 +99,10 @@ private Field2d field2d = new Field2d();
     Logger.start();
   }
 
+  public static Subsystem[] getAllSuperStructureSubsystems() {
+    return new Subsystem[] { coralRoller, scoringRoller, elevator, coralArm, climbArm };
+  }
+
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
@@ -122,8 +119,6 @@ private Field2d field2d = new Field2d();
       hexagonPoses.add(new Pose2d(vertex, new Rotation2d()));
     }
 
-    // Add hexagon points as "Object" on the field
-    field2d.getObject("Hexagon").setPoses(hexagonPoses);
   }
 
   @Override
@@ -190,5 +185,5 @@ private Field2d field2d = new Field2d();
 
   @Override
   public void simulationInit() {
-}
+  }
 }

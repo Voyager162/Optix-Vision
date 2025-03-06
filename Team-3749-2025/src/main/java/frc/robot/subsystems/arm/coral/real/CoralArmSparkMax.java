@@ -7,6 +7,7 @@ import edu.wpi.first.math.MathUtil;
 import frc.robot.subsystems.arm.coral.CoralArmIO;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.utils.OptixSpark;
+import frc.robot.utils.UtilityFunctions;
 import frc.robot.utils.MiscConstants.MotorControllerConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
 
@@ -32,6 +33,8 @@ public class CoralArmSparkMax implements CoralArmIO {
 	 */
 	public CoralArmSparkMax() {
 
+		System.out.println("[Init] Creating Coral Arm");
+
 		motor = new OptixSpark(CoralArmConstants.motorID, OptixSpark.Type.SPARKMAX);
 
 		motor.setCurrentLimit(MotorControllerConstants.standardStallLimit, MotorControllerConstants.standardFreeLimit);
@@ -41,9 +44,8 @@ public class CoralArmSparkMax implements CoralArmIO {
 		motor.setVelocityConversionFactor(1 / CoralArmConstants.armGearing * 2 * Math.PI / 60.0);
 		motor.setAbsoluteEncoderInverted(true);
 		absoluteEncoder = motor.getAbsoluteEncoder();
-		
-		absolutePos = absoluteEncoder.getPosition();
 
+		absolutePos = absoluteEncoder.getPosition();
 
 		motor.setPosition(absolutePos);
 		motor.setPositionWrapping(-Math.PI, Math.PI);
@@ -67,8 +69,8 @@ public class CoralArmSparkMax implements CoralArmIO {
 	public void updateData(ArmData data) {
 		double velocity = motor.getVelocity();
 		data.positionRad = getPosition();
-		data.velocityUnits = velocity;
-		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
+		data.velocityRadsPerSecond = velocity;
+		data.accelerationRadsPerSecondSquared = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
 		data.motorCurrentAmps = motor.getCurrent();
 		data.motorAppliedVolts = motor.getAppliedVolts();
 		data.motorTempCelcius = motor.getTemperature();
@@ -81,7 +83,7 @@ public class CoralArmSparkMax implements CoralArmIO {
 	 */
 	@Override
 	public void setVoltage(double volts) {
-		double inputVolts = MathUtil.applyDeadband(volts, 0.05);
+		double inputVolts = UtilityFunctions.applyDeadband(volts, MotorControllerConstants.deadbandVoltage / 3.0);
 		inputVolts = MathUtil.clamp(volts, -12, 12);
 		motor.setVoltage(inputVolts);
 	}

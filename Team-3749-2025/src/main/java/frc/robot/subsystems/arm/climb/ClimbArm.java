@@ -12,7 +12,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.arm.climb.ClimbArmIO.ArmData;
 import static edu.wpi.first.units.Units.*;
@@ -35,18 +34,20 @@ public class ClimbArm extends SubsystemBase {
 
 	private ProfiledPIDController profile = new ProfiledPIDController(0, 0, 0, new TrapezoidProfile.Constraints(
 			ClimbArmConstants.maxVelocity.get(), ClimbArmConstants.maxAcceleration.get()));
-	private ArmFeedforward feedforward = new ArmFeedforward(ClimbArmConstants.kS.get(), ClimbArmConstants.kG.get(), ClimbArmConstants.kV.get());
+
+	private ArmFeedforward feedforward = new ArmFeedforward(ClimbArmConstants.kS.get(), ClimbArmConstants.kG.get(),
+			ClimbArmConstants.kV.get());
+
 	private ClimbArmIO armIO;
 	private ArmData data = new ArmData();
-	private ClimbArmConstants.ArmStates state = ClimbArmConstants.ArmStates.STOWED;
+	private ClimbArmConstants.ArmStates state = ClimbArmConstants.ArmStates.STOPPED;
 
 	private LoggedMechanism2d mechanism2d = new LoggedMechanism2d(60, 60);
 	private LoggedMechanismRoot2d armRoot = mechanism2d.getRoot("ArmRoot", 30, 30);
-	private LoggedMechanismLigament2d armLigament = armRoot.append(new LoggedMechanismLigament2d("Climb Arm", 24, 0));
+	private LoggedMechanismLigament2d armLigament = armRoot.append(new LoggedMechanismLigament2d("ClimbArm", 24, 0));
+
 	StructPublisher<Pose3d> publisher = NetworkTableInstance.getDefault()
 			.getStructTopic("ClimbArm Pose", Pose3d.struct).publish();
-
-
 
 	public ClimbArm() {
 		if (Robot.isSimulation()) {
@@ -63,10 +64,10 @@ public class ClimbArm extends SubsystemBase {
 				ClimbArmConstants.kD.get(),
 				new TrapezoidProfile.Constraints(ClimbArmConstants.maxVelocity.get(),
 						ClimbArmConstants.maxAcceleration.get()));
+		profile.reset(data.positionRad);
+
 		setState(state);
 	}
-
-	// GET FUNCTIONS
 
 	/**
 	 * @return the current arm state.
@@ -90,10 +91,11 @@ public class ClimbArm extends SubsystemBase {
 		switch (state) {
 			case STOWED:
 				return UtilityFunctions.withinMargin(ClimbArmConstants.stateMarginOfError,
-						ClimbArmConstants.stowSetPoint_rad, data.positionRad);
+						ClimbArmConstants.stowSetPointRad.get(), data.positionRad);
 			case CLIMB:
 				return UtilityFunctions.withinMargin(ClimbArmConstants.stateMarginOfError,
-						ClimbArmConstants.climbSetPoint_rad, data.positionRad);
+						ClimbArmConstants.climbVoltage.get(),
+						(data.backMotorAppliedVolts + data.frontMotorAppliedVolts) / 2);
 			case STOPPED:
 				return UtilityFunctions.withinMargin(ClimbArmConstants.stateMarginOfError, 0, data.velocityRadPerSec);
 			default:
@@ -109,7 +111,6 @@ public class ClimbArm extends SubsystemBase {
 	 * @param volts
 	 */
 	public void setVoltage(double volts) {
-		// System.out.println(volts);
 		armIO.setVoltage(volts);
 	}
 
@@ -125,16 +126,23 @@ public class ClimbArm extends SubsystemBase {
 				stop();
 				break;
 			case STOWED:
-				setGoal(ClimbArmConstants.stowSetPoint_rad);
+				// armIO.setVoltage(-1);
+				stop();
 				break;
 			case CLIMB:
-				setGoal(ClimbArmConstants.climbSetPoint_rad);
+			
+				armIO.setVoltage(ClimbArmConstants.climbVoltage.get());
 			default:
 				stop();
 				break;
 		}
 	}
 
+	/**
+	 * Sets the brake mode of the arm.
+	 *
+	 * @param setMode The new brake mode for the arm.
+	 */
 	public void setBrakeMode(boolean setMode) {
 		armIO.setBrakeMode(setMode);
 	}
@@ -170,60 +178,60 @@ public class ClimbArm extends SubsystemBase {
 	 * Move the arm to the setpoint using the PID controller and feedforward.
 	 * combines PID control and feedforward to move the arm to desired position.
 	 */
-    private void moveToGoal() {
-        // Get the setpoint from the PID controller
-        State firstState = profile.getSetpoint();
+	private void moveToGoal() {
 
-        // Calculate the PID control voltage based on the arm's current position
-        double pidVoltage = profile.calculate(getPositionRad());
-        // Calculate the feedforward voltage based on velocity
-        double ffVoltage = feedforward.calculate(getPositionRad(), firstState.velocity);
+		State firstState = profile.getSetpoint();
 
-        // Apply the combined PID and feedforward voltages to the arm
-        double volts = ffVoltage + pidVoltage;
-        armIO.setVoltage(volts);
+		double pidVoltage = profile.calculate(getPositionRad());
+		State nextState = profile.getSetpoint();
 
-    }
+		double ffVoltage = feedforward.calculateWithVelocities(getPositionRad(), firstState.velocity, nextState.velocity);
+
+		double volts = ffVoltage + pidVoltage;
+		armIO.setVoltage(volts);
+	}
 
 	// PERIODIC FUNCTIONS
 
 	/** Runs the logic for the current arm state. */
 	private void runState() {
 		switch (state) {
+			case CLIMB:
+				armIO.setVoltage(ClimbArmConstants.climbVoltage.get());
+				break;
 			case STOPPED:
 				stop();
 				break;
 			default:
-				moveToGoal();
+				// moveToGoal();
 				break;
 		}
 	}
 
 	/** Logs data to Shuffleboard. */
 	private void logData() {
-		
 
-		Logger.recordOutput("subsystems/arms/climbArm/Current Command",
+		Logger.recordOutput("Arms/ClimbArm/currentCommand",
 				this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
-		Logger.recordOutput("subsystems/arms/climbArm/position", data.positionRad);
-		Logger.recordOutput("subsystems/arms/climbArm/velocity", data.velocityRadPerSec);
-		Logger.recordOutput("subsystems/arms/climbArm/input volts", data.inputVolts);
-		Logger.recordOutput("subsystems/arms/climbArm/frontMotor/applied volts", data.frontMotorAppliedVolts);
-		Logger.recordOutput("subsystems/arms/climbArm/backMotor/applied volts", data.backMotorAppliedVolts);
-		Logger.recordOutput("subsystems/arms/climbArm/frontMotor/current amps", data.frontMotorCurrentAmps);
-		Logger.recordOutput("subsystems/arms/climbArm/backMotor/current amps", data.backMotorCurrentAmps);
-		Logger.recordOutput("subsystems/arms/climbArm/frontMotor/temperature", data.frontMotorTempCelcius);
-		Logger.recordOutput("subsystems/arms/climbArm/backMotor/temperature", data.backMotorTempCelcius);
+		Logger.recordOutput("Arms/ClimbArm/currentState", state.name());
+
+		Logger.recordOutput("Arms/ClimbArm/position", data.positionRad);
+		Logger.recordOutput("Arms/ClimbArm/velocity", data.velocityRadPerSec);
+
+		Logger.recordOutput("Arms/ClimbArm/inputVolts", data.inputVolts);
+		Logger.recordOutput("Arms/ClimbArm/frontMotor/appliedVolts", data.frontMotorAppliedVolts);
+		Logger.recordOutput("Arms/ClimbArm/backMotor/appliedVolts", data.backMotorAppliedVolts);
+
+		Logger.recordOutput("Arms/ClimbArm/frontMotor/currentAmps", data.frontMotorCurrentAmps);
+		Logger.recordOutput("Arms/ClimbArm/backMotor/currentAmps", data.backMotorCurrentAmps);
+
+		Logger.recordOutput("Arms/ClimbArm/frontMotor/temperature", data.frontMotorTempCelcius);
+		Logger.recordOutput("Arms/ClimbArm/backMotor/temperature", data.backMotorTempCelcius);
+
+		Logger.recordOutput("Arms/ClimbArm/climbArmMechanism", mechanism2d);
 
 		armLigament.setAngle(Math.toDegrees(data.positionRad));
-
-		Logger.recordOutput("subsystems/arms/climbArm/current state", state.name());
-
 		publisher.set(getPose3d());
-
-		Logger.recordOutput("subsystems/arms/climbArm/Climb Arm Mechanism", mechanism2d);
-
-		SmartDashboard.putNumber("goal pos", profile.getGoal().position);
 	}
 
 	/**

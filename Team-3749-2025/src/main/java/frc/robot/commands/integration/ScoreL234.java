@@ -1,22 +1,34 @@
 package frc.robot.commands.integration;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
+import frc.robot.commands.auto.AutoConstants;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
-import frc.robot.subsystems.arm.coral.CoralArmConstants;
+import frc.robot.subsystems.swerve.ToPosConstants;
+import frc.robot.utils.UtilityFunctions;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
+import frc.robot.subsystems.arm.coral.CoralArmConstants;
+import frc.robot.subsystems.arm.coral.CoralArmConstants.ArmStates;
 
 /*
  * ScoreL234 command for scoring coral on L2, L3, L4
  */
+@SuppressWarnings("unused")
 public class ScoreL234 extends Command {
     private final ElevatorStates elevatorState;
     private boolean handoffComplete = false;
+    private boolean pieceRecognized = false;
+    private double scoreTimestamp = Double.MAX_VALUE;
 
     /**
      * 
-     * @param elevatorState 
+     * @param elevatorState
      */
     public ScoreL234(ElevatorStates elevatorState) {
         this.elevatorState = elevatorState;
@@ -26,66 +38,53 @@ public class ScoreL234 extends Command {
 
     @Override
     public void initialize() {
-        if (Robot.scoringRoller.hasPiece()) {
-            Robot.elevator.setState(elevatorState);
-            Robot.scoringRoller.setState(RollerConstants.RollerStates.MAINTAIN);
-            Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
-        // handoff from coral arm to elevator to score
-        } else if (Robot.coralRoller.hasPiece()) {
-            System.out.println("coral is good");
-            Robot.coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
-            Robot.elevator.setState(ElevatorStates.STOW);
-            Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
-        } else {
-            System.out.println("no coral");
-            this.cancel(); // cancels command if neither scoringRoller nor coralRoller has coral
-        }
+        Robot.elevator.setState(elevatorState);
+        Robot.scoringRoller.setState(RollerStates.STOP);
+        Robot.coralArm.setState(ArmStates.STOW);
 
-        // //if im not mistaken this is unreachable 
-        // if (Robot.coralRoller.hasPiece()) {
-        //     Robot.elevator.setState(ElevatorStates.STOW);
-        //     Robot.coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
-        //     Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN); 
-        //     Robot.scoringRoller.setState(RollerConstants.RollerStates.INTAKE);
-        //     return;
-        // }
-
-        //     this.cancel();
     }
 
     @Override
     public void execute() {
-        // handoff execution
-        if ((Robot.coralArm.getState() == CoralArmConstants.ArmStates.HAND_OFF) && Robot.coralArm.getIsStableState() &&
-            (Robot.elevator.getState() == ElevatorStates.STOW) && Robot.elevator.getIsStableState()) {
-            Robot.coralRoller.setState(RollerConstants.RollerStates.SCORE);
-            Robot.scoringRoller.setState(RollerConstants.RollerStates.INTAKE);
-            handoffComplete = true;
+        if (Robot.scoringRoller.hasPiece()) {
+            pieceRecognized = true;
         }
-        // checks whether handoff is complete
-        if (handoffComplete && !Robot.coralRoller.hasPiece() && Robot.scoringRoller.hasPiece()) {
-            Robot.scoringRoller.setState(RollerStates.MAINTAIN);
-            Robot.elevator.setState(elevatorState);
-        }
+
         // scores when elevator reaches desired state
-        if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState()) {
-            Robot.scoringRoller.setState(RollerConstants.RollerStates.SCORE);
+        if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState()
+                && scoreTimestamp == Double.MAX_VALUE) {
+
+            if ((Robot.swerve.getIsOTF() && !Robot.swerve.reachedSwerveSetpoint(Robot.swerve.getPPSetpoint().setpoint))
+                    || (DriverStation.isAutonomous()
+                            && !Robot.swerve.reachedSwerveSetpoint(Robot.swerve.getPositionSetpoint()))) {
+                Robot.scoringRoller.setState(RollerStates.STOP);
+                return;
+            }
+
+            Robot.scoringRoller.setState(RollerStates.SCORE);
+            scoreTimestamp = Timer.getFPGATimestamp();
         }
     }
 
     @Override
     public void end(boolean interrupted) {
-        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
+        Robot.coralArm.setState(ArmStates.STOW);
         Robot.elevator.setState(ElevatorStates.STOW);
-        Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);
-        Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
+        Robot.scoringRoller.setState(RollerStates.STOP);
+        Robot.coralRoller.setState(RollerStates.STOP);
+        pieceRecognized = false;
+        scoreTimestamp = Double.MAX_VALUE;
     }
 
     /**
-     * Command finishes when scoringRoller does not have coral and command is being scheduled
+     * Command finishes when scoringRoller does not have coral and command is being
+     * scheduled
      */
     @Override
     public boolean isFinished() {
-        return !Robot.scoringRoller.hasPiece() && this.isScheduled();
+        return !Robot.scoringRoller.hasPiece() && pieceRecognized && Timer.getFPGATimestamp() - scoreTimestamp > 0.3
+                && this.isScheduled();
+        // return false;
     }
+
 }

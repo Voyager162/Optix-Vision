@@ -7,29 +7,33 @@ package frc.robot.subsystems.swerve;
 import org.littletonrobotics.junction.Logger;
 
 import choreo.trajectory.SwerveSample;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.buttons.JoystickIO;
 import frc.robot.buttons.ButtonBoard.ScoringMode;
 import frc.robot.commands.auto.AutoConstants;
 import frc.robot.commands.auto.AutoUtils;
+import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.swerve.GyroIO.GyroData;
 import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 import frc.robot.subsystems.swerve.sim.GyroSim;
 import frc.robot.subsystems.swerve.sim.SwerveModuleSim;
-import frc.robot.utils.LoggedTunableNumber;
-import frc.robot.utils.ShuffleData;
 import frc.robot.utils.UtilityFunctions;
 import frc.robot.subsystems.swerve.SwerveConstants.ControlConstants;
 import frc.robot.subsystems.swerve.SwerveConstants.DrivetrainConstants;
@@ -61,151 +65,23 @@ public class Swerve extends SubsystemBase {
   // equivilant to a odometer, but also intakes vision
   private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
 
-  private PIDController xController = new PIDController(AutoConstants.kPDrive, 0, AutoConstants.kDDrive);
-  private PIDController yController = new PIDController(AutoConstants.kPDrive, 0, AutoConstants.kDDrive);
-  private PIDController turnController = new PIDController(AutoConstants.kPTurn, 0, AutoConstants.kDTurn);
+  private PIDController xController = new PIDController(AutoConstants.kPDrive, AutoConstants.kIDrive,
+      AutoConstants.kDDrive);
+  private PIDController yController = new PIDController(AutoConstants.kPDrive, AutoConstants.kIDrive,
+      AutoConstants.kDDrive);
+  private PIDController turnController = new PIDController(AutoConstants.kPTurn, AutoConstants.kITurn,
+      AutoConstants.kDTurn);
+
+  private Pose2d positionSetpoint = new Pose2d();
+  private Pose2d velocitySetpoint = new Pose2d();
 
   private boolean utilizeVision = true;
   private double velocity = 0;
-  private double yaw;
 
-  private LoggedTunableNumber kPDriving = new LoggedTunableNumber("/subsystems/swerve/kP Drive", AutoConstants.kPDrive);
-  private LoggedTunableNumber kDDriving = new LoggedTunableNumber("/subsystems/swerve/kD Drive", AutoConstants.kDDrive);
-  private LoggedTunableNumber kPTurn = new LoggedTunableNumber("/subsystems/swerve/kP Turn controller", AutoConstants.kPTurn);
-  private LoggedTunableNumber kDTurn = new LoggedTunableNumber("/subsystems/swerve/kD Turn controller", AutoConstants.kDTurn);
-
-
-  // // Logging
-  // private ShuffleData<String> currentCommandLog = new ShuffleData<String>(this.getName(), "current command", "None");
-
-  // private ShuffleData<Double[]> odometryLog = new ShuffleData<Double[]>(
-  //     this.getName(),
-  //     "odometry",
-  //     new Double[] { 0.0, 0.0, 0.0 });
-
-  // private ShuffleData<Double[]> realStatesLog = new ShuffleData<Double[]>(
-  //     this.getName(),
-  //     "real states",
-  //     new Double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
-
-  // private ShuffleData<Double[]> desiredStatesLog = new ShuffleData<Double[]>(
-  //     this.getName(),
-  //     "desired states",
-  //     new Double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 });
-
-  // private ShuffleData<Double> velocityLog = new ShuffleData<Double>(
-  //     this.getName(),
-  //     "velocity",
-  //     0.0);
-  // private ShuffleData<Double> accelerationLog = new ShuffleData<Double>(
-  //     this.getName(),
-  //     "acceleration",
-  //     0.0);
-
-  // private ShuffleData<Double> yawLog = new ShuffleData<Double>(
-  //     this.getName(),
-  //     "yaw",
-  //     0.0);
-
-  // private ShuffleData<Double> pitchLog = new ShuffleData<Double>(
-  //     this.getName(),
-  //     "pitch",
-  //     0.0);
-
-  // private ShuffleData<Double> rollLog = new ShuffleData<Double>(
-  //     this.getName(),
-  //     "roll",
-  //     0.0);
-
-  // private ShuffleData<Double> rotationalVelocityLog = new ShuffleData<Double>(
-  //     this.getName(),
-  //     "rotational velocity",
-  //     0.0);
-
-  // private ShuffleData<Boolean> gyroConnectedLog = new ShuffleData<Boolean>(
-  //     this.getName(),
-  //     "gyro connected",
-
-  //     false);
-  // private ShuffleData<Boolean> gyroCalibratingLog = new ShuffleData<Boolean>(
-  //     this.getName(),
-  //     "gyro calibrating",
-  //     false);
-
-  // private ShuffleData<Double> headingLog = new ShuffleData<Double>(
-  //     this.getName(),
-  //     "heading",
-  //     0.0);
-
-  // private ShuffleData<Boolean> utilizeVisionLog = new ShuffleData<Boolean>(
-  //     this.getName(),
-  //     "utilize vision",
-  //     true);
-
-      private ShuffleData<Double[]> setpointPositionLog = new ShuffleData<Double[]>(
-        this.getName(),
-        "setpoint position",
-        new Double[] { 0.0, 0.0, 0.0 });
-  
-    private ShuffleData<Double[]> setpointGoalStateLog = new ShuffleData<Double[]>(
-        this.getName(),
-        "setpoint end goal",
-        new Double[] { 0.0, 0.0, 0.0 });
-
-        private ShuffleData<Double[]> setpointVelocityLog = new ShuffleData<Double[]>(
-          this.getName(),
-          "setpoint velocity",
-          new Double[] { 0.0, 0.0, 0.0 });
-    
-      private ShuffleData<Double[]> setpointAccelerationLog = new ShuffleData<Double[]>(
-          this.getName(),
-          "setpoint acceleration",
-          new Double[] { 0.0, 0.0, 0.0 });
-    
-  private ShuffleData<Double> setpointRotationalVelocityLog = new ShuffleData<Double>(
-      this.getName(),
-      "setpoint rotational velocity",
-      0.0);
-
-  private ShuffleData<Double> setpointRotationalAccelerationLog = new ShuffleData<Double>(
-      this.getName(),
-      "setpoint rotational acceleration",
-      0.0);
-
-  private int currentPPSetpointIndex = 0; //what "index" do we currently want to go to for OTF
+  private int currentPPSetpointIndex = 0; // what "index" do we currently want to go to for OTF
   private int currentPPApproachSetpointIndex = 0;
 
-  private boolean isOTF = false; //are we OTF driving rn
-
-  public int getPPSetpointIndex()
-  {
-    return currentPPApproachSetpointIndex;
-  }
-
-  public void setPPSetpointIndex(int index)
-  {
-    currentPPSetpointIndex = index;
-  }
-
-  public int getApproachSetpointIndex()
-  {
-    return currentPPApproachSetpointIndex;
-  }
-
-  public void setApproachSetpointIndex(int index)
-  {
-    currentPPApproachSetpointIndex = index;
-  }
-
-  public boolean getIsOTF()
-  {
-    return isOTF;
-  }
-
-  public void setIsOTF(boolean otf)
-  {
-    isOTF = otf;
-  }
+  private boolean isOTF = false; // are we OTF driving rn
 
   public Swerve() {
 
@@ -219,6 +95,7 @@ public class Swerve extends SubsystemBase {
     // if real
     else {
       // gyro = new NavX2Gyro();
+      // gyro = new GyroSim();
       gyro = new PigeonGyro();
       for (int i = 0; i < 4; i++) {
 
@@ -235,23 +112,39 @@ public class Swerve extends SubsystemBase {
             modules[2].getPosition(),
             modules[3].getPosition()
         },
-        new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
-        VecBuilder.fill(0.045, 0.045, 0.0004), // 6328's 2024 numbers with factors of 1.5x, 1.5x, 2x
+        new Pose2d(new Translation2d(5.773, 3.963), Rotation2d.fromDegrees(180)),
+        VecBuilder.fill(0.045, 0.045, 0.004), // 6328's 2024 numbers with factors of 1.5x, 1.5x, 2x
         VecBuilder.fill(VisionConstants.StandardDeviations.PreMatch.xy,
             VisionConstants.StandardDeviations.PreMatch.xy,
             VisionConstants.StandardDeviations.PreMatch.thetaRads));
 
-  
+    // auto PID settings
     turnController.enableContinuousInput(-Math.PI, Math.PI);
+    turnController.setIZone(AutoConstants.turnIZone);
+    turnController.setTolerance(AutoConstants.turnToleranceRad / 2);
+    xController.setTolerance(AutoConstants.driveToleranceMeters / 3);
+    yController.setTolerance(AutoConstants.driveToleranceMeters / 3);
+    xController.setIZone(AutoConstants.driveIZone);
+    yController.setIZone(AutoConstants.driveIZone);
 
     // put us on the field with a default orientation
     resetGyro();
-    setOdometry(new Pose2d(0,0, new Rotation2d(0)));
+    setOdometry(new Pose2d(3, 3, new Rotation2d(0)));
     logSetpoints(1.33, 0, 0, 5.53, 0, 0, 0, 0, 0);
 
   }
 
-  
+  public int getPPSetpointIndex() {
+    return currentPPApproachSetpointIndex;
+  }
+
+  public int getApproachSetpointIndex() {
+    return currentPPApproachSetpointIndex;
+  }
+
+  public boolean getIsOTF() {
+    return isOTF;
+  }
 
   public boolean getRotated() {
     return UtilityFunctions.withinMargin(0.01, modules[0].getModuleData().turnPositionRad,
@@ -355,26 +248,12 @@ public class Swerve extends SubsystemBase {
     SwerveDriveKinematics.desaturateWheelSpeeds(
         desiredStates,
         getMaxDriveSpeed());
-    
+
     modules[0].setDesiredState(desiredStates[0]);
     modules[1].setDesiredState(desiredStates[1]);
     modules[2].setDesiredState(desiredStates[2]);
     modules[3].setDesiredState(desiredStates[3]);
 
-  }
-
-  //this is only really relevant for testing purposes: as this is logged as endgoal position or smth like that
-  //shows what the end position will be like in advantage scope
-  public void showSetpointEndGoal() {
-    setpointGoalStateLog.set(
-        new Double[] { getPPSetpoint().setpoint.getX(), getPPSetpoint().setpoint.getY(),
-            getPPSetpoint().setpoint.getRotation().getRadians() });
-  }
-
-  public void showApproachSetpointEndGoal() {
-    setpointGoalStateLog.set(
-        new Double[] { getPPSetpoint().approachPoint.getX(), getPPSetpoint().approachPoint.getY(),
-            getPPSetpoint().approachPoint.getRotation().getRadians() });
   }
 
   /**
@@ -390,50 +269,73 @@ public class Swerve extends SubsystemBase {
    *       field
    */
 
-   //called by OTF, given the position and velocity at the points generated in the dynamic path: 
-   //calc the speeds and throw them into the speed
+  // called by OTF and Choreo, given the position and velocity at the points
+  // generated in the
+  // dynamic path:
+  // calc the speeds and throw them into the speed
   public void followSample(Pose2d positions, Pose2d velocities) {
+    positionSetpoint = positions;
+    velocitySetpoint = velocities;
+
+    double xPID = xController.calculate(getPose().getX(), positions.getX());
+    xPID = MathUtil.clamp(xPID, -1, 1);
+    if (xController.atSetpoint()) {
+      xPID = 0;
+    }
+
+    double yPID = yController.calculate(getPose().getY(), positions.getY());
+    yPID = MathUtil.clamp(yPID, -1, 1);
+
+    if (yController.atSetpoint()) {
+      yPID = 0;
+    }
+
+    double turnPID = turnController.calculate(getPose().getRotation().getRadians(),
+        positions.getRotation().getRadians());
+    // turnPID = MathUtil.clamp(turnPID, -Math.PI/2, Math.PI/2);
+
+    if (turnController.atSetpoint()) {
+      turnPID = 0;
+    }
+    Logger.recordOutput("Swerve/auto/turn PID", turnPID);
+    Logger.recordOutput("Swerve/auto/x PID", xPID);
+    Logger.recordOutput("Swerve/auto/y PID", yPID);
+
     ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
         new ChassisSpeeds(
-            xController.calculate(getPose().getX(), positions.getX()) + velocities.getX(),
-            yController.calculate(getPose().getY(), positions.getY()) + velocities.getY(),
-            turnController.calculate(getPose().getRotation().getRadians(), positions.getRotation().getRadians())
+            xPID + velocities.getX(),
+            yPID + velocities.getY(),
+            turnPID
                 + velocities.getRotation().getRadians()),
         getPose().getRotation());
-        logSetpoints(positions, velocities);
-
-    Robot.swerve.setChassisSpeeds(speeds);
+    logSetpoints(positions, velocities);
+    Logger.recordOutput("Swerve/auto/velocity hypt", Math.sqrt(
+        speeds.vxMetersPerSecond * speeds.vxMetersPerSecond + speeds.vyMetersPerSecond * speeds.vyMetersPerSecond));
+    setChassisSpeeds(speeds);
   }
 
   public void followSample(SwerveSample sample, boolean isFlipped) {
+    System.out.println("folowing sample");
 
     // ternaries are for x-axis flipping
 
     double xPos = sample.x;
-
     double xVel = sample.vx;
     double xAcc = sample.ax;
-    double yPos = isFlipped ? AutoUtils.flipper.flipY(sample.y) : sample.y;
 
+    double yPos = isFlipped ? AutoUtils.flipper.flipY(sample.y) : sample.y;
     double yVel = isFlipped ? -sample.vy : sample.vy;
     double yAcc = isFlipped ? -sample.ay : sample.ay;
 
     double heading = isFlipped ? new Rotation2d(Math.PI - sample.heading).rotateBy(new Rotation2d(Math.PI)).getRadians()
         : sample.heading;
-
     double omega = isFlipped ? -sample.omega : sample.omega;
     double alpha = isFlipped ? -sample.alpha : sample.alpha;
 
-    Robot.swerve.logSetpoints(xPos, xVel, xAcc, yPos, yVel, yAcc, heading, omega, alpha);
+    positionSetpoint = new Pose2d(xPos, yPos, new Rotation2d(heading));
+    velocitySetpoint = new Pose2d(xVel, yVel, new Rotation2d(omega));
 
-    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-        new ChassisSpeeds(
-            xController.calculate(getPose().getX(), xPos) + xVel,
-            yController.calculate(getPose().getY(), yPos) + yVel,
-            turnController.calculate(getPose().getRotation().getRadians(), heading) + omega),
-        getPose().getRotation());
-
-    Robot.swerve.setChassisSpeeds(speeds);
+    followSample(positionSetpoint, velocitySetpoint);
   }
 
   public void setBreakMode(boolean enable) {
@@ -452,74 +354,112 @@ public class Swerve extends SubsystemBase {
     utilizeVision = utilize;
   }
 
-  //this is only used for testing, pressing B to cycle through all of the stuff
+  public void setApproachSetpointIndex(int index) {
+    currentPPApproachSetpointIndex = index;
+  }
+
+  public void setIsOTF(boolean otf) {
+    isOTF = otf;
+  }
+
+  public void setPPSetpointIndex(int index) {
+    currentPPSetpointIndex = index;
+  }
+
+  // this is only used for testing, pressing B to cycle through all of the stuff
   public void cyclePPSetpoint() {
+    isOTF = false;
     currentPPSetpointIndex++;
-    if(JoystickIO.buttonBoard.getScoringMode()==ScoringMode.ALGAE && 
-    currentPPSetpointIndex>=2&&currentPPSetpointIndex<=25)
-    {
-      setSetpointToClosestSideToSetpoint();
+    if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.ALGAE &&
+        currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 25) {
     }
-    if(JoystickIO.buttonBoard.getScoringMode()==ScoringMode.L1 && 
-    currentPPSetpointIndex>=2&&currentPPSetpointIndex<=24 && currentPPSetpointIndex%2==0)
-    {
+    if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L1 &&
+        currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 24 && currentPPSetpointIndex % 2 == 0) {
       currentPPSetpointIndex++;
     }
-    if(JoystickIO.buttonBoard.getScoringMode()!=ScoringMode.L1 && 
-    currentPPSetpointIndex>=3&&currentPPSetpointIndex<=25 && currentPPSetpointIndex%2!=0)
-    {
+    if (JoystickIO.buttonBoard.getScoringMode() != ScoringMode.L1 &&
+        currentPPSetpointIndex >= 3 && currentPPSetpointIndex <= 25 && currentPPSetpointIndex % 2 != 0) {
       currentPPSetpointIndex++;
     }
 
     if (currentPPSetpointIndex >= ToPosConstants.Setpoints.PPSetpoints.values().length) {
       currentPPSetpointIndex = 0;
     }
+    showOTFEndPoint();
+    showOTFApproachPoint();
   }
 
   public PPSetpoints getPPSetpoint() {
     return PPSetpoints.values()[currentPPSetpointIndex];
   }
 
-  private void setSetpointToClosestSideToSetpoint() {
-    Pose2d closestSide = getPPSetpoint().setpoint.nearest(ToPosConstants.Setpoints.reefSides);
-    // Iterate through the reef branch mappings to set the correct setpoint
-    for (Pose2d side : ToPosConstants.Setpoints.driveRelativeBranches.keySet()) {
-        if (closestSide.equals(side)) {
-              setPPSetpointIndex(ToPosConstants.Setpoints.driveRelativeBranches.get(side)[2]);
-        }
-    }
-}
+  public Pose2d getPositionSetpoint() {
+    return positionSetpoint;
+  }
 
+  public Pose2d getVelocitySetpoint() {
+    return velocitySetpoint;
+  }
 
-  //called when the button board is pressed with the (ppsetpoint)"index" the button is associated w to drive to
+  public boolean reachedSwerveSetpoint(Pose2d pose) {
+    // Pose2d setpoint = getPositionSetpoint();
+    // double xMargin = (Math.sin(setpoint.getRotation().getRadians())
+    // * AutoConstants.driveToleranceMeters) + 0.015;
+
+    // double yMargin = (Math.cos(setpoint.getRotation().getRadians())
+    // * AutoConstants.driveToleranceMeters) + 0.015;
+
+    // Logger.recordOutput("Swerve/auto/x margin", xMargin);
+    // Logger.recordOutput("Swerve/auto/y margin", yMargin);
+
+    // boolean withinPositionMargin = UtilityFunctions.withinMargin(
+    // new Pose2d(xMargin,
+    // yMargin,
+    // new Rotation2d(AutoConstants.turnToleranceRad)),
+    // getPose(), setpoint);
+
+    // Pose2d velocities = new Pose2d(getChassisSpeeds().vxMetersPerSecond,
+    // getChassisSpeeds().vyMetersPerSecond,
+    // new Rotation2d(getChassisSpeeds().omegaRadiansPerSecond));
+
+    // boolean withinVelocityMargin = UtilityFunctions.withinMargin(
+    // new Pose2d(0.1, 0.1, new Rotation2d(Units.degreesToRadians(3))),
+    // getVelocitySetpoint(),
+    // velocities);
+
+    // return withinPositionMargin && withinVelocityMargin;
+
+    return UtilityFunctions.withinMargin(
+        new Pose2d(AutoConstants.driveToleranceMeters,
+            AutoConstants.driveToleranceMeters,
+            new Rotation2d(AutoConstants.turnToleranceRad)),
+        getPose(), pose);
+
+  }
+
+  // called when the button board is pressed with the (ppsetpoint)"index" the
+  // button is associated w to drive to
 
   public void startOnTheFly(int setpointIndex) {
     setIsOTF(false);
+    Robot.elevator.setState(ElevatorStates.STOW);
     currentPPSetpointIndex = setpointIndex;
 
-    if(JoystickIO.buttonBoard.getScoringMode()==ScoringMode.ALGAE && 
-    currentPPSetpointIndex>=2&&currentPPSetpointIndex<=25)
-    {
-      setSetpointToClosestSideToSetpoint();
+    if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.ALGAE &&
+        currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 25) {
     }
 
-    if(JoystickIO.buttonBoard.getScoringMode()==ScoringMode.L1 && 
-    currentPPSetpointIndex>=2&&currentPPSetpointIndex<=24 && currentPPSetpointIndex%2==0)
-    {
+    if (JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L1 &&
+        currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 24 && currentPPSetpointIndex % 2 == 0) {
       currentPPSetpointIndex++;
     }
-    //the ppsetpoints from 2 to 25 are the reef, and alternate between
-    //L234 (even index) //L1 (odd index == L234 index+1)
-    //if we're on l1, within the range, and on an equal index, add one to get to the L1 setpoint,
-    //this becomes problematic only when switching between l1-l4 on testing, should be ok on the real bot
 
-    if(JoystickIO.buttonBoard.getScoringMode()!=ScoringMode.L1 && 
-    currentPPSetpointIndex>=3&&currentPPSetpointIndex<=25 && currentPPSetpointIndex%2!=0)
-    {
+    if (JoystickIO.buttonBoard.getScoringMode() != ScoringMode.L1 &&
+        currentPPSetpointIndex >= 3 && currentPPSetpointIndex <= 25 && currentPPSetpointIndex % 2 != 0) {
       currentPPSetpointIndex++;
     }
-    showSetpointEndGoal();
-    //js the same thing i said but L234 
+    showOTFEndPoint();
+    showOTFApproachPoint();
     isOTF = true;
   }
 
@@ -529,7 +469,8 @@ public class Swerve extends SubsystemBase {
    * @param pose - Pose2d object of what to set our position to
    */
   public void setOdometry(Pose2d pose) {
-    // System.out.println("Set Odometry: " + pose.getX() + ", " + pose.getY() + ", " + pose.getRotation().getDegrees());
+    // System.out.println("Set Odometry: " + pose.getX() + ", " + pose.getY() + ", "
+    // + pose.getRotation().getDegrees());
     Rotation2d gyroHeading = Rotation2d.fromDegrees(gyroData.yawDeg);
 
     swerveDrivePoseEstimator.resetPosition(
@@ -549,7 +490,6 @@ public class Swerve extends SubsystemBase {
 
     modules[2].setTurnPosition(225 * Math.PI / 180);
     modules[3].setTurnPosition(315 * Math.PI / 180);
-
   }
 
   /**
@@ -591,6 +531,7 @@ public class Swerve extends SubsystemBase {
    * When called, makes the robot's current direction "forward"
    */
   public void resetGyro() {
+    System.out.println("rest gyro");
     gyro.resetGyro();
     if (UtilityFunctions.isRedAlliance()) {
       swerveDrivePoseEstimator.resetPosition(new Rotation2d(), new SwerveModulePosition[] {
@@ -610,16 +551,10 @@ public class Swerve extends SubsystemBase {
   }
 
   public void logSetpoints(Pose2d position, Pose2d velocity) {
-    // setpoint logging for automated driving
-    Double[] positions = new Double[] { position.getX(), position.getY(), position.getRotation().getRadians() };
-    setpointPositionLog.set(positions);
-
-    Double[] velocities = new Double[] { velocity.getX(), velocity.getY(), velocity.getRotation().getRadians() };
-    setpointVelocityLog.set(velocities);
-    setpointAccelerationLog.set(new Double[] { 0.0, 0.0, 0.0 });
+    logSetpoints(position.getX(), velocity.getX(), 0, position.getY(), velocity.getY(), 0,
+        position.getRotation().getRadians(), velocity.getRotation().getRadians(), 0);
 
   }
-
 
   /**
    * logs all setpoints for the swerve subsystem in autonomous functions
@@ -629,34 +564,48 @@ public class Swerve extends SubsystemBase {
   public void logSetpoints(double posX, double velX, double accX, double posY, double velY, double accY, double heading,
       double omega, double alpha) {
     // setpoint logging for automated driving
-    Double[] positions = new Double[] { posX, posY, heading };
-    Logger.recordOutput("/subsystems/swerve/swerve position x", positions[0]);
-    Logger.recordOutput("/subsystems/swerve/swerve position y", positions[1]);
-    Logger.recordOutput("/subsystems/swerve/swerve position heading", positions[2]);
+    double[] positions = new double[] { posX, posY, heading };
+    Logger.recordOutput("Swerve/auto/position setpoint", positions);
+    Transform2d poseDiff = new Pose2d(posX, posY, new Rotation2d(heading)).minus(getPose());
+    Logger.recordOutput("Swerve/auto/position error", poseDiff);
 
     Double[] velocities = new Double[] { velX, velY, omega };
     double velocity = 0;
-    for (int i = 0; i < 2; i++) {
-      velocity += Math.pow(velocities[i], 2);
-    }
+    velocity += Math.pow(velocities[0], 2);
+    velocity += Math.pow(velocities[1], 2);
+
     velocity = Math.sqrt(velocity);
-    // setpointVelocityLog.set(velocity);
-    setpointRotationalVelocityLog.set(velocities[2]);
-    Logger.recordOutput("/subsystems/swerve/setpoint velocity", velocity);
-    Logger.recordOutput("/subsystems/swerve/velocity", velocities[2]);
+    Logger.recordOutput("Swerve/auto/setpoint velocity", velocity);
+    Logger.recordOutput("Swerve/auto/setpoint rotational velocity", velocities[2]);
     velocity = velocities[2];
+    Logger.recordOutput("Swerve/auto/velocity hypt", Math.sqrt(
+        velX * velX + velY * velY));
 
     Double[] accelerations = new Double[] { accX, accY, alpha };
     double acceleration = 0;
-    for (int i = 0; i < 2; i++) {
-      acceleration += Math.pow(accelerations[i], 2);
-    }
-    acceleration = Math.sqrt(acceleration);
-    // setpointAccelerationLog.set(acceleration);
-    setpointRotationalAccelerationLog.set(accelerations[2]);
-    Logger.recordOutput("/subsystems/swerve/setpoint acceleration", acceleration);
-    Logger.recordOutput("/subsystems/swerve/setpoint rotational acceleration", accelerations[2]);
+    acceleration += Math.pow(accelerations[0], 2);
+    acceleration += Math.pow(accelerations[1], 2);
 
+    acceleration = Math.sqrt(acceleration);
+    Logger.recordOutput("Swerve/auto/setpoint acceleration", acceleration);
+    Logger.recordOutput("Swerve/auto/setpoint rotational acceleration", accelerations[2]);
+
+    Logger.recordOutput("at setpoints", reachedSwerveSetpoint(positionSetpoint));
+  }
+
+  // this is only really relevant for testing purposes: as this is logged as
+  // endgoal position or smth like that
+  // shows what the end position will be like in advantage scope
+  public void showOTFEndPoint() {
+    Logger.recordOutput("Swerve/auto/otf end goal",
+        new double[] { getPPSetpoint().setpoint.getX(), getPPSetpoint().setpoint.getY(),
+            getPPSetpoint().setpoint.getRotation().getRadians() });
+  }
+
+  public void showOTFApproachPoint() {
+    Logger.recordOutput("Swerve/auto/otf approach point",
+        new double[] { getPPSetpoint().approachPoint.getX(), getPPSetpoint().approachPoint.getY(),
+            getPPSetpoint().approachPoint.getRotation().getRadians() });
   }
 
   /**
@@ -686,37 +635,43 @@ public class Swerve extends SubsystemBase {
         modules[3].getDesiredState().speedMetersPerSecond
     };
 
-    Logger.recordOutput("/subsystems/swerve/real states", realStates);
-    Logger.recordOutput("/subsystems/swerve/desired states", desiredStates);
-    
+    Logger.recordOutput("Swerve/real states", realStates);
+    Logger.recordOutput("Swerve/desired states", desiredStates);
+    Logger.recordOutput("Swerve/auto/isOTF", isOTF);
+
     double[] odometry = {
         getPose().getX(),
         getPose().getY(),
-        getPose().getRotation().getRadians()};
-    Logger.recordOutput("/subsystems/swerve/odometry", odometry);
-    Logger.recordOutput("/subsystems/swerve/utilize vision", utilizeVision);
+        getPose().getRotation().getRadians() };
+    Pose3d pose = new Pose3d(getPose());
+
+    Logger.recordOutput("Swerve/odometry", odometry);
+    Logger.recordOutput("Swerve/odometry pose3d", pose);
+    Logger.recordOutput("Swerve/utilizeVision", utilizeVision);
 
     // gyro logging
-    Logger.recordOutput("/subsystems/swerve/rotational velocity", (gyroData.yawDeg - yaw) / 0.02);
-    Logger.recordOutput("/subsystems/swerve/gyro yaw", gyroData.yawDeg);
-    yaw = gyroData.yawDeg;
-    Logger.recordOutput("/subsystems/swerve/gyro pitch", gyroData.pitchDeg);
-    Logger.recordOutput("/subsystems/swerve/gyro roll", gyroData.rollDeg);
-    Logger.recordOutput("/subsystems/swerve/is gyro connected", gyroData.isConnected);
-    Logger.recordOutput("/subsystems/swerve/gyro rotation", getRotation2d().getDegrees());
+    Logger.recordOutput("Swerve/gyro/Yaw", gyroData.yawDeg);
+    // yaw = gyroData.yawDeg;
+    Logger.recordOutput("Swerve/gyro/Pitch", gyroData.pitchDeg);
+    Logger.recordOutput("Swerve/gyro/Roll", gyroData.rollDeg);
+    Logger.recordOutput("Swerve/gyro/isConnected", gyroData.isConnected);
+    Logger.recordOutput("Swerve/heading", getRotation2d().getDegrees());
 
     // velocity and acceleration logging
     double robotVelocity = Math.hypot(getChassisSpeeds().vxMetersPerSecond,
         getChassisSpeeds().vyMetersPerSecond);
-    Logger.recordOutput("/subsystems/swerve/gyro rotation", (robotVelocity - velocity) / .02);
-    Logger.recordOutput("/subsystems/swerve/gyro rotation", robotVelocity);
-    String currentCommand = this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName();
-    Logger.recordOutput("/subsystems/swerve/current command", currentCommand);
 
-    AutoConstants.kPDrive = kPDriving.get();
-    AutoConstants.kDDrive = kDDriving.get();
-    AutoConstants.kPTurn = kPTurn.get();
-    AutoConstants.kDTurn = kDTurn.get();
+    Logger.recordOutput("Swerve/robot velocity", robotVelocity);
+    Logger.recordOutput("Swerve/robot rotational velocity", getChassisSpeeds().omegaRadiansPerSecond);
+
+    Logger.recordOutput("Swerve/robot acceleration", (robotVelocity -
+        velocity) / .02);
+
+    velocity = robotVelocity;
+
+    String currentCommand = this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName();
+    Logger.recordOutput("Swerve/currentCommand", currentCommand);
+
   }
 
   @Override

@@ -18,24 +18,24 @@ public class SwerveConstants {
 
         public static final class ControlConstants {
                 public static final double[] turnPID = new double[] {
-                                3.75, 0, 0 };
+                                4.5, 0, 0 };
                 public static final double[] drivePID = new double[] {
                                 0.27, 0, 0 };
                 // our FF values
-                public static LoggedTunableNumber kSDriving = new LoggedTunableNumber("subsystems/swerve/kSDriving",
-                                0.26);
-                public static LoggedTunableNumber kVDriving = new LoggedTunableNumber("subsystems/swerve/kVDriving",
-                                2.765);
-                public static LoggedTunableNumber kADriving = new LoggedTunableNumber("subsystems/swerve/kADriving",
+                public static LoggedTunableNumber kSDriving = new LoggedTunableNumber("swerve/kSDriving",
+                                0.165);
+                public static LoggedTunableNumber kVDriving = new LoggedTunableNumber("swerve/kVDriving",
+                                2.305);
+                public static LoggedTunableNumber kADriving = new LoggedTunableNumber("swerve/kADriving",
                                 0.0);
 
-                public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("subsystems/swerve/maxVelocity",
-                                4.3);
+                public static LoggedTunableNumber maxVelocity = new LoggedTunableNumber("swerve/maxVelocity",
+                                4.6);
                 public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
-                                "subsystems/swerve/maxAcceleration", 3.3);
+                                "swerve/maxAcceleration", 3);
 
                 // teleop speed
-                public static final double teleopMaxSpeedReduction = 0; // If we can drive a little faster in telop
+                public static final double teleopMaxSpeedReduction = -0.1; // If we can drive a little faster in telop
                 // we may as well
                 public static final double teleopMaxSpeedMetersPerSecond = maxVelocity.get()
                                 * (1 - teleopMaxSpeedReduction);
@@ -45,10 +45,10 @@ public class SwerveConstants {
                 public static final double autoMaxSpeedMetersPerSecond = maxVelocity.get()
                                 * (1 - autoMaxSpeedReduction);
 
-                public static final double maxAngularSpeedRadiansPerSecond = 12.162;
-                public static final double maxAngularAccelerationRadiansPerSecondSquared = 15.543;
+                public static final double maxAngularSpeedRadiansPerSecond = 11;
+                public static final double maxAngularAccelerationRadiansPerSecondSquared = 9.0;
                 // teleop angluar speed
-                public static final double teleopMaxAngularSpeedReduction = 0.4;
+                public static final double teleopMaxAngularSpeedReduction = 0.0;
                 public static final double teleopMaxAngularSpeedRadPerSecond = maxAngularSpeedRadiansPerSecond
                                 * (1 - teleopMaxAngularSpeedReduction);
 
@@ -68,10 +68,10 @@ public class SwerveConstants {
                 public static final int[] absoluteEncoderIds = { 11, 12, 13, 14 };
 
                 public static final boolean[] driveMotorInverted = {
-                                true,
                                 false,
                                 true,
-                                true
+                                false,
+                                false
                 };
                 public static final boolean[] turningMotorInverted = {
                                 false,
@@ -85,8 +85,11 @@ public class SwerveConstants {
                                 false,
                                 false
                 };
-                public static final double[] absoluteEncoderOffsetDeg = {
-                                49.733, 67.208, 276.509, 21.715
+                public static final double[] absoluteEncoderOffsetRad = {
+                                5.562 + Math.PI / 2,
+                                1.177,
+                                0.072 - Math.PI / 2,
+                                1.974 - Math.PI / 2
                 };
 
         }
@@ -94,9 +97,9 @@ public class SwerveConstants {
         public static final class DrivetrainConstants {
                 public static final double wheelDiameterMeters = Units.inchesToMeters(4);
                 // Distance between right and left wheels
-                public static final double trackWidth = Units.inchesToMeters(19.5);
+                public static final double trackWidth = Units.inchesToMeters(26.5);
                 // Distance between front and back wheels
-                public static final double wheelBase = Units.inchesToMeters(19.5);
+                public static final double wheelBase = Units.inchesToMeters(20.5);
                 public static final SwerveDriveKinematics driveKinematics = new SwerveDriveKinematics(
                                 new Translation2d(wheelBase / 2, trackWidth / 2), // front left
                                 new Translation2d(wheelBase / 2, -trackWidth / 2), // front right

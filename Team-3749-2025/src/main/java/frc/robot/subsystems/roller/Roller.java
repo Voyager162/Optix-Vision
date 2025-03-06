@@ -10,6 +10,7 @@ import frc.robot.subsystems.roller.RollerIO.RollerData;
 import frc.robot.subsystems.roller.real.RollerSparkMax;
 import frc.robot.subsystems.roller.sim.RollerSim;
 import frc.robot.utils.LoggedTunableNumber;
+import frc.robot.utils.UtilityFunctions;
 import frc.robot.Robot;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
@@ -18,6 +19,7 @@ public abstract class Roller extends SubsystemBase {
     private RollerIO rollerIO;
     private RollerData rollerData = new RollerData();
     private RollerStates rollerState;
+    private Implementations implementation;
     private SimpleMotorFeedforward rollerFF;
     @SuppressWarnings("unused")
     private PIDController positionController;
@@ -31,20 +33,17 @@ public abstract class Roller extends SubsystemBase {
     protected LoggedTunableNumber maxVelocity;
     protected LoggedTunableNumber maxAcceleration;
 
-    
-
-
     public Roller(Implementations implementation, SimpleMotorFeedforward rollerFF, PIDController positionController,
             PIDController velocityController) {
         rollerIO = Robot.isSimulation() ? new RollerSim(implementation)
                 : new RollerSparkMax(implementation);
+        this.implementation = implementation;
 
         // String name = implementation.name();
         this.rollerFF = rollerFF;
         this.positionController = positionController;
         this.velocityController = velocityController;
         this.rollerState = RollerConstants.RollerStates.STOP;
-
     }
 
     public RollerIO getRollerIO() {
@@ -52,41 +51,58 @@ public abstract class Roller extends SubsystemBase {
     }
 
     public void setVoltage(double volts) {
-        // System.out.println(volts);
         rollerIO.setVoltage(volts);
     }
 
     public void setVelocity(double velocityRadPerSec) {
         double PIDOutput = velocityController.calculate(rollerData.rollerVelocityRadPerSec, velocityRadPerSec);
         double FFOutput = rollerFF.calculate(velocityRadPerSec);
-        double volts = PIDOutput+FFOutput;
+        double volts = PIDOutput + FFOutput;
         volts = MathUtil.clamp(volts, -12, 12);
         rollerIO.setVoltage(volts);
-        Logger.recordOutput("subsystems/roller/" + getName() + "/pid", PIDOutput);
-        Logger.recordOutput("subsystems/roller/" + getName() + "/ff", FFOutput);
+        Logger.recordOutput("Roller/" + getName() + "/PID", PIDOutput);
+        Logger.recordOutput("Roller/" + getName() + "/ff", FFOutput);
         // rollerIO.setVelocity(velocityRadPerSec,
         // rollerFF.calculate(velocityRadPerSec));
+    }
+
+    public void setPosition(double position, double kS) {
+        double PIDOutput = positionController.calculate(rollerData.rollerPositionRad, position);
+        Logger.recordOutput("Roller/" + getName() + "/positionPID", PIDOutput);
+        double volts = PIDOutput + Math.copySign(kS, PIDOutput);
+        rollerIO.setVoltage(volts);
     }
 
     public RollerStates getState() {
         return rollerState;
     }
 
+    public double getLastKnownPosition() {
+        return lastKnownPosition;
+    }
+
+    public double getPosition() {
+        return rollerData.rollerPositionRad;
+    }
+
     /**
-     * Sets the roller state
+     * Sets theroller state
      * 
      * Stores last position when the state is maintain
      */
     public void setState(RollerStates rollerState) {
-        // System.out.println(rollerState.name());
         this.rollerState = rollerState;
         if (rollerState == RollerConstants.RollerStates.MAINTAIN) {
-            lastKnownPosition = rollerData.rollerPositionRad;
+            setLastKnownPosition(rollerData.rollerPositionRad);
         }
     }
 
-    public void runRollerStates() {        
-        switch(rollerState) {
+    public void setLastKnownPosition(double pos) {
+        lastKnownPosition = pos;
+    }
+
+    public void runRollerStates() {
+        switch (rollerState) {
             case INTAKE:
                 intake();
                 break;
@@ -96,42 +112,58 @@ public abstract class Roller extends SubsystemBase {
             case STOP:
                 stop();
                 break;
+            case SCORE:
+                score();
+                break;
             case OUTTAKE:
                 outtake();
                 break;
-            case SCORE:
-                score();
-            break;
         }
     }
+
     public abstract void outtake();
+
     public abstract void intake();
+
     public abstract void score();
 
-    /**
-     * Maintains the roller's last known position
-     */
-    public void maintain() {
-        rollerIO.setPosition(rollerData.rollerPositionRad, lastKnownPosition);
-    }
+    public abstract void maintain();
 
     public void stop() {
         rollerIO.setVoltage(0.0);
     }
 
+    public boolean getIsStableState() {
+        switch (implementation) {
+            case CORAL:
+                return UtilityFunctions.withinMargin(10, rollerData.rollerVelocityRadPerSec, rollerState.coralVelocity);
+            // case ALGAE:
+            //     return UtilityFunctions.withinMargin(8, rollerData.rollerVelocityRadPerSec, rollerState.algaeVelocity);
+            case SCORING:
+                return UtilityFunctions.withinMargin(8, rollerData.rollerVelocityRadPerSec,
+                        rollerState.scoringVelocity);
+            default:
+                return false;
+        }
+    }
+
     @Override
     public void periodic() {
+
+        velocityController = new PIDController(RollerConstants.Coral.kPVelocity.get(),
+                RollerConstants.Coral.kIVelocity.get(), RollerConstants.Coral.kDVelocity.get());
         rollerIO.updateData(rollerData);
         runRollerStates();
 
-
-        Logger.recordOutput("subsystems/roller/" + getName() + "/velocity", rollerData.rollerVelocityRadPerSec);
-        Logger.recordOutput("subsystems/roller/" + getName() + "/applied voltage", rollerData.rollerAppliedVolts);
-        Logger.recordOutput("subsystems/roller/" + getName() + "/current", rollerData.currentAmps);
-        Logger.recordOutput("subsystems/roller/" + getName() + "/position", rollerData.rollerPositionRad);
-        Logger.recordOutput("subsystems/roller/" + getName() + "/last known position", lastKnownPosition);
-        Logger.recordOutput("subsystems/roller/" + getName() + "/state", rollerState.name());
-        Logger.recordOutput("subsystems/roller/" + getName() + "/acceleration", rollerData.acceleration);
+        Logger.recordOutput("Roller/" + getName() + "/velocity", rollerData.rollerVelocityRadPerSec);
+        Logger.recordOutput("Roller/" + getName() + "/appliedVoltage", rollerData.rollerAppliedVolts);
+        Logger.recordOutput("Roller/" + getName() + "/current", rollerData.currentAmps);
+        Logger.recordOutput("Roller/" + getName() + "/position", rollerData.rollerPositionRad);
+        Logger.recordOutput("Roller/" + getName() + "/lastKnownPosition", lastKnownPosition);
+        Logger.recordOutput("Roller/" + getName() + "/state", rollerState.name());
+        Logger.recordOutput("Roller/" + getName() + "/acceleration", rollerData.acceleration);
+        Logger.recordOutput("Roller/" + getName() + "/stableState", getIsStableState());
+        Logger.recordOutput("Roller/" + this.getName() + "/positionControllerValues",
+                positionController.getP() + " | " + positionController.getD());
     }
-
 }

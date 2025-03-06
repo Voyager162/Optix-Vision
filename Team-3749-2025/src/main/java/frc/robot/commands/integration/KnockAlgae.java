@@ -1,5 +1,6 @@
 package frc.robot.commands.integration;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
@@ -11,10 +12,12 @@ import frc.robot.subsystems.roller.RollerConstants;
  */
 public class KnockAlgae extends Command {
     private final ElevatorStates elevatorState;
+    private double startTimeStamp = Double.MAX_VALUE;
+    private double minComandTime = 5;
 
     /**
      * 
-     * @param elevatorState 
+     * @param elevatorState
      */
     public KnockAlgae(ElevatorStates elevatorState) {
         this.elevatorState = elevatorState;
@@ -24,9 +27,12 @@ public class KnockAlgae extends Command {
 
     @Override
     public void initialize() {
-        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOWED);
-        Robot.algaeRoller.setState(RollerConstants.RollerStates.INTAKE);
+        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOW);
+        Robot.scoringRoller.setIsAlgaeMode(true);
+        Robot.scoringRoller.setState(RollerConstants.RollerStates.INTAKE);
+        Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
         Robot.elevator.setState(elevatorState);
+        startTimeStamp = Timer.getFPGATimestamp();
     }
 
     @Override
@@ -36,14 +42,19 @@ public class KnockAlgae extends Command {
     @Override
     public void end(boolean interrupted) {
         Robot.elevator.setState(ElevatorStates.STOW);
-        Robot.algaeRoller.setState(RollerConstants.RollerStates.STOP);
+        Robot.scoringRoller.setIsAlgaeMode(false);
+        Robot.scoringRoller.setState(RollerConstants.RollerStates.STOP);
+        startTimeStamp = Double.MAX_VALUE;
     }
 
     /**
-     * Command finishes when elevator reaches desired state and command is being scheduled
+     * Command finishes when elevator reaches desired state and command is being
+     * scheduled
      */
     @Override
     public boolean isFinished() {
-        return Robot.elevator.getIsStableState() && this.isScheduled(); 
+        return false;
+        // return Robot.elevator.getState() == ElevatorStates.ALGAE_LOW && Robot.elevator.getIsStableState()
+        //         && Timer.getFPGATimestamp() - startTimeStamp > minComandTime && this.isScheduled();
     }
 }

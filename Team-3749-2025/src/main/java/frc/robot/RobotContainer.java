@@ -28,7 +28,6 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // AutoUtils.initAuto();
 
     return Autos.getSelectedCommand();
   }

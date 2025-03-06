@@ -49,8 +49,8 @@ public class AutoUtils {
         // for us to choose before hitting the automonous button
 
         setupFactory();
-        setupChooser();
         setupFlipChooser();
+        setupChooser();
     }
 
     /**
@@ -62,10 +62,10 @@ public class AutoUtils {
     }
 
     public static AutoFactory getAutoFactory() {
-        
-        // if (flippedChooser.getSelected()) {
-        //     return factoryFlipped;
-        // }
+
+        if (flippedChooser.getSelected()) {
+            return factoryFlipped;
+        }
         return factory;
 
     }
@@ -123,7 +123,10 @@ public class AutoUtils {
         chooser.addCmd("4-Piece", () -> Autos.get4Piece());
         chooser.addCmd("3 Coral and 2 Algae", () -> Autos.get3CoralAnd2Algae());
         chooser.addCmd("Two Piece Score L1", () -> Autos.getTwoPieceScoreL1());
+        chooser.addCmd("Coral 4 Piece", () -> Autos.getCoralArm4piece());
+        chooser.addCmd("Coral 3 Piece", () -> Autos.getCoralArm3piece());
         chooser.select("4-Piece");
+
         SmartDashboard.putData("Auto: Auto Chooser", chooser);
 
     }
@@ -197,6 +200,12 @@ public class AutoUtils {
         Command scoreL4 = new ScoreL234(ElevatorStates.L4);
 
         trajectory.atPose(endingPose2d, 1, 1.57).onTrue(scoreL4);
+        trajectory.done().and(() -> scoreL4.isScheduled())
+                .onTrue(
+                        Commands.run(() -> {
+                            Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
+                            System.out.println("contine PID");
+                        }, Robot.swerve));
         return scoreL4;
     }
 
@@ -217,7 +226,38 @@ public class AutoUtils {
         Command scoreL3 = new ScoreL234(ElevatorStates.L3);
 
         trajectory.atPose(endingPose2d, 1, 1.57).onTrue(scoreL3);
+        trajectory.done().and(() -> scoreL3.isScheduled())
+                .onTrue(
+                        Commands.run(() -> {
+                            Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
+                        }, Robot.swerve));
         return scoreL3;
+
+    }
+
+    /**
+     * Returns a command to score at L3 when the robot is approaching the end of the
+     * given trajectory
+     * 
+     * @param trajectory
+     * @return
+     */
+    public static Command addScoreL2(AutoTrajectory trajectory) {
+        Pose2d endingPose2d = getFinalPose2d(trajectory);
+        // unflip the alliance so that atPose can flip it; it's a quirk of referencing
+        // the trajectory
+        if (DriverStation.getAlliance().get() == Alliance.Red) {
+            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
+        }
+        Command scoreL2 = new ScoreL234(ElevatorStates.L2);
+
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(scoreL2);
+        trajectory.done().and(() -> scoreL2.isScheduled())
+                .onTrue(
+                        Commands.run(() -> {
+                            Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
+                        }, Robot.swerve));
+        return scoreL2;
 
     }
 
@@ -238,6 +278,12 @@ public class AutoUtils {
         Command scoreL1 = new ScoreL1();
 
         trajectory.atPose(endingPose2d, 1, 1.57).onTrue(scoreL1);
+        trajectory.done().and(() -> scoreL1.isScheduled())
+                .onTrue(
+                        Commands.run(() -> {
+                            Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
+                            System.out.println("contine PID");
+                        }, Robot.swerve));
         return scoreL1;
     }
 
@@ -255,9 +301,15 @@ public class AutoUtils {
         if (DriverStation.getAlliance().get() == Alliance.Red) {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
-        Command intake = new IntakeSource();
+        Command intake = new CoralIntakeSource();
 
-        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(intake);
+        trajectory.atPose(endingPose2d, 1.5, Math.PI / 3).onTrue(intake);
+        trajectory.done().and(() -> intake.isScheduled())
+                .onTrue(
+                        Commands.run(() -> {
+                            Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
+                            System.out.println("contine PID");
+                        }, Robot.swerve));
         return intake;
 
     }
@@ -270,10 +322,16 @@ public class AutoUtils {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
 
-        Command KnockAlgae = new KnockAlgae(ElevatorStates.L4);
+        Command knockAlgae = new KnockAlgae(ElevatorStates.L4);
 
-        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(KnockAlgae);
-        return KnockAlgae;
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(knockAlgae);
+        trajectory.done().and(() -> knockAlgae.isScheduled())
+                .onTrue(
+                        Commands.run(() -> {
+                            Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
+                            System.out.println("contine PID");
+                        }, Robot.swerve));
+        return knockAlgae;
 
     }
 
@@ -285,7 +343,7 @@ public class AutoUtils {
      * @param trajectory
      * @return
      */
-    public static Command addCoralIntakeSource(AutoTrajectory trajectory) {
+    public static Command addGroundIntake(AutoTrajectory trajectory) {
         Pose2d endingPose2d = getFinalPose2d(trajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
@@ -294,6 +352,13 @@ public class AutoUtils {
         }
         Command Coralintake = new CoralIntakeSource();
         trajectory.atPose(endingPose2d, 1, 1.57).onTrue(Coralintake);
+
+        trajectory.done().and(() -> Coralintake.isScheduled())
+                .onTrue(
+                        Commands.run(() -> {
+                            Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
+                            System.out.println("contine PID");
+                        }, Robot.swerve));
         return Coralintake;
 
     }
@@ -321,6 +386,7 @@ public class AutoUtils {
      */
     public static void goNextAfterCommand(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory,
             Command command) {
+        // continue to move with PID to the final position until the command is done
         new Trigger(() -> command.isFinished()).onTrue(Commands.print(command.getName()).andThen(nextTrajectory.cmd()));
 
     }
@@ -349,11 +415,12 @@ public class AutoUtils {
      */
     public static Pose2d getFinalPose2d(AutoTrajectory trajectory) {
         // if (flippedChooser.getSelected()) {
-        //     System.out.println("Flipped Pose:" + getFlippedPose(trajectory.getFinalPose().get()));
+        // System.out.println("Flipped Pose:" +
+        // getFlippedPose(trajectory.getFinalPose().get()));
 
-        //     return getFlippedPose(trajectory.getFinalPose().get());
+        // return getFlippedPose(trajectory.getFinalPose().get());
         // } else {
-            return trajectory.getFinalPose().get();
+        return trajectory.getFinalPose().get();
         // }
     }
 

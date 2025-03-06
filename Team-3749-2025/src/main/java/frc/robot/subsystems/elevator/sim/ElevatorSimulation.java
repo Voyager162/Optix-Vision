@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.utils.MiscConstants.SimConstants;
+import frc.robot.utils.UtilityFunctions;
 
 /**
  * Simulation for elevator subsystem
@@ -30,25 +31,6 @@ public class ElevatorSimulation implements ElevatorIO {
 
     public ElevatorSimulation() {
         System.out.println("[Init] Creating ElevatorSimulation");
-        // Consumer<SysIdRoutineLog> log = (SysIdRoutineLog log) -> {
-        // log.motor("elevator-left")
-        // .voltage(
-        // elevatorSimSystem.getVelocityMetersPerSecond().mut_replace(
-        // m_leftMotor.get() * RobotController.getBatteryVoltage(), Volts))
-        // .linearPosition(m_distance.mut_replace(m_leftEncoder.getDistance(), Meters))
-        // .linearVelocity(
-        // m_velocity.mut_replace(m_leftEncoder.getRate(), MetersPerSecond));
-        // // Record a frame for the right motors. Since these share an encoder, we
-        // consider
-        // // the entire group to be one motor.
-        // log.motor("elevator-right")
-        // .voltage(
-        // m_appliedVoltage.mut_replace(
-        // m_rightMotor.get() * RobotController.getBatteryVoltage(), Volts))
-        // .linearPosition(m_distance.mut_replace(m_rightEncoder.getDistance(), Meters))
-        // .linearVelocity(
-        // m_velocity.mut_replace(m_rightEncoder.getRate(), MetersPerSecond));
-        // };
     }
 
     @Override
@@ -59,24 +41,18 @@ public class ElevatorSimulation implements ElevatorIO {
         data.positionMeters = elevatorSimSystem.getPositionMeters();
         data.velocityMetersPerSecond = velocity;
         data.accelerationMetersPerSecondSquared = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
-
         data.leftAppliedVolts = inputVolts;
         data.rightAppliedVolts = inputVolts;
         data.leftCurrentAmps = elevatorSimSystem.getCurrentDrawAmps();
         data.rightCurrentAmps = data.leftCurrentAmps;
-
-        // Sim has no temp
         data.leftTempCelcius = 0;
         data.rightTempCelcius = data.leftTempCelcius;
     }
 
     @Override
     public void setVoltage(double volts) {
-        inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
+        inputVolts = UtilityFunctions.applyDeadband(inputVolts, 0.05);
         inputVolts = MathUtil.clamp(volts, -12, 12);
         elevatorSimSystem.setInputVoltage(inputVolts);
     }
-
-
-
 }

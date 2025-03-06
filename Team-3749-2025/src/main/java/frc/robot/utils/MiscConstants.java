@@ -29,7 +29,7 @@ public class MiscConstants {
 
   public static final class ControllerConstants {
 
-    public static final double deadband = 0.05;
+    public static final double deadband = 0.08;
   }
 
   public static final class MotorControllerConstants {
@@ -42,13 +42,15 @@ public class MiscConstants {
     public static final ClosedLoopSlot[] slots = new ClosedLoopSlot[] { ClosedLoopSlot.kSlot0, ClosedLoopSlot.kSlot1,
         ClosedLoopSlot.kSlot2, ClosedLoopSlot.kSlot3 };
 
-    public static final int standardStallLimit = 30;
-    public static final int standardFreeLimit = 50;
+    public static final int standardStallLimit = 45;
+    public static final int standardFreeLimit = 45;
 
-    public static final int relaxedStallLimit = 10;
+    public static final int relaxedStallLimit = 15;
     public static final int relaxedFreeLimit = 15;
 
     public static final double maxMotorVolts = 12.0;
+
+    public static final double deadbandVoltage = 0.15;
 
   }
 

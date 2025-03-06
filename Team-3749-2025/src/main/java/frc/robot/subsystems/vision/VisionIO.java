@@ -3,21 +3,19 @@
 package frc.robot.subsystems.vision;
 
 import org.photonvision.PhotonCamera;
-import org.photonvision.PhotonPoseEstimator;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import frc.robot.Robot;
+import frc.robot.subsystems.vision.VisionConstants.CameraReal;
 
 public interface VisionIO {
-    public PhotonPoseEstimator poseEstimatorList[] = VisionConstants.CameraReal.poseEstimatorList;
-    public PhotonCamera cameraList[] = VisionConstants.CameraReal.cameraList;
 
     public static class VisionData {
         public Pose3d[] visionEstimatedPoses = {
                 new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d(), new Pose3d() };
-        public double[] latencyMillis = new double[cameraList.length];
-        public double[] targetsSeen = new double[cameraList.length];
+        public double[] latencyMillis = new double[CameraReal.numCameras];
+        public double[] distance = new double[CameraReal.numCameras];
+        public double[] targetsSeen = new double[CameraReal.numCameras];
     }
 
     // public void updateData(VisionData data);
@@ -31,6 +29,6 @@ public interface VisionIO {
     }
 
     public default PhotonCamera getCamera(int index) {
-        return cameraList[index];
+        return new PhotonCamera("" + index);
     }
 }

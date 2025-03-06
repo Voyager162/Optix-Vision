@@ -1,5 +1,6 @@
 package frc.robot.commands.integration;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
@@ -11,27 +12,44 @@ import frc.robot.subsystems.roller.RollerConstants.RollerStates;
  */
 public class CoralIntakeSource extends Command {
 
+    private double hasPieceTimeStamp = Double.MAX_VALUE;
+
     public CoralIntakeSource() {
         // ensures other commands do not infere while this is active
-        addRequirements(Robot.getAllSuperStructureSubsystems()); 
+        addRequirements(Robot.getAllSuperStructureSubsystems());
     }
 
     @Override
     public void initialize() {
-        Robot.coralArm.setState(CoralArmConstants.ArmStates.SOURCE);
+        Robot.coralArm.setState(CoralArmConstants.ArmStates.CORAL_STATION);
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.scoringRoller.setState(RollerStates.STOP);
         Robot.coralRoller.setState(RollerStates.INTAKE);
-    }    
+        Robot.coralRoller.setHasPiece(false);
+        System.out.println("Source intake init");
+
+    }
 
     @Override
     public void execute() {
+
+        if (Robot.coralRoller.hasPiece() && hasPieceTimeStamp == Double.MAX_VALUE
+                && hasPieceTimeStamp == Double.MAX_VALUE) {
+            hasPieceTimeStamp = Timer.getFPGATimestamp();
+        }
+        if (Timer.getFPGATimestamp() - hasPieceTimeStamp > 0.4) {
+
+            Robot.coralArm.setState(CoralArmConstants.ArmStates.STOW);
+        }
     }
 
     @Override
     public void end(boolean interrupted) {
-        Robot.coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
         Robot.coralRoller.setState(RollerStates.MAINTAIN);
+        Robot.coralArm.setState(CoralArmConstants.ArmStates.STOW);
+
+        hasPieceTimeStamp = Double.MAX_VALUE;
+
     }
 
     /**
@@ -39,6 +57,6 @@ public class CoralIntakeSource extends Command {
      */
     @Override
     public boolean isFinished() {
-        return Robot.coralRoller.hasPiece() && this.isScheduled();
+        return Timer.getFPGATimestamp() - hasPieceTimeStamp > 0.45 && this.isScheduled();
     }
 }

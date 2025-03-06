@@ -12,6 +12,7 @@ import frc.robot.subsystems.roller.Roller;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.PhotoelectricIO.PhotoelectricData;
 import frc.robot.subsystems.roller.RollerConstants.Implementations;
+import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 import frc.robot.subsystems.roller.RollerIO.RollerData;
 import frc.robot.subsystems.roller.real.JTVisiSight;
 import frc.robot.subsystems.roller.sim.PhotoelectricSim;
@@ -27,6 +28,7 @@ public class ScoringRoller extends Roller {
     private PhotoelectricIO photoelectricIO;
     private boolean hasPiece = true;
     private boolean routineStarted = false;
+    private boolean isAlgaeMode = false;
 
     public ScoringRoller() {
         super(Implementations.SCORING, FF(), positionPID(), velocityPID());
@@ -37,7 +39,6 @@ public class ScoringRoller extends Roller {
         } else {
             this.photoelectricIO = new JTVisiSight();
         }
-        this.photoelectricIO = new JTVisiSight();
     }
 
     public static SimpleMotorFeedforward FF() {
@@ -56,9 +57,28 @@ public class ScoringRoller extends Roller {
                 RollerConstants.Scoring.kDVelocity.get());
     }
 
+    public boolean getIsAlgaeMode()
+    {
+        return isAlgaeMode;
+    }
+
+    public void setIsAlgaeMode(boolean isAlgaeMode)
+    {
+        this.isAlgaeMode = isAlgaeMode;
+    }
+
     @Override
     public void outtake() {
-        setVelocity(RollerConstants.Coral.intakeVelocity.get());
+        if(isAlgaeMode)
+        {
+            setVelocity(RollerStates.OUTTAKE.algaeVelocity);
+            return;
+        }
+        setVelocity(RollerStates.OUTTAKE.scoringVelocity);
+    }
+    @Override
+    public void score() {
+        setVelocity(RollerStates.SCORE.scoringVelocity);
     }
 
     public static PIDController positionController() {
@@ -71,19 +91,16 @@ public class ScoringRoller extends Roller {
      */
     @Override
     public void intake() {
+        if(isAlgaeMode)
+        {
+            setVelocity(RollerConstants.RollerStates.INTAKE.algaeVelocity);
+            return;
+        }
         if (!rollerData.sensorTripped) {
-            setVelocity(RollerConstants.Scoring.scoreVelocity);
+            setVelocity(RollerConstants.RollerStates.INTAKE.scoringVelocity);
             return;
         }
         setVoltage(0.0);
-    }
-
-    /**
-     * Implemetation of score method
-     */
-    @Override
-    public void score() {
-        setVelocity(RollerConstants.Scoring.scoreVelocity);
     }
 
     public boolean hasPiece() {
@@ -94,27 +111,43 @@ public class ScoringRoller extends Roller {
         this.hasPiece = hasPiece;
     }
 
+    
+    @Override
+    public void maintain() {
+        Logger.recordOutput("Roller/ScoringRoller/setpointPosition", getLastKnownPosition() - RollerConstants.Scoring.reverseDistance);
+        setPosition(getLastKnownPosition() - RollerConstants.Scoring.reverseDistance, RollerConstants.Scoring.kSVelocity.get());
+    }
+
     @Override
     public void periodic() {
         super.periodic();
 
+
         photoelectricIO.updateData(photoelectricData);
 
         hasPiece = photoelectricData.sensing;
-        // hasPiece = true;
 
-        Logger.recordOutput("subsystems/roller/ScoringRoller/hasPiece", hasPiece);
-        Logger.recordOutput("subsystems/roller/ScoringRoller/setInitalState", routineStarted);
+        Logger.recordOutput("Roller/ScoringRoller/hasPiece", hasPiece);
+        Logger.recordOutput("Roller/ScoringRoller/setInitalState", routineStarted);
+        Logger.recordOutput("Roller/ScoringRoller/isAlgaeMode", isAlgaeMode);
+        
 
+        // routineStarted is true when the routine begins in Autos
+        if (Autos.isRoutineStarted() && !routineStarted) {
+            routineStarted = true;
         // routineStarted is true when the routine begins in Autos
         if (Autos.isRoutineStarted() && !routineStarted) {
             routineStarted = true;
             // sets initial state at the start of each routine
             photoelectricIO.setInitialState(true);
+            photoelectricIO.setInitialState(true);
         }
 
         // routineStarted is false when the routine ends in Autos
+
+        // routineStarted is false when the routine ends in Autos
         if (!Autos.isRoutineStarted() && routineStarted) {
+            routineStarted = false;
             routineStarted = false;
         }
 
@@ -122,7 +155,6 @@ public class ScoringRoller extends Roller {
             SmartDashboard.putString("scoring roller command", this.getCurrentCommand().getName());
             return; //if you add more stuff here then this will cause problems
         }
-        SmartDashboard.putString("scoring roller command", "null");
-
     }
+}
 }

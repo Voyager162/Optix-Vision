@@ -1,5 +1,7 @@
 package frc.robot.subsystems.vision;
 
+import java.util.function.Function;
+
 import org.photonvision.*;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
@@ -13,7 +15,7 @@ public class VisionConstants {
 
         public class RejectionRequirements {
                 public static final double maxLatencyMilliSec = 150;
-                public static final double maxSingleTagDistanceMeters = 20;
+                public static final double maxSingleTagDistanceMeters = Units.inchesToMeters(95);
         }
 
         // currently 3748's #'s'
@@ -24,8 +26,9 @@ public class VisionConstants {
                 }
 
                 public class OneTag {
-                        public static final double xy = Math.hypot(0.015, 0.033);
+                        public static final double slope =0.0021889 ;
                         public static final double thetaRads = Units.degreesToRadians(7);
+                        public static final Function<Double, Double> regression = (distance) -> slope * distance;
                 }
 
                 public class TwoTag {
@@ -40,40 +43,59 @@ public class VisionConstants {
         }
 
         public class CameraPositions {
-                public static Transform3d cam1 = new Transform3d(Units.inchesToMeters(11.612),
-                                Units.inchesToMeters(14.891), Units.inchesToMeters(10.791),
-                                new Rotation3d(0, Units.degreesToRadians(
-                                                -15), Units.degreesToRadians(60)));
+                public static Transform3d cam1 = new Transform3d(
+                                Units.inchesToMeters(10.19),
+                                Units.inchesToMeters(15.67),
+                                Units.inchesToMeters(10.422),
+                                new Rotation3d(0,
+                                                Units.degreesToRadians(15),
+                                                Units.degreesToRadians(90 - 7)));
 
-                public static Transform3d cam2 = new Transform3d(Units.inchesToMeters(10.403),
-                                Units.inchesToMeters(11.783), Units.inchesToMeters(10.501),
-                                new Rotation3d(0, 0, Units.degreesToRadians(-40)));
+                public static Transform3d cam2 = new Transform3d(
+                                Units.inchesToMeters(11.873),
+                                Units.inchesToMeters(11.476),
+                                Units.inchesToMeters(10.353),
+                                new Rotation3d(0,
+                                                Units.degreesToRadians(15),
+                                                Units.degreesToRadians(55 - 90)));
 
-                public static Transform3d cam3 = new Transform3d(0, 0, 0, null);
+                public static Transform3d cam3 = new Transform3d(
+                                Units.inchesToMeters(9.504),
+                                Units.inchesToMeters(-10.961),
+                                Units.inchesToMeters(15.746),
+                                new Rotation3d(0,
+                                                Units.degreesToRadians(-20),
+                                                Units.degreesToRadians(0)));
 
-                public static Transform3d cam4 = new Transform3d(Units.inchesToMeters(-11.586),
-                                Units.inchesToMeters(14.161), Units.inchesToMeters(10.711),
-                                new Rotation3d(0, Units.degreesToRadians(15), Units.degreesToRadians(200)));
+                public static Transform3d cam4 = new Transform3d(
+                                Units.inchesToMeters(-11.886),
+                                Units.inchesToMeters(14.995),
+                                Units.inchesToMeters(10.461),
+                                new Rotation3d(0,
+                                                Units.degreesToRadians(4.9),
+                                                Units.degreesToRadians(30 + 90)));
 
-                public static Transform3d cam5 = new Transform3d(Units.inchesToMeters(-9.745),
-                                Units.inchesToMeters(-11.177), Units.inchesToMeters(20.27),
-                                new Rotation3d(0, Units.degreesToRadians(10), Units.degreesToRadians(170)));
+                public static Transform3d cam5 = new Transform3d(
+                                Units.inchesToMeters(-12.839),
+                                Units.inchesToMeters(10.925),
+                                Units.inchesToMeters(10.447),
+                                new Rotation3d(0,
+                                                Units.degreesToRadians(15),
+                                                Units.degreesToRadians(35 + 180)));
 
-                public static Transform3d cam6 = new Transform3d(0, 0, 0, null);
+                public static Transform3d cam6 = new Transform3d(
+                                Units.inchesToMeters(-9.745),
+                                Units.inchesToMeters(-11.177),
+                                Units.inchesToMeters(20.27),
+                                new Rotation3d(0,
+                                                Units.degreesToRadians(10),
+                                                Units.degreesToRadians(-260 + 90)));
 
                 public static Transform3d[] cameraList = { cam1, cam2, cam3, cam4, cam5, cam6 };
         }
 
         public class CameraReal {
-                public static final PhotonCamera cam1 = new PhotonCamera("1");
-                public static final PhotonCamera cam2 = new PhotonCamera("2");
-                public static final PhotonCamera cam3 = new PhotonCamera("3");
-                public static final PhotonCamera cam4 = new PhotonCamera("4");
-                public static final PhotonCamera cam5 = new PhotonCamera("5");
-                public static final PhotonCamera cam6 = new PhotonCamera("6");
-
-                public static final PhotonCamera[] cameraList = { cam1, cam2, cam3, cam4, cam5, cam6 };
-
+                public static final int numCameras = 6;
                 public static PhotonPoseEstimator poseEstimator1 = new PhotonPoseEstimator(aprilTagFieldLayout,
                                 PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, CameraPositions.cam1);
                 public static PhotonPoseEstimator poseEstimator2 = new PhotonPoseEstimator(aprilTagFieldLayout,

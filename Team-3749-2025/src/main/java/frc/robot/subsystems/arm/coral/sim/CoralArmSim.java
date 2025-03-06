@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.subsystems.arm.coral.CoralArmIO;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
+import frc.robot.utils.UtilityFunctions;
 
 /**
  * IO implementation for an arm subsystem's simulation
@@ -30,11 +31,11 @@ public class CoralArmSim implements CoralArmIO {
 				DCMotor.getNEO(CoralArmConstants.numMotors),
 				CoralArmConstants.armGearing,
 				CoralArmConstants.momentOfInertia,
-				CoralArmConstants.armLength_meters,
-				CoralArmConstants.armMinAngle_degrees * Math.PI / 180,
-				CoralArmConstants.armMaxAngle_degrees * Math.PI / 180,
+				CoralArmConstants.armLengthMeters,
+				CoralArmConstants.armMinAngleDegrees * Math.PI / 180,
+				CoralArmConstants.armMaxAngleDegrees * Math.PI / 180,
 				CoralArmConstants.simulateGravity,
-				CoralArmConstants.armStartingAngle_degrees * Math.PI / 180);
+				CoralArmConstants.armStartingAngleDegrees * Math.PI / 180);
 	}
 
 	/**
@@ -47,8 +48,8 @@ public class CoralArmSim implements CoralArmIO {
 		armSim.update(0.02);
 		double velocity = armSim.getVelocityRadPerSec();
 		data.positionRad = armSim.getAngleRads();
-		data.velocityUnits = velocity;
-		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
+		data.velocityRadsPerSecond = velocity;
+		data.accelerationRadsPerSecondSquared = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
 
 		data.motorAppliedVolts = inputVolts;
 		data.motorCurrentAmps = armSim.getCurrentDrawAmps();
@@ -65,7 +66,7 @@ public class CoralArmSim implements CoralArmIO {
 	 */
 	@Override
 	public void setVoltage(double volts) {
-		inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
+		inputVolts = UtilityFunctions.applyDeadband(inputVolts, 0.05);
 		inputVolts = MathUtil.clamp(volts, -12, 12);
 		armSim.setInputVoltage(inputVolts);
 	}

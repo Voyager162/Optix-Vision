@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.arm.climb.ClimbArmIO;
 import frc.robot.subsystems.arm.climb.ClimbArmConstants;
 import frc.robot.utils.OptixSpark;
+import frc.robot.utils.UtilityFunctions;
 import frc.robot.utils.MiscConstants.MotorControllerConstants;
 import frc.robot.utils.MiscConstants.SimConstants;
 
@@ -29,18 +30,18 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 	/**
 	 * creates a new io implementation of a real arm that uses an absolute encoder
 	 * with two motors
-	 * 
-	 * @param frontMotorId
-	 * @param backMotorId
 	 */
 	public ClimbArmSparkMax() {
+
+		System.out.println("[Init] Creating Climb Arm");
+
 		frontMotor = new OptixSpark(ClimbArmConstants.frontMotorId, OptixSpark.Type.SPARKMAX);
 		backMotor = new OptixSpark(ClimbArmConstants.backMotorId, OptixSpark.Type.SPARKMAX);
 
 		frontMotor.setCurrentLimit(MotorControllerConstants.standardStallLimit,
 				MotorControllerConstants.standardFreeLimit);
 		frontMotor.setInverted(true);
-		frontMotor.setBrakeMode(false);
+		frontMotor.setBrakeMode(true);
 
 		frontMotor.setVelocityConversionFactor((1 / ClimbArmConstants.armGearing) *
 				(2 * Math.PI / 60.0));
@@ -75,7 +76,7 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 		velocity = (frontMotor.getVelocity() + backMotor.getVelocity()) / 2;
 		data.positionRad = getPosition();
 		data.velocityRadPerSec = velocity;
-		data.accelerationUnits = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
+		data.accelerationRadsPerSecondSquared = (velocity - previousVelocity) / SimConstants.loopPeriodSec;
 		data.frontMotorCurrentAmps = frontMotor.getCurrent();
 		data.backMotorCurrentAmps = backMotor.getCurrent();
 		data.inputVolts = inputVolts;
@@ -93,7 +94,7 @@ public class ClimbArmSparkMax implements ClimbArmIO {
 	 */
 	@Override
 	public void setVoltage(double volts) {
-		inputVolts = MathUtil.applyDeadband(inputVolts, 0.05);
+		inputVolts = UtilityFunctions.applyDeadband(inputVolts, MotorControllerConstants.deadbandVoltage);
 		inputVolts = MathUtil.clamp(volts, -12, 12);
 		frontMotor.setVoltage(inputVolts);
 		backMotor.setVoltage(inputVolts);

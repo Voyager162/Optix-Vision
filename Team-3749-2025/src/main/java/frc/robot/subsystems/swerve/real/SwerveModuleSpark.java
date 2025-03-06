@@ -1,8 +1,13 @@
 package frc.robot.subsystems.swerve.real;
 
 import frc.robot.utils.OptixSpark;
+import frc.robot.utils.UtilityFunctions;
+
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.CANcoder;
-import edu.wpi.first.math.util.Units;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.measure.Angle;
 import frc.robot.subsystems.swerve.SwerveModuleIO;
 import frc.robot.subsystems.swerve.SwerveConstants.DrivetrainConstants;
 import frc.robot.subsystems.swerve.SwerveConstants.MotorConstants;
@@ -18,7 +23,14 @@ public class SwerveModuleSpark implements SwerveModuleIO {
     private double absoluteEncoderOffsetRad;
 
     public SwerveModuleSpark(int index) {
-        drive = new OptixSpark(MotorConstants.driveMotorIds[index], OptixSpark.Type.SPARKFLEX);
+        if (index == 1){
+            drive = new OptixSpark(MotorConstants.driveMotorIds[index], OptixSpark.Type.SPARKFLEX);
+
+        } else {
+
+            drive = new OptixSpark(MotorConstants.driveMotorIds[index], OptixSpark.Type.SPARKMAX);
+        }
+
         drive.setPositionConversionFactor(
                 1 / MotorConstants.driveMotorGearRatio * Math.PI * DrivetrainConstants.wheelDiameterMeters);
         drive.setVelocityConversionFactor(
@@ -38,13 +50,17 @@ public class SwerveModuleSpark implements SwerveModuleIO {
         turn.setBrakeMode(true);
         turn.setPositionWrapping(0, 2 * Math.PI);
 
-
         drive.applyConfig();
         turn.applyConfig();
 
         absoluteEncoder = new CANcoder(MotorConstants.absoluteEncoderIds[index]);
-        absoluteEncoderOffsetRad = Units.degreesToRadians(MotorConstants.absoluteEncoderOffsetDeg[index]);
+        absoluteEncoderOffsetRad = MotorConstants.absoluteEncoderOffsetRad[index];
         turn.setPosition(absoluteEncoder.getPosition().getValueAsDouble() * 2 * Math.PI - absoluteEncoderOffsetRad);
+
+        absoluteEncoder.optimizeBusUtilization();
+        StatusSignal<Angle> absolutePositionSignal = absoluteEncoder.getAbsolutePosition();
+        absolutePositionSignal.setUpdateFrequency(100);
+
     }
 
     @Override
@@ -76,13 +92,20 @@ public class SwerveModuleSpark implements SwerveModuleIO {
     /** Run the drive motor at the specified voltage. */
     @Override
     public void setDriveVoltage(double volts) {
+        volts = MathUtil.clamp(volts, -12, 12);
+        volts = UtilityFunctions.applyDeadband(volts, MotorControllerConstants.deadbandVoltage);
+
+        // volts = Math.copySign(12, volts);
         drive.setVoltage(volts);
     }
 
     /** Run the turn motor at the specified voltage. */
     @Override
     public void setTurnVoltage(double volts) {
+        volts = MathUtil.clamp(volts, -12, 12);
+        volts = UtilityFunctions.applyDeadband(volts, MotorControllerConstants.deadbandVoltage);
         turn.setVoltage(volts);
+
     }
 
     /** Enable or disable brake mode on the drive motor. */
