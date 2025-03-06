@@ -10,6 +10,7 @@ import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 public class LedTriggers {
 
     public static void createLEDTriggers() {
+        
         Trigger coralHasPieceTrigger = new Trigger(() -> Robot.coralRoller.hasPiece());
         coralHasPieceTrigger.onTrue(Commands.runOnce(() -> Robot.led.setLEDColor(LEDColor.CORAL_ARM_HAS_PIECE)));
 

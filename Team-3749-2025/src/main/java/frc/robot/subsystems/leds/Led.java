@@ -22,8 +22,8 @@ import frc.robot.subsystems.leds.sim.LedSim;
 public class Led extends SubsystemBase {
     private AddressableLEDBuffer ledBuffer;
 
-    private LEDColor desiredPattern = null;
-    private LEDColor currentPattern = getTeamColorLED();
+    private LEDColor desiredPattern = getTeamColorLED();
+    private LEDColor currentPattern = null;
 
     // private StatusIndicator statusIndicator = StatusIndicator.TEAM;
 

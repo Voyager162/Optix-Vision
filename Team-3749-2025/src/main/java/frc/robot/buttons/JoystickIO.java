@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.subsystems.leds.LEDConstants.LEDColor;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -59,6 +60,14 @@ public class JoystickIO {
         public static ButtonBoard buttonBoard = new ButtonBoard();
 
         public JoystickIO() {
+        }
+
+        /**
+         * Activates the rumble motor per method call (requires continuous calls)
+         */
+        public static void rumblePilot()
+        {
+                pilot.setRumble(RumbleType.kBothRumble, 0.05); //0 to 100% (0 to 1 argument)
         }
 
         public static void getButtonBindings() {
@@ -134,6 +143,8 @@ public class JoystickIO {
                         Robot.swerve.setIsOTF(true);
                 }));
 
+                // pilot.povRight().whileTrue(Commands.runOnce(() -> rumblePilot()));
+
                 // pilot.x().onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(0)));
                 // pilot.b().onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(2)));
                 // intake floor
@@ -192,6 +203,7 @@ public class JoystickIO {
         public static void testBindings() {
                 // gyro reset
                 pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
+                // pilot.povRight().whileTrue(Commands.run(() -> rumblePilot()));
 
                 // // OTF by controller - Closest apriltag
                 // pilot.x().onTrue(Commands.runOnce(() -> {
