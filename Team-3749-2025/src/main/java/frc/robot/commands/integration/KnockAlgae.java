@@ -29,7 +29,7 @@ public class KnockAlgae extends Command {
     public void initialize() {
         Robot.coralArm.setState(CoralArmConstants.ArmStates.STOW);
         Robot.scoringRoller.setIsAlgaeMode(true);
-        Robot.scoringRoller.setState(RollerConstants.RollerStates.SCORE);
+        Robot.scoringRoller.setState(RollerConstants.RollerStates.INTAKE);
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
         Robot.elevator.setState(elevatorState);
         startTimeStamp = Timer.getFPGATimestamp();
