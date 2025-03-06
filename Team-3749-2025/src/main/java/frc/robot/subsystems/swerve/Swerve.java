@@ -276,23 +276,20 @@ public class Swerve extends SubsystemBase {
     positionSetpoint = positions;
     velocitySetpoint = velocities;
 
-    double xPID = 0;
-    if (!xController.atSetpoint()) {
-      xPID = xController.calculate(getPose().getX(), positions.getX());
+    double xPID = xController.calculate(getPose().getX(), positions.getX());
+    if (xController.atSetpoint()) {
+      xPID = 0;
     }
 
-    // xPID = Math.abs(xController.getError()) > AutoConstants.driveToleranceMeters
-    // ? 0 : xPID;
-
-    double yPID = 0;
-    if (!yController.atSetpoint()) {
-      yPID = yController.calculate(getPose().getY(), positions.getY());
+    double yPID = yController.calculate(getPose().getY(), positions.getY());
+    if (yController.atSetpoint()) {
+      yPID = 0;
     }
 
-    double turnPID = 0;
-    if (!turnController.atSetpoint()) {
-      turnPID = turnController.calculate(getPose().getRotation().getRadians(),
-          positions.getRotation().getRadians());
+    double turnPID = turnController.calculate(getPose().getRotation().getRadians(),
+        positions.getRotation().getRadians());
+    if (turnController.atSetpoint()) {
+      turnPID = 0;
     }
     Logger.recordOutput("Swerve/auto/turn PID", turnPID);
     Logger.recordOutput("Swerve/auto/x PID", turnPID);
