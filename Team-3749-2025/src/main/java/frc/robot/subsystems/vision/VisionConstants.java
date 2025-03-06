@@ -44,17 +44,17 @@ public class VisionConstants {
 
         public class CameraPositions {
                 public static Transform3d cam1 = new Transform3d(
-                                Units.inchesToMeters(10.498),
-                                Units.inchesToMeters(15.274),
-                                Units.inchesToMeters(10.354),
+                                Units.inchesToMeters(10.19),
+                                Units.inchesToMeters(15.67),
+                                Units.inchesToMeters(10.422),
                                 new Rotation3d(0,
                                                 Units.degreesToRadians(15),
                                                 Units.degreesToRadians(90 - 7)));
 
                 public static Transform3d cam2 = new Transform3d(
-                                Units.inchesToMeters(11.339),
-                                Units.inchesToMeters(11.366),
-                                Units.inchesToMeters(10.357),
+                                Units.inchesToMeters(11.873),
+                                Units.inchesToMeters(11.476),
+                                Units.inchesToMeters(10.353),
                                 new Rotation3d(0,
                                                 Units.degreesToRadians(15),
                                                 Units.degreesToRadians(55 - 90)));
