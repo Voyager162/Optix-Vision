@@ -10,7 +10,7 @@ import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.ScoreL1;
 import frc.robot.commands.integration.ScoreL234;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
-import frc.robot.subsystems.swerve.ToPosConstants;
+import frc.robot.subsystems.swerve.ToPosConstants; //dont remvoe these yet: read the commented stuff
 import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 import frc.robot.utils.UtilityFunctions;
 
@@ -82,18 +82,18 @@ public class ToPosTriggers {
 
     // ======= Utility Functions =======
 
-    /**
-     * Checks if the robot is within a certain margin of the target setpoint.
-     * Used to determine when to execute position-based triggers.
-     *
-     * @return true if the robot is within the defined distance of the target
-     *         setpoint.
-     */
-    private static boolean OTFWithinMargin() {
-        return UtilityFunctions.withinMargin(ToPosConstants.Setpoints.approachPointDistance,
-                Robot.swerve.getPose().getTranslation(),
-                Robot.swerve.getPPSetpoint().setpoint.getTranslation());
-    }
+    // /**
+    //  * Checks if the robot is within a certain margin of the target setpoint.
+    //  * Used to determine when to execute position-based triggers.
+    //  *
+    //  * @return true if the robot is within the defined distance of the target
+    //  *         setpoint.
+    //  */
+    // private static boolean OTFWithinMargin() {
+    //     return UtilityFunctions.withinMargin(ToPosConstants.Setpoints.approachPointDistance,
+    //             Robot.swerve.getPose().getTranslation(),
+    //             Robot.swerve.getPPSetpoint().setpoint.getTranslation());
+    // }
 
     // ======= Trigger Setup for Automatic Actions =======
 
@@ -107,14 +107,15 @@ public class ToPosTriggers {
         // ======= Coral Station Trigger =======
         // Activates intake when the robot reaches the coral station.
         Trigger coralStation = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
-            return OTFWithinMargin() && isCoralSupplier.getAsBoolean();
+            return //OTFWithinMargin() &&  i am aware this is ugly but this might be causing problems
+            isCoralSupplier.getAsBoolean();
         });
         coralStation.onTrue(new CoralIntakeSource());
 
         // ======= Reef Level 1 Scoring Trigger =======
         // Scores using the Level 1 elevator state when within range.
         Trigger coralReefL1 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
-            return OTFWithinMargin() &&
+            return //OTFWithinMargin() &&
                     isReefL1Supplier.getAsBoolean() &&
                     JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L1;
         });
@@ -122,7 +123,7 @@ public class ToPosTriggers {
 
         // ======= Reef Level 2 Scoring Trigger =======
         Trigger coralReefL2 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
-            return OTFWithinMargin() &&
+            return //OTFWithinMargin() &&
                     isReefSupplier.getAsBoolean() &&
                     JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L2;
         });
@@ -130,7 +131,7 @@ public class ToPosTriggers {
 
         // ======= Reef Level 3 Scoring Trigger =======
         Trigger coralReefL3 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
-            return OTFWithinMargin() &&
+            return //OTFWithinMargin() &&
                     isReefSupplier.getAsBoolean() &&
                     JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L3;
         });
@@ -138,7 +139,7 @@ public class ToPosTriggers {
 
         // ======= Reef Level 4 Scoring Trigger =======
         Trigger coralReefL4 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
-            return OTFWithinMargin() &&
+            return //OTFWithinMargin() &&
                     isReefSupplier.getAsBoolean() &&
                     JoystickIO.buttonBoard.getScoringMode() == ScoringMode.L4;
         });
@@ -146,13 +147,15 @@ public class ToPosTriggers {
 
         // ======= High Algae Knocking Trigger =======
         Trigger highAlgaeTrigger = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
-            return OTFWithinMargin() && isHighAlgaeSupplier.getAsBoolean();
+            return //OTFWithinMargin() && 
+            isHighAlgaeSupplier.getAsBoolean();
         });
         highAlgaeTrigger.onTrue(new KnockAlgae(ElevatorStates.ALGAE_HIGH));
 
         // ======= Low Algae Knocking Trigger =======
         Trigger lowAlgaeTrigger = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
-            return OTFWithinMargin() && isLowAlgaeSupplier.getAsBoolean();
+            return //OTFWithinMargin() && 
+            isLowAlgaeSupplier.getAsBoolean();
         });
         lowAlgaeTrigger.onTrue(new KnockAlgae(ElevatorStates.ALGAE_LOW));
     }
