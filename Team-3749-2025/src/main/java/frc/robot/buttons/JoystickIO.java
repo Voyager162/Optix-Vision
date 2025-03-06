@@ -113,7 +113,7 @@ public class JoystickIO {
 
                 buttonBoard.buttonReset.onTrue(new Reset());
                 buttonBoard.buttonUtilityA.onTrue(Commands.runOnce(
-                                () -> Robot.coralRoller.setHasPiece(!Robot.coralRoller.getHasPiece())));
+                                () -> Robot.coralRoller.setHasPiece(!Robot.coralRoller.hasPiece())));
                 ;
         }
 
@@ -155,7 +155,7 @@ public class JoystickIO {
                 pilot.povDown().onTrue(new Reset());
                 // toggle hasPiece
                 pilot.povUp().onTrue(Commands
-                                .runOnce(() -> Robot.coralRoller.setHasPiece(!Robot.coralRoller.getHasPiece())));
+                                .runOnce(() -> Robot.coralRoller.setHasPiece(!Robot.coralRoller.hasPiece())));
 
                 // scoring
                 operator.a().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L1)));
@@ -224,7 +224,7 @@ public class JoystickIO {
                 pilot.povDown().onTrue(new Reset());
                 // toggle hasPiece
                 pilot.povUp().onTrue(Commands
-                                .runOnce(() -> Robot.coralRoller.setHasPiece(!Robot.coralRoller.getHasPiece())));
+                                .runOnce(() -> Robot.coralRoller.setHasPiece(!Robot.coralRoller.hasPiece())));
 
                 pilot.povRight().onTrue(Commands.runOnce(
                                 () -> Robot.climbArm.setState(ClimbArmConstants.ArmStates.STOWED)))

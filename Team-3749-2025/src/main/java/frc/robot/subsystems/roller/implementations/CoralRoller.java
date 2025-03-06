@@ -85,7 +85,6 @@ public class CoralRoller extends Roller {
         System.out.println(rollerState.name());
         super.setState(rollerState);
         if (rollerState.equals(RollerStates.INTAKE)) {
-            Robot.led.setLEDStatusIndicator(StatusIndicator.PIECE);
             intakeTimestamp = Timer.getFPGATimestamp();
         } else if (rollerState.equals(RollerStates.OUTTAKE)) {
             outtakeTimestamp = Timer.getFPGATimestamp();
@@ -95,10 +94,6 @@ public class CoralRoller extends Roller {
 
     public void setHasPiece(boolean hasPiece){
         this.hasPiece = hasPiece;
-    }
-
-    public boolean getHasPiece() {
-        return hasPiece;
     }
 
     /**

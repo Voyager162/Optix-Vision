@@ -14,12 +14,14 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.subsystems.arm.climb.ClimbArmConstants.ArmStates;
 import frc.robot.subsystems.leds.LEDConstants.LEDColor;
 import frc.robot.subsystems.leds.LEDConstants.StatusIndicator;
 import edu.wpi.first.wpilibj.LEDPattern;
 
 import frc.robot.subsystems.leds.real.LedReal;
 import frc.robot.subsystems.leds.sim.LedSim;
+import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 
 public class Led extends SubsystemBase {
     private AddressableLEDBuffer ledBuffer;
@@ -33,7 +35,8 @@ public class Led extends SubsystemBase {
 
     private final LEDPattern rainbowPattern = LEDPattern.rainbow(255, 128);
     private final Distance ledSpacing = Meters.of(Units.inchesToMeters(11.5) / 18);
-    private final LEDPattern scrollingRainbow = rainbowPattern.scrollAtAbsoluteSpeed(MetersPerSecond.of(0.5), ledSpacing);
+    private final LEDPattern scrollingRainbow = rainbowPattern.scrollAtAbsoluteSpeed(MetersPerSecond.of(0.5),
+            ledSpacing);
     private LEDIO ledBase;
 
     public Led() {
@@ -45,6 +48,7 @@ public class Led extends SubsystemBase {
             ledBase = new LedSim(LEDConstants.ledPort, ledBuffer);
         }
         ledBase.setData(LEDPattern.kOff);
+        LedTriggers.createLEDTriggers();
     }
 
     /**
@@ -73,8 +77,7 @@ public class Led extends SubsystemBase {
     }
 
     private void setStripColor() {
-        if(this.desiredPattern==LEDColor.RAINBOW)
-        {
+        if (this.desiredPattern == LEDColor.RAINBOW) {
             ledBase.setData(scrollingRainbow);
             currentPattern = desiredPattern;
             return;
