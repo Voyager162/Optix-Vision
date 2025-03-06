@@ -40,10 +40,11 @@ public class Led extends SubsystemBase {
         ledBuffer = new AddressableLEDBuffer(LEDConstants.length);
 
         if (Robot.isReal()) {
-            // ledBase = new LedReal(LEDConstants.ledPort, ledBuffer);
+            ledBase = new LedReal(LEDConstants.ledPort, ledBuffer);
         } else {
+            ledBase = new LedSim(LEDConstants.ledPort, ledBuffer);
         }
-        ledBase = new LedSim(LEDConstants.ledPort, ledBuffer);
+        ledBase.setData(LEDPattern.kOff);
     }
 
     /**
@@ -115,44 +116,44 @@ public class Led extends SubsystemBase {
 
     @Override
     public void periodic() {
-        switch (statusIndicator) {
-            case OTF:
-                if(Robot.swerve.getIsOTF())
-                {
-                    setLEDColor(LEDColor.RAINBOW);
-                    return;
-                }
-                setLEDColor(LEDColor.OFF);
-            break;
-            case BATTERY:
-                if (RobotController.getBatteryVoltage() < 8) {
-                    setLEDColor(LEDColor.BATTERY_LOW);
-                    return;
-                }
-                setLEDColor(LEDColor.BATTERY_GOOD);
-                break;
-            case PIECE:
-                if (Robot.coralRoller.hasPiece()) {
-                    setLEDColor(LEDColor.CORAL_ARM_HAS_PIECE);
-                    return;
-                }
-                if (Robot.scoringRoller.hasPiece()) {
-                    setLEDColor(LEDColor.CHUTE_HAS_PIECE);
-                    return;
-                }
-                setLEDColor(LEDColor.OFF);
-                break;
-            case COLOR:
-                setLEDColor(getCurrentPattern());
-                break;
-            case TEAM:
-                setLEDColor(getTeamColorLED());
-                break;
-            default:
-                setLEDColor(getTeamColorLED());
-                break;
-        }
-        setStripColor();
+        // switch (statusIndicator) {
+        //     case OTF:
+        //         if(Robot.swerve.getIsOTF())
+        //         {
+        //             setLEDColor(LEDColor.RAINBOW);
+        //             return;
+        //         }
+        //         setLEDColor(LEDColor.OFF);
+        //     break;
+        //     case BATTERY:
+        //         if (RobotController.getBatteryVoltage() < 8) {
+        //             setLEDColor(LEDColor.BATTERY_LOW);
+        //             return;
+        //         }
+        //         setLEDColor(LEDColor.BATTERY_GOOD);
+        //         break;
+        //     case PIECE:
+        //         if (Robot.coralRoller.hasPiece()) {
+        //             setLEDColor(LEDColor.CORAL_ARM_HAS_PIECE);
+        //             return;
+        //         }
+        //         if (Robot.scoringRoller.hasPiece()) {
+        //             setLEDColor(LEDColor.CHUTE_HAS_PIECE);
+        //             return;
+        //         }
+        //         setLEDColor(LEDColor.OFF);
+        //         break;
+        //     case COLOR:
+        //         setLEDColor(getCurrentPattern());
+        //         break;
+        //     case TEAM:
+        //         setLEDColor(getTeamColorLED());
+        //         break;
+        //     default:
+        //         setLEDColor(getTeamColorLED());
+        //         break;
+        // }
+        // setStripColor();
 
 
 
