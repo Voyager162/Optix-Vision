@@ -40,9 +40,9 @@ public class ScoreL1 extends Command {
         if (Robot.coralArm.getState() == CoralArmConstants.ArmStates.L1 && Robot.coralArm.getIsStableState()
                 && outtakeTimestamp == Double.MAX_VALUE) {
 
-            if ((Robot.swerve.getIsOTF() && !Robot.swerve.reachedSwerveSetpoint(Robot.swerve.getPPSetpoint().setpoint))
+            if ((Robot.swerve.getIsOTF() && !Robot.swerve.atSwerveSetpoint(Robot.swerve.getPPSetpoint().setpoint))
                     || (DriverStation.isAutonomous()
-                            && !Robot.swerve.reachedSwerveSetpoint(Robot.swerve.getPositionSetpoint()))) {
+                            && !Robot.swerve.atSwerveSetpoint(Robot.swerve.getPositionSetpoint()))) {
                 Robot.coralRoller.setState(RollerStates.STOP);
                 return;
             }
