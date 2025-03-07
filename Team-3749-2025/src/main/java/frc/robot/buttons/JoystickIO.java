@@ -133,9 +133,11 @@ public class JoystickIO {
                 pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
 
                 // intake floor
-                pilot.leftTrigger().onTrue(new IntakeFloor()).onFalse(
-                                Commands.runOnce(() -> System.out.println("interupt ground intake"), Robot.coralArm));
-                // intake source w arm
+                // pilot.leftTrigger().onTrue(new IntakeFloor()).onFalse(
+                //                 Commands.runOnce(() -> System.out.println("interupt ground intake"), Robot.coralArm));
+                // // intake source w arm
+
+                pilot.leftTrigger().onTrue(Commands.runOnce(() -> Robot.elevator.setVoltage(5)));
                 pilot.rightTrigger().onTrue(new CoralIntakeSource());
                 // outtake arm
                 pilot.leftBumper().onTrue(new ScoreL1());
