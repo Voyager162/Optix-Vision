@@ -111,11 +111,12 @@ public class AutoUtils {
      */
 
     private static void setupChooser() {
-
+        
         // interface for choreo
 
         // Made sendable, use SmartDashbaord now
         chooser = new AutoChooser();
+
 
         chooser.addCmd("3-Piece", () -> Autos.get3Piece());
         chooser.addCmd("TeamTaxi", () -> Autos.getTeamtaxi());
@@ -191,12 +192,25 @@ public class AutoUtils {
      * @return
      */
     public static Command addScoreL4(AutoTrajectory trajectory) {
+
         Pose2d endingPose2d = getFinalPose2d(trajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
         if (DriverStation.getAlliance().get() == Alliance.Red) {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
+
+        // endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
+        // double x = endingPose2d.getX();
+        // double y = endingPose2d.getY();
+        // double heading = endingPose2d.getRotation().getRadians();
+
+        // y = flippedChooser.getSelected() ? AutoUtils.flipper.flipY(y) : y;
+
+        // heading = flippedChooser.getSelected()
+        //         ? new Rotation2d(Math.PI - heading).rotateBy(new Rotation2d(Math.PI)).getRadians()
+        //         : heading;
+
         // Command intakeSource = new IntakeSource();
         Command scoreL4 = new ScoreL234(ElevatorStates.L4);
 
@@ -205,7 +219,6 @@ public class AutoUtils {
                 .onTrue(
                         Commands.run(() -> {
                             Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
-                            System.out.println("contine PID");
                         }, Robot.swerve));
         return scoreL4;
     }

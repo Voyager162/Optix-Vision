@@ -114,6 +114,7 @@ public class Elevator extends SubsystemBase {
 
     public void setVoltage(double volts) {
         elevatorio.setVoltage(volts);
+        SmartDashboard.putNumber("testing if voltage is being set", volts);
     }
 
     public void setState(ElevatorStates state) {
