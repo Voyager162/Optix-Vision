@@ -67,7 +67,7 @@ public class JoystickIO {
          */
         public static void rumblePilot()
         {
-                pilot.setRumble(RumbleType.kBothRumble, 0.05); //0 to 100% (0 to 1 argument)
+                pilot.setRumble(RumbleType.kBothRumble, 0.1); //0 to 100% (0 to 1 argument)
         }
 
         public static void getButtonBindings() {
@@ -143,7 +143,7 @@ public class JoystickIO {
                 //         Robot.swerve.setIsOTF(true);
                 // }));
 
-                // pilot.povRight().whileTrue(Commands.runOnce(() -> rumblePilot()));
+                pilot.povRight().whileTrue(Commands.runOnce(() -> rumblePilot()));
 
                 // pilot.x().onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(0)));
                 // pilot.b().onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(2)));
