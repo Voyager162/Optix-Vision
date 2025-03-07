@@ -308,7 +308,7 @@ public class AutoUtils {
         Command intakeAndHandoff = intake.andThen(handoff);
 
         trajectory.atPose(endingPose2d, 1.5, Math.PI / 3).onTrue(intakeAndHandoff);
-        trajectory.done().and(() -> intake.isScheduled())
+        trajectory.done().and(() -> intakeAndHandoff.isScheduled())
                 .onTrue(
                         Commands.run(() -> {
                             Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
