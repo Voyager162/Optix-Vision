@@ -25,7 +25,7 @@ public class LEDConstants {
         // SCORING(Color.kDeepPink),
         NO_TEAM(Color.kWhite),
         // CHUTE_HAS_PIECE(Color.kGreen),
-        CORAL_ARM_HAS_PIECE(Color.kGreen),
+        CORAL_ARM_HAS_PIECE(Color.kTomato),
         OFF(Color.kBlack),
         BATTERY_LOW(Color.kOrange),
         BATTERY_GOOD(Color.kWhite),

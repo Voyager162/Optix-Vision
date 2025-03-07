@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.commands.integration.CoralIntakeSource;
+import frc.robot.commands.integration.Handoff;
 import frc.robot.commands.integration.IntakeSource;
 import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.ScoreL1;
@@ -302,8 +303,11 @@ public class AutoUtils {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
         Command intake = new CoralIntakeSource();
+        Command handoff = new Handoff();
 
-        trajectory.atPose(endingPose2d, 1.5, Math.PI / 3).onTrue(intake);
+        Command intakeAndHandoff = intake.andThen(handoff);
+
+        trajectory.atPose(endingPose2d, 1.5, Math.PI / 3).onTrue(intakeAndHandoff);
         trajectory.done().and(() -> intake.isScheduled())
                 .onTrue(
                         Commands.run(() -> {
