@@ -57,7 +57,7 @@ public class JoystickIO {
         private static final CommandXboxController operator = new CommandXboxController(1);
         private static final OnTheFly onTheFly = new OnTheFly();
 
-        public static ButtonBoard buttonBoard = new ButtonBoard();
+        private static ButtonBoard buttonBoard = new ButtonBoard();
 
         public JoystickIO() {
         }
@@ -74,10 +74,10 @@ public class JoystickIO {
 
                 if (Robot.isSimulation()) {
                         // will show not connected if on
-                        testBindings();
+                        pilotAndOperatorBindings();
                         // simBindings();
                 } else {
-                        testBindings();
+                        pilotAndOperatorBindings();
 
                 }
 
@@ -154,13 +154,10 @@ public class JoystickIO {
                 // intake source w arm
                 pilot.rightTrigger().onTrue(new CoralIntakeSource());
                 // outtake arm
-
-                pilot.povLeft().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L2)));
                 pilot.leftBumper().onTrue(new ScoreL1());
                 // intake source w elevator
                 pilot.rightBumper().onTrue(new IntakeSource());
                 // handoff
-
                 pilot.a().onTrue(new Handoff());
                 // Climb - Reset to cancel
                 pilot.y().onTrue(new PrepareClimb()).onFalse(new Climb());
@@ -318,4 +315,7 @@ public class JoystickIO {
                                                                 () -> pilot.getRightX()));
         }
 
+        public static ButtonBoard getButtonBoard(){
+                return buttonBoard;
+        }
 }
