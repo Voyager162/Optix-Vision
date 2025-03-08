@@ -128,8 +128,9 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledInit() {
-    swerve.setBreakMode(false);
-    climbArm.setBrakeMode(false);
+
+    vision.setStrategyCam12(PoseStrategy.LOWEST_AMBIGUITY);
+
   }
 
   @Override
