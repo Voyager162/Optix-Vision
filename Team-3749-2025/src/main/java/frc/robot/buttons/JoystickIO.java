@@ -137,7 +137,8 @@ public class JoystickIO {
                                 Commands.runOnce(() -> System.out.println("interupt ground intake"), Robot.coralArm));
                 // // intake source w arm
 
-                // pilot.leftTrigger().onTrue(Commands.runOnce(() -> Robot.elevator.setVoltage(5)));
+                // pilot.leftTrigger().onTrue(Commands.runOnce(() ->
+                // Robot.elevator.setVoltage(5)));
                 pilot.rightTrigger().onTrue(new CoralIntakeSource());
                 // outtake arm
                 pilot.leftBumper().onTrue(new ScoreL1());
@@ -186,11 +187,12 @@ public class JoystickIO {
         }
 
         public static void testBindings() {
-                pilotAndOperatorBindings();     
+                pilotAndOperatorBindings();
 
                 operator.povLeft().onTrue(new ScoreL234(ElevatorStates.L2));
                 operator.povRight().onTrue(new ScoreL234(ElevatorStates.L3));
 
+                
 
                 pilot.povRight().whileTrue(Commands.run(() -> rumblePilot()));
 
