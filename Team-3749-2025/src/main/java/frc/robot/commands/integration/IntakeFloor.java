@@ -1,5 +1,7 @@
 package frc.robot.commands.integration;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
@@ -49,7 +51,7 @@ public class IntakeFloor extends Command {
      */
     @Override
     public boolean isFinished() {
-        return Timer.getFPGATimestamp() - hasPieceTimeStamp > 0.1
-                && this.isScheduled();
+        Logger.recordOutput("Roller/CoralRoller/haspiecetimestamp", Timer.getFPGATimestamp()-hasPieceTimeStamp);
+        return Timer.getFPGATimestamp() - hasPieceTimeStamp > 0.1;
     }
 }

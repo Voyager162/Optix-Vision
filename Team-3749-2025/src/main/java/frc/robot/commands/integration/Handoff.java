@@ -6,6 +6,7 @@ import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
+import frc.robot.subsystems.arm.coral.CoralArmConstants.ArmStates;
 
 /*
  * Handoff command for coral intake to chute
@@ -23,12 +24,16 @@ public class Handoff extends Command {
     public void initialize() {
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
-        Robot.coralRoller.setState(RollerConstants.RollerStates.OUTTAKE);
+        Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
         Robot.scoringRoller.setState(RollerConstants.RollerStates.INTAKE);
     }
 
     @Override
     public void execute() {
+        if (Robot.coralArm.getIsStableState() && Robot.coralArm.getState() == ArmStates.HAND_OFF) {
+            Robot.coralRoller.setState(RollerConstants.RollerStates.OUTTAKE);
+
+        }
     }
 
     @Override
@@ -38,7 +43,7 @@ public class Handoff extends Command {
         Robot.scoringRoller.setState(RollerStates.MAINTAIN);
     }
 
-    /** 
+    /**
      * Command finishes when scoringRoller has coral and command is being scheduled
      */
     @Override

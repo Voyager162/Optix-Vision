@@ -25,6 +25,7 @@ import frc.robot.commands.integration.IntakeSource;
 import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.ScoreL1;
 import frc.robot.commands.integration.ScoreL234;
+import frc.robot.commands.integration.ScoringModeConditionalHandoff;
 
 /**
  * All setup and helper methods for auto routines, including the
@@ -204,7 +205,7 @@ public class AutoUtils {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
         // Command intakeSource = new IntakeSource();
-        Command scoreL4 = new ScoreL234(ElevatorStates.L4).withTimeout(3);
+        Command scoreL4 = new ScoreL234(ElevatorStates.L4);
 
         trajectory.atPose(endingPose2d, 1, 1.57).onTrue(scoreL4);
         trajectory.done().and(() -> scoreL4.isScheduled())
@@ -308,9 +309,9 @@ public class AutoUtils {
         if (DriverStation.getAlliance().get() == Alliance.Red) {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
-        Command intake = new CoralIntakeSource().andThen(new Handoff()).withTimeout(3);
+        Command intake = new CoralIntakeSource().andThen(new ScoringModeConditionalHandoff());
 
-        trajectory.atPose(endingPose2d, 1.5, Math.PI / 3).onTrue(intake);
+        trajectory.atPose(endingPose2d, 1.5, 2*Math.PI).onTrue(intake);
         trajectory.done().and(() -> intake.isScheduled())
                 .onTrue(
                         Commands.run(() -> {
