@@ -310,6 +310,7 @@ public class AutoUtils {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
         Command intake = new CoralIntakeSource();
+        Command handoff = new ScoringModeConditionalHandoff();
 
         trajectory.atPose(endingPose2d, 1.5, 2*Math.PI).onTrue(intake);
         trajectory.done().and(() -> intake.isScheduled())
@@ -317,9 +318,9 @@ public class AutoUtils {
                         Commands.run(() -> {
                             Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
                             System.out.println("contine PID");
-                        }, Robot.swerve));
-        trajectory.done().and(()->intake.isFinished()).onTrue(new Handoff());
-        return intake;
+                        }, Robot.swerve)).onFalse(handoff);
+        // trajectory.done().and(()->Robot.coralRoller.hasPiece()).onTrue(new Handoff());
+        return handoff;
 
     }
 

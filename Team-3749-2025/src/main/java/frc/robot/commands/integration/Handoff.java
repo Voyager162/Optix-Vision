@@ -30,6 +30,7 @@ public class Handoff extends Command {
 
     @Override
     public void execute() {
+        System.out.println("Handoff");
         if (Robot.coralArm.getIsStableState() && Robot.coralArm.getState() == ArmStates.HAND_OFF) {
             Robot.coralRoller.setState(RollerConstants.RollerStates.OUTTAKE);
 
