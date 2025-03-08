@@ -15,9 +15,9 @@ public class LedTriggers {
         Trigger coralHasPieceTrigger = new Trigger(() -> Robot.coralRoller.hasPiece());
         coralHasPieceTrigger.onTrue(Commands.runOnce(() -> Robot.led.setLEDColor(LEDColor.CORAL_ARM_HAS_PIECE)));
 
-        Trigger scoringModeTigger = new Trigger(() -> JoystickIO.getButtonBoard().getScoringMode() == JoystickIO
+        Trigger scoringModeTrigger = new Trigger(() -> JoystickIO.getButtonBoard().getScoringMode() == JoystickIO
                 .getButtonBoard().getPreviousScoringMode());
-        scoringModeTigger.onChange(Commands.runOnce(() -> {
+        scoringModeTrigger.onChange(Commands.runOnce(() -> {
             switch (JoystickIO.getButtonBoard().getScoringMode()) {
                 case ALGAE:
                     Robot.led.setLEDColor(LEDColor.ALGAE);
@@ -48,7 +48,6 @@ public class LedTriggers {
 
         Trigger climbTrigger = new Trigger(() -> Robot.climbArm.getState().equals(ArmStates.CLIMB));
         climbTrigger.onTrue(Commands.runOnce(() -> Robot.led.setLEDColor(LEDColor.CLIMB)));
-
     }
 
 }

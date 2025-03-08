@@ -33,7 +33,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    System.out.println("GET AUTO CMD");    
+    System.out.println("GET AUTO CMD");
     return Autos.run3Piece();
     // return Autos.getSelectedCommand();
   }
