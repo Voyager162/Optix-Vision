@@ -182,11 +182,8 @@ public class AutoUtils {
             AutoTrajectory firstTrajectory) {
 
         routine.active()
-                .onTrue(AutoUtils.getAutoFactory()
-                        .resetOdometry(firstTrajectoryName)
-                        .andThen(Commands.runOnce(() -> SmartDashboard.putNumber(firstTrajectoryName + " y val",
-                                firstTrajectory.getInitialPose().get().getY())))
-                        .andThen(firstTrajectory.cmd()));
+                .onTrue(
+                        firstTrajectory.cmd());
         return routine.cmd();
     }
 
@@ -312,14 +309,16 @@ public class AutoUtils {
         Command intake = new CoralIntakeSource();
         Command handoff = new ScoringModeConditionalHandoff();
 
-        trajectory.atPose(endingPose2d, 1.5, 2*Math.PI).onTrue(intake);
+        trajectory.atPose(endingPose2d, 1.5, 2 * Math.PI).onTrue(intake);
         trajectory.done().and(() -> intake.isScheduled())
                 .onTrue(
                         Commands.run(() -> {
                             Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
                             System.out.println("contine PID");
-                        }, Robot.swerve)).onFalse(handoff);
-        // trajectory.done().and(()->Robot.coralRoller.hasPiece()).onTrue(new Handoff());
+                        }, Robot.swerve))
+                .onFalse(handoff);
+        // trajectory.done().and(()->Robot.coralRoller.hasPiece()).onTrue(new
+        // Handoff());
         return handoff;
 
     }
