@@ -5,6 +5,8 @@ import choreo.auto.AutoTrajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Robot;
+import frc.robot.buttons.ToPosTriggers;
 
 /**
  * Class containing our auto routines. Referenced by the auto selector and
@@ -14,8 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class Autos {
     private static boolean routineStarted = false;
-    
-    
+
     /***
      * 
      * @return The command current selected by the auto chooser
@@ -55,6 +56,56 @@ public class Autos {
     public static void stopRoutineTracking() {
         routineStarted = false;
     }
+
+    public static Command run3Piece() {
+
+        // Robot.swerve.startOnTheFly(0);
+        // new Trigger(() -> ToPosTriggers.OTFWithinMargin()).debounce(0.03)
+        // .onTrue(Commands.runOnce(() -> {
+        // new Trigger(() -> Robot.elevator.getCurrentCommand().isFinished())
+        // .onTrue(
+        // Commands.runOnce(() -> {
+        // Robot.swerve.startOnTheFly(0);
+        // new Trigger(() -> ToPosTriggers.OTFWithinMargin())
+        // .debounce(0.03)
+        // .onTrue(Commands.runOnce(() -> {
+        // new Trigger(() -> Robot.elevator
+        // .getCurrentCommand()
+        // .isFinished())
+        // .onTrue(Commands.runOnce(
+        // () -> {
+
+        // }));
+        // }));
+        // }));
+        // }));
+
+        // run getOTFPath with index 21, then 1, then 22, then 1, then 23, then 1
+        return new OTFAuto(21)
+                    .andThen(new OTFAuto(1))
+                    .andThen(new OTFAuto(22))
+                    .andThen(new OTFAuto(1))
+                    .andThen(new OTFAuto(23))
+                    .andThen(new OTFAuto(1));
+    }
+
+    public static Command getOTFPath(int index, Command nextCommand) {
+
+        return Commands.runOnce(() -> {
+            Robot.swerve.startOnTheFly(index);
+            new Trigger(() -> ToPosTriggers.OTFWithinMargin()).debounce(0.03)
+                    .onTrue(Commands.runOnce(() -> {
+                        new Trigger(() -> Robot.elevator.getCurrentCommand().isFinished())
+                                .onTrue(nextCommand);
+                    }));
+        });
+    }
+
+    // public static Trigger otfWithinMarginTriggr(Trigger previousTrigger){
+    // return new Trigger(() -> ToPosTriggers.OTFWithinMargin()).debounce(0.03)
+    // .onTrue(Commands.runOnce(() -> {previousTrigger
+
+    // }
 
     /**
      * 
@@ -261,6 +312,7 @@ public class Autos {
                 .andThen(Commands.runOnce(() -> startRoutineTracking())) // Track routine start
                 .andThen(AutoUtils.startRoutine(routine, "Start-5", trajectory1));
     }
+
     public static Command getCoralArm4piece() {
         AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("4 piece coral arm");
 
@@ -281,7 +333,7 @@ public class Autos {
         Command score3 = AutoUtils.addScoreL1(trajectory5);
         Command intake3 = AutoUtils.addGroundIntake(trajectory6);
         AutoUtils.addScoreL1(trajectory7); // final score is the end of the routine, so no need for reference
-  
+
         // reverse order here (ex. connect 3 to 2, THEN 2 to 1)
         AutoUtils.goNextAfterCommand(trajectory6, trajectory7, intake3);
         AutoUtils.goNextAfterCommand(trajectory5, trajectory6, score3);
@@ -315,7 +367,7 @@ public class Autos {
         Command score2 = AutoUtils.addScoreL1(trajectory3);
         Command intake2 = AutoUtils.addGroundIntake(trajectory4);
         AutoUtils.addScoreL1(trajectory5); // final score is the end of the routine, so no need for reference
-  
+
         // reverse order here (ex. connect 3 to 2, THEN 2 to 1)
         AutoUtils.goNextAfterCommand(trajectory4, trajectory5, intake2);
         AutoUtils.goNextAfterCommand(trajectory3, trajectory4, score2);

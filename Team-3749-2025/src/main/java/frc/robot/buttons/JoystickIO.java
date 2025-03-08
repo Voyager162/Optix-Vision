@@ -205,6 +205,8 @@ public class JoystickIO {
 
                 operator.povLeft().onTrue(Commands.runOnce(() -> Robot.swerve.cyclePPSetpoint()));
 
+                // operator.a().onTrue(Robot.swerve.startOnTheFly(0);)
+
         }
 
         public static void pilotBindings() {

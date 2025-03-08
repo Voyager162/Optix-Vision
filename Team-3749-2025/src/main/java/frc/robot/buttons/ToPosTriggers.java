@@ -89,7 +89,7 @@ public class ToPosTriggers {
     // * @return true if the robot is within the defined distance of the target
     // * setpoint.
     // */
-    private static boolean OTFWithinMargin() {
+    public static boolean OTFWithinMargin() {
         return UtilityFunctions.withinMargin(ToPosConstants.Setpoints.approachPointDistance,
                 Robot.swerve.getPose().getTranslation(),
                 Robot.swerve.getPPSetpoint().setpoint.getTranslation());
@@ -119,6 +119,7 @@ public class ToPosTriggers {
                     JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.L1;
         });
         coralReefL1.onTrue(new ScoreL1());
+        
 
         // ======= Reef Level 2 Scoring Trigger =======
         Trigger coralReefL2 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {

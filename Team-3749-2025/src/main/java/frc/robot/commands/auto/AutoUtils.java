@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
+import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 import frc.robot.commands.integration.CoralIntakeSource;
 import frc.robot.commands.integration.IntakeSource;
 import frc.robot.commands.integration.KnockAlgae;
@@ -62,6 +63,8 @@ public class AutoUtils {
     }
 
     public static AutoFactory getAutoFactory() {
+
+        SmartDashboard.putBoolean("autoFactory Flipped", flippedChooser.getSelected());
 
         if (flippedChooser.getSelected()) {
             return factoryFlipped;
@@ -176,9 +179,12 @@ public class AutoUtils {
     public static Command startRoutine(AutoRoutine routine, String firstTrajectoryName,
             AutoTrajectory firstTrajectory) {
 
-        routine.active().onTrue(
-                AutoUtils.getAutoFactory().resetOdometry(firstTrajectoryName).andThen(
-                        firstTrajectory.cmd()));
+        routine.active()
+                .onTrue(AutoUtils.getAutoFactory()
+                        .resetOdometry(firstTrajectoryName)
+                        .andThen(Commands.runOnce(() -> SmartDashboard.putNumber(firstTrajectoryName + " y val",
+                                firstTrajectory.getInitialPose().get().getY())))
+                        .andThen(firstTrajectory.cmd()));
         return routine.cmd();
     }
 
@@ -420,7 +426,7 @@ public class AutoUtils {
 
         // return getFlippedPose(trajectory.getFinalPose().get());
         // } else {
-        return trajectory.getFinalPose().get();
+        return trajectory.getFinalPose().isPresent() ? trajectory.getFinalPose().get() : new Pose2d();
         // }
     }
 
