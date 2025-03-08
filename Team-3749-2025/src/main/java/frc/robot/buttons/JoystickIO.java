@@ -31,7 +31,7 @@ import frc.robot.commands.integration.IntakeSource;
 import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.ScoreL1;
 import frc.robot.commands.integration.ScoreL234;
-
+import frc.robot.commands.integration.ScoringModeConditionalHandoff;
 import frc.robot.commands.swerve.OnTheFly;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
 import frc.robot.subsystems.arm.climb.ClimbArmConstants;
@@ -133,13 +133,17 @@ public class JoystickIO {
                 pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
 
                 // intake floor
-                pilot.leftTrigger().onTrue(new IntakeFloor()).onFalse(
+                pilot.leftTrigger().onTrue(new IntakeFloor().andThen(new ScoringModeConditionalHandoff())).onFalse(
                                 Commands.runOnce(() -> System.out.println("interupt ground intake"), Robot.coralArm));
                 // // intake source w arm
 
                 // pilot.leftTrigger().onTrue(Commands.runOnce(() ->
                 // Robot.elevator.setVoltage(5)));
-                pilot.rightTrigger().onTrue(new CoralIntakeSource());
+                pilot.rightTrigger().onTrue(new CoralIntakeSource()
+                                .andThen(new ScoringModeConditionalHandoff()))
+                                .onFalse(
+                                                Commands.runOnce(() -> System.out.println("interupt ground intake"),
+                                                                Robot.coralArm));
                 // outtake arm
                 pilot.leftBumper().onTrue(new ScoreL1());
                 // intake source w elevator
@@ -191,8 +195,6 @@ public class JoystickIO {
 
                 operator.povLeft().onTrue(new ScoreL234(ElevatorStates.L2));
                 operator.povRight().onTrue(new ScoreL234(ElevatorStates.L3));
-
-                
 
                 pilot.povRight().whileTrue(Commands.run(() -> rumblePilot()));
 
