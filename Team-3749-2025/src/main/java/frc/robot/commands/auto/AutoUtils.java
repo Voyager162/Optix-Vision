@@ -309,7 +309,7 @@ public class AutoUtils {
         if (DriverStation.getAlliance().get() == Alliance.Red) {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
-        Command intake = new CoralIntakeSource().andThen(new ScoringModeConditionalHandoff());
+        Command intake = new CoralIntakeSource();
 
         trajectory.atPose(endingPose2d, 1.5, 2*Math.PI).onTrue(intake);
         trajectory.done().and(() -> intake.isScheduled())
@@ -318,6 +318,7 @@ public class AutoUtils {
                             Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
                             System.out.println("contine PID");
                         }, Robot.swerve));
+        trajectory.done().and(()->intake.isFinished()).onTrue(new Handoff());
         return intake;
 
     }

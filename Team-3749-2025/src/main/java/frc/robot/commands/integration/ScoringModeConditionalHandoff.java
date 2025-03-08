@@ -57,6 +57,7 @@ public class ScoringModeConditionalHandoff extends Command {
         Robot.coralArm.setState(CoralArmConstants.ArmStates.STOW);
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
         Robot.scoringRoller.setState(RollerStates.MAINTAIN);
+        handoffPositionTimestamp = Double.MAX_VALUE;
     }
 
     /** 

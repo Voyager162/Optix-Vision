@@ -31,6 +31,8 @@ public class Photonvision implements VisionIO {
     private final PhotonCamera cam5 = new PhotonCamera("5");
     private final PhotonCamera cam6 = new PhotonCamera("6");
 
+    private boolean disable3 = false;
+
     private final PhotonCamera[] cameraList = { cam1, cam2, cam3, cam4, cam5, cam6 };
     private PhotonPoseEstimator poseEstimatorList[] = VisionConstants.CameraReal.poseEstimatorList;
 
@@ -63,13 +65,20 @@ public class Photonvision implements VisionIO {
     public PhotonCamera getCamera(int index) {
         return cameraList[index];
     }
+    @Override
+    public void setDisable3(boolean disable){
+        disable3 = disable;
+    }
 
     public void updatePose() {
         // Cam # minus 1
         cameraUpdatePose(0);
         // Cam 3 missing, cam 2 is bad because of mount droop
         cameraUpdatePose(1);
-        cameraUpdatePose(2);
+        if (!disable3){
+            cameraUpdatePose(2);
+
+        }
         cameraUpdatePose(3);
         cameraUpdatePose(4);
         cameraUpdatePose(5);
@@ -213,8 +222,8 @@ public class Photonvision implements VisionIO {
 
     @Override
     public void setStrategyCam12(PoseStrategy strat) {
-        poseEstimatorList[0].setMultiTagFallbackStrategy(strat);
         poseEstimatorList[1].setMultiTagFallbackStrategy(strat);
+        poseEstimatorList[2].setMultiTagFallbackStrategy(strat);
 
     }
 }

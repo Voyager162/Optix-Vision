@@ -52,6 +52,6 @@ public class IntakeFloor extends Command {
     @Override
     public boolean isFinished() {
         Logger.recordOutput("Roller/CoralRoller/haspiecetimestamp", Timer.getFPGATimestamp()-hasPieceTimeStamp);
-        return Timer.getFPGATimestamp() - hasPieceTimeStamp > 0.1;
+        return Timer.getFPGATimestamp() - hasPieceTimeStamp > 0.25;
     }
 }

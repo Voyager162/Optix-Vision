@@ -30,4 +30,8 @@ public class Vision extends SubsystemBase {
     public void setStrategyCam12(PoseStrategy strat) {
         visionIO.setStrategyCam12(strat);
     }
+
+    public void disable3(boolean disable){
+        visionIO.setDisable3(disable);
+    }
 }

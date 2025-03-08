@@ -78,6 +78,7 @@ public class JoystickIO {
                         simBindings();
                 } else {
                         pilotAndOperatorBindings();
+                        // testBindings();
 
                 }
 
@@ -131,6 +132,9 @@ public class JoystickIO {
          */
         public static void pilotAndOperatorBindings() {
                 // gyro reset
+                pilot.povLeft().onTrue(Commands.runOnce(()->Robot.vision.disable3(true)));
+                pilot.povRight().onTrue(Commands.runOnce(()->Robot.vision.disable3(false)));
+
                 pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
 
                 // intake floor
@@ -222,7 +226,8 @@ public class JoystickIO {
                 pilot.a().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setHasPiece(false)));
                 pilot.b().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setHasPiece(true)));
 
-                pilot.x().onTrue(Autos.run3Piece());
+                pilot.x().onTrue(Commands.runOnce(() -> Robot.coralRoller.setHasPiece(false)));
+                pilot.y().onTrue(Commands.runOnce(() -> Robot.coralRoller.setHasPiece(true)));
         }
 
         public static void pilotBindings() {
