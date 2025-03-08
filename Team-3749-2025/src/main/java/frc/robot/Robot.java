@@ -35,6 +35,8 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+
 import frc.robot.utils.LoggedTunableNumber;
 
 public class Robot extends LoggedRobot {
@@ -44,7 +46,7 @@ public class Robot extends LoggedRobot {
   public static CoralRoller coralRoller = new CoralRoller();
   public static ScoringRoller scoringRoller = new ScoringRoller();
   public static Elevator elevator = new Elevator();
-  
+
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
   public static Vision vision = new Vision();
@@ -93,7 +95,8 @@ public class Robot extends LoggedRobot {
         // setUseTiming(false); // Run as fast as possible
         // String logPath = LogFileUtil.findReplayLog();
         // Logger.setReplaySource(new WPILOGReader(logPath));
-        // Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+        // Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath,
+        // "_sim")));
         break;
     }
 
@@ -135,8 +138,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledExit() {
-    swerve.setBreakMode(true);
-    climbArm.setBrakeMode(true);
+    vision.setStrategyCam12(PoseStrategy.PNP_DISTANCE_TRIG_SOLVE);
   }
 
   @Override

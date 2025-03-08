@@ -43,12 +43,8 @@ public class Photonvision implements VisionIO {
             // uncertain tag if that fails
             poseEstimator.setPrimaryStrategy(PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR);
 
-            if (index == 1 || index == 2) {
-                poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.PNP_DISTANCE_TRIG_SOLVE);
+            poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
-            } else {
-                poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-            }
             // redundant, but why not (setting the correct apriltag size/model and correct
             // field layout)
             poseEstimator.setTagModel(TargetModel.kAprilTag36h11);
@@ -191,10 +187,11 @@ public class Photonvision implements VisionIO {
         if (result.getTargets().size() == 0) {
             return;
         }
-        if (DriverStation.isDisabled()){
-            
+        if (DriverStation.isDisabled()) {
+
             poseEstimator.setVisionMeasurementStdDevs(
-                    VecBuilder.fill(StandardDeviations.PreMatch.xy, StandardDeviations.PreMatch.xy, StandardDeviations.PreMatch.thetaRads));
+                    VecBuilder.fill(StandardDeviations.PreMatch.xy, StandardDeviations.PreMatch.xy,
+                            StandardDeviations.PreMatch.thetaRads));
         }
         if (result.getTargets().size() == 1) {
             double xyStdDev = StandardDeviations.OneTag.regression.apply(visionData.distance[index]);
@@ -212,5 +209,12 @@ public class Photonvision implements VisionIO {
                     StandardDeviations.ManyTag.xy,
                     StandardDeviations.ManyTag.thetaRads));
         }
+    }
+
+    @Override
+    public void setStrategyCam12(PoseStrategy strat) {
+        poseEstimatorList[0].setMultiTagFallbackStrategy(strat);
+        poseEstimatorList[1].setMultiTagFallbackStrategy(strat);
+
     }
 }
