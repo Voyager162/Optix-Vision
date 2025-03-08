@@ -54,9 +54,9 @@ public class ScoreL234 extends Command {
         if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState()
                 && scoreTimestamp == Double.MAX_VALUE) {
 
-            if ((Robot.swerve.getIsOTF() && !Robot.swerve.reachedSwerveSetpoint(Robot.swerve.getPPSetpoint().setpoint))
+            if ((Robot.swerve.getIsOTF() && !Robot.swerve.atSwerveSetpoint(Robot.swerve.getPPSetpoint().setpoint))
                     || (DriverStation.isAutonomous()
-                            && !Robot.swerve.reachedSwerveSetpoint(Robot.swerve.getPositionSetpoint()))) {
+                            && !Robot.swerve.atSwerveSetpoint(Robot.swerve.getPositionSetpoint()))) {
                 Robot.scoringRoller.setState(RollerStates.STOP);
                 return;
             }

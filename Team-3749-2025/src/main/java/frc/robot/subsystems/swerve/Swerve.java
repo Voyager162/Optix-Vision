@@ -7,6 +7,7 @@ package frc.robot.subsystems.swerve;
 import org.littletonrobotics.junction.Logger;
 
 import choreo.trajectory.SwerveSample;
+import choreo.util.ChoreoAllianceFlipUtil;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -22,6 +23,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
@@ -280,6 +282,7 @@ public class Swerve extends SubsystemBase {
     double xPID = xController.calculate(getPose().getX(), positions.getX());
     xPID = MathUtil.clamp(xPID, -1, 1);
     if (xController.atSetpoint()) {
+      SmartDashboard.putBoolean("xAtSetpoint", true);
       xPID = 0;
     }
 
@@ -287,6 +290,7 @@ public class Swerve extends SubsystemBase {
     yPID = MathUtil.clamp(yPID, -1, 1);
 
     if (yController.atSetpoint()) {
+      SmartDashboard.putBoolean("yAtSetpoint", true);
       yPID = 0;
     }
 
@@ -315,7 +319,6 @@ public class Swerve extends SubsystemBase {
   }
 
   public void followSample(SwerveSample sample, boolean isFlipped) {
-    System.out.println("folowing sample");
 
     // ternaries are for x-axis flipping
 
@@ -401,39 +404,46 @@ public class Swerve extends SubsystemBase {
     return velocitySetpoint;
   }
 
-  public boolean reachedSwerveSetpoint(Pose2d pose) {
-    // Pose2d setpoint = getPositionSetpoint();
-    // double xMargin = (Math.sin(setpoint.getRotation().getRadians())
-    // * AutoConstants.driveToleranceMeters) + 0.015;
-
-    // double yMargin = (Math.cos(setpoint.getRotation().getRadians())
-    // * AutoConstants.driveToleranceMeters) + 0.015;
-
-    // Logger.recordOutput("Swerve/auto/x margin", xMargin);
-    // Logger.recordOutput("Swerve/auto/y margin", yMargin);
-
-    // boolean withinPositionMargin = UtilityFunctions.withinMargin(
-    // new Pose2d(xMargin,
-    // yMargin,
-    // new Rotation2d(AutoConstants.turnToleranceRad)),
-    // getPose(), setpoint);
-
-    // Pose2d velocities = new Pose2d(getChassisSpeeds().vxMetersPerSecond,
-    // getChassisSpeeds().vyMetersPerSecond,
-    // new Rotation2d(getChassisSpeeds().omegaRadiansPerSecond));
-
-    // boolean withinVelocityMargin = UtilityFunctions.withinMargin(
-    // new Pose2d(0.1, 0.1, new Rotation2d(Units.degreesToRadians(3))),
-    // getVelocitySetpoint(),
-    // velocities);
-
-    // return withinPositionMargin && withinVelocityMargin;
+  public boolean atSwerveSetpoint(Pose2d pose) {
 
     return UtilityFunctions.withinMargin(
         new Pose2d(AutoConstants.driveToleranceMeters,
             AutoConstants.driveToleranceMeters,
             new Rotation2d(AutoConstants.turnToleranceRad)),
         getPose(), pose);
+
+  }
+
+  public boolean atChoreoEndpoint(Pose2d endpoint) {
+    if (AutoUtils.getIsFlipped()) {
+      endpoint = flipPoseVertical(endpoint);
+    }
+
+    Logger.recordOutput("Swerve/auto/alliance", DriverStation.getAlliance().get());
+    Logger.recordOutput("Swerve/auto/endpoint", endpoint);
+
+    SmartDashboard.putBoolean("atEndpoitn", UtilityFunctions.withinMargin(
+      new Pose2d(AutoConstants.driveToleranceMeters,
+          AutoConstants.driveToleranceMeters,
+          new Rotation2d(AutoConstants.turnToleranceRad)),
+      getPose(), endpoint));
+
+    return UtilityFunctions.withinMargin(
+        new Pose2d(AutoConstants.driveToleranceMeters,
+            AutoConstants.driveToleranceMeters,
+            new Rotation2d(AutoConstants.turnToleranceRad)),
+        getPose(), endpoint);
+
+  }
+
+  public Pose2d flipPoseVertical(Pose2d pose) {
+
+    double xPos = pose.getX();
+
+    double yPos = AutoUtils.flipper.flipY(pose.getY());
+
+    double heading = new Rotation2d(Math.PI - pose.getRotation().getRadians()).rotateBy(new Rotation2d(Math.PI)).getRadians();
+    return new Pose2d(xPos,yPos, new Rotation2d(heading));
 
   }
 
@@ -590,7 +600,7 @@ public class Swerve extends SubsystemBase {
     Logger.recordOutput("Swerve/auto/setpoint acceleration", acceleration);
     Logger.recordOutput("Swerve/auto/setpoint rotational acceleration", accelerations[2]);
 
-    Logger.recordOutput("at setpoints", reachedSwerveSetpoint(positionSetpoint));
+    Logger.recordOutput("at setpoints", atSwerveSetpoint(positionSetpoint));
   }
 
   // this is only really relevant for testing purposes: as this is logged as

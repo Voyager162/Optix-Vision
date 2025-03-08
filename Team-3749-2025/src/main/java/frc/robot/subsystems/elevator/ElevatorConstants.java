@@ -48,26 +48,26 @@ public class ElevatorConstants {
     }
 
     public enum ElevatorStates {
-        // STOP(Units.inchesToMeters(0)),
-        // L1(Units.inchesToMeters(12)),
-        // L2(Units.inchesToMeters(15.35)),
-        // L3(Units.inchesToMeters(31.25)),
-        // L4(1.28),
-        // SOURCE(Units.inchesToMeters(30)),
-        // ALGAE_LOW(Units.inchesToMeters(.4)),
-        // ALGAE_HIGH(Units.inchesToMeters(16)),
-        // MAX(Units.feetToMeters(6)),
-        // STOW(Units.inchesToMeters(.75));
         STOP(Units.inchesToMeters(0)),
-        L1(Units.inchesToMeters(0)),
-        L2(Units.inchesToMeters(0)),
-        L3(Units.inchesToMeters(0)),
-        L4(0),
-        SOURCE(Units.inchesToMeters(0)),
-        ALGAE_LOW(Units.inchesToMeters(0)),
-        ALGAE_HIGH(Units.inchesToMeters(0)),
-        MAX(Units.feetToMeters(0)),
-        STOW(Units.inchesToMeters(0));
+        L1(Units.inchesToMeters(12)),
+        L2(Units.inchesToMeters(15.35)),
+        L3(.742),
+        L4(1.3),
+        SOURCE(Units.inchesToMeters(30)),
+        ALGAE_LOW(Units.inchesToMeters(.4)),
+        ALGAE_HIGH(Units.inchesToMeters(16)),
+        MAX(Units.feetToMeters(6)),
+        STOW(Units.inchesToMeters(.75));
+        // STOP(Units.inchesToMeters(0)),
+        // L1(Units.inchesToMeters(0)),
+        // L2(Units.inchesToMeters(0)),
+        // L3(Units.inchesToMeters(0)),
+        // L4(0),
+        // SOURCE(Units.inchesToMeters(0)),
+        // ALGAE_LOW(Units.inchesToMeters(0)),
+        // ALGAE_HIGH(Units.inchesToMeters(0)),
+        // MAX(Units.feetToMeters(0)),
+        // STOW(Units.inchesToMeters(0));
 
         public double heightMeters;
 

@@ -73,7 +73,7 @@ public class Led extends SubsystemBase {
     }
 
     private void setStripColor() {
-        if (this.desiredPattern == LEDColor.RAINBOW) {
+        if (this.desiredPattern == LEDColor.CORAL_ARM_HAS_PIECE) {
             ledBase.setData(scrollingRainbow);
             currentPattern = desiredPattern;
             return;
