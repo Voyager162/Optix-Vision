@@ -3,6 +3,8 @@
 package frc.robot.subsystems.vision;
 
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import frc.robot.Robot;
@@ -30,5 +32,9 @@ public interface VisionIO {
 
     public default PhotonCamera getCamera(int index) {
         return new PhotonCamera("" + index);
+    }
+
+    public default void setStrategyCam12(PoseStrategy strat){
+        
     }
 }

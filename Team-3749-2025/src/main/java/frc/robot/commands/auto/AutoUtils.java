@@ -6,7 +6,6 @@ import choreo.auto.AutoRoutine;
 import choreo.auto.AutoTrajectory;
 import choreo.trajectory.SwerveSample;
 import choreo.util.ChoreoAllianceFlipUtil;
-import choreo.util.ChoreoAllianceFlipUtil.Flipper;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -64,10 +63,6 @@ public class AutoUtils {
         return chooser;
     }
 
-    public static boolean getIsFlipped(){
-        return flippedChooser.getSelected();
-    }
-
     public static AutoFactory getAutoFactory() {
 
         SmartDashboard.putBoolean("autoFactory Flipped", flippedChooser.getSelected());
@@ -119,12 +114,11 @@ public class AutoUtils {
      */
 
     private static void setupChooser() {
-        
+
         // interface for choreo
 
         // Made sendable, use SmartDashbaord now
         chooser = new AutoChooser();
-
 
         chooser.addCmd("3-Piece", () -> Autos.get3Piece());
         chooser.addCmd("TeamTaxi", () -> Autos.getTeamtaxi());
@@ -147,7 +141,7 @@ public class AutoUtils {
 
     private static void setupFlipChooser() {
 
-        flippedChooser.addOption("Yes", true);
+        // flippedChooser.addOption("Yes", true);
         flippedChooser.addOption("No", false);
         flippedChooser.setDefaultOption("No", false);
 
@@ -203,18 +197,21 @@ public class AutoUtils {
      * @return
      */
     public static Command addScoreL4(AutoTrajectory trajectory) {
-        final Pose2d endingPose2d = getFinalPose2d(trajectory);
-
+        Pose2d endingPose2d = getFinalPose2d(trajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
+        if (DriverStation.getAlliance().get() == Alliance.Red) {
+            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
+        }
+        // Command intakeSource = new IntakeSource();
+        Command scoreL4 = new ScoreL234(ElevatorStates.L4).withTimeout(3);
 
-        Command scoreL4 = new ScoreL234(ElevatorStates.L4);
-
-        new Trigger(() -> Robot.swerve.atChoreoEndpoint(endingPose2d)).onTrue(scoreL4);
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(scoreL4);
         trajectory.done().and(() -> scoreL4.isScheduled())
                 .onTrue(
                         Commands.run(() -> {
                             Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
+                            System.out.println("contine PID");
                         }, Robot.swerve));
         return scoreL4;
     }
@@ -227,16 +224,15 @@ public class AutoUtils {
      * @return
      */
     public static Command addScoreL3(AutoTrajectory trajectory) {
-        final Pose2d endingPose2d = getFinalPose2d(trajectory);
+        Pose2d endingPose2d = getFinalPose2d(trajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
+        if (DriverStation.getAlliance().get() == Alliance.Red) {
+            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
+        }
         Command scoreL3 = new ScoreL234(ElevatorStates.L3);
 
-        new Trigger(() -> {
-            SmartDashboard.putBoolean("runnig", true);
-            return Robot.swerve.atChoreoEndpoint(endingPose2d);
-        }).onTrue(scoreL3);
-        
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(scoreL3);
         trajectory.done().and(() -> scoreL3.isScheduled())
                 .onTrue(
                         Commands.run(() -> {
@@ -254,13 +250,15 @@ public class AutoUtils {
      * @return
      */
     public static Command addScoreL2(AutoTrajectory trajectory) {
-       final Pose2d endingPose2d = getFinalPose2d(trajectory);
+        Pose2d endingPose2d = getFinalPose2d(trajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
-
+        if (DriverStation.getAlliance().get() == Alliance.Red) {
+            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
+        }
         Command scoreL2 = new ScoreL234(ElevatorStates.L2);
 
-        new Trigger(() -> Robot.swerve.atChoreoEndpoint(endingPose2d)).onTrue(scoreL2);
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(scoreL2);
         trajectory.done().and(() -> scoreL2.isScheduled())
                 .onTrue(
                         Commands.run(() -> {
@@ -278,12 +276,15 @@ public class AutoUtils {
      * @return
      */
     public static Command addScoreL1(AutoTrajectory trajectory) {
-        final Pose2d endingPose2d = getFinalPose2d(trajectory);
+        Pose2d endingPose2d = getFinalPose2d(trajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
+        if (DriverStation.getAlliance().get() == Alliance.Red) {
+            endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
+        }
         Command scoreL1 = new ScoreL1();
 
-        new Trigger(() -> Robot.swerve.atChoreoEndpoint(endingPose2d)).onTrue(scoreL1);
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(scoreL1);
         trajectory.done().and(() -> scoreL1.isScheduled())
                 .onTrue(
                         Commands.run(() -> {
@@ -307,13 +308,10 @@ public class AutoUtils {
         if (DriverStation.getAlliance().get() == Alliance.Red) {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
-        Command intake = new CoralIntakeSource();
-        Command handoff = new Handoff();
+        Command intake = new CoralIntakeSource().andThen(new Handoff()).withTimeout(3);
 
-        Command intakeAndHandoff = intake.andThen(handoff);
-
-        trajectory.atPose(endingPose2d, 1.5, Math.PI / 3).onTrue(intakeAndHandoff);
-        trajectory.done().and(() -> intakeAndHandoff.isScheduled())
+        trajectory.atPose(endingPose2d, 1.5, Math.PI / 3).onTrue(intake);
+        trajectory.done().and(() -> intake.isScheduled())
                 .onTrue(
                         Commands.run(() -> {
                             Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
