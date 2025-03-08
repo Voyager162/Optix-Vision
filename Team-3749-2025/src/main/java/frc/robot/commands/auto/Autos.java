@@ -5,6 +5,8 @@ import choreo.auto.AutoTrajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Robot;
+import frc.robot.buttons.ToPosTriggers;
 
 /**
  * Class containing our auto routines. Referenced by the auto selector and
@@ -14,8 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class Autos {
     private static boolean routineStarted = false;
-    
-    
+
     /***
      * 
      * @return The command current selected by the auto chooser
@@ -56,6 +57,56 @@ public class Autos {
         routineStarted = false;
     }
 
+    public static Command run3Piece() {
+
+        // Robot.swerve.startOnTheFly(0);
+        // new Trigger(() -> ToPosTriggers.OTFWithinMargin()).debounce(0.03)
+        // .onTrue(Commands.runOnce(() -> {
+        // new Trigger(() -> Robot.elevator.getCurrentCommand().isFinished())
+        // .onTrue(
+        // Commands.runOnce(() -> {
+        // Robot.swerve.startOnTheFly(0);
+        // new Trigger(() -> ToPosTriggers.OTFWithinMargin())
+        // .debounce(0.03)
+        // .onTrue(Commands.runOnce(() -> {
+        // new Trigger(() -> Robot.elevator
+        // .getCurrentCommand()
+        // .isFinished())
+        // .onTrue(Commands.runOnce(
+        // () -> {
+
+        // }));
+        // }));
+        // }));
+        // }));
+
+        // run getOTFPath with index 21, then 1, then 22, then 1, then 23, then 1
+        return new OTFAuto(21)
+                    .andThen(new OTFAuto(1))
+                    .andThen(new OTFAuto(22))
+                    .andThen(new OTFAuto(1))
+                    .andThen(new OTFAuto(23))
+                    .andThen(new OTFAuto(1));
+    }
+
+    public static Command getOTFPath(int index, Command nextCommand) {
+
+        return Commands.runOnce(() -> {
+            Robot.swerve.startOnTheFly(index);
+            new Trigger(() -> ToPosTriggers.OTFWithinMargin()).debounce(0.03)
+                    .onTrue(Commands.runOnce(() -> {
+                        new Trigger(() -> Robot.elevator.getCurrentCommand().isFinished())
+                                .onTrue(nextCommand);
+                    }));
+        });
+    }
+
+    // public static Trigger otfWithinMarginTriggr(Trigger previousTrigger){
+    // return new Trigger(() -> ToPosTriggers.OTFWithinMargin()).debounce(0.03)
+    // .onTrue(Commands.runOnce(() -> {previousTrigger
+
+    // }
+
     /**
      * 
      * @return a command that scores at positions 5, 4, and 3 at L4
@@ -64,11 +115,11 @@ public class Autos {
         AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("3-Piece");
 
         // loop.trajectory, or the new name
-        AutoTrajectory trajectory1 = routine.trajectory("Start-5");
-        AutoTrajectory trajectory2 = routine.trajectory("5-ArmIntake");
-        AutoTrajectory trajectory3 = routine.trajectory("ArmIntake-4");
-        AutoTrajectory trajectory4 = routine.trajectory("4-ArmIntake");
-        AutoTrajectory trajectory5 = routine.trajectory("ArmIntake-3");
+        AutoTrajectory trajectory1 = routine.trajectory("Start-4");
+        AutoTrajectory trajectory2 = routine.trajectory("4-ArmIntake");
+        AutoTrajectory trajectory3 = routine.trajectory("ArmIntake-3");
+        AutoTrajectory trajectory4 = routine.trajectory("3-ArmIntake");
+        AutoTrajectory trajectory5 = routine.trajectory("ArmIntake-2");
 
         // Commands to scoreL4 and intake from source
         Command score1 = AutoUtils.addScoreL4(trajectory1);
@@ -303,11 +354,11 @@ public class Autos {
         AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("4 piece coral arm");
 
         // loop.trajectory, or the new name
-        AutoTrajectory trajectory1 = routine.trajectory("Start- 5arm");
+        AutoTrajectory trajectory1 = routine.trajectory("Start- 4arm");
         AutoTrajectory trajectory2 = routine.trajectory("5arm-ArmIntake");
-        AutoTrajectory trajectory3 = routine.trajectory("ArmIntake-4arm");
+        AutoTrajectory trajectory3 = routine.trajectory("ArmIntake-3arm");
         AutoTrajectory trajectory4 = routine.trajectory("4arm-ArmIntake");
-        AutoTrajectory trajectory5 = routine.trajectory("ArmIntake-3arm");
+        AutoTrajectory trajectory5 = routine.trajectory("ArmIntake-2arm");
 
         // Commands to scoreL4, intake from source, and knock algae
         Command score1 = AutoUtils.addScoreL1(trajectory1);

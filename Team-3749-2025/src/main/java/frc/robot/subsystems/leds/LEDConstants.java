@@ -1,11 +1,22 @@
 package frc.robot.subsystems.leds;
 
+import static edu.wpi.first.units.Units.*;
+
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 
 public class LEDConstants {
 
     public static final int length = 18;
     public static final int ledPort = 0;
+
+    private static final Distance ledSpacing = Meters.of(Units.inchesToMeters(11.5) / 18);
+
+    public static final LEDPattern rainbowPattern = LEDPattern.rainbow(255, 128);
+    public static final LEDPattern scrollingRainbow = rainbowPattern.scrollAtAbsoluteSpeed(MetersPerSecond.of(0.5),
+            ledSpacing);
 
     public static enum StatusIndicator {
         OTF,
@@ -15,7 +26,8 @@ public class LEDConstants {
         CLIMB,
         PIECE,
         COLOR,
-        TEAM
+        TEAM,
+        CORAL_PIECE
     }
 
     public static enum LEDColor {
@@ -29,7 +41,7 @@ public class LEDConstants {
         OFF(Color.kBlack),
         BATTERY_LOW(Color.kOrange),
         BATTERY_GOOD(Color.kWhite),
-        RAINBOW(Color.kTomato), //this is not the actual color i just need to satisfy reqs
+        RAINBOW(Color.kTomato), // this is not the actual color i just need to satisfy reqs
 
         L1(Color.kPurple),
         L2(Color.kLightBlue),
@@ -38,9 +50,9 @@ public class LEDConstants {
 
         ALGAE(Color.kAquamarine);
 
-
         Color color;
         boolean isRainbow;
+
         LEDColor(Color color) {
             this.color = color;
         }

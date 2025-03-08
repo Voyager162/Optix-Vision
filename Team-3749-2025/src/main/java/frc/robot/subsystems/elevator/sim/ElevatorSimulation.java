@@ -3,6 +3,7 @@ package frc.robot.subsystems.elevator.sim;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.utils.MiscConstants.SimConstants;
@@ -54,5 +55,6 @@ public class ElevatorSimulation implements ElevatorIO {
         inputVolts = UtilityFunctions.applyDeadband(inputVolts, 0.05);
         inputVolts = MathUtil.clamp(volts, -12, 12);
         elevatorSimSystem.setInputVoltage(inputVolts);
+        SmartDashboard.putNumber("input volts test", volts);
     }
 }

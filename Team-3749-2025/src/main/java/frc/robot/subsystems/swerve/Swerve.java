@@ -319,6 +319,7 @@ public class Swerve extends SubsystemBase {
   }
 
   public void followSample(SwerveSample sample, boolean isFlipped) {
+
     // ternaries are for x-axis flipping
 
     double xPos = sample.x;
@@ -413,27 +414,27 @@ public class Swerve extends SubsystemBase {
 
   }
 
-  public boolean atChoreoEndpoint(Pose2d endpoint) {
-    if (AutoUtils.getIsFlipped()) {
-      endpoint = flipPoseVertical(endpoint);
-    }
+  // public boolean atChoreoEndpoint(Pose2d endpoint) {
+  //   if (AutoUtils.getIsFlipped()) {
+  //     endpoint = flipPoseVertical(endpoint);
+  //   }
 
-    Logger.recordOutput("Swerve/auto/alliance", DriverStation.getAlliance().get());
-    Logger.recordOutput("Swerve/auto/endpoint", endpoint);
+  //   Logger.recordOutput("Swerve/auto/alliance", DriverStation.getAlliance().get());
+  //   Logger.recordOutput("Swerve/auto/endpoint", endpoint);
 
-    SmartDashboard.putBoolean("atEndpoitn", UtilityFunctions.withinMargin(
-      new Pose2d(AutoConstants.driveToleranceMeters,
-          AutoConstants.driveToleranceMeters,
-          new Rotation2d(AutoConstants.turnToleranceRad)),
-      getPose(), endpoint));
+  //   SmartDashboard.putBoolean("atEndpoitn", UtilityFunctions.withinMargin(
+  //     new Pose2d(AutoConstants.driveToleranceMeters,
+  //         AutoConstants.driveToleranceMeters,
+  //         new Rotation2d(AutoConstants.turnToleranceRad)),
+  //     getPose(), endpoint));
 
-    return UtilityFunctions.withinMargin(
-        new Pose2d(AutoConstants.driveToleranceMeters,
-            AutoConstants.driveToleranceMeters,
-            new Rotation2d(AutoConstants.turnToleranceRad)),
-        getPose(), endpoint);
+  //   return UtilityFunctions.withinMargin(
+  //       new Pose2d(AutoConstants.driveToleranceMeters,
+  //           AutoConstants.driveToleranceMeters,
+  //           new Rotation2d(AutoConstants.turnToleranceRad)),
+  //       getPose(), endpoint);
 
-  }
+  // }
 
   public Pose2d flipPoseVertical(Pose2d pose) {
 
