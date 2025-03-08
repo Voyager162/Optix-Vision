@@ -73,10 +73,10 @@ public class JoystickIO {
 
                 if (Robot.isSimulation()) {
                         // will show not connected if on
-                        pilotAndOperatorBindings();
-                        // simBindings();
+                        // pilotAndOperatorBindings();
+                        simBindings();
                 } else {
-                        pilotAndOperatorBindings();
+                        testBindings();
 
                 }
 
@@ -133,11 +133,11 @@ public class JoystickIO {
                 pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
 
                 // intake floor
-                // pilot.leftTrigger().onTrue(new IntakeFloor()).onFalse(
-                //                 Commands.runOnce(() -> System.out.println("interupt ground intake"), Robot.coralArm));
+                pilot.leftTrigger().onTrue(new IntakeFloor()).onFalse(
+                                Commands.runOnce(() -> System.out.println("interupt ground intake"), Robot.coralArm));
                 // // intake source w arm
 
-                pilot.leftTrigger().onTrue(Commands.runOnce(() -> Robot.elevator.setVoltage(5)));
+                // pilot.leftTrigger().onTrue(Commands.runOnce(() -> Robot.elevator.setVoltage(5)));
                 pilot.rightTrigger().onTrue(new CoralIntakeSource());
                 // outtake arm
                 pilot.leftBumper().onTrue(new ScoreL1());
@@ -186,7 +186,11 @@ public class JoystickIO {
         }
 
         public static void testBindings() {
-                pilotAndOperatorBindings();
+                pilotAndOperatorBindings();     
+
+                operator.povLeft().onTrue(new ScoreL234(ElevatorStates.L2));
+                operator.povRight().onTrue(new ScoreL234(ElevatorStates.L3));
+
 
                 pilot.povRight().whileTrue(Commands.run(() -> rumblePilot()));
 
@@ -216,7 +220,8 @@ public class JoystickIO {
         }
 
         public static void simBindings() {
-                pilotBindings();
+                // pilotBindings();
+                pilot.x().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setHasPiece(false)));
         }
 
         /**
