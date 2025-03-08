@@ -161,7 +161,9 @@ public class Photonvision implements VisionIO {
             // continue;
             // }
 
-            double timestamp = Timer.getFPGATimestamp() - latencyMillis / 1000.0;
+           
+            // double timestamp = Timer.getFPGATimestamp() - latencyMillis / 1000.0;
+            double timestamp =  pipelineResult.getTimestampSeconds();
             Robot.swerve.visionUpdateOdometry(robotPose.toPose2d(), timestamp);
             logTarget(index);
         }
@@ -222,8 +224,8 @@ public class Photonvision implements VisionIO {
 
     @Override
     public void setStrategyCam12(PoseStrategy strat) {
-        poseEstimatorList[1].setMultiTagFallbackStrategy(strat);
-        poseEstimatorList[2].setMultiTagFallbackStrategy(strat);
+        // poseEstimatorList[1].setMultiTagFallbackStrategy(strat);
+        // poseEstimatorList[2].setMultiTagFallbackStrategy(strat);
 
     }
 }
