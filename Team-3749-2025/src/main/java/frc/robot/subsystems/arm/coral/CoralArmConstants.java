@@ -53,7 +53,7 @@ public class CoralArmConstants {
 		HAND_OFF(2.27),
 		STOW(2.2),
 		STOPPED(0),
-		CLIMB(1.75);
+		CLIMB(1.9);
 
 		public final double setPointRad;
 
