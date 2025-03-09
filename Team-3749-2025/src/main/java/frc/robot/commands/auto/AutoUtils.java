@@ -183,8 +183,8 @@ public class AutoUtils {
             AutoTrajectory firstTrajectory) {
 
         routine.active()
-                .onTrue(
-                        firstTrajectory.cmd());
+                .onTrue(factory.resetOdometry(firstTrajectoryName).andThen(
+                        firstTrajectory.cmd()));
         return routine.cmd();
     }
 
@@ -205,7 +205,7 @@ public class AutoUtils {
         // Command intakeSource = new IntakeSource();
         Command scoreL4 = new ScoreL234(ElevatorStates.L4);
 
-        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(scoreL4);
+        trajectory.atPose(endingPose2d, 1, 2*Math.PI).onTrue(scoreL4);
         trajectory.done().and(() -> scoreL4.isScheduled())
                 .onTrue(
                         Commands.run(() -> {
