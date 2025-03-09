@@ -43,7 +43,7 @@ public class Photonvision implements VisionIO {
         for (PhotonPoseEstimator poseEstimator : poseEstimatorList) {
             // Use MultiTag detection on the coprocessor, and fall back to the least
             // uncertain tag if that fails
-            poseEstimator.setPrimaryStrategy(PoseStrategy.CONSTRAINED_SOLVEPNP);
+            poseEstimator.setPrimaryStrategy(PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR);
             poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
             // redundant, but why not (setting the correct apriltag size/model and correct

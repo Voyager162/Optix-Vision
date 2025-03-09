@@ -60,7 +60,7 @@ public class VisionConstants {
                                                 Units.degreesToRadians(62 - 90)));
 
                 public static Transform3d cam3 = new Transform3d(
-                                Units.inchesToMeters(9.504)-0.4223,
+                                Units.inchesToMeters(9.504+6)-0.4223,
                                 Units.inchesToMeters(-10.961),
                                 Units.inchesToMeters(15.746),
                                 new Rotation3d(0,
