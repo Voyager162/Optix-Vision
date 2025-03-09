@@ -122,6 +122,7 @@ public class AutoUtils {
         chooser = new AutoChooser();
 
         chooser.addCmd("3-Piece", () -> Autos.get3Piece());
+        chooser.addCmd("3-Piece-flipped", () -> Autos.get3PieceFlipped());
         chooser.addCmd("TeamTaxi", () -> Autos.getTeamtaxi());
         chooser.addCmd("Taxi", () -> Autos.getTaxi());
         chooser.addCmd("One Piece Center", () -> Autos.getOnePieceCenter());
