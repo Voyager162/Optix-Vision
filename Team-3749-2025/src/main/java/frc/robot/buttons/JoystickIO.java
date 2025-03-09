@@ -156,7 +156,11 @@ public class JoystickIO {
                 // handoff
                 pilot.a().onTrue(new Handoff());
                 // Climb - Reset to cancel
-                pilot.y().onTrue(new PrepareClimb()).onFalse(new Climb());
+                // pilot.y().onTrue(new PrepareClimb()).onFalse(new Climb());
+                pilot.y().onTrue(new ScoreL234(ElevatorStates.L4));
+                pilot.b().onTrue(new ScoreL234(ElevatorStates.L3));
+                pilot.x().onTrue(new ScoreL234(ElevatorStates.L2));
+
                 // reset
                 pilot.povDown().onTrue(new Reset());
                 // toggle hasPiece

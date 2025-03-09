@@ -43,8 +43,7 @@ public class Photonvision implements VisionIO {
         for (PhotonPoseEstimator poseEstimator : poseEstimatorList) {
             // Use MultiTag detection on the coprocessor, and fall back to the least
             // uncertain tag if that fails
-            poseEstimator.setPrimaryStrategy(PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR);
-
+            poseEstimator.setPrimaryStrategy(PoseStrategy.CONSTRAINED_SOLVEPNP);
             poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
             // redundant, but why not (setting the correct apriltag size/model and correct
@@ -72,16 +71,15 @@ public class Photonvision implements VisionIO {
 
     public void updatePose() {
         // Cam # minus 1
-        cameraUpdatePose(0);
         // Cam 3 missing, cam 2 is bad because of mount droop
+        
+        // cameraUpdatePose(0);
         cameraUpdatePose(1);
-        if (!disable3){
-            cameraUpdatePose(2);
+        cameraUpdatePose(2);
+        // cameraUpdatePose(3);
+        // cameraUpdatePose(4);
+        // cameraUpdatePose(5);
 
-        }
-        cameraUpdatePose(3);
-        cameraUpdatePose(4);
-        cameraUpdatePose(5);
 
     }
 
@@ -89,7 +87,6 @@ public class Photonvision implements VisionIO {
 
         if (index == 1 || index == 2) {
             poseEstimatorList[index].addHeadingData(Timer.getFPGATimestamp(), Robot.swerve.getRotation2d());
-
         }
 
         PhotonCamera camera = cameraList[index];
