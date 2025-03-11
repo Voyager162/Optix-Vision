@@ -76,9 +76,8 @@ public class Photonvision implements VisionIO {
 
     public void cameraUpdatePose(int index) {
 
-        if (index == 1 || index == 2) {
-            poseEstimatorList[index].addHeadingData(Timer.getFPGATimestamp(), Robot.swerve.getRotation2d());
-        }
+        poseEstimatorList[index].addHeadingData(Robot.swerve.getUpdateOdometryTimestamp(), Robot.swerve.getRotation2d());
+        
 
         PhotonCamera camera = cameraList[index];
         PhotonPoseEstimator poseEstimator = poseEstimatorList[index];

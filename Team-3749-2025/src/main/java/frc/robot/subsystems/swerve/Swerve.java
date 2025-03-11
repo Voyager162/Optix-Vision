@@ -21,6 +21,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
@@ -63,6 +64,7 @@ public class Swerve extends SubsystemBase {
 
   // equivilant to a odometer, but also intakes vision
   private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
+  private double odometryUpdateTimestamp = 0;
 
   private PIDController xController = new PIDController(AutoConstants.kPDrive, AutoConstants.kIDrive,
       AutoConstants.kDDrive);
@@ -197,6 +199,10 @@ public class Swerve extends SubsystemBase {
     Pose2d estimatedPose = swerveDrivePoseEstimator.getEstimatedPosition();
     return new Pose2d(estimatedPose.getTranslation(), getRotation2d());
     // return new Pose2d(new Translation2d(2, 4.9), new Rotation2d(Math.PI/2));
+  }
+
+  public double getUpdateOdometryTimestamp(){
+    return odometryUpdateTimestamp;
   }
 
   /**
@@ -408,36 +414,15 @@ public class Swerve extends SubsystemBase {
 
   }
 
-  // public boolean atChoreoEndpoint(Pose2d endpoint) {
-  //   if (AutoUtils.getIsFlipped()) {
-  //     endpoint = flipPoseVertical(endpoint);
-  //   }
-
-  //   Logger.recordOutput("Swerve/auto/alliance", DriverStation.getAlliance().get());
-  //   Logger.recordOutput("Swerve/auto/endpoint", endpoint);
-
-  //   SmartDashboard.putBoolean("atEndpoitn", UtilityFunctions.withinMargin(
-  //     new Pose2d(AutoConstants.driveToleranceMeters,
-  //         AutoConstants.driveToleranceMeters,
-  //         new Rotation2d(AutoConstants.turnToleranceRad)),
-  //     getPose(), endpoint));
-
-  //   return UtilityFunctions.withinMargin(
-  //       new Pose2d(AutoConstants.driveToleranceMeters,
-  //           AutoConstants.driveToleranceMeters,
-  //           new Rotation2d(AutoConstants.turnToleranceRad)),
-  //       getPose(), endpoint);
-
-  // }
-
   public Pose2d flipPoseVertical(Pose2d pose) {
 
     double xPos = pose.getX();
 
     double yPos = AutoUtils.flipper.flipY(pose.getY());
 
-    double heading = new Rotation2d(Math.PI - pose.getRotation().getRadians()).rotateBy(new Rotation2d(Math.PI)).getRadians();
-    return new Pose2d(xPos,yPos, new Rotation2d(heading));
+    double heading = new Rotation2d(Math.PI - pose.getRotation().getRadians()).rotateBy(new Rotation2d(Math.PI))
+        .getRadians();
+    return new Pose2d(xPos, yPos, new Rotation2d(heading));
 
   }
 
@@ -501,8 +486,8 @@ public class Swerve extends SubsystemBase {
    */
   public void updateOdometry() {
     // convert to -pi to pi
-
-    swerveDrivePoseEstimator.update(
+    odometryUpdateTimestamp =Timer.getFPGATimestamp();
+    swerveDrivePoseEstimator.updateWithTime(odometryUpdateTimestamp,
         Rotation2d.fromDegrees(gyroData.yawDeg),
         new SwerveModulePosition[] {
             modules[0].getPosition(),
