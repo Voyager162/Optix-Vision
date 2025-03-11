@@ -126,7 +126,7 @@ public class ClimbArm extends SubsystemBase {
 				stop();
 				break;
 			case STOWED:
-				// armIO.setVoltage(-1);
+				armIO.setVoltage(-1);
 				stop();
 				break;
 			case CLIMB:

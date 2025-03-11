@@ -106,8 +106,15 @@ public class ScoringRoller extends Roller {
     public boolean hasPiece() {
         return hasPiece;
     }
+    
+    int resetPiece = 0;
 
     public void setHasPiece(boolean hasPiece) {
+        SmartDashboard.putNumber("reset piece", resetPiece);
+        resetPiece++;
+
+        SmartDashboard.putBoolean("requested has pice", hasPiece);
+
         this.hasPiece = hasPiece;
     }
 

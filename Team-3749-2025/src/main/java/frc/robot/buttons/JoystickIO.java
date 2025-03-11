@@ -19,8 +19,9 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.buttons.ButtonBoard.ScoringMode;
-
+import frc.robot.commands.auto.Autos;
 import frc.robot.commands.integration.Climb;
 import frc.robot.commands.integration.CoralIntakeSource;
 import frc.robot.commands.integration.Handoff;
@@ -31,7 +32,7 @@ import frc.robot.commands.integration.IntakeSource;
 import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.ScoreL1;
 import frc.robot.commands.integration.ScoreL234;
-
+import frc.robot.commands.integration.ScoringModeConditionalHandoff;
 import frc.robot.commands.swerve.OnTheFly;
 import frc.robot.commands.swerve.SwerveDefaultCommand;
 import frc.robot.subsystems.arm.climb.ClimbArmConstants;
@@ -73,10 +74,11 @@ public class JoystickIO {
 
                 if (Robot.isSimulation()) {
                         // will show not connected if on
-                        pilotAndOperatorBindings();
-                        // simBindings();
+                        // pilotAndOperatorBindings();
+                        simBindings();
                 } else {
                         pilotAndOperatorBindings();
+                        // testBindings();
 
                 }
 
@@ -130,13 +132,23 @@ public class JoystickIO {
          */
         public static void pilotAndOperatorBindings() {
                 // gyro reset
+                pilot.povLeft().onTrue(Commands.runOnce(()->Robot.vision.disable3(true)));
+                pilot.povRight().onTrue(Commands.runOnce(()->Robot.vision.disable3(false)));
+
                 pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
 
                 // intake floor
-                pilot.leftTrigger().onTrue(new IntakeFloor()).onFalse(
+                pilot.leftTrigger().onTrue(new IntakeFloor().andThen(new ScoringModeConditionalHandoff())).onFalse(
                                 Commands.runOnce(() -> System.out.println("interupt ground intake"), Robot.coralArm));
-                // intake source w arm
-                pilot.rightTrigger().onTrue(new CoralIntakeSource());
+                // // intake source w arm
+
+                // pilot.leftTrigger().onTrue(Commands.runOnce(() ->
+                // Robot.elevator.setVoltage(5)));
+                pilot.rightTrigger().onTrue(new CoralIntakeSource()
+                                .andThen(new ScoringModeConditionalHandoff()))
+                                .onFalse(
+                                                Commands.runOnce(() -> System.out.println("interupt ground intake"),
+                                                                Robot.coralArm));
                 // outtake arm
                 pilot.leftBumper().onTrue(new ScoreL1());
                 // intake source w elevator
@@ -145,6 +157,10 @@ public class JoystickIO {
                 pilot.a().onTrue(new Handoff());
                 // Climb - Reset to cancel
                 pilot.y().onTrue(new PrepareClimb()).onFalse(new Climb());
+                // pilot.y().onTrue(new ScoreL234(ElevatorStates.L4));
+                // pilot.b().onTrue(new ScoreL234(ElevatorStates.L3));
+                // pilot.x().onTrue(new ScoreL234(ElevatorStates.L2));
+
                 // reset
                 pilot.povDown().onTrue(new Reset());
                 // toggle hasPiece
@@ -184,27 +200,38 @@ public class JoystickIO {
         }
 
         public static void testBindings() {
-                pilotAndOperatorBindings();
+                // pilotAndOperatorBindings();
 
-                pilot.povRight().whileTrue(Commands.run(() -> rumblePilot()));
+                // operator.povLeft().onTrue(new ScoreL234(ElevatorStates.L2));
+                // operator.povRight().onTrue(new ScoreL234(ElevatorStates.L3));
 
-                // OTF by controller - Closest apriltag
-                pilot.x().onTrue(Commands.runOnce(() -> {
-                        ToPos.setSetpointByClosestReefBranch(true);
-                        Robot.swerve.setIsOTF(true);
-                }));
-                pilot.b().onTrue(Commands.runOnce(() -> {
-                        ToPos.setSetpointByClosestReefBranch(false);
-                        Robot.swerve.setIsOTF(true);
-                }));
+                // pilot.povRight().whileTrue(Commands.run(() -> rumblePilot()));
 
-                pilot.povRight().onTrue(Commands.runOnce(
-                                () -> Robot.climbArm.setState(ClimbArmConstants.ArmStates.STOWED)))
-                                .onFalse(Commands.runOnce(
-                                                () -> Robot.climbArm.setState(ClimbArmConstants.ArmStates.STOPPED)));
+                // // OTF by controller - Closest apriltag
+                // pilot.x().onTrue(Commands.runOnce(() -> {
+                // ToPos.setSetpointByClosestReefBranch(true);
+                // Robot.swerve.setIsOTF(true);
+                // }));
+                // pilot.b().onTrue(Commands.runOnce(() -> {
+                // ToPos.setSetpointByClosestReefBranch(false);
+                // Robot.swerve.setIsOTF(true);
+                // }));
 
-                operator.povLeft().onTrue(Commands.runOnce(() -> Robot.swerve.cyclePPSetpoint()));
+                // pilot.povRight().onTrue(Commands.runOnce(
+                // () -> Robot.climbArm.setState(ClimbArmConstants.ArmStates.STOWED)))
+                // .onFalse(Commands.runOnce(
+                // () -> Robot.climbArm.setState(ClimbArmConstants.ArmStates.STOPPED)));
 
+                // operator.povLeft().onTrue(Commands.runOnce(() ->
+                // Robot.swerve.cyclePPSetpoint()));
+
+                // operator.a().onTrue(Robot.swerve.startOnTheFly(0);)
+
+                pilot.a().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setHasPiece(false)));
+                pilot.b().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setHasPiece(true)));
+
+                pilot.x().onTrue(Commands.runOnce(() -> Robot.coralRoller.setHasPiece(false)));
+                pilot.y().onTrue(Commands.runOnce(() -> Robot.coralRoller.setHasPiece(true)));
         }
 
         public static void pilotBindings() {
@@ -214,7 +241,14 @@ public class JoystickIO {
         }
 
         public static void simBindings() {
-                pilotBindings();
+                // pilotBindings();
+                // pilot.a().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setHasPiece(false)));
+                // pilot.b().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setHasPiece(true)));
+
+                // pilot.x().onTrue(Autos.run3Piece());
+
+                pilot.a().onTrue(Commands.runOnce(() -> Robot.coralRoller.setHasPiece(true)));
+                pilot.a().onTrue(Commands.runOnce(() -> Robot.coralRoller.setHasPiece(false)));
         }
 
         /**

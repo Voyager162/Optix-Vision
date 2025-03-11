@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -22,6 +23,7 @@ import frc.robot.subsystems.roller.implementations.CoralRoller;
 import frc.robot.subsystems.roller.implementations.ScoringRoller;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.ToPosConstants;
+import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.utils.MiscConstants;
 import java.util.ArrayList;
@@ -33,6 +35,8 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+
 import frc.robot.utils.LoggedTunableNumber;
 
 public class Robot extends LoggedRobot {
@@ -42,12 +46,12 @@ public class Robot extends LoggedRobot {
   public static CoralRoller coralRoller = new CoralRoller();
   public static ScoringRoller scoringRoller = new ScoringRoller();
   public static Elevator elevator = new Elevator();
-  
+
   public static CoralArm coralArm = new CoralArm();
   public static ClimbArm climbArm = new ClimbArm();
   public static Vision vision = new Vision();
   public static Led led = new Led();
-  public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("setVoltage", -12);
+  public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("setVoltage", 0);
 
   private RobotContainer m_robotContainer;
   private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
@@ -91,7 +95,8 @@ public class Robot extends LoggedRobot {
         // setUseTiming(false); // Run as fast as possible
         // String logPath = LogFileUtil.findReplayLog();
         // Logger.setReplaySource(new WPILOGReader(logPath));
-        // Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+        // Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath,
+        // "_sim")));
         break;
     }
 
@@ -123,8 +128,9 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledInit() {
-    swerve.setBreakMode(false);
-    climbArm.setBrakeMode(false);
+
+    vision.setStrategyCam12(PoseStrategy.LOWEST_AMBIGUITY);
+
   }
 
   @Override
@@ -133,8 +139,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledExit() {
-    swerve.setBreakMode(true);
-    climbArm.setBrakeMode(true);
+    vision.setStrategyCam12(PoseStrategy.PNP_DISTANCE_TRIG_SOLVE);
   }
 
   @Override

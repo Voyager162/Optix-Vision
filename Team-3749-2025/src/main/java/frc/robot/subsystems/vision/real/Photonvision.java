@@ -31,6 +31,8 @@ public class Photonvision implements VisionIO {
     private final PhotonCamera cam5 = new PhotonCamera("5");
     private final PhotonCamera cam6 = new PhotonCamera("6");
 
+    private boolean disable3 = false;
+
     private final PhotonCamera[] cameraList = { cam1, cam2, cam3, cam4, cam5, cam6 };
     private PhotonPoseEstimator poseEstimatorList[] = VisionConstants.CameraReal.poseEstimatorList;
 
@@ -42,13 +44,8 @@ public class Photonvision implements VisionIO {
             // Use MultiTag detection on the coprocessor, and fall back to the least
             // uncertain tag if that fails
             poseEstimator.setPrimaryStrategy(PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR);
+            poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
-            if (index == 1 || index == 2) {
-                poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.PNP_DISTANCE_TRIG_SOLVE);
-
-            } else {
-                poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-            }
             // redundant, but why not (setting the correct apriltag size/model and correct
             // field layout)
             poseEstimator.setTagModel(TargetModel.kAprilTag36h11);
@@ -67,16 +64,22 @@ public class Photonvision implements VisionIO {
     public PhotonCamera getCamera(int index) {
         return cameraList[index];
     }
+    @Override
+    public void setDisable3(boolean disable){
+        disable3 = disable;
+    }
 
     public void updatePose() {
         // Cam # minus 1
-        cameraUpdatePose(0);
         // Cam 3 missing, cam 2 is bad because of mount droop
-        cameraUpdatePose(1);
-        cameraUpdatePose(2);
-        cameraUpdatePose(3);
-        cameraUpdatePose(4);
-        cameraUpdatePose(5);
+        
+        // cameraUpdatePose(0);
+        // cameraUpdatePose(1);
+        // cameraUpdatePose(2);
+        // cameraUpdatePose(3);
+        // cameraUpdatePose(4);
+        // cameraUpdatePose(5);
+
 
     }
 
@@ -84,7 +87,6 @@ public class Photonvision implements VisionIO {
 
         if (index == 1 || index == 2) {
             poseEstimatorList[index].addHeadingData(Timer.getFPGATimestamp(), Robot.swerve.getRotation2d());
-
         }
 
         PhotonCamera camera = cameraList[index];
@@ -156,7 +158,9 @@ public class Photonvision implements VisionIO {
             // continue;
             // }
 
-            double timestamp = Timer.getFPGATimestamp() - latencyMillis / 1000.0;
+           
+            // double timestamp = Timer.getFPGATimestamp() - latencyMillis / 1000.0;
+            double timestamp =  pipelineResult.getTimestampSeconds();
             Robot.swerve.visionUpdateOdometry(robotPose.toPose2d(), timestamp);
             logTarget(index);
         }
@@ -191,10 +195,11 @@ public class Photonvision implements VisionIO {
         if (result.getTargets().size() == 0) {
             return;
         }
-        if (DriverStation.isDisabled()){
-            
+        if (DriverStation.isDisabled()) {
+
             poseEstimator.setVisionMeasurementStdDevs(
-                    VecBuilder.fill(StandardDeviations.PreMatch.xy, StandardDeviations.PreMatch.xy, StandardDeviations.PreMatch.thetaRads));
+                    VecBuilder.fill(StandardDeviations.PreMatch.xy, StandardDeviations.PreMatch.xy,
+                            StandardDeviations.PreMatch.thetaRads));
         }
         if (result.getTargets().size() == 1) {
             double xyStdDev = StandardDeviations.OneTag.regression.apply(visionData.distance[index]);
@@ -212,5 +217,12 @@ public class Photonvision implements VisionIO {
                     StandardDeviations.ManyTag.xy,
                     StandardDeviations.ManyTag.thetaRads));
         }
+    }
+
+    @Override
+    public void setStrategyCam12(PoseStrategy strat) {
+        // poseEstimatorList[1].setMultiTagFallbackStrategy(strat);
+        // poseEstimatorList[2].setMultiTagFallbackStrategy(strat);
+
     }
 }

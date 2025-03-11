@@ -15,7 +15,7 @@ public class ButtonBoard {
     // coral elevator positions
     public JoystickButton buttonl1 = new JoystickButton(buttonBoardPlayer1, 6);
     public JoystickButton buttonl2 = new JoystickButton(buttonBoardPlayer1, 5);
-    public JoystickButton buttonl3 = new JoystickButton(buttonBoardPlayer1,4);
+    public JoystickButton buttonl3 = new JoystickButton(buttonBoardPlayer1, 4);
     public JoystickButton buttonl4 = new JoystickButton(buttonBoardPlayer1, 3);
 
     // source buttons
@@ -30,7 +30,7 @@ public class ButtonBoard {
     public JoystickButton buttonReefZoneLeft5 = new JoystickButton(buttonBoardPlayer2, 5);
     public JoystickButton buttonReefZoneLeft6 = new JoystickButton(buttonBoardPlayer2, 6);
     public JoystickButton buttonReefZoneRight1 = new JoystickButton(buttonBoardPlayer3, 4);
-    public JoystickButton buttonReefZoneRight2 = new JoystickButton(buttonBoardPlayer3,3);
+    public JoystickButton buttonReefZoneRight2 = new JoystickButton(buttonBoardPlayer3, 3);
     public JoystickButton buttonReefZoneRight3 = new JoystickButton(buttonBoardPlayer3, 2);
     public JoystickButton buttonReefZoneRight4 = new JoystickButton(buttonBoardPlayer3, 1);
     public JoystickButton buttonReefZoneRight5 = new JoystickButton(buttonBoardPlayer2, 8);
@@ -46,6 +46,7 @@ public class ButtonBoard {
     }
 
     private ScoringMode scoringMode = ScoringMode.L4;
+    private ScoringMode previousScoringMode = ScoringMode.L4;
 
     public enum ScoringMode {
         L1,
@@ -58,8 +59,12 @@ public class ButtonBoard {
     public ScoringMode getScoringMode() {
         return scoringMode;
     }
+    public ScoringMode getPreviousScoringMode() {
+        return previousScoringMode;
+    }
 
     public void setScoringMode(ScoringMode scoringMode) {
+        this.previousScoringMode = this.scoringMode;
         this.scoringMode = scoringMode;
         Logger.recordOutput("/buttons/buttonboard/scoringMode", getScoringMode());
     }

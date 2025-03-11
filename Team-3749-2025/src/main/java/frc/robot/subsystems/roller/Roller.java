@@ -149,7 +149,6 @@ public abstract class Roller extends SubsystemBase {
 
     @Override
     public void periodic() {
-
         velocityController = new PIDController(RollerConstants.Coral.kPVelocity.get(),
                 RollerConstants.Coral.kIVelocity.get(), RollerConstants.Coral.kDVelocity.get());
         rollerIO.updateData(rollerData);

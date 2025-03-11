@@ -9,9 +9,9 @@ import edu.wpi.first.math.util.Units;
  */
 public final class AutoConstants {
         public final class OTF{}
-        public static double kPDrive = 2.5; // 3
+        public static double kPDrive = 2; // 3
         public static double kIDrive = 1; // 0.1
-        public static double kDDrive = 0.; // 0.5
+        public static double kDDrive = 0.1; // 0.5
         public static double driveIZone = 0.075; //0.1
         public static double driveToleranceMeters = 0.02;
 

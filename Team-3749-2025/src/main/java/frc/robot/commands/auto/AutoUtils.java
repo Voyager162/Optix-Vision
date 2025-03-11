@@ -18,11 +18,14 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
+import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 import frc.robot.commands.integration.CoralIntakeSource;
+import frc.robot.commands.integration.Handoff;
 import frc.robot.commands.integration.IntakeSource;
 import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.ScoreL1;
 import frc.robot.commands.integration.ScoreL234;
+import frc.robot.commands.integration.ScoringModeConditionalHandoff;
 
 /**
  * All setup and helper methods for auto routines, including the
@@ -62,6 +65,8 @@ public class AutoUtils {
     }
 
     public static AutoFactory getAutoFactory() {
+
+        SmartDashboard.putBoolean("autoFactory Flipped", flippedChooser.getSelected());
 
         if (flippedChooser.getSelected()) {
             return factoryFlipped;
@@ -117,6 +122,7 @@ public class AutoUtils {
         chooser = new AutoChooser();
 
         chooser.addCmd("3-Piece", () -> Autos.get3Piece());
+        chooser.addCmd("3-Piece-flipped", () -> Autos.get3PieceFlipped());
         chooser.addCmd("TeamTaxi", () -> Autos.getTeamtaxi());
         chooser.addCmd("Taxi", () -> Autos.getTaxi());
         chooser.addCmd("One Piece Center", () -> Autos.getOnePieceCenter());
@@ -137,7 +143,7 @@ public class AutoUtils {
 
     private static void setupFlipChooser() {
 
-        flippedChooser.addOption("Yes", true);
+        // flippedChooser.addOption("Yes", true);
         flippedChooser.addOption("No", false);
         flippedChooser.setDefaultOption("No", false);
 
@@ -176,8 +182,8 @@ public class AutoUtils {
     public static Command startRoutine(AutoRoutine routine, String firstTrajectoryName,
             AutoTrajectory firstTrajectory) {
 
-        routine.active().onTrue(
-                AutoUtils.getAutoFactory().resetOdometry(firstTrajectoryName).andThen(
+        routine.active()
+                .onTrue(factory.resetOdometry(firstTrajectoryName).andThen(
                         firstTrajectory.cmd()));
         return routine.cmd();
     }
@@ -199,7 +205,7 @@ public class AutoUtils {
         // Command intakeSource = new IntakeSource();
         Command scoreL4 = new ScoreL234(ElevatorStates.L4);
 
-        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(scoreL4);
+        trajectory.atPose(endingPose2d, 1, 2*Math.PI).onTrue(scoreL4);
         trajectory.done().and(() -> scoreL4.isScheduled())
                 .onTrue(
                         Commands.run(() -> {
@@ -302,15 +308,19 @@ public class AutoUtils {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
         Command intake = new CoralIntakeSource();
+        Command handoff = new ScoringModeConditionalHandoff();
 
-        trajectory.atPose(endingPose2d, 1.5, Math.PI / 3).onTrue(intake);
+        trajectory.atPose(endingPose2d, 1.5, 2 * Math.PI).onTrue(intake);
         trajectory.done().and(() -> intake.isScheduled())
                 .onTrue(
                         Commands.run(() -> {
                             Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
                             System.out.println("contine PID");
-                        }, Robot.swerve));
-        return intake;
+                        }, Robot.swerve))
+                .onFalse(handoff);
+        // trajectory.done().and(()->Robot.coralRoller.hasPiece()).onTrue(new
+        // Handoff());
+        return handoff;
 
     }
 
@@ -420,7 +430,7 @@ public class AutoUtils {
 
         // return getFlippedPose(trajectory.getFinalPose().get());
         // } else {
-        return trajectory.getFinalPose().get();
+        return trajectory.getFinalPose().isPresent() ? trajectory.getFinalPose().get() : new Pose2d();
         // }
     }
 

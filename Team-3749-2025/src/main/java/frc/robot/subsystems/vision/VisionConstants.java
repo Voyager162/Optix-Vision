@@ -15,7 +15,7 @@ public class VisionConstants {
 
         public class RejectionRequirements {
                 public static final double maxLatencyMilliSec = 150;
-                public static final double maxSingleTagDistanceMeters = Units.inchesToMeters(95);
+                public static final double maxSingleTagDistanceMeters = Units.inchesToMeters(80);
         }
 
         // currently 3748's #'s'
@@ -57,10 +57,12 @@ public class VisionConstants {
                                 Units.inchesToMeters(10.353),
                                 new Rotation3d(0,
                                                 Units.degreesToRadians(15),
-                                                Units.degreesToRadians(55 - 90)));
+                                                Units.degreesToRadians(62 - 90)));
 
                 public static Transform3d cam3 = new Transform3d(
-                                Units.inchesToMeters(9.504),
+                                Units.inchesToMeters(9.504+6)-0.4223,
+                                // Units.inchesToMeters(9.504),
+
                                 Units.inchesToMeters(-10.961),
                                 Units.inchesToMeters(15.746),
                                 new Rotation3d(0,
