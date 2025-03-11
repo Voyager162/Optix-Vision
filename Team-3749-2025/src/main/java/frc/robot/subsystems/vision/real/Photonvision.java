@@ -64,6 +64,10 @@ public class Photonvision implements VisionIO {
             double latencyMillis = pipelineResult.metadata.getLatencyMillis();
 
             visionData.latencyMillis[index] = latencyMillis;
+
+            pipelineResult.getTargets()
+                    .removeIf(target -> target.getArea() < VisionConstants.RejectionRequirements.areaThreshold);
+
             visionData.targetsSeen[index] = pipelineResult.getTargets().size();
 
             // skip if latency is too high

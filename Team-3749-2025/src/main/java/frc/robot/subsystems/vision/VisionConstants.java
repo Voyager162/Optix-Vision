@@ -14,6 +14,7 @@ public class VisionConstants {
         public class RejectionRequirements {
                 public static final double maxLatencyMilliSec = 150;
                 public static final double maxSingleTagDistanceMeters = 20;
+                public static final double areaThreshold = 0.1;
         }
 
         // currently 3748's #'s'
