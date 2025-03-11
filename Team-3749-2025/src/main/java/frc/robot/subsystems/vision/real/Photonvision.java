@@ -61,18 +61,16 @@ public class Photonvision implements VisionIO {
         return cameraList[index];
     }
 
-
     public void updatePose() {
         // Cam # minus 1
         // Cam 3 missing, cam 2 is bad because of mount droop
-        
+
         cameraUpdatePose(0);
         cameraUpdatePose(1);
         cameraUpdatePose(2);
         cameraUpdatePose(3);
         cameraUpdatePose(4);
         cameraUpdatePose(5);
-
 
     }
 
@@ -145,15 +143,14 @@ public class Photonvision implements VisionIO {
 
             updateStandardDeviations(pipelineResult, index);
 
-            // if ((Robot.swerve.getIsOTF() || DriverStation.isAutonomous())
-            // && Robot.elevator.getCurrentCommand().getName() == "ScoreL234" && !(index ==
-            // 1 || index == 2)) {
-            // continue;
-            // }
+            // Reduce to only cams 1-2 if automatically scoring and scoring command has started
+            if ((Robot.swerve.getIsOTF() || DriverStation.isAutonomous())
+                    && Robot.elevator.getCurrentCommand().getName() == "ScoreL234" && !(index == 1 || index == 2)) {
+                continue;
+            }
 
-           
             // double timestamp = Timer.getFPGATimestamp() - latencyMillis / 1000.0;
-            double timestamp =  pipelineResult.getTimestampSeconds();
+            double timestamp = pipelineResult.getTimestampSeconds();
             Robot.swerve.visionUpdateOdometry(robotPose.toPose2d(), timestamp);
             logTarget(index);
         }
