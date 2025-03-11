@@ -73,12 +73,12 @@ public class Photonvision implements VisionIO {
         // Cam # minus 1
         // Cam 3 missing, cam 2 is bad because of mount droop
         
-        // cameraUpdatePose(0);
-        // cameraUpdatePose(1);
-        // cameraUpdatePose(2);
-        // cameraUpdatePose(3);
-        // cameraUpdatePose(4);
-        // cameraUpdatePose(5);
+        cameraUpdatePose(0);
+        cameraUpdatePose(1);
+        cameraUpdatePose(2);
+        cameraUpdatePose(3);
+        cameraUpdatePose(4);
+        cameraUpdatePose(5);
 
 
     }
