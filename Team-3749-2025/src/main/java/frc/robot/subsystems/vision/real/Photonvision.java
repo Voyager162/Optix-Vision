@@ -31,15 +31,12 @@ public class Photonvision implements VisionIO {
     private final PhotonCamera cam5 = new PhotonCamera("5");
     private final PhotonCamera cam6 = new PhotonCamera("6");
 
-    private boolean disable3 = false;
-
     private final PhotonCamera[] cameraList = { cam1, cam2, cam3, cam4, cam5, cam6 };
     private PhotonPoseEstimator poseEstimatorList[] = VisionConstants.CameraReal.poseEstimatorList;
 
     private VisionData visionData;
 
     public Photonvision(VisionData visionData) {
-        int index = 0;
         for (PhotonPoseEstimator poseEstimator : poseEstimatorList) {
             // Use MultiTag detection on the coprocessor, and fall back to the least
             // uncertain tag if that fails
@@ -50,7 +47,6 @@ public class Photonvision implements VisionIO {
             // field layout)
             poseEstimator.setTagModel(TargetModel.kAprilTag36h11);
             poseEstimator.setFieldTags(VisionConstants.aprilTagFieldLayout);
-            index++;
         }
 
         this.visionData = visionData;
@@ -64,21 +60,18 @@ public class Photonvision implements VisionIO {
     public PhotonCamera getCamera(int index) {
         return cameraList[index];
     }
-    @Override
-    public void setDisable3(boolean disable){
-        disable3 = disable;
-    }
+
 
     public void updatePose() {
         // Cam # minus 1
         // Cam 3 missing, cam 2 is bad because of mount droop
         
-        // cameraUpdatePose(0);
-        // cameraUpdatePose(1);
-        // cameraUpdatePose(2);
-        // cameraUpdatePose(3);
-        // cameraUpdatePose(4);
-        // cameraUpdatePose(5);
+        cameraUpdatePose(0);
+        cameraUpdatePose(1);
+        cameraUpdatePose(2);
+        cameraUpdatePose(3);
+        cameraUpdatePose(4);
+        cameraUpdatePose(5);
 
 
     }
@@ -220,9 +213,8 @@ public class Photonvision implements VisionIO {
     }
 
     @Override
-    public void setStrategyCam12(PoseStrategy strat) {
-        // poseEstimatorList[1].setMultiTagFallbackStrategy(strat);
-        // poseEstimatorList[2].setMultiTagFallbackStrategy(strat);
+    public void setCameraStrategy(PoseStrategy strat, int index) {
+        poseEstimatorList[0].setMultiTagFallbackStrategy(strat);
 
     }
 }

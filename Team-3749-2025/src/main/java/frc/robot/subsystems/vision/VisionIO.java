@@ -34,9 +34,8 @@ public interface VisionIO {
         return new PhotonCamera("" + index);
     }
 
-    public default void setStrategyCam12(PoseStrategy strat){
+    public default void setCameraStrategy(PoseStrategy strat, int index){
         
     }
-    public default void setDisable3(boolean disable){}
 
 }

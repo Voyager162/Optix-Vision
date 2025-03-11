@@ -7,7 +7,6 @@ package frc.robot.subsystems.swerve;
 import org.littletonrobotics.junction.Logger;
 
 import choreo.trajectory.SwerveSample;
-import choreo.util.ChoreoAllianceFlipUtil;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -21,9 +20,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
@@ -324,16 +321,13 @@ public class Swerve extends SubsystemBase {
 
     double xPos = sample.x;
     double xVel = sample.vx;
-    double xAcc = sample.ax;
 
     double yPos = isFlipped ? AutoUtils.flipper.flipY(sample.y) : sample.y;
     double yVel = isFlipped ? -sample.vy : sample.vy;
-    double yAcc = isFlipped ? -sample.ay : sample.ay;
 
     double heading = isFlipped ? new Rotation2d(Math.PI - sample.heading).rotateBy(new Rotation2d(Math.PI)).getRadians()
         : sample.heading;
     double omega = isFlipped ? -sample.omega : sample.omega;
-    double alpha = isFlipped ? -sample.alpha : sample.alpha;
 
     positionSetpoint = new Pose2d(xPos, yPos, new Rotation2d(heading));
     velocitySetpoint = new Pose2d(xVel, yVel, new Rotation2d(omega));

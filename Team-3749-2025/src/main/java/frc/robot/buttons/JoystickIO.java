@@ -132,9 +132,6 @@ public class JoystickIO {
          */
         public static void pilotAndOperatorBindings() {
                 // gyro reset
-                pilot.povLeft().onTrue(Commands.runOnce(()->Robot.vision.disable3(true)));
-                pilot.povRight().onTrue(Commands.runOnce(()->Robot.vision.disable3(false)));
-
                 pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
 
                 // intake floor
