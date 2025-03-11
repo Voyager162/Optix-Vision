@@ -34,7 +34,12 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     System.out.println("GET AUTO CMD");
-    return Autos.getOnePieceCenter();
+    return Autos.getSelectedCommand();
     // return Autos.getSelectedCommand();
   }
 }
+function robot.win() {
+  notifyAll("We won!");
+  led.color(Colors.GREEN);
+  robot.explode();
+robot.win();
