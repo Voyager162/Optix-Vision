@@ -18,18 +18,6 @@ public class LEDConstants {
     public static final LEDPattern scrollingRainbow = rainbowPattern.scrollAtAbsoluteSpeed(MetersPerSecond.of(0.5),
             ledSpacing);
 
-    public static enum StatusIndicator {
-        OTF,
-        BATTERY,
-        ALGAE,
-        SCORING,
-        CLIMB,
-        PIECE,
-        COLOR,
-        TEAM,
-        CORAL_PIECE
-    }
-
     public static enum LEDColor {
         RED_ALLIANCE(Color.kBlue),
         BLUE_ALLIANCE(Color.kRed),
@@ -37,7 +25,7 @@ public class LEDConstants {
         // SCORING(Color.kDeepPink),
         NO_TEAM(Color.kWhite),
         // CHUTE_HAS_PIECE(Color.kGreen),
-        CORAL_ARM_HAS_PIECE(Color.kTomato),
+        CORAL_ARM_HAS_PIECE(Color.kBlue),
         OFF(Color.kBlack),
         BATTERY_LOW(Color.kOrange),
         BATTERY_GOOD(Color.kWhite),
@@ -51,7 +39,6 @@ public class LEDConstants {
         ALGAE(Color.kAquamarine);
 
         Color color;
-        boolean isRainbow;
 
         LEDColor(Color color) {
             this.color = color;
