@@ -84,18 +84,31 @@ public class ToPosTriggers {
 
         // ======= Utility Functions =======
 
-    // /**
-    // * Checks if the robot is within a certain margin of the target setpoint.
-    // * Used to determine when to execute position-based triggers.
-    // *
-    // * @return true if the robot is within the defined distance of the target
-    // * setpoint.
-    // */
-    public static boolean OTFWithinMargin() {
-        return UtilityFunctions.withinMargin(ToPosConstants.Setpoints.approachPointDistance,
-                Robot.swerve.getPose().getTranslation(),
-                Robot.swerve.getPPSetpoint().setpoint.getTranslation());
-    }
+        // /**
+        // * Checks if the robot is within a certain margin of the target setpoint.
+        // * Used to determine when to execute position-based triggers.
+        // *
+        // * @return true if the robot is within the defined distance of the target
+        // * setpoint.
+        // */
+        public static boolean OTFWithinMargin() {
+
+                for (int i = 0; i < ToPosConstants.ReefDimensions.hexagonVectorsToDot.length; i++) {
+                        double[] centerMinusPosition = {
+                                        ToPosConstants.ReefDimensions.hexagonBlueCenterMeters[0]
+                                                        - Robot.swerve.getPose().getX(),
+                                        ToPosConstants.ReefDimensions.hexagonBlueCenterMeters[1]
+                                                        - Robot.swerve.getPose().getY() };
+                        if (Math.abs(UtilityFunctions.dotProduct(centerMinusPosition,
+                                        ToPosConstants.ReefDimensions.hexagonVectorsToDot[i])) <= ToPosConstants.ReefDimensions.hexagonRadiusMeters) {
+                                return true;
+                        }
+                }
+                return false;
+                // return UtilityFunctions.withinMargin(ToPosConstants.Setpoints.approachPointDistance,
+                //                 Robot.swerve.getPose().getTranslation(),
+                //                 Robot.swerve.getPPSetpoint().setpoint.getTranslation());
+        }
 
         // ======= Trigger Setup for Automatic Actions =======
 

@@ -24,6 +24,17 @@ public class UtilityFunctions {
         return DriverStation.getAlliance().get() == Alliance.Red;
     }
 
+    /**
+     * 
+     * @param a Vector
+     * @param b Vector
+     * @return The dot product of the two vectors, and both arrays are to be of length 2
+     */
+    public static double dotProduct(double[] a, double[] b)
+    {
+        return (a[0]*b[0])+(a[1]*b[1]);
+    }
+
     /***
      * 
      * @param margin how close the values need to be to return true. Use a positive
