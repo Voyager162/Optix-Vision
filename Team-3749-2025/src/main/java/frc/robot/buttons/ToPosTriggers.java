@@ -102,10 +102,11 @@ public class ToPosTriggers {
                 //if magnitude <= the radius of the reef: you're inside the reef
 
                 for (int i = 0; i < ToPosConstants.ReefDimensions.hexagonVectorsToDot.length; i++) {
+                        System.out.println(ToPosConstants.ReefDimensions.hexagonCenterMeters);
                         double[] centerMinusPosition = {
-                                        ToPosConstants.ReefDimensions.hexagonBlueCenterMeters[0]
+                                        ToPosConstants.ReefDimensions.hexagonCenterMeters.getX()
                                                         - Robot.swerve.getPose().getX(),
-                                        ToPosConstants.ReefDimensions.hexagonBlueCenterMeters[1]
+                                        ToPosConstants.ReefDimensions.hexagonCenterMeters.getY()
                                                         - Robot.swerve.getPose().getY() };
                         if (Math.abs(UtilityFunctions.dotProduct(centerMinusPosition,
                                         ToPosConstants.ReefDimensions.hexagonVectorsToDot[i])) <= ToPosConstants.ReefDimensions.hexagonRadiusMeters) {

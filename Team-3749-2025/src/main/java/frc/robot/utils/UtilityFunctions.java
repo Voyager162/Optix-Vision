@@ -35,6 +35,18 @@ public class UtilityFunctions {
         return (a[0]*b[0])+(a[1]*b[1]);
     }
 
+    /**
+     * 
+     * @param aMagnitude magnitude of vector A
+     * @param bMagnitude magnitude of vector b
+     * @param thetaRadian the smallest angle between them in radians
+     * @return The dot product of the two vectors
+     */
+    public static double dotProduct(double aMagnitude, double bMagnitude, double thetaRadian)
+    {
+        return Math.abs(aMagnitude) * Math.abs(bMagnitude) * Math.cos(thetaRadian);
+    }
+
     /***
      * 
      * @param margin how close the values need to be to return true. Use a positive

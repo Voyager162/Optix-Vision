@@ -35,9 +35,9 @@ public class ToPosConstants {
 
     public static final class ReefDimensions
     {
-        public static double hexagonRadiusMeters = 0.554;
-        public static double[] hexagonBlueCenterMeters = {4.5,4.07}; 
-        public static double[][] hexagonVectorsToDot = { //https://stackoverflow.com/questions/5193331/is-a-point-inside-regular-hexagon
+        public static final double hexagonRadiusMeters = 0.554;
+        public static final Translation2d hexagonCenterMeters = ReefVerticies.flipIfRed(new Translation2d(4.5,4.07)); 
+        public static final double[][] hexagonVectorsToDot = { //https://stackoverflow.com/questions/5193331/is-a-point-inside-regular-hexagon
             {hexagonRadiusMeters,0},
             {hexagonRadiusMeters*Math.cos(Units.degreesToRadians(30)),hexagonRadiusMeters*Math.sin(Units.degreesToRadians(30))},
             {hexagonRadiusMeters*Math.cos(Units.degreesToRadians(150)),hexagonRadiusMeters*Math.sin(Units.degreesToRadians(150))}
