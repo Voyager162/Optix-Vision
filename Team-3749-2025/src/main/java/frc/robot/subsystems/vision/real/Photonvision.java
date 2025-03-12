@@ -47,6 +47,11 @@ public class Photonvision implements VisionIO {
             // field layout)
             poseEstimator.setTagModel(TargetModel.kAprilTag36h11);
             poseEstimator.setFieldTags(VisionConstants.aprilTagFieldLayout);
+
+
+            // temporary for testing cameras outside of their cases
+            poseEstimator.setRobotToCameraTransform(new Transform3d());
+
         }
 
         this.visionData = visionData;
@@ -76,8 +81,8 @@ public class Photonvision implements VisionIO {
 
     public void cameraUpdatePose(int index) {
 
-        poseEstimatorList[index].addHeadingData(Robot.swerve.getUpdateOdometryTimestamp(), Robot.swerve.getRotation2d());
-        
+        poseEstimatorList[index].addHeadingData(Robot.swerve.getUpdateOdometryTimestamp(),
+                Robot.swerve.getRotation2d());
 
         PhotonCamera camera = cameraList[index];
         PhotonPoseEstimator poseEstimator = poseEstimatorList[index];
@@ -142,7 +147,8 @@ public class Photonvision implements VisionIO {
 
             updateStandardDeviations(pipelineResult, index);
 
-            // Reduce to only cams 1-2 if automatically scoring and scoring command has started
+            // Reduce to only cams 1-2 if automatically scoring and scoring command has
+            // started
             if ((Robot.swerve.getIsOTF() || DriverStation.isAutonomous())
                     && Robot.elevator.getCurrentCommand().getName() == "ScoreL234" && !(index == 1 || index == 2)) {
                 continue;
