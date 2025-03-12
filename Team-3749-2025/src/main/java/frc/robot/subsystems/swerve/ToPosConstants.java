@@ -35,15 +35,13 @@ public class ToPosConstants {
 
     public static final class ReefDimensions
     {
-        public static final double hexagonRadiusMeters = 0.554;
+        public static final double hexagonRadiusMeters = 0.554; 
+        //if it need be we need to increase the margin for being in the reef (by increasing radius)
+        //make a new variable, this is the actual measurement 
+
+
         public static final Translation2d hexagonCenterMeters = ReefVerticies.flipIfRed(Setpoints.reefCenter); //this allegedly flips it: not sure 
         //honestly if the flipifred does nothing feel free to delete this variable and then refactor whats using it
-
-        public static final double[][] hexagonVectorsToDot = { //https://stackoverflow.com/questions/5193331/is-a-point-inside-regular-hexagon
-            {hexagonRadiusMeters,0},
-            {hexagonRadiusMeters*Math.cos(Units.degreesToRadians(30)),hexagonRadiusMeters*Math.sin(Units.degreesToRadians(30))},
-            {hexagonRadiusMeters*Math.cos(Units.degreesToRadians(150)),hexagonRadiusMeters*Math.sin(Units.degreesToRadians(150))}
-        };
     }
 
     /**

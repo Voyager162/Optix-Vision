@@ -129,7 +129,7 @@ public class Swerve extends SubsystemBase {
 
     // put us on the field with a default orientation
     resetGyro();
-    setOdometry(new Pose2d(4.5, 3.52+0.554256258422, new Rotation2d(0)));
+    setOdometry(ToPosConstants.Setpoints.reefCloseLeft);
     logSetpoints(1.33, 0, 0, 5.53, 0, 0, 0, 0, 0);
 
   }

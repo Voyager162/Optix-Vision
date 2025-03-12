@@ -2,6 +2,7 @@ package frc.robot.buttons;
 
 import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.buttons.ButtonBoard.ScoringMode;
@@ -13,7 +14,6 @@ import frc.robot.commands.integration.ScoringModeConditionalHandoff;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.swerve.ToPosConstants; //dont remvoe these yet: read the commented stuff
 import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
-import frc.robot.utils.UtilityFunctions;
 
 /**
  * The `ToPosTriggers` class manages automatic command triggers for robot
@@ -92,31 +92,30 @@ public class ToPosTriggers {
         // * setpoint.
         // */
         public static boolean OTFWithinMargin() {
+                //save a bit on processing power cause i assume trig calcs are a bit expensive
+                double cos30 = Math.cos(Units.degreesToRadians(30));
+                double sin30 = Math.sin(Units.degreesToRadians(30));
 
-                //3 vectors to try dotting for 3 pairs of 2 parallel side lengths,
-                //this is because the farthest distance while still being inside a rectangle is the distance from the
-                //corner to the center: = radius
-                
-                //(Center-RobotPose) = C-P = A vector pointing towards the center of the reef from the bot
-                //(C-P) dot the perpindicular vector to each of the 3 side lengths = distance magnitude
-                //if magnitude <= the radius of the reef: you're inside the reef
+                // translate the point to the hexagon's center
+                double dx = Robot.swerve.getPose().getX() - ToPosConstants.ReefDimensions.hexagonCenterMeters.getX();
+                double dy = Robot.swerve.getPose().getY() - ToPosConstants.ReefDimensions.hexagonCenterMeters.getY();
 
-                for (int i = 0; i < ToPosConstants.ReefDimensions.hexagonVectorsToDot.length; i++) {
-                        System.out.println(ToPosConstants.ReefDimensions.hexagonCenterMeters);
-                        double[] centerMinusPosition = {
-                                        ToPosConstants.ReefDimensions.hexagonCenterMeters.getX()
-                                                        - Robot.swerve.getPose().getX(),
-                                        ToPosConstants.ReefDimensions.hexagonCenterMeters.getY()
-                                                        - Robot.swerve.getPose().getY() };
-                        if (Math.abs(UtilityFunctions.dotProduct(centerMinusPosition,
-                                        ToPosConstants.ReefDimensions.hexagonVectorsToDot[i])) <= ToPosConstants.ReefDimensions.hexagonRadiusMeters) {
-                                return true;
-                        }
-                }
-                return false;
-                // return UtilityFunctions.withinMargin(ToPosConstants.Setpoints.approachPointDistance,
-                //                 Robot.swerve.getPose().getTranslation(),
-                //                 Robot.swerve.getPPSetpoint().setpoint.getTranslation());
+                // Rotate the point back by -30 degrees cause the reefs rotated 30 from flat sides on top and bottom
+                double xPrime = dx * cos30 + dy * sin30;
+                double yPrime = -dx * sin30 + dy * cos30;
+
+                // normalize coordinates for hexagon check
+                double qx = (2.0 / 3.0) * xPrime / ToPosConstants.ReefDimensions.hexagonRadiusMeters;
+                double qy = (-1.0 / 3.0) * xPrime / ToPosConstants.ReefDimensions.hexagonRadiusMeters + (2.0 / 3.0) * yPrime / (Math.sqrt(3) * ToPosConstants.ReefDimensions.hexagonRadiusMeters);
+
+                // is it inside the reef
+                return Math.abs(qx) <= 1 && Math.abs(qy) <= 1 && Math.abs(qx + qy) <= 1;
+
+              
+                // return
+                // UtilityFunctions.withinMargin(ToPosConstants.Setpoints.approachPointDistance,
+                // Robot.swerve.getPose().getTranslation(),
+                // Robot.swerve.getPPSetpoint().setpoint.getTranslation());
         }
 
         // ======= Trigger Setup for Automatic Actions =======
