@@ -93,6 +93,14 @@ public class ToPosTriggers {
         // */
         public static boolean OTFWithinMargin() {
 
+                //3 vectors to try dotting for 3 pairs of 2 parallel side lengths,
+                //this is because the farthest distance while still being inside a rectangle is the distance from the
+                //corner to the center: = radius
+                
+                //(Center-RobotPose) = C-P = A vector pointing towards the center of the reef from the bot
+                //(C-P) dot the perpindicular vector to each of the 3 side lengths = distance magnitude
+                //if magnitude <= the radius of the reef: you're inside the reef
+
                 for (int i = 0; i < ToPosConstants.ReefDimensions.hexagonVectorsToDot.length; i++) {
                         double[] centerMinusPosition = {
                                         ToPosConstants.ReefDimensions.hexagonBlueCenterMeters[0]
