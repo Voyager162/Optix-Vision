@@ -2,7 +2,8 @@ package frc.robot.buttons;
 
 import java.util.function.BooleanSupplier;
 
-import edu.wpi.first.math.util.Units;
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.buttons.ButtonBoard.ScoringMode;
@@ -93,8 +94,8 @@ public class ToPosTriggers {
         // */
         public static boolean OTFWithinMargin() {
                 //save a bit on processing power cause i assume trig calcs are a bit expensive
-                double cos30 = Math.cos(Units.degreesToRadians(30));
-                double sin30 = Math.sin(Units.degreesToRadians(30));
+                double cos30 = ToPosConstants.ReefDimensions.cos30;
+                double sin30 = ToPosConstants.ReefDimensions.sin30;
 
                 // translate the point to the hexagon's center
                 double dx = Robot.swerve.getPose().getX() - ToPosConstants.ReefDimensions.hexagonCenterMeters.getX();
@@ -105,11 +106,13 @@ public class ToPosTriggers {
                 double yPrime = -dx * sin30 + dy * cos30;
 
                 // normalize coordinates for hexagon check
-                double qx = (2.0 / 3.0) * xPrime / ToPosConstants.ReefDimensions.hexagonRadiusMeters;
-                double qy = (-1.0 / 3.0) * xPrime / ToPosConstants.ReefDimensions.hexagonRadiusMeters + (2.0 / 3.0) * yPrime / (Math.sqrt(3) * ToPosConstants.ReefDimensions.hexagonRadiusMeters);
+                double qx = (2.0 / 3.0) * xPrime / ToPosConstants.ReefDimensions.hexagonWithinMarginRadiusMeters;
+                double qy = (-1.0 / 3.0) * xPrime / ToPosConstants.ReefDimensions.hexagonWithinMarginRadiusMeters + (2.0 / 3.0) * yPrime / (Math.sqrt(3) * ToPosConstants.ReefDimensions.hexagonWithinMarginRadiusMeters);
 
                 // is it inside the reef
-                return Math.abs(qx) <= 1 && Math.abs(qy) <= 1 && Math.abs(qx + qy) <= 1;
+                boolean isWithinMargin = Math.abs(qx) <= 1 && Math.abs(qy) <= 1 && Math.abs(qx + qy) <= 1;
+                Logger.recordOutput("Swerve/auto/OTFWithinMargin",isWithinMargin);
+                return isWithinMargin;
 
               
                 // return

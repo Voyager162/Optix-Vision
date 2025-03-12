@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.buttons.JoystickIO;
-import frc.robot.buttons.ToPosTriggers;
 import frc.robot.buttons.ButtonBoard.ScoringMode;
 import frc.robot.commands.auto.AutoConstants;
 import frc.robot.commands.auto.AutoUtils;
@@ -693,7 +692,6 @@ public class Swerve extends SubsystemBase {
     }
 
     logData();
-    System.out.println(ToPosTriggers.OTFWithinMargin());
   }
 
 }
