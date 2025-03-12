@@ -35,6 +35,7 @@ public class Led extends SubsystemBase {
         } else {
             ledBase = new LedSim(LEDConstants.ledPort, ledBuffer);
         }
+        desiredColor = getTeamColorLED();
         ledBase.setData(LEDPattern.kOff);
         LedTriggers.createLEDTriggers();
     }
@@ -70,7 +71,7 @@ public class Led extends SubsystemBase {
             return LEDColor.NO_TEAM;
         }
 
-        return team.get() == Alliance.Blue ? LEDColor.BLUE_ALLIANCE : LEDColor.RED_ALLIANCE;
+        return team.get() == Alliance.Red ? LEDColor.RED_ALLIANCE : LEDColor.BLUE_ALLIANCE;
     }
 
     public void setColor(LEDColor color) {
@@ -86,14 +87,20 @@ public class Led extends SubsystemBase {
     }
 
     public void updateLEDs() {
-        if (desiredColor == currentColor) {
+
+        if (desiredColor == LEDColor.RAINBOW) {
+            LEDPattern setPattern = LEDConstants.scrollingRainbow;
+            ledBase.setData(setPattern);
+            currentColor = desiredColor;
             return;
         }
 
         LEDPattern setPattern = LEDPattern.solid(desiredColor.color).atBrightness(Percent.of(brightness * 100));
 
-        if (desiredColor == LEDColor.RAINBOW) {
-            setPattern = LEDConstants.scrollingRainbow;
+      
+
+        if (desiredColor == LEDColor.RED_ALLIANCE || desiredColor == LEDColor.BLUE_ALLIANCE) {
+            setPattern = LEDPattern.solid(getTeamColorLED().color).atBrightness(Percent.of(brightness * 100));
         }
 
         ledBase.setData(setPattern);

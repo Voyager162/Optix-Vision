@@ -15,12 +15,12 @@ public class LEDConstants {
     private static final Distance ledSpacing = Meters.of(Units.inchesToMeters(11.5) / 18);
 
     public static final LEDPattern rainbowPattern = LEDPattern.rainbow(255, 128);
-    public static final LEDPattern scrollingRainbow = rainbowPattern.scrollAtAbsoluteSpeed(MetersPerSecond.of(0.5),
+    public static final LEDPattern scrollingRainbow = rainbowPattern.scrollAtAbsoluteSpeed(MetersPerSecond.of(.5),
             ledSpacing);
 
     public static enum LEDColor {
-        RED_ALLIANCE(Color.kBlue),
-        BLUE_ALLIANCE(Color.kRed),
+        RED_ALLIANCE(Color.kRed),
+        BLUE_ALLIANCE(Color.kBlue),
         CLIMB(Color.kDarkGreen),
         // SCORING(Color.kDeepPink),
         NO_TEAM(Color.kWhite),
