@@ -53,27 +53,26 @@ public class ScoreL234 extends Command {
             pieceRecognized = true;
         }
 
-        System.out.println(pieceRecognized);
+        // System.out.println(pieceRecognized);
 
-        // scores when elevator reaches desired state
-        // if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState()
-        //         && scoreTimestamp == Double.MAX_VALUE) {
+        if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState()
+                && scoreTimestamp == Double.MAX_VALUE) {
 
-        //     if ((Robot.swerve.getIsOTF() && !Robot.swerve.atSwerveSetpoint(Robot.swerve.getPPSetpoint().setpoint))
-        //             || (DriverStation.isAutonomous()
-        //                     && !Robot.swerve.atSwerveSetpoint(Robot.swerve.getPositionSetpoint()))) {
-        //         Robot.scoringRoller.setState(RollerStates.STOP);
-        //         return;
-        //     }
+            if ((Robot.swerve.getIsOTF() && !Robot.swerve.atSwerveSetpoint(Robot.swerve.getPPSetpoint().setpoint))
+                    || (DriverStation.isAutonomous()
+                            && !Robot.swerve.atSwerveSetpoint(Robot.swerve.getPositionSetpoint()))) {
+                Robot.scoringRoller.setState(RollerStates.STOP);
+                return;
+            }
 
-        //     Robot.scoringRoller.setState(RollerStates.SCORE);
-        //     scoreTimestamp = Timer.getFPGATimestamp();
-        // }
-
-        if (Timer.getFPGATimestamp() - elevTimestamp > 4) {
             Robot.scoringRoller.setState(RollerStates.SCORE);
             scoreTimestamp = Timer.getFPGATimestamp();
         }
+
+        // if (Timer.getFPGATimestamp() - elevTimestamp > 4) {
+        //     Robot.scoringRoller.setState(RollerStates.SCORE);
+        //     scoreTimestamp = Timer.getFPGATimestamp();
+        // }
     }
 
     @Override
@@ -93,9 +92,9 @@ public class ScoreL234 extends Command {
      */
     @Override
     public boolean isFinished() {
-        // return !Robot.scoringRoller.hasPiece() && pieceRecognized && Timer.getFPGATimestamp() - scoreTimestamp > 0.6
-        //         && this.isScheduled();
-        return Timer.getFPGATimestamp() - scoreTimestamp > 1 && this.isScheduled();
+        return !Robot.scoringRoller.hasPiece() && pieceRecognized && Timer.getFPGATimestamp() - scoreTimestamp > 0.6
+                && this.isScheduled();
+        // return Timer.getFPGATimestamp() - scoreTimestamp > 1 && this.isScheduled();
         // return false;
     }
 

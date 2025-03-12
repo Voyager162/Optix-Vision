@@ -210,7 +210,6 @@ public class AutoUtils {
                 .onTrue(
                         Commands.run(() -> {
                             Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
-                            System.out.println("contine PID");
                         }, Robot.swerve));
         return scoreL4;
     }
@@ -424,14 +423,14 @@ public class AutoUtils {
      * @return
      */
     public static Pose2d getFinalPose2d(AutoTrajectory trajectory) {
-        // if (flippedChooser.getSelected()) {
-        // System.out.println("Flipped Pose:" +
-        // getFlippedPose(trajectory.getFinalPose().get()));
+        if (flippedChooser.getSelected()) {
+        System.out.println("Flipped Pose:" +
+        getFlippedPose(trajectory.getFinalPose().get()));
+        return getFlippedPose(trajectory.getFinalPose().get());
 
-        // return getFlippedPose(trajectory.getFinalPose().get());
-        // } else {
-        return trajectory.getFinalPose().isPresent() ? trajectory.getFinalPose().get() : new Pose2d();
-        // }
+        } else {
+        return trajectory.getFinalPose().get();
+        }
     }
 
 }

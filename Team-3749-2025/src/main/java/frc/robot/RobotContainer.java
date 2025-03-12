@@ -38,8 +38,3 @@ public class RobotContainer {
     // return Autos.getSelectedCommand();
   }
 }
-function robot.win() {
-  notifyAll("We won!");
-  led.color(Colors.GREEN);
-  robot.explode();
-robot.win();
