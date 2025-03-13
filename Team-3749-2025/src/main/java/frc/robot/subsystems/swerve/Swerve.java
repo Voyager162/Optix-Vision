@@ -335,10 +335,19 @@ public class Swerve extends SubsystemBase {
     double omega = isFlipped ? -sample.omega : sample.omega;
     double alpha = isFlipped ? -sample.alpha : sample.alpha;
 
-    positionSetpoint = new Pose2d(xPos, yPos, new Rotation2d(heading));
-    velocitySetpoint = new Pose2d(xVel, yVel, new Rotation2d(omega));
+    // positionSetpoint = new Pose2d(xPos, yPos, new Rotation2d(heading));
+    // velocitySetpoint = new Pose2d(xVel, yVel, new Rotation2d(omega));
 
-    followSample(positionSetpoint, velocitySetpoint);
+    // followSample(positionSetpoint, velocitySetpoint);
+    
+    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+        new ChassisSpeeds(
+            xController.calculate(getPose().getX(), xPos) + xVel,
+            yController.calculate(getPose().getY(), yPos) + yVel,
+            turnController.calculate(getPose().getRotation().getRadians(), heading) + omega),
+        getPose().getRotation());
+
+    Robot.swerve.setChassisSpeeds(speeds);
   }
 
   public void setBreakMode(boolean enable) {

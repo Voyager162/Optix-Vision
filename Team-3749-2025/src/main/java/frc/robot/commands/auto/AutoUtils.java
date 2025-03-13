@@ -143,7 +143,7 @@ public class AutoUtils {
 
     private static void setupFlipChooser() {
 
-        // flippedChooser.addOption("Yes", true);
+        flippedChooser.addOption("Yes", true);
         flippedChooser.addOption("No", false);
         flippedChooser.setDefaultOption("No", false);
 
@@ -161,6 +161,8 @@ public class AutoUtils {
         AutoTrajectory trajectory = routine.trajectory(trajectoryName);
 
         Command trajectoryCommand = trajectory.cmd();
+      
+
 
         routine.active().onTrue(
                 getAutoFactory().resetOdometry(trajectoryName).andThen(
@@ -196,13 +198,14 @@ public class AutoUtils {
      * @return
      */
     public static Command addScoreL4(AutoTrajectory trajectory) {
-        Pose2d endingPose2d = getFinalPose2d(trajectory);
+        Pose2d endingPose2d = getFinalPose2d(trajectory, "addScoreL4");
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
         if (DriverStation.getAlliance().get() == Alliance.Red) {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
         // Command intakeSource = new IntakeSource();
+
         Command scoreL4 = new ScoreL234(ElevatorStates.L4);
 
         trajectory.atPose(endingPose2d, 1, 2*Math.PI).onTrue(scoreL4);
@@ -222,7 +225,7 @@ public class AutoUtils {
      * @return
      */
     public static Command addScoreL3(AutoTrajectory trajectory) {
-        Pose2d endingPose2d = getFinalPose2d(trajectory);
+        Pose2d endingPose2d = getFinalPose2d(trajectory, "addScoreL3");
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
         if (DriverStation.getAlliance().get() == Alliance.Red) {
@@ -248,7 +251,7 @@ public class AutoUtils {
      * @return
      */
     public static Command addScoreL2(AutoTrajectory trajectory) {
-        Pose2d endingPose2d = getFinalPose2d(trajectory);
+        Pose2d endingPose2d = getFinalPose2d(trajectory, "addScoreL2");
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
         if (DriverStation.getAlliance().get() == Alliance.Red) {
@@ -274,7 +277,7 @@ public class AutoUtils {
      * @return
      */
     public static Command addScoreL1(AutoTrajectory trajectory) {
-        Pose2d endingPose2d = getFinalPose2d(trajectory);
+        Pose2d endingPose2d = getFinalPose2d(trajectory, "addScoreL1");
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
         if (DriverStation.getAlliance().get() == Alliance.Red) {
@@ -300,7 +303,7 @@ public class AutoUtils {
      * @return
      */
     public static Command addIntake(AutoTrajectory trajectory) {
-        Pose2d endingPose2d = getFinalPose2d(trajectory);
+        Pose2d endingPose2d = getFinalPose2d(trajectory, "addIntake");
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
         if (DriverStation.getAlliance().get() == Alliance.Red) {
@@ -324,7 +327,7 @@ public class AutoUtils {
     }
 
     public static Command addKnockAlgae(AutoTrajectory trajectory) {
-        Pose2d endingPose2d = getFinalPose2d(trajectory);
+        Pose2d endingPose2d = getFinalPose2d(trajectory, "addKnockAlgae");
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
         if (DriverStation.getAlliance().get() == Alliance.Red) {
@@ -353,7 +356,7 @@ public class AutoUtils {
      * @return
      */
     public static Command addGroundIntake(AutoTrajectory trajectory) {
-        Pose2d endingPose2d = getFinalPose2d(trajectory);
+        Pose2d endingPose2d = getFinalPose2d(trajectory, "addGroundIntake");
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
         if (DriverStation.getAlliance().get() == Alliance.Red) {
@@ -412,7 +415,7 @@ public class AutoUtils {
         Rotation2d rotation = new Rotation2d(Math.PI - pos.getRotation().getRadians())
                 .rotateBy(new Rotation2d(Math.PI));
 
-        return new Pose2d(translation, rotation);
+        return new Pose2d(translation, rotation);   
     }
 
     /**
@@ -422,14 +425,21 @@ public class AutoUtils {
      * @param trajectory
      * @return
      */
-    public static Pose2d getFinalPose2d(AutoTrajectory trajectory) {
+    public static Pose2d getFinalPose2d(AutoTrajectory trajectory, String log) {
+
+        // return flippedChooser.getSelected() ? getFlippedPose(trajectory.getFinalPose().get())
+        //         : trajectory.getFinalPose().get();
         if (flippedChooser.getSelected()) {
-        System.out.println("Flipped Pose:" +
-        getFlippedPose(trajectory.getFinalPose().get()));
-        return getFlippedPose(trajectory.getFinalPose().get());
+            System.out.println("Normal Pose for " + log + ":" + trajectory.getFinalPose().get());
+            System.out.println("Flipped Pose for " + log + ":" +
+            getFlippedPose(trajectory.getFinalPose().get()));
+            System.out.println("The starting pose " +  trajectory.getInitialPose().get());
+            System.out.println("The flipped inital pose " +  getFlippedPose(trajectory.getInitialPose().get()));
+
+            return getFlippedPose(trajectory.getFinalPose().get());
 
         } else {
-        return trajectory.getFinalPose().get();
+            return trajectory.getFinalPose().get();
         }
     }
 
