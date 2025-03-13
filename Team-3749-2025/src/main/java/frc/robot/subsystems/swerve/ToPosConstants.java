@@ -45,6 +45,7 @@ public class ToPosConstants {
         public static final double cos30 = Math.cos(Units.degreesToRadians(30));
         public static final double sin30 = 0.5; //you might think this is unnecessary and you'd probably be right
         //but it might save on processing power so we dont have to recalc the same trig functions for withinmargin
+        public static final double sqrtOf3 = Math.sqrt(3);
     }
 
     /**

@@ -53,7 +53,7 @@ public class ScoreL234 extends Command {
             pieceRecognized = true;
         }
 
-        System.out.println(pieceRecognized);
+        // System.out.println(pieceRecognized);
 
         // scores when elevator reaches desired state
         // if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState()

@@ -15,6 +15,7 @@ import frc.robot.commands.integration.ScoringModeConditionalHandoff;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.swerve.ToPosConstants; //dont remvoe these yet: read the commented stuff
 import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
+import frc.robot.utils.UtilityFunctions;
 
 /**
  * The `ToPosTriggers` class manages automatic command triggers for robot
@@ -107,18 +108,14 @@ public class ToPosTriggers {
 
                 // normalize coordinates for hexagon check
                 double qx = (2.0 / 3.0) * xPrime / ToPosConstants.ReefDimensions.hexagonWithinMarginRadiusMeters;
-                double qy = (-1.0 / 3.0) * xPrime / ToPosConstants.ReefDimensions.hexagonWithinMarginRadiusMeters + (2.0 / 3.0) * yPrime / (Math.sqrt(3) * ToPosConstants.ReefDimensions.hexagonWithinMarginRadiusMeters);
+                double qy = (-1.0 / 3.0) * xPrime / ToPosConstants.ReefDimensions.hexagonWithinMarginRadiusMeters + (2.0 / 3.0) * yPrime / (ToPosConstants.ReefDimensions.sqrtOf3 * ToPosConstants.ReefDimensions.hexagonWithinMarginRadiusMeters);
 
                 // is it inside the reef
-                boolean isWithinMargin = Math.abs(qx) <= 1 && Math.abs(qy) <= 1 && Math.abs(qx + qy) <= 1;
+                boolean isWithinMargin = (Math.abs(qx) <= 1 && Math.abs(qy) <= 1 && Math.abs(qx + qy) <= 1) || UtilityFunctions.withinMargin(ToPosConstants.Setpoints.approachPointDistance,
+                Robot.swerve.getPose().getTranslation(),
+                Robot.swerve.getPPSetpoint().setpoint.getTranslation());
                 Logger.recordOutput("Swerve/auto/OTFWithinMargin",isWithinMargin);
                 return isWithinMargin;
-
-              
-                // return
-                // UtilityFunctions.withinMargin(ToPosConstants.Setpoints.approachPointDistance,
-                // Robot.swerve.getPose().getTranslation(),
-                // Robot.swerve.getPPSetpoint().setpoint.getTranslation());
         }
 
         // ======= Trigger Setup for Automatic Actions =======

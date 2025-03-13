@@ -200,6 +200,9 @@ public class JoystickIO {
         }
 
         public static void testBindings() {
+                ToPosTriggers.createOTFTriggers();
+                bindButtonBoard();
+                new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
                 // pilotAndOperatorBindings();
 
                 // operator.povLeft().onTrue(new ScoreL234(ElevatorStates.L2));
@@ -237,6 +240,9 @@ public class JoystickIO {
         public static void pilotBindings() {
                 // gyro reset
                 pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
+                ToPosTriggers.createOTFTriggers();
+                bindButtonBoard();
+                new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
 
         }
 
@@ -247,6 +253,9 @@ public class JoystickIO {
 
                 // pilot.x().onTrue(Autos.run3Piece());
 
+                ToPosTriggers.createOTFTriggers();
+                bindButtonBoard();
+                new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
                 pilot.a().onTrue(Commands.runOnce(() -> Robot.coralRoller.setHasPiece(true)));
                 pilot.a().onTrue(Commands.runOnce(() -> Robot.coralRoller.setHasPiece(false)));
         }
