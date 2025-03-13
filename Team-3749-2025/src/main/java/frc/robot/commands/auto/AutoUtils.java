@@ -1,5 +1,7 @@
 package frc.robot.commands.auto;
 
+import org.littletonrobotics.junction.Logger;
+
 import choreo.auto.AutoChooser;
 import choreo.auto.AutoFactory;
 import choreo.auto.AutoRoutine;
@@ -64,6 +66,10 @@ public class AutoUtils {
         return chooser;
     }
 
+    public static boolean getIsFlipped(){
+        return flippedChooser.getSelected();
+    }
+    
     public static AutoFactory getAutoFactory() {
 
         SmartDashboard.putBoolean("autoFactory Flipped", flippedChooser.getSelected());
@@ -196,6 +202,7 @@ public class AutoUtils {
      * @return
      */
     public static Command addScoreL4(AutoTrajectory trajectory) {
+
         Pose2d endingPose2d = getFinalPose2d(trajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing
         // the trajectory
