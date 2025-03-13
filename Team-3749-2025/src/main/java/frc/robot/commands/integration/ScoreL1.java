@@ -1,7 +1,5 @@
 package frc.robot.commands.integration;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,8 +8,6 @@ import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
-import frc.robot.subsystems.swerve.ToPosConstants;
-import frc.robot.utils.UtilityFunctions;
 
 /*
  * ScoreL1 command for scoring coral on L1 using coral arm

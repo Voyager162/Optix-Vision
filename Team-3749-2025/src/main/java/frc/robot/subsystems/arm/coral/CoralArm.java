@@ -193,7 +193,7 @@ public class CoralArm extends SubsystemBase {
 
         // Calculate the PID control voltage based on the arm's current position
         double pidVoltage = profile.calculate(getPositionRad());
-        State nextState = profile.getSetpoint();
+        // State nextState = profile.getSetpoint();
 
         // pidVoltage = 0;
         // Calculate the feedforward voltage based on velocity

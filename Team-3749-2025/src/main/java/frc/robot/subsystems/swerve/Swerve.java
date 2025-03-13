@@ -321,16 +321,16 @@ public class Swerve extends SubsystemBase {
 
     double xPos = sample.x;
     double xVel = sample.vx;
-    double xAcc = sample.ax;
+    // double xAcc = sample.ax;
 
     double yPos = isFlipped ? AutoUtils.flipper.flipY(sample.y) : sample.y;
     double yVel = isFlipped ? -sample.vy : sample.vy;
-    double yAcc = isFlipped ? -sample.ay : sample.ay;
+    // double yAcc = isFlipped ? -sample.ay : sample.ay;
 
     double heading = isFlipped ? new Rotation2d(Math.PI - sample.heading).rotateBy(new Rotation2d(Math.PI)).getRadians()
         : sample.heading;
     double omega = isFlipped ? -sample.omega : sample.omega;
-    double alpha = isFlipped ? -sample.alpha : sample.alpha;
+    // double alpha = isFlipped ? -sample.alpha : sample.alpha;
 
     positionSetpoint = new Pose2d(xPos, yPos, new Rotation2d(heading));
     velocitySetpoint = new Pose2d(xVel, yVel, new Rotation2d(omega));
