@@ -116,6 +116,8 @@ public class VisionConstants {
                                 poseEstimator4, poseEstimator5, poseEstimator6 };
         }
 
+        // public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout
+        //                 .loadField(AprilTagFields.k2025Reefscape);
         public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout
-                        .loadField(AprilTagFields.k2025Reefscape);
+                        .loadField(AprilTagFields.k2025ReefscapeWelded);
 }
