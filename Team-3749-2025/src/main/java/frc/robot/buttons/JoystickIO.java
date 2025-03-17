@@ -133,12 +133,14 @@ public class JoystickIO {
         public static void pilotAndOperatorBindings() {
                 // gyro reset
                 pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
+                pilot.back().onTrue(Commands.runOnce(() -> Robot.swerve.setOdometry(new Pose2d(5,5,new Rotation2d()))));
+
 
                 // intake floor
                 pilot.leftTrigger().onTrue(new IntakeFloor().andThen(new ScoringModeConditionalHandoff())).onFalse(
                                 Commands.runOnce(() -> System.out.println("interupt ground intake"), Robot.coralArm));
                 // // intake source w arm
-
+// 
                 // pilot.leftTrigger().onTrue(Commands.runOnce(() ->
                 // Robot.elevator.setVoltage(5)));
                 pilot.rightTrigger().onTrue(new CoralIntakeSource()
@@ -153,10 +155,10 @@ public class JoystickIO {
                 // handoff
                 pilot.a().onTrue(new Handoff());
                 // Climb - Reset to cancel
-                pilot.y().onTrue(new PrepareClimb()).onFalse(new Climb());
-                // pilot.y().onTrue(new ScoreL234(ElevatorStates.L4));
-                // pilot.b().onTrue(new ScoreL234(ElevatorStates.L3));
-                // pilot.x().onTrue(new ScoreL234(ElevatorStates.L2));
+                // pilot.y().onTrue(new PrepareClimb()).onFalse(new Climb());
+                pilot.y().onTrue(new ScoreL234(ElevatorStates.L4));
+                pilot.b().onTrue(new ScoreL234(ElevatorStates.L3));
+                pilot.x().onTrue(new ScoreL234(ElevatorStates.L2));
 
                 // reset
                 pilot.povDown().onTrue(new Reset());
