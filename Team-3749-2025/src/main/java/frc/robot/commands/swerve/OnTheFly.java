@@ -27,7 +27,7 @@ public class OnTheFly extends Command {
     private PathPlannerTrajectory trajectory; // The generated trajectory for movement
     private final Timer timer = new Timer(); // Timer to track trajectory progress
     private final ToPos toPos = new ToPos();
-    private final Timer debugTimer = new Timer();
+    // private final Timer debugTimer = new Timer();
 
     private Pose2d endpoint = new Pose2d();
     private static boolean currentlyThreading = false; // threads make funky async stuff: this normalizes it
@@ -55,8 +55,8 @@ public class OnTheFly extends Command {
         endpoint = Robot.swerve.getPPSetpoint().setpoint;
 
         new Thread(() -> {
-            debugTimer.reset();
-            debugTimer.start();
+            // debugTimer.reset();
+            // debugTimer.start();
             // Create a new dynamic path generator
             PathPlannerPath path = toPos.generateDynamicPath(
                     Robot.swerve.getPose(), // Current robot position
@@ -69,7 +69,7 @@ public class OnTheFly extends Command {
                                                                                                    // acceleration
             );
             // System.out.println("path generation took: " + debugTimer.get());
-            debugTimer.stop();
+            // debugTimer.stop();
 
             // If path generation fails, stop the command
             if (path == null) {

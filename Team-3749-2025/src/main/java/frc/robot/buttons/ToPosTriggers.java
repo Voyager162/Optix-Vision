@@ -94,7 +94,12 @@ public class ToPosTriggers {
         // * setpoint.
         // */
         public static boolean OTFWithinMargin() {
-                //save a bit on processing power cause i assume trig calcs are a bit expensive
+                if (isCoralSupplier.getAsBoolean()) {
+                        return UtilityFunctions.withinMargin(ToPosConstants.Setpoints.approachPointDistance,
+                                        Robot.swerve.getPose().getTranslation(),
+                                        Robot.swerve.getPPSetpoint().setpoint.getTranslation());
+                }
+                // save a bit on processing power cause i assume trig calcs are a bit expensive
                 double cos30 = ToPosConstants.ReefDimensions.cos30;
                 double sin30 = ToPosConstants.ReefDimensions.sin30;
 
@@ -102,19 +107,23 @@ public class ToPosTriggers {
                 double dx = Robot.swerve.getPose().getX() - ToPosConstants.ReefDimensions.hexagonCenterMeters.getX();
                 double dy = Robot.swerve.getPose().getY() - ToPosConstants.ReefDimensions.hexagonCenterMeters.getY();
 
-                // Rotate the point back by -30 degrees cause the reefs rotated 30 from flat sides on top and bottom
+                // Rotate the point back by -30 degrees cause the reefs rotated 30 from flat
+                // sides on top and bottom
                 double xPrime = dx * cos30 + dy * sin30;
                 double yPrime = -dx * sin30 + dy * cos30;
 
                 // normalize coordinates for hexagon check
                 double qx = (2.0 / 3.0) * xPrime / ToPosConstants.ReefDimensions.hexagonWithinMarginRadiusMeters;
-                double qy = (-1.0 / 3.0) * xPrime / ToPosConstants.ReefDimensions.hexagonWithinMarginRadiusMeters + (2.0 / 3.0) * yPrime / (ToPosConstants.ReefDimensions.sqrtOf3 * ToPosConstants.ReefDimensions.hexagonWithinMarginRadiusMeters);
+                double qy = (-1.0 / 3.0) * xPrime / ToPosConstants.ReefDimensions.hexagonWithinMarginRadiusMeters
+                                + (2.0 / 3.0) * yPrime / (ToPosConstants.ReefDimensions.sqrtOf3
+                                                * ToPosConstants.ReefDimensions.hexagonWithinMarginRadiusMeters);
 
                 // is it inside the reef
-                boolean isWithinMargin = (Math.abs(qx) <= 1 && Math.abs(qy) <= 1 && Math.abs(qx + qy) <= 1) || UtilityFunctions.withinMargin(ToPosConstants.Setpoints.approachPointDistance,
-                Robot.swerve.getPose().getTranslation(),
-                Robot.swerve.getPPSetpoint().setpoint.getTranslation());
-                Logger.recordOutput("Swerve/auto/OTFWithinMargin",isWithinMargin);
+                boolean isWithinMargin = (Math.abs(qx) <= 1 && Math.abs(qy) <= 1 && Math.abs(qx + qy) <= 1)
+                                || UtilityFunctions.withinMargin(ToPosConstants.Setpoints.approachPointDistance,
+                                                Robot.swerve.getPose().getTranslation(),
+                                                Robot.swerve.getPPSetpoint().setpoint.getTranslation());
+                Logger.recordOutput("Swerve/auto/OTFWithinMargin", isWithinMargin);
                 return isWithinMargin;
         }
 
