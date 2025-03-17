@@ -104,12 +104,12 @@ public class Elevator extends SubsystemBase {
     }
 
     public boolean getIsStableState() {
-        if(state==null)
-        {
+        if (state == null) {
             return false;
         }
         return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError,
-         this.state.heightMeters, data.positionMeters);
+                state.heightMeters, data.positionMeters)
+                && UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError, 0, data.velocityMetersPerSecond);
     }
 
     public void setVoltage(double volts) {
@@ -119,8 +119,7 @@ public class Elevator extends SubsystemBase {
 
     public void setState(ElevatorStates state) {
         this.state = state;
-        if(state==ElevatorStates.STOP)
-        {
+        if (state == ElevatorStates.STOP) {
             stop();
             return;
         }

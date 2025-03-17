@@ -68,7 +68,10 @@ public class ScoreL234 extends Command {
             }
 
             Robot.scoringRoller.setState(RollerStates.SCORE);
-            scoreTimestamp = Timer.getFPGATimestamp();
+            if (scoreTimestamp==Double.MAX_VALUE){
+
+                scoreTimestamp = Timer.getFPGATimestamp();
+            }
         }
 
     }

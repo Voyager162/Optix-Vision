@@ -30,13 +30,13 @@ public class ElevatorConstants {
         public static int zeroOffset = 0;
     }
 
-    public static final double stateMarginOfError = 0.1;
+    public static final double stateMarginOfError = 0.03;
 
     public static class ElevatorControl {
         public static LoggedTunableNumber kG = new LoggedTunableNumber("Elevator/kG", 0.32);
-        public static LoggedTunableNumber kP = new LoggedTunableNumber("Elevator/kP", 12);
+        public static LoggedTunableNumber kP = new LoggedTunableNumber("Elevator/kP", 14);
         public static LoggedTunableNumber kI = new LoggedTunableNumber("Elevator/kI", 0);
-        public static LoggedTunableNumber kD = new LoggedTunableNumber("Elevator/kD", 0);
+        public static LoggedTunableNumber kD = new LoggedTunableNumber("Elevator/kD", 0.2);
         public static LoggedTunableNumber kS = new LoggedTunableNumber("Elevator/kS", 0.16);
         public static LoggedTunableNumber kV = new LoggedTunableNumber("Elevator/kV", 7.77);
         public static LoggedTunableNumber kA = new LoggedTunableNumber("Elevator/kA", 0.27); // 1.72
@@ -50,9 +50,9 @@ public class ElevatorConstants {
     public enum ElevatorStates {
         STOP(Units.inchesToMeters(0)),
         L1(Units.inchesToMeters(12)),
-        L2(0.41466),//Units.inchesToMeters(15.35)),
-        L3(0.72565),
-        L4(1.24784),
+        L2(0.38),//Units.inchesToMeters(%15.35)),
+        L3(0.743),
+        L4(1.245),
         SOURCE(Units.inchesToMeters(30)),
         ALGAE_LOW(Units.inchesToMeters(.4)),
         ALGAE_HIGH(Units.inchesToMeters(16)),
