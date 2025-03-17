@@ -48,7 +48,6 @@ public class Photonvision implements VisionIO {
             poseEstimator.setTagModel(TargetModel.kAprilTag36h11);
             poseEstimator.setFieldTags(VisionConstants.aprilTagFieldLayout);
 
-
             // temporary for testing cameras outside of their cases
             // poseEstimator.setRobotToCameraTransform(new Transform3d());
 
@@ -68,10 +67,13 @@ public class Photonvision implements VisionIO {
 
     public void updatePose() {
         // Cam # minus 1
-
-        cameraUpdatePose(0);
         cameraUpdatePose(1);
         cameraUpdatePose(2);
+        // only use front cams if using trig solve
+        if (poseEstimatorList[1].getPrimaryStrategy().equals(PoseStrategy.PNP_DISTANCE_TRIG_SOLVE)){
+            return;
+        }
+        cameraUpdatePose(0);
         cameraUpdatePose(3);
         cameraUpdatePose(4);
         cameraUpdatePose(5);
@@ -111,21 +113,18 @@ public class Photonvision implements VisionIO {
                 continue;
             }
 
-            // skip if too far away
+            // min area for single tag
+            if (pipelineResult.getTargets().size() == 1 && pipelineResult.getBestTarget().area < 0.141) {
+                Logger.recordOutput("Vision/Cam" + (index + 1) + "/ single tag area", true);
+                logBlank(index);
 
-            // if (pipelineResult.getTargets().size() == 1 &&
-            //         getHypotenuse(pipelineResult.getTargets().get(
-            //                 0).bestCameraToTarget) > VisionConstants.RejectionRequirements.maxSingleTagDistanceMeters) {
-
-            //     Logger.recordOutput("Vision/Cam" + (index + 1) + "/ single tag far", true);
-            //     logBlank(index);
-
-            //     continue;
-            // }
+                continue;
+            }
 
             visionData.distance[index] = getHypotenuse(pipelineResult.getTargets().get(
                     0).bestCameraToTarget);
 
+            // skip for high ambiguity
             if (pipelineResult.getBestTarget().poseAmbiguity > 0.2 && pipelineResult.getTargets().size() == 1) {
                 Logger.recordOutput("Vision/Cam" + (index + 1) + "/pose ambiguity rejection", true);
                 logBlank(index);
@@ -135,6 +134,7 @@ public class Photonvision implements VisionIO {
             poseEstimator.setReferencePose(getReferencePose());
             var optional_robotPose = poseEstimator.update(pipelineResult);
 
+            // skip fro empty pose
             if (optional_robotPose.isEmpty()) {
                 Logger.recordOutput("Vision/Cam" + (index + 1) + "/ pose empty", true);
                 logBlank(index);
@@ -147,16 +147,8 @@ public class Photonvision implements VisionIO {
 
             updateStandardDeviations(pipelineResult, index);
 
-            // Reduce to only cams 1-2 if automatically scoring and scoring command has
-            // started
-            if ((Robot.swerve.getIsOTF() || DriverStation.isAutonomous())
-                    && Robot.elevator.getCurrentCommand().getName() == "ScoreL234" && !(index == 1 || index == 2)) {
-                continue;
-            }
-
-            // double timestamp = Timer.getFPGATimestamp() - latencyMillis / 1000.0;
             double timestamp = pipelineResult.getTimestampSeconds();
-            // Robot.swerve.visionUpdateOdometry(robotPose.toPose2d(), timestamp);
+            Robot.swerve.visionUpdateOdometry(robotPose.toPose2d(), timestamp);
             logTarget(index);
         }
     }
@@ -165,10 +157,12 @@ public class Photonvision implements VisionIO {
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/latency", visionData.latencyMillis[index]);
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/targetsSeen", visionData.targetsSeen[index]);
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/pose", visionData.visionEstimatedPoses[index]);
-        Logger.recordOutput("Vision/Cam" + (index + 1) + "/yaw", visionData.visionEstimatedPoses[index].getRotation().getMeasureZ().baseUnitMagnitude()*180/Math.PI);
-        Logger.recordOutput("Vision/Cam" + (index + 1) + "/pitch",visionData.visionEstimatedPoses[index].getRotation().getMeasureY().baseUnitMagnitude()*180/Math.PI);
-        Logger.recordOutput("Vision/Cam" + (index + 1) + "/roll", visionData.visionEstimatedPoses[index].getRotation().getMeasureX().baseUnitMagnitude()*180/Math.PI);
-
+        Logger.recordOutput("Vision/Cam" + (index + 1) + "/yaw",
+                visionData.visionEstimatedPoses[index].getRotation().getMeasureZ().baseUnitMagnitude() * 180 / Math.PI);
+        Logger.recordOutput("Vision/Cam" + (index + 1) + "/pitch",
+                visionData.visionEstimatedPoses[index].getRotation().getMeasureY().baseUnitMagnitude() * 180 / Math.PI);
+        Logger.recordOutput("Vision/Cam" + (index + 1) + "/roll",
+                visionData.visionEstimatedPoses[index].getRotation().getMeasureX().baseUnitMagnitude() * 180 / Math.PI);
 
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/distance", visionData.distance[index]);
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/pose ambiguity rejection", false);

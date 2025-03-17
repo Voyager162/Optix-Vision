@@ -55,19 +55,17 @@ public class VisionConstants {
                                 Units.inchesToMeters(10.585),
                                 Units.inchesToMeters(6.287),
                                 Units.inchesToMeters(10.826),
-                                new Rotation3d(Units.degreesToRadians(-1),
+                                new Rotation3d(Units.degreesToRadians(-1), //0
                                                 Units.degreesToRadians(-10),
-                                                // Units.degreesToRadians(62-90)));
                                                 Units.degreesToRadians(-30.1)));
 
                 public static Transform3d cam3 = new Transform3d(
-                                // Units.inchesToMeters(9.504+6)-0.4223,
                                 Units.inchesToMeters(9.504),
 
                                 Units.inchesToMeters(-10.961),
                                 Units.inchesToMeters(15.746),
                                 new Rotation3d(0,
-                                                Units.degreesToRadians(17),
+                                                Units.degreesToRadians(17),//20
                                                 Units.degreesToRadians(0)));
 
                 public static Transform3d cam4 = new Transform3d(
@@ -76,7 +74,7 @@ public class VisionConstants {
                                 Units.inchesToMeters(10.846),
                                 new Rotation3d(0,
                                                 Units.degreesToRadians(-15),
-                                                Units.degreesToRadians(150)));
+                                                Units.degreesToRadians(149.9)));
 
                 public static Transform3d cam5 = new Transform3d(
                                 Units.inchesToMeters(-12.244),
