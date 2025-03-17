@@ -68,10 +68,9 @@ public class Photonvision implements VisionIO {
 
     public void updatePose() {
         // Cam # minus 1
-        // Cam 3 missing, cam 2 is bad because of mount droop
 
-        // cameraUpdatePose(0);
-        // cameraUpdatePose(1);
+        cameraUpdatePose(0);
+        cameraUpdatePose(1);
         cameraUpdatePose(2);
         cameraUpdatePose(3);
         cameraUpdatePose(4);
@@ -143,8 +142,6 @@ public class Photonvision implements VisionIO {
             }
 
             Pose3d robotPose = optional_robotPose.get().estimatedPose;
-            Logger.recordOutput("Vision/Cam" + (index + 1) + "/pitch", robotPose.getRotation().getMeasureY());
-            Logger.recordOutput("Vision/Cam" + (index + 1) + "/roll", robotPose.getRotation().getMeasureX());
 
             visionData.visionEstimatedPoses[index] = robotPose;
 

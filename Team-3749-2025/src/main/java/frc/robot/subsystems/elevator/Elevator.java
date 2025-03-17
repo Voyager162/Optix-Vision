@@ -107,9 +107,9 @@ public class Elevator extends SubsystemBase {
         if (state == null) {
             return false;
         }
-        return UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError,
+        return UtilityFunctions.withinMargin(ElevatorConstants.statePostionMarginOfError,
                 state.heightMeters, data.positionMeters)
-                && UtilityFunctions.withinMargin(ElevatorConstants.stateMarginOfError, 0, data.velocityMetersPerSecond);
+                && UtilityFunctions.withinMargin(ElevatorConstants.stateVelocityMarginOfError, 0, data.velocityMetersPerSecond);
     }
 
     public void setVoltage(double volts) {
