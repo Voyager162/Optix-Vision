@@ -67,6 +67,10 @@ public class OptixSpark {
         return motor.getOutputCurrent();
     }
 
+    /**
+     * 
+     * @return The motor temperature in Celscius
+     */
     public double getTemperature() {
         return motor.getMotorTemperature();
     }
