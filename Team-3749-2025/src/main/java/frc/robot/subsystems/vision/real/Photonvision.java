@@ -8,12 +8,14 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.estimation.TargetModel;
 import org.photonvision.targeting.*;
 
+import edu.wpi.first.cscore.OpenCvLoader;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
@@ -35,12 +37,36 @@ public class Photonvision implements VisionIO {
     private PhotonPoseEstimator poseEstimatorList[] = VisionConstants.CameraReal.poseEstimatorList;
 
     private VisionData visionData;
+    private boolean useConstrainedPNP = false;
 
     public Photonvision(VisionData visionData) {
+        try {
+
+            OpenCvLoader.forceLoad();
+            for (PhotonPoseEstimator poseEstimator : poseEstimatorList) {
+                // Use MultiTag detection on the coprocessor, and fall back to the least
+                // uncertain tag if that fails
+                poseEstimator.setPrimaryStrategy(PoseStrategy.CONSTRAINED_SOLVEPNP);
+            }
+            useConstrainedPNP = true;
+        } catch (Exception exception) {
+            System.out.println("OpenCV Load Failure");
+            System.out.println("OpenCV Load Failure");
+            System.out.println("OpenCV Load Failure");
+            System.out.println("OpenCV Load Failure");
+            System.out.println("OpenCV Load Failure");
+            System.out.println("OpenCV Load Failure");
+            System.out.println("OpenCV Load Failure");
+
+            for (PhotonPoseEstimator poseEstimator : poseEstimatorList) {
+                // Use MultiTag detection on the coprocessor, and fall back to the least
+                // uncertain tag if that fails
+                poseEstimator.setPrimaryStrategy(PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR);
+            }
+        }
         for (PhotonPoseEstimator poseEstimator : poseEstimatorList) {
             // Use MultiTag detection on the coprocessor, and fall back to the least
             // uncertain tag if that fails
-            poseEstimator.setPrimaryStrategy(PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR);
             poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
             // redundant, but why not (setting the correct apriltag size/model and correct
@@ -70,7 +96,17 @@ public class Photonvision implements VisionIO {
         cameraUpdatePose(1);
         cameraUpdatePose(2);
         // only use front cams if using trig solve
-        if (poseEstimatorList[1].getPrimaryStrategy().equals(PoseStrategy.PNP_DISTANCE_TRIG_SOLVE)){
+        Command elevatorCmd = Robot.elevator.getCurrentCommand();
+        if (elevatorCmd == null) {
+            cameraUpdatePose(0);
+            cameraUpdatePose(3);
+            cameraUpdatePose(4);
+            cameraUpdatePose(5);
+            return;
+        }
+
+        else if (Robot.elevator.getCurrentCommand().getName() == "ScoreL234") {
+            System.out.println("score ignore");
             return;
         }
         cameraUpdatePose(0);
@@ -215,7 +251,10 @@ public class Photonvision implements VisionIO {
 
     @Override
     public void setCameraStrategy(PoseStrategy strat, int index) {
-        poseEstimatorList[0].setMultiTagFallbackStrategy(strat);
+        if (!useConstrainedPNP && strat == PoseStrategy.CONSTRAINED_SOLVEPNP) {
+            strat = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
+        }
+        poseEstimatorList[0].setPrimaryStrategy(strat);
 
     }
 }

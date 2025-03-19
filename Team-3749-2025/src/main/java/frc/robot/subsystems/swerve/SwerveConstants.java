@@ -87,11 +87,15 @@ public class SwerveConstants {
                 };
                 public static final double[] absoluteEncoderOffsetRad = {
                                 5.562 + Math.PI / 2,
-                                1.177,
+                                // 1.177,
+                                2.761 - Math.PI / 2,
                                 0.072 - Math.PI / 2,
                                 1.974 - Math.PI / 2
                 };
 
+                //cam 1 2 6 are good
+
+                
         }
 
         public static final class DrivetrainConstants {

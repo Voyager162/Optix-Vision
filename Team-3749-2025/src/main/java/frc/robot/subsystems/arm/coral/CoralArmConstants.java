@@ -51,7 +51,7 @@ public class CoralArmConstants {
 
 		L1(Math.PI/4),
 		HAND_OFF(2.27),
-		STOW(2.2),
+		STOW(2.27),
 		STOPPED(0),
 		CLIMB(1.9);
 

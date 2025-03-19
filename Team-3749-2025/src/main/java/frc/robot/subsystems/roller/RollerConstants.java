@@ -83,7 +83,7 @@ public class RollerConstants {
                 public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
                                 " rollers/scoringRoller/maxAcceleration", 412);
 
-                public static final int sensorPort = 7;
+                public static final int sensorPort = 0;
 
                 public static final double reverseDistance = 7;
         }

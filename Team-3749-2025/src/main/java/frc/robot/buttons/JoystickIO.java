@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.subsystems.leds.LEDConstants.LEDColor;
+import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -227,11 +228,11 @@ public class JoystickIO {
 
                 // operator.a().onTrue(Robot.swerve.startOnTheFly(0);)
 
-                pilot.a().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setHasPiece(false)));
-                pilot.b().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setHasPiece(true)));
+                pilot.a().onTrue(Commands.runOnce(() -> Robot.elevator.setState(ElevatorStates.L1)));
+                pilot.b().onTrue(Commands.runOnce(() -> Robot.elevator.setState(ElevatorStates.L2)));
+                pilot.x().onTrue(Commands.runOnce(() -> Robot.elevator.setState(ElevatorStates.L3)));
 
-                pilot.x().onTrue(Commands.runOnce(() -> Robot.coralRoller.setHasPiece(false)));
-                pilot.y().onTrue(Commands.runOnce(() -> Robot.coralRoller.setHasPiece(true)));
+                pilot.y().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setState(RollerStates.OUTTAKE)));
         }
 
         public static void pilotBindings() {
