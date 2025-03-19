@@ -45,24 +45,44 @@ public class OptixSpark {
 
     }
 
+    /**
+     * 
+     * @return The amount of rotations in the motor from the encoder
+     */
     public double getPosition() {
         double position = motor.getEncoder().getPosition();
         position = wrapping.apply(position);
         return position;
     }
 
+    /**
+     * 
+     * @return The RPM of the motor from the encoder
+     */
     public double getVelocity() {
         return motor.getEncoder().getVelocity();
     }
 
+    /**
+     * 
+     * @return The bus voltage times the applied output from the duty cycle
+     */
     public double getAppliedVolts() {
         return motor.getBusVoltage() * motor.getAppliedOutput();
     }
 
+    /**
+     * 
+     * @return The voltage fed into the motor controller
+     */
     public double getBusVolts(){
         return motor.getBusVoltage();
     }
 
+    /**
+     * 
+     * @return The amount of output current in amps
+     */
     public double getCurrent() {
         return motor.getOutputCurrent();
     }
@@ -91,6 +111,10 @@ public class OptixSpark {
         return motor;
     }
 
+    /**
+     * 
+     * @return Set the position in rotations
+     */
     public void setPosition(double position) {
         motor.getEncoder().setPosition(position);
     }
