@@ -92,7 +92,7 @@ public class CoralRoller extends Roller {
 
     }
 
-    public void setHasPiece(boolean hasPiece){
+    public void setHasPiece(boolean hasPiece) {
         this.hasPiece = hasPiece;
     }
 
@@ -119,15 +119,19 @@ public class CoralRoller extends Roller {
 
     @Override
     public void maintain() {
+        if (Robot.coralArm.getIsStableState()) {
 
             setVoltage(1.5);
- 
-        
+        } else {
+            setVoltage(3);
+
+        }
+
     }
 
     @Override
     public void periodic() {
-        
+
         super.periodic();
         photoelectricIO.updateData(photoelectricData);
 
