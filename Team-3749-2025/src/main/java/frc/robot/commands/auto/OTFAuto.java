@@ -10,7 +10,7 @@ public class OTFAuto extends Command {
     boolean ranPath = false;
 
     public OTFAuto(int index) {
-        addRequirements(Robot.getAllSuperStructureSubsystems());
+        addRequirements(Robot.swerve);
 
         otfIndex = index;
     }

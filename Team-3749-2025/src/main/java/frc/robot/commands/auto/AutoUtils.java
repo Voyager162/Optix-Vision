@@ -177,12 +177,12 @@ public class AutoUtils {
      * @param firstTrajectory
      * @return
      */
-    public static Command startRoutine(AutoRoutine routine, String firstTrajectoryName,
-            AutoTrajectory firstTrajectory) {
+    public static Command startRoutine(AutoRoutine routine, int firstScoreIndex,
+            AutoTrajectory secondTrajectory) {
 
         routine.active()
-                .onTrue(factory.resetOdometry(firstTrajectoryName).andThen(
-                        firstTrajectory.cmd()));
+                .onTrue(
+                        new OTFAuto(firstScoreIndex).andThen(secondTrajectory.cmd()));
         return routine.cmd();
     }
 

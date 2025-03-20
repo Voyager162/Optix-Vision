@@ -246,9 +246,8 @@ public class JoystickIO {
                 // .onFalse(Commands.runOnce(() -> Robot.climbArm.setVoltage(0),
                 // Robot.climbArm));
 
-                pilot.a().onTrue(new Climb()).onFalse(
-                                Commands.runOnce(() -> Robot.climbArm.setState(ClimbArmConstants.ArmStates.STOPPED),
-                                                Robot.climbArm));
+                pilot.a().onTrue(new PrepareClimb()).onFalse(
+                               new Climb());
 
                 // pilot.a().onTrue(Commands.runOnce(() ->
                 // Robot.elevator.setState(ElevatorStates.L1)));
