@@ -111,7 +111,7 @@ public class Photonvision implements VisionIO {
         }
         cameraUpdatePose(0);
         cameraUpdatePose(3);
-        cameraUpdatePose(4);
+        // cameraUpdatePose(4);
         cameraUpdatePose(5);
 
     }
@@ -149,6 +149,15 @@ public class Photonvision implements VisionIO {
                 continue;
             }
 
+            if (DriverStation.isEnabled() && pipelineResult.getTargets().size() == 1 &&
+                    getHypotenuse(pipelineResult.getTargets().get(
+                            0).bestCameraToTarget) > VisionConstants.RejectionRequirements.maxSingleTagDistanceMeters) {
+
+                Logger.recordOutput("Vision/Cam" + (index + 1) + "/ single tag far", true);
+                logBlank(index);
+
+                continue;
+            }
             // min area for single tag
             if (pipelineResult.getTargets().size() == 1 && pipelineResult.getBestTarget().area < 0.141) {
                 Logger.recordOutput("Vision/Cam" + (index + 1) + "/ single tag area", true);

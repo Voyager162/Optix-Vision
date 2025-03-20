@@ -46,7 +46,7 @@ public class CoralArmConstants {
 	public static final double stateMarginOfError = 0.225;
 
 	public enum ArmStates {
-		CORAL_PICKUP(-0.68),
+		CORAL_PICKUP(-0.71),
 		CORAL_STATION(Math.PI /2),
 
 		L1(Math.PI/4),

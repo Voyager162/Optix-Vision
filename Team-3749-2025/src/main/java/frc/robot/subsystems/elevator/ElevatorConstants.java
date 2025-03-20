@@ -51,9 +51,9 @@ public class ElevatorConstants {
     public enum ElevatorStates {
         STOP(Units.inchesToMeters(0)),
         L1(Units.inchesToMeters(12)),
-        L2(0.43),//Units.inchesToMeters(%15.35)),
-        L3(0.796),
-        L4(1.250),
+        L2(0.389),//Units.inchesToMeters(%15.35)),
+        L3(0.74),
+        L4(1.255),
         SOURCE(Units.inchesToMeters(30)),
         ALGAE_LOW(Units.inchesToMeters(.4)),
         ALGAE_HIGH(Units.inchesToMeters(16)),

@@ -296,7 +296,7 @@ public class AutoUtils {
      * 
      * @param trajectory
      * @return
-     */
+     *
     public static Command addIntake(AutoTrajectory trajectory) {
         Pose2d endingPose2d = getFinalPose2d(trajectory);
         // unflip the alliance so that atPose can flip it; it's a quirk of referencing

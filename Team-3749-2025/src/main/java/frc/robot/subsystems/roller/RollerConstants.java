@@ -72,7 +72,7 @@ public class RollerConstants {
                                 " rollers/scoringRoller/kAVelocity", 0.0142);
 
                 public static LoggedTunableNumber kPPosition = new LoggedTunableNumber(
-                                " rollers/scoringRoller/kPPosition", .25);
+                                " rollers/scoringRoller/kPPosition", .4);
                 public static LoggedTunableNumber kIPosition = new LoggedTunableNumber(
                                 " rollers/scoringRoller/kIPosition", 0.0);
                 public static LoggedTunableNumber kDPosition = new LoggedTunableNumber(
