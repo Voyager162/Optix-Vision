@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
+import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.commands.integration.CoralIntakeSource;
 import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.ScoreL1;
@@ -185,6 +186,11 @@ public class AutoUtils {
         return routine.cmd();
     }
 
+    public static void addHandoffOnIntake() {
+        new Trigger(() -> Robot.coralRoller.hasPiece()).debounce(RollerConstants.Coral.intakeSourceWaitTime)
+                .onTrue(new ScoringModeConditionalHandoff());
+    }
+
     /**
      * Returns a command to score at L4 when the robot is approaching the end of the
      * given trajectory
@@ -202,7 +208,7 @@ public class AutoUtils {
         // Command intakeSource = new IntakeSource();
         Command scoreL4 = new ScoreL234(ElevatorStates.L4);
 
-        trajectory.atPose(endingPose2d, 1, 2*Math.PI).onTrue(scoreL4);
+        trajectory.atPose(endingPose2d, 1, 2 * Math.PI).onTrue(scoreL4);
         trajectory.done().and(() -> scoreL4.isScheduled())
                 .onTrue(
                         Commands.run(() -> {
@@ -313,8 +319,8 @@ public class AutoUtils {
                         Commands.run(() -> {
                             Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
                             System.out.println("contine PID");
-                        }, Robot.swerve))
-                .onFalse(handoff);
+                        }, Robot.swerve));
+
         // trajectory.done().and(()->Robot.coralRoller.hasPiece()).onTrue(new
         // Handoff());
         return handoff;

@@ -130,7 +130,7 @@ public class ClimbArm extends SubsystemBase {
 				stop();
 				break;
 			case CLIMB:
-			
+
 				armIO.setVoltage(ClimbArmConstants.climbVoltage.get());
 			default:
 				stop();
@@ -185,7 +185,8 @@ public class ClimbArm extends SubsystemBase {
 		double pidVoltage = profile.calculate(getPositionRad());
 		State nextState = profile.getSetpoint();
 
-		double ffVoltage = feedforward.calculateWithVelocities(getPositionRad(), firstState.velocity, nextState.velocity);
+		double ffVoltage = feedforward.calculateWithVelocities(getPositionRad(), firstState.velocity,
+				nextState.velocity);
 
 		double volts = ffVoltage + pidVoltage;
 		armIO.setVoltage(volts);
@@ -204,6 +205,8 @@ public class ClimbArm extends SubsystemBase {
 				break;
 			default:
 				// moveToGoal();
+				stop();
+
 				break;
 		}
 	}

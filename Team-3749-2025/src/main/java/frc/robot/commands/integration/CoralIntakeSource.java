@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.arm.coral.CoralArmConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
+import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 
 /**
@@ -57,6 +58,6 @@ public class CoralIntakeSource extends Command {
      */
     @Override
     public boolean isFinished() {
-        return Timer.getFPGATimestamp() - hasPieceTimeStamp > 0.45 && this.isScheduled();
+        return Timer.getFPGATimestamp() - hasPieceTimeStamp > RollerConstants.Coral.intakeSourceWaitTime && this.isScheduled();
     }
 }

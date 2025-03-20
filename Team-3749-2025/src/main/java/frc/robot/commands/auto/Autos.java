@@ -122,6 +122,7 @@ public class Autos {
         AutoTrajectory trajectory5 = routine.trajectory("ArmIntake-2");
 
         // Commands to scoreL4 and intake from source
+        AutoUtils.addHandoffOnIntake();
         Command score1 = AutoUtils.addScoreL4(trajectory1);
         Command intake1 = AutoUtils.addIntake(trajectory2);
         Command score2 = AutoUtils.addScoreL4(trajectory3);

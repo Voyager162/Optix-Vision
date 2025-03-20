@@ -18,6 +18,8 @@ public class RollerConstants {
                 public static final double gearRatio = 3;
                 public static final double measurementNoise = 0.0;
 
+                public static final double intakeSourceWaitTime = 0.45;
+
                 public static LoggedTunableNumber kPVelocity = new LoggedTunableNumber(
                                 " rollers/coralRoller/kPVelocity", 0.0);
                 public static LoggedTunableNumber kIVelocity = new LoggedTunableNumber(
