@@ -51,7 +51,7 @@ public class Robot extends LoggedRobot {
   public static ClimbArm climbArm = new ClimbArm();
   public static Vision vision = new Vision();
   public static Led led = new Led();
-  public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("setVoltage", 0);
+  public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("setVoltage", 2  );
 
   private RobotContainer m_robotContainer;
   private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);

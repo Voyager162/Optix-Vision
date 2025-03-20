@@ -44,6 +44,7 @@ import frc.robot.subsystems.swerve.ToPos;
 import frc.robot.subsystems.swerve.ToPosConstants;
 import frc.robot.commands.integration.PrepareClimb;
 import frc.robot.commands.integration.Reset;
+import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.MiscConstants.ControllerConstants;
 
 /**
@@ -78,8 +79,8 @@ public class JoystickIO {
                         // pilotAndOperatorBindings();
                         simBindings();
                 } else {
-                        pilotAndOperatorBindings();
-                        // testBindings();
+                        // pilotAndOperatorBindings();
+                        testBindings();
 
                 }
 
@@ -218,21 +219,21 @@ public class JoystickIO {
                 // Robot.swerve.setIsOTF(true);
                 // }));
 
-                // pilot.povRight().onTrue(Commands.runOnce(
-                // () -> Robot.climbArm.setState(ClimbArmConstants.ArmStates.STOWED)))
-                // .onFalse(Commands.runOnce(
-                // () -> Robot.climbArm.setState(ClimbArmConstants.ArmStates.STOPPED)));
+                pilot.povRight().onTrue(Commands.runOnce(
+                () -> Robot.climbArm.setVoltage(Robot.subsystemVoltageSetter.get())))
+                .onFalse(Commands.runOnce(
+                () -> Robot.climbArm.setVoltage(0)));
 
                 // operator.povLeft().onTrue(Commands.runOnce(() ->
                 // Robot.swerve.cyclePPSetpoint()));
 
                 // operator.a().onTrue(Robot.swerve.startOnTheFly(0);)
 
-                pilot.a().onTrue(Commands.runOnce(() -> Robot.elevator.setState(ElevatorStates.L1)));
-                pilot.b().onTrue(Commands.runOnce(() -> Robot.elevator.setState(ElevatorStates.L2)));
-                pilot.x().onTrue(Commands.runOnce(() -> Robot.elevator.setState(ElevatorStates.L3)));
+                // pilot.a().onTrue(Commands.runOnce(() -> Robot.elevator.setState(ElevatorStates.L1)));
+                // pilot.b().onTrue(Commands.runOnce(() -> Robot.elevator.setState(ElevatorStates.L2)));
+                // pilot.x().onTrue(Commands.runOnce(() -> Robot.elevator.setState(ElevatorStates.L3)));
 
-                pilot.y().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setState(RollerStates.OUTTAKE)));
+                // pilot.y().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setState(RollerStates.OUTTAKE)));
         }
 
         public static void pilotBindings() {

@@ -87,6 +87,10 @@ public class ScoreL234 extends Command {
 
         pieceRecognized = false;
         scoreTimestamp = Double.MAX_VALUE;
+        if (interrupted==false){
+
+            Robot.scoringRoller.setHandoffComplete(false);
+        }
     }
 
     /**

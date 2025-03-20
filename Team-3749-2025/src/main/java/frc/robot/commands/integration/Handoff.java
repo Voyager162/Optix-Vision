@@ -22,6 +22,8 @@ public class Handoff extends Command {
 
     @Override
     public void initialize() {
+        Robot.scoringRoller.setHandoffComplete(false);
+
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
         Robot.coralRoller.setState(RollerConstants.RollerStates.MAINTAIN);
@@ -42,6 +44,11 @@ public class Handoff extends Command {
         Robot.coralArm.setState(CoralArmConstants.ArmStates.STOW);
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
         Robot.scoringRoller.setState(RollerStates.MAINTAIN);
+        if (interrupted == false) {
+
+            Robot.scoringRoller.setHandoffComplete(true);
+        }
+
     }
 
     /**
