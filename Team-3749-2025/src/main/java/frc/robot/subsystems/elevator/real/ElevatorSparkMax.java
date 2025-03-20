@@ -38,7 +38,7 @@ public class ElevatorSparkMax implements ElevatorIO {
         backMotor.setCurrentLimit(MotorControllerConstants.standardStallLimit,
                 MotorControllerConstants.standardFreeLimit);
         backMotor.setInverted(ElevatorConstants.ElevatorSpecs.motorInverted[0]);
-        backMotor.setBrakeMode(false);
+        backMotor.setBrakeMode(true);
 
         backMotor.applyConfig();
         frontMotor.applyConfig(backMotor.getConfig());
@@ -79,7 +79,7 @@ public class ElevatorSparkMax implements ElevatorIO {
         inputVolts = UtilityFunctions.applyDeadband(inputVolts, MotorControllerConstants.deadbandVoltage);
         Logger.recordOutput("Elevator/input volts", inputVolts);
 
-        // backMotor.setVoltage(inputVolts);
-        // frontMotor.setVoltage(inputVolts);
+        backMotor.setVoltage(inputVolts);
+        frontMotor.setVoltage(inputVolts);
     }
 }
