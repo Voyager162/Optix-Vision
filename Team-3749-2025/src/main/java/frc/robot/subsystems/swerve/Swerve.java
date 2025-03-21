@@ -434,6 +434,15 @@ public class Swerve extends SubsystemBase {
     return new Pose2d(xPos, yPos, new Rotation2d(heading));
 
   }
+  // private void setSetpointToClosestSideToSetpoint() {
+  //   Pose2d closestSide = getPPSetpoint().setpoint.nearest(ToPosConstants.Setpoints.reefSides);
+  //   // Iterate through the reef branch mappings to set the correct setpoint
+  //   for (Pose2d side : ToPosConstants.Setpoints.driveRelativeBranches.keySet()) {
+  //     if (closestSide.equals(side)) {
+  //       setPPSetpointIndex(ToPosConstants.Setpoints.driveRelativeBranches.get(side)[2]);
+  //     }
+  //   }
+  // }
 
   // called when the button board is pressed with the (ppsetpoint)"index" the
   // button is associated w to drive to
@@ -443,9 +452,10 @@ public class Swerve extends SubsystemBase {
     Robot.elevator.setState(ElevatorStates.STOW);
     currentPPSetpointIndex = setpointIndex;
 
-    if (JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.ALGAE &&
-        currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 25) {
-    }
+    // if (JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.ALGAE &&
+    //     currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 25) {
+    //       setSetpointToClosestSideToSetpoint();
+    // }
 
     if (JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.L1 &&
         currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 24 && currentPPSetpointIndex % 2 == 0) {
