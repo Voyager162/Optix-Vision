@@ -106,10 +106,10 @@ public class Photonvision implements VisionIO {
             return;
         }
 
-        else if (Robot.elevator.getCurrentCommand().getName() == "ScoreL234") {
-            System.out.println("score ignore");
-            return;
-        }
+        // else if (Robot.elevator.getCurrentCommand().getName() == "ScoreL234") {
+        //     System.out.println("score ignore");
+        //     return;
+        // }
         cameraUpdatePose(0);
         cameraUpdatePose(3);
         // cameraUpdatePose(4);
@@ -136,6 +136,14 @@ public class Photonvision implements VisionIO {
                 logBlank(index);
                 continue;
             }
+
+            if(pipelineResult.targets.get(index).fiducialId == 4 ||
+            pipelineResult.targets.get(index).fiducialId == 5 ||
+            pipelineResult.targets.get(index).fiducialId == 15 || 
+            pipelineResult.targets.get(index).fiducialId == 14 )
+            {
+                continue;
+            } //4 5 15 14
 
             double latencyMillis = pipelineResult.metadata.getLatencyMillis();
 
