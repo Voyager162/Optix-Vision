@@ -16,7 +16,7 @@
  "params":{
   "waypoints":[
     {"x":{"exp":"7 m", "val":7.0}, "y":{"exp":"5.3 m", "val":5.3}, "heading":{"exp":"-120 deg", "val":-2.0943951023931953}, "intervals":48, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
-    {"x":{"exp":"5.7120280265808105 m", "val":5.7120280265808105}, "y":{"exp":"5.245043754577637 m", "val":5.245043754577637}, "heading":{"exp":"0 deg", "val":0.0}, "intervals":37, "split":false, "fixTranslation":true, "fixHeading":false, "overrideIntervals":false},
+    {"x":{"exp":"5.7120280265808105 m", "val":5.7120280265808105}, "y":{"exp":"5.245043754577637 m", "val":5.245043754577637}, "heading":{"exp":"-120 deg", "val":-2.0943951023931953}, "intervals":37, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false},
     {"x":{"exp":"5.415 m", "val":5.415}, "y":{"exp":"5.001 m", "val":5.001}, "heading":{"exp":"-120 deg", "val":-2.0943951023931953}, "intervals":40, "split":false, "fixTranslation":true, "fixHeading":true, "overrideIntervals":false}],
   "constraints":[
     {"from":"first", "to":null, "data":{"type":"StopPoint", "props":{}}, "enabled":true},
