@@ -15,7 +15,7 @@ public class VisionConstants {
 
         public class RejectionRequirements {
                 public static final double maxLatencyMilliSec = 150;
-                public static final double maxSingleTagDistanceMeters = Units.inchesToMeters(100);
+                public static final double maxSingleTagDistanceMeters = Units.inchesToMeters(1000);
         }
 
         // currently 3748's #'s'
