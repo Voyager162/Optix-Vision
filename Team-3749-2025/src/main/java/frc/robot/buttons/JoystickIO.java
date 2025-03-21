@@ -87,35 +87,46 @@ public class JoystickIO {
                 setDefaultCommands();
         }
 
+        private static void OTFIndexChooser(int index)
+        {
+                if(buttonBoard.getScoringMode().equals(ScoringMode.ALGAE))
+                {
+                        Robot.swerve.startOnTheFly(ToPosConstants.Setpoints.reefSetpointIndexToAlgae.get(index));
+                        return;
+                }
+                Robot.swerve.startOnTheFly(index);
+
+        }
+
         public static void bindButtonBoard() {
                 buttonBoard.buttonLeftSource
                                 .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(0)));
                 buttonBoard.buttonRightSource
                                 .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(1)));
                 buttonBoard.buttonReefZoneLeft1
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(2)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(2)));
                 buttonBoard.buttonReefZoneRight1
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(4)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(4)));
                 buttonBoard.buttonReefZoneRight2
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(6)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(6)));
                 buttonBoard.buttonReefZoneRight3
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(8)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(8)));
                 buttonBoard.buttonReefZoneRight4
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(10)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(10)));
                 buttonBoard.buttonReefZoneRight5
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(12)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(12)));
                 buttonBoard.buttonReefZoneRight6
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(14)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(14)));
                 buttonBoard.buttonReefZoneLeft6
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(16)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(16)));
                 buttonBoard.buttonReefZoneLeft5
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(18)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(18)));
                 buttonBoard.buttonReefZoneLeft4
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(20)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(20)));
                 buttonBoard.buttonReefZoneLeft3
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(22)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(22)));
                 buttonBoard.buttonReefZoneLeft2
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(24)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(24)));
                 buttonBoard.buttonl1.onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L1)));
                 buttonBoard.buttonl2.onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L2)));
                 buttonBoard.buttonl3.onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L3)));
@@ -133,7 +144,6 @@ public class JoystickIO {
          * If both controllers are plugged in (pi and op)
          */
         public static void pilotAndOperatorBindings() {
-                System.out.println("won");
                 // gyro reset
                 pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
                 pilot.back().onTrue(new PrepareClimb()).onFalse(new Climb());
@@ -276,9 +286,12 @@ public class JoystickIO {
                 // Robot.scoringRoller.setHasPiece(true)));
 
                 // pilot.x().onTrue(Autos.run3Piece());
+                pilot.x().onTrue(Commands.runOnce(()-> buttonBoard.setScoringMode(ScoringMode.ALGAE)));
+                pilot.y().onTrue(Commands.runOnce(() -> OTFIndexChooser(6)));
 
                 pilot.a().onTrue(Commands.runOnce(() -> Robot.coralRoller.setHasPiece(true)));
                 pilot.a().onTrue(Commands.runOnce(() -> Robot.coralRoller.setHasPiece(false)));
+                new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
         }
 
         /**

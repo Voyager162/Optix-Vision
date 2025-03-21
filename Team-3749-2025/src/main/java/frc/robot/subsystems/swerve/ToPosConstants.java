@@ -353,6 +353,41 @@ public class ToPosConstants {
             }
         };
 
+        public static final HashMap<Integer, Integer> reefSetpointIndexToAlgae = new HashMap<Integer, Integer>() {
+            {
+                put(1,26);
+                put(2, 26); 
+                put(3,26);
+                put(4,26);
+
+                put(5,28);
+                put(6,28);
+                put(7,28);
+                put(8,28);
+
+                put(9,31);
+                put(10,31);
+                put(11,31);
+                put(12,31);
+
+                put(13,29);
+                put(14,29);
+                put(15,29);
+                put(16,29);
+
+                put(17,30);
+                put(18,30);
+                put(19,30);
+                put(20,30);
+
+                put(21,27);
+                put(22,27);
+                put(23,27);
+                put(24,27);
+
+            }
+        };
+
         // ======= Approach Setpoints =======
         // Approach points for smoother movement before reaching each reef scoring
         // position
