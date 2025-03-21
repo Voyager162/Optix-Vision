@@ -123,6 +123,19 @@ public class Robot extends LoggedRobot {
     CommandScheduler.getInstance().run();
 
 
+    Logger.recordOutput("OTF/a", PPSetpoints.A.setpoint);
+    Logger.recordOutput("OTF/b", PPSetpoints.B.setpoint);
+    Logger.recordOutput("OTF/c", PPSetpoints.C.setpoint);
+    Logger.recordOutput("OTF/d", PPSetpoints.D.setpoint);
+    Logger.recordOutput("OTF/e", PPSetpoints.E.setpoint);
+    Logger.recordOutput("OTF/f", PPSetpoints.F.setpoint);
+    Logger.recordOutput("OTF/g", PPSetpoints.G.setpoint);
+    Logger.recordOutput("OTF/h", PPSetpoints.H.setpoint);
+    Logger.recordOutput("OTF/i", PPSetpoints.I.setpoint);
+    Logger.recordOutput("OTF/j", PPSetpoints.J.setpoint);
+    Logger.recordOutput("OTF/k", PPSetpoints.K.setpoint);
+    Logger.recordOutput("OTF/l", PPSetpoints.L.setpoint);
+   
 
   }
 
