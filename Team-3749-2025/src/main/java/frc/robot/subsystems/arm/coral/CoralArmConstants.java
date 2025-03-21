@@ -47,7 +47,7 @@ public class CoralArmConstants {
 
 	public enum ArmStates {
 		CORAL_PICKUP(-0.71),
-		CORAL_STATION(Math.PI /2),
+		CORAL_STATION(1.44),
 
 		L1(Math.PI/4),
 		HAND_OFF(2.27),

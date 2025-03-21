@@ -413,6 +413,15 @@ public class Swerve extends SubsystemBase {
         getPose(), pose);
 
   }
+  public boolean atSwerveSetpoint(Pose2d pose, Pose2d margin) {
+
+    return UtilityFunctions.withinMargin(
+        new Pose2d(AutoConstants.driveToleranceMeters,
+            AutoConstants.driveToleranceMeters,
+            new Rotation2d(AutoConstants.turnToleranceRad)),
+        getPose(), pose);
+
+  }
 
   public Pose2d flipPoseVertical(Pose2d pose) {
 

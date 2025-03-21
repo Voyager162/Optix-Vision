@@ -20,6 +20,7 @@ import frc.robot.Robot;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.roller.RollerConstants;
 import frc.robot.commands.integration.CoralIntakeSource;
+import frc.robot.commands.integration.Handoff;
 import frc.robot.commands.integration.KnockAlgae;
 import frc.robot.commands.integration.ScoreL1;
 import frc.robot.commands.integration.ScoreL234;
@@ -181,8 +182,8 @@ public class AutoUtils {
             AutoTrajectory firstTrajectory) {
 
         routine.active()
-                .onTrue(factory.resetOdometry(firstTrajectoryName).andThen(
-                        firstTrajectory.cmd()));
+                .onTrue(
+                        firstTrajectory.cmd());
         return routine.cmd();
     }
 
@@ -209,7 +210,8 @@ public class AutoUtils {
         Command scoreL4 = new ScoreL234(ElevatorStates.L4);
 
         trajectory.atPose(endingPose2d, 1, 2 * Math.PI).onTrue(scoreL4);
-        trajectory.done().and(() -> scoreL4.isScheduled())
+
+        trajectory.done()
                 .onTrue(
                         Commands.run(() -> {
                             Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
@@ -312,14 +314,13 @@ public class AutoUtils {
         Command handoff = new ScoringModeConditionalHandoff();
 
         trajectory.atPose(endingPose2d, 1.5, 2 * Math.PI).onTrue(intake);
-        trajectory.done().and(() -> intake.isScheduled())
+        trajectory.done()
                 .onTrue(
                         Commands.run(() -> {
                             Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
                         }, Robot.swerve));
 
-        // trajectory.done().and(()->Robot.coralRoller.hasPiece()).onTrue(new
-        // Handoff());
+        new Trigger(() -> intake.isFinished()).onTrue(new Handoff());
         return handoff;
 
     }
@@ -359,16 +360,15 @@ public class AutoUtils {
         if (DriverStation.getAlliance().get() == Alliance.Red) {
             endingPose2d = ChoreoAllianceFlipUtil.flip(endingPose2d);
         }
-        Command Coralintake = new CoralIntakeSource();
-        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(Coralintake);
+        Command coralintake = new CoralIntakeSource();
+        trajectory.atPose(endingPose2d, 1, 1.57).onTrue(coralintake);
 
-        trajectory.done().and(() -> Coralintake.isScheduled())
+        trajectory.done()
                 .onTrue(
                         Commands.run(() -> {
                             Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
-                            System.out.println("contine PID");
                         }, Robot.swerve));
-        return Coralintake;
+        return coralintake;
 
     }
 
@@ -396,9 +396,12 @@ public class AutoUtils {
     public static void goNextAfterCommand(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory,
             Command command) {
         // continue to move with PID to the final position until the command is done
-        new Trigger(() -> command.isFinished())
-                .onTrue(nextTrajectory.cmd());
+        // new Trigger(() -> command.isFinished() &&
+        // Robot.swerve.atSwerveSetpoint(curTrajectory.getFinalPose().get())).onTrue(nextTrajectory.cmd());
 
+            curTrajectory.doneFor(6).and(() -> command.isFinished()).onTrue(nextTrajectory.cmd());
+
+        
     }
 
     /**

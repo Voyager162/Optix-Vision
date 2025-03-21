@@ -124,7 +124,7 @@ public class Autos {
                 // Commands to scoreL4 and intake from source
                 Command score1 = AutoUtils.addScoreL4(trajectory1);
                 Command intake1 = AutoUtils.addIntake(trajectory2);
-                Command score2 = AutoUtils.addScoreL4(trajectory3);
+                Command score2 = AutoUtils.addScoreL4(trajectory3);     
                 Command intake2 = AutoUtils.addIntake(trajectory4);
                 AutoUtils.addScoreL4(trajectory5); // third score is the end of the routine, so no need for reference
 
@@ -135,8 +135,8 @@ public class Autos {
                 AutoUtils.goNextAfterCommand(trajectory1, trajectory2, score1);
 
                 // Trigger to update routineStarted when routine ends
-                new Trigger(() -> trajectory5.cmd().isFinished())
-                                .onTrue(Commands.runOnce(() -> stopRoutineTracking()));
+                // new Trigger(() -> trajectory5.cmd().isFinished())
+                //                 .onTrue(Commands.runOnce(() -> stopRoutineTracking()));
 
                 return Commands.print("3 piece auto!")
                                 .andThen(Commands.runOnce(() -> startRoutineTracking())) // Track routine start

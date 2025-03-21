@@ -91,7 +91,7 @@ public class Elevator extends SubsystemBase {
         profile.reset(data.positionMeters);
         setState(state);
 
-        profile.setIZone(0.03);
+        profile.setIZone(0.06);
 
     }
 
