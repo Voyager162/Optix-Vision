@@ -79,8 +79,8 @@ public class JoystickIO {
                         // pilotAndOperatorBindings();
                         simBindings();
                 } else {
-                        // pilotAndOperatorBindings();
-                        testBindings();
+                        pilotAndOperatorBindings();
+                        // testBindings();
 
                 }
 
@@ -133,10 +133,10 @@ public class JoystickIO {
          * If both controllers are plugged in (pi and op)
          */
         public static void pilotAndOperatorBindings() {
+                System.out.println("won");
                 // gyro reset
                 pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
-                pilot.back().onTrue(
-                                Commands.runOnce(() -> Robot.swerve.setOdometry(new Pose2d(5, 5, new Rotation2d()))));
+                pilot.back().onTrue(new PrepareClimb()).onFalse(new Climb());
 
                 // intake floor
                 pilot.leftTrigger().onTrue(new IntakeFloor().andThen(new ScoringModeConditionalHandoff())).onFalse(

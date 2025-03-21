@@ -30,7 +30,7 @@ public class ScoringRoller extends Roller {
     private boolean routineStarted = false;
     private boolean isAlgaeMode = false;
     // this *should* just be has piece, but it's too close to comp to make neat rn
-    private boolean handoffComplete = false;
+    private boolean handoffComplete = true;
 
     public ScoringRoller() {
         super(Implementations.SCORING, FF(), positionPID(), velocityPID());

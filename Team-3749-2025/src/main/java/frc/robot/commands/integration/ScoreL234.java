@@ -100,7 +100,7 @@ public class ScoreL234 extends Command {
     @Override
     public boolean isFinished() {
         return !Robot.scoringRoller.hasPiece() && pieceRecognized &&
-                Timer.getFPGATimestamp() - scoreTimestamp > 0.6
+                Timer.getFPGATimestamp() - scoreTimestamp > 0.9
                 && this.isScheduled();
         // return Timer.getFPGATimestamp() - scoreTimestamp > 1 && this.isScheduled();
         // return false;

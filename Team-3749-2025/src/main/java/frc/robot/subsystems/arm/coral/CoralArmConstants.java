@@ -28,7 +28,7 @@ public class CoralArmConstants {
 
 	// control values
 	public static LoggedTunableNumber kG = new LoggedTunableNumber("Arms/CoralArm/kG", 0.39);
-	public static LoggedTunableNumber kP = new LoggedTunableNumber("Arms/CoralArm/kP", 2.2);
+	public static LoggedTunableNumber kP = new LoggedTunableNumber("Arms/CoralArm/kP", 1.3);
 	public static LoggedTunableNumber kI = new LoggedTunableNumber("Arms/CoralArm/kI", 0);
 	public static LoggedTunableNumber kD = new LoggedTunableNumber("Arms/CoralArm/kD", 0);
 	public static LoggedTunableNumber kS = new LoggedTunableNumber("Arms/CoralArm/kS", 0.16);

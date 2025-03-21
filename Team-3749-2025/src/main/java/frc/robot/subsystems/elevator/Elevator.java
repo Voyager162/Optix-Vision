@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
+import frc.robot.commands.auto.AutoConstants;
 import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
 import frc.robot.subsystems.elevator.ElevatorIO.ElevatorData;
 import frc.robot.subsystems.elevator.real.ElevatorSparkMax;
@@ -89,6 +90,9 @@ public class Elevator extends SubsystemBase {
                         ElevatorConstants.ElevatorControl.maxAcceleration.get()));
         profile.reset(data.positionMeters);
         setState(state);
+
+        profile.setIZone(0.03);
+
     }
 
     public ElevatorStates getState() {
@@ -109,7 +113,8 @@ public class Elevator extends SubsystemBase {
         }
         return UtilityFunctions.withinMargin(ElevatorConstants.statePostionMarginOfError,
                 state.heightMeters, data.positionMeters)
-                && UtilityFunctions.withinMargin(ElevatorConstants.stateVelocityMarginOfError, 0, data.velocityMetersPerSecond);
+                && UtilityFunctions.withinMargin(ElevatorConstants.stateVelocityMarginOfError, 0,
+                        data.velocityMetersPerSecond);
     }
 
     public void setVoltage(double volts) {
