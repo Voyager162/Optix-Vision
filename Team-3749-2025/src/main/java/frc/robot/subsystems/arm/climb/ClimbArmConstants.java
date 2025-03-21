@@ -56,6 +56,7 @@ public class ClimbArmConstants {
 	public enum ArmStates {
 		CLIMB,
 		STOWED,
-		STOPPED
+		STOPPED,
+		REVERSE
 	}
 }

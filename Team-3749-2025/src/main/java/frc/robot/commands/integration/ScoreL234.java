@@ -53,9 +53,6 @@ public class ScoreL234 extends Command {
         if (Robot.scoringRoller.hasPiece()) {
             pieceRecognized = true;
         }
-
-        System.out.println(pieceRecognized);
-
         // scores when elevator reaches desired state
         if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState()
                 && scoreTimestamp == Double.MAX_VALUE) {

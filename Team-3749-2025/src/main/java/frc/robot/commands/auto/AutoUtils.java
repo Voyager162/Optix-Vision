@@ -213,7 +213,6 @@ public class AutoUtils {
                 .onTrue(
                         Commands.run(() -> {
                             Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
-                            System.out.println("contine PID");
                         }, Robot.swerve));
         return scoreL4;
     }
@@ -291,7 +290,6 @@ public class AutoUtils {
                 .onTrue(
                         Commands.run(() -> {
                             Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
-                            System.out.println("contine PID");
                         }, Robot.swerve));
         return scoreL1;
     }
@@ -318,7 +316,6 @@ public class AutoUtils {
                 .onTrue(
                         Commands.run(() -> {
                             Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
-                            System.out.println("contine PID");
                         }, Robot.swerve));
 
         // trajectory.done().and(()->Robot.coralRoller.hasPiece()).onTrue(new
@@ -342,7 +339,6 @@ public class AutoUtils {
                 .onTrue(
                         Commands.run(() -> {
                             Robot.swerve.followSample(trajectory.getFinalPose().get(), new Pose2d());
-                            System.out.println("contine PID");
                         }, Robot.swerve));
         return knockAlgae;
 

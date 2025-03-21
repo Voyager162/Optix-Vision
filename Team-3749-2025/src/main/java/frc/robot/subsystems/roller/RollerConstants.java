@@ -91,7 +91,7 @@ public class RollerConstants {
         }
 
         public enum RollerStates {
-                INTAKE(-200, 130, 200),
+                INTAKE(200, 130, 200),
                 MAINTAIN(0, 0, 0),
                 OUTTAKE(-50, -25, Scoring.maxVelocity.get()), // -42.5
                 SCORE(0, -50, Scoring.maxVelocity.get()), // -42.5

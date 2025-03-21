@@ -111,18 +111,18 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-
+    // /Publish hexagon points to NetworkTables
+    List<Pose2d> hexagonPoses = new ArrayList<>();
+    for (Translation2d vertex : ToPosConstants.ReefVerticies.getHexagonVertices()) {
+      hexagonPoses.add(new Pose2d(vertex, new Rotation2d()));
+    }
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
 
-    // /Publish hexagon points to NetworkTables
-    List<Pose2d> hexagonPoses = new ArrayList<>();
-    for (Translation2d vertex : ToPosConstants.ReefVerticies.getHexagonVertices()) {
-      hexagonPoses.add(new Pose2d(vertex, new Rotation2d()));
-    }
+
 
   }
 

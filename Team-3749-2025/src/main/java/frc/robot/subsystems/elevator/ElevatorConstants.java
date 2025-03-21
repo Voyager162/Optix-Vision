@@ -56,7 +56,7 @@ public class ElevatorConstants {
         L4(1.2625),
         SOURCE(Units.inchesToMeters(30)),
         ALGAE_LOW(Units.inchesToMeters(.4)),
-        ALGAE_HIGH(Units.inchesToMeters(16)),
+        ALGAE_HIGH(Units.inchesToMeters(14.75)),
         MAX(Units.feetToMeters(6)),
         STOW(Units.inchesToMeters(.75));
         // STOP(Units.inchesToMeters(0)),

@@ -137,6 +137,8 @@ public class JoystickIO {
                 // gyro reset
                 pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
                 pilot.back().onTrue(new PrepareClimb()).onFalse(new Climb());
+                pilot.povRight().onTrue(
+                                Commands.runOnce(() -> Robot.climbArm.setState(ClimbArmConstants.ArmStates.REVERSE)));
 
                 // intake floor
                 pilot.leftTrigger().onTrue(new IntakeFloor().andThen(new ScoringModeConditionalHandoff())).onFalse(
@@ -156,12 +158,12 @@ public class JoystickIO {
                 pilot.rightBumper().onTrue(new IntakeSource());
                 // handoff
                 pilot.a().onTrue(new Handoff());
-                // Climb - Reset to cancel
-                // pilot.y().onTrue(new PrepareClimb()).onFalse(new Climb());
                 pilot.y().onTrue(new ScoreL234(ElevatorStates.L4));
-                pilot.b().onTrue(new ScoreL234(ElevatorStates.L3));
-                pilot.x()
-                                .onTrue(new ScoreL234(ElevatorStates.L2));
+                // pilot.b().onTrue(new ScoreL234(ElevatorStates.L3));
+                // pilot.x().onTrue(new ScoreL234(ElevatorStates.L2));
+                pilot.b().onTrue(new KnockAlgae(ElevatorStates.ALGAE_LOW));
+                pilot.x().onTrue(new KnockAlgae(ElevatorStates.ALGAE_HIGH));
+
 
                 // reset
                 pilot.povDown().onTrue(new Reset());
@@ -247,7 +249,7 @@ public class JoystickIO {
                 // Robot.climbArm));
 
                 pilot.a().onTrue(new PrepareClimb()).onFalse(
-                               new Climb());
+                                new Climb());
 
                 // pilot.a().onTrue(Commands.runOnce(() ->
                 // Robot.elevator.setState(ElevatorStates.L1)));
