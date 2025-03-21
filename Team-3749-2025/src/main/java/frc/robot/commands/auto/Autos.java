@@ -6,11 +6,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
-import frc.robot.buttons.JoystickIO;
 import frc.robot.buttons.ToPosTriggers;
-import frc.robot.buttons.ButtonBoard.ScoringMode;
-import frc.robot.subsystems.swerve.ToPosConstants;
-import frc.robot.subsystems.swerve.ToPosConstants.Setpoints.PPSetpoints;
 
 /**
  * Class containing our auto routines. Referenced by the auto selector and
@@ -117,15 +113,16 @@ public class Autos {
          */
         public static Command get3Piece() {
                 AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("3-Piece");
-
+                Robot.scoringRoller.setHandoffComplete(true);
                 // loop.trajectory, or the new name
-                AutoTrajectory trajectory2 = routine.trajectory("5-ArmIntake");
+                AutoTrajectory trajectory1 = routine.trajectory("Start-4 (1)");
+                AutoTrajectory trajectory2 = routine.trajectory("4-ArmIntake");
                 AutoTrajectory trajectory3 = routine.trajectory("ArmIntake-3");
                 AutoTrajectory trajectory4 = routine.trajectory("3-ArmIntake");
                 AutoTrajectory trajectory5 = routine.trajectory("ArmIntake-2");
 
                 // Commands to scoreL4 and intake from source
-                AutoUtils.addHandoffOnIntake();
+                Command score1 = AutoUtils.addScoreL4(trajectory1);
                 Command intake1 = AutoUtils.addIntake(trajectory2);
                 Command score2 = AutoUtils.addScoreL4(trajectory3);
                 Command intake2 = AutoUtils.addIntake(trajectory4);
@@ -135,6 +132,7 @@ public class Autos {
                 AutoUtils.goNextAfterCommand(trajectory4, trajectory5, intake2);
                 AutoUtils.goNextAfterCommand(trajectory3, trajectory4, score2);
                 AutoUtils.goNextAfterCommand(trajectory2, trajectory3, intake1);
+                AutoUtils.goNextAfterCommand(trajectory1, trajectory2, score1);
 
                 // Trigger to update routineStarted when routine ends
                 new Trigger(() -> trajectory5.cmd().isFinished())
@@ -142,19 +140,22 @@ public class Autos {
 
                 return Commands.print("3 piece auto!")
                                 .andThen(Commands.runOnce(() -> startRoutineTracking())) // Track routine start
-                                .andThen(AutoUtils.startRoutine(routine, PPSetpoints.J.ordinal(), trajectory2));
+                                .andThen(AutoUtils.startRoutine(routine, "Start-5", trajectory1));
         }
 
         public static Command get3PieceFlipped() {
                 AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("3-Piece-Flipped");
+                Robot.scoringRoller.setHandoffComplete(true);
 
                 // loop.trajectory, or the new name
-                AutoTrajectory trajectory2 = routine.trajectory("5-ArmIntake-flipped");
+                AutoTrajectory trajectory1 = routine.trajectory("Start-4-flipped");
+                AutoTrajectory trajectory2 = routine.trajectory("4-ArmIntake-flipped");
                 AutoTrajectory trajectory3 = routine.trajectory("ArmIntake-3-flipped");
                 AutoTrajectory trajectory4 = routine.trajectory("3-ArmIntake-flipped");
                 AutoTrajectory trajectory5 = routine.trajectory("ArmIntake-2-flipped");
 
                 // Commands to scoreL4 and intake from source
+                Command score1 = AutoUtils.addScoreL4(trajectory1);
                 Command intake1 = AutoUtils.addIntake(trajectory2);
                 Command score2 = AutoUtils.addScoreL4(trajectory3);
                 Command intake2 = AutoUtils.addIntake(trajectory4);
@@ -164,6 +165,7 @@ public class Autos {
                 AutoUtils.goNextAfterCommand(trajectory4, trajectory5, intake2);
                 AutoUtils.goNextAfterCommand(trajectory3, trajectory4, score2);
                 AutoUtils.goNextAfterCommand(trajectory2, trajectory3, intake1);
+                AutoUtils.goNextAfterCommand(trajectory1, trajectory2, score1);
 
                 // Trigger to update routineStarted when routine ends
                 new Trigger(() -> trajectory5.cmd().isFinished())
@@ -171,12 +173,18 @@ public class Autos {
 
                 return Commands.print("3 piece auto!")
                                 .andThen(Commands.runOnce(() -> startRoutineTracking())) // Track routine start
-                                .andThen(AutoUtils.startRoutine(routine, PPSetpoints.F.ordinal(), trajectory2));
-                // what does this do, should it be Start-4
+                                .andThen(AutoUtils.startRoutine(routine,
+                                                "Start-4-flipped                               ", trajectory1)); // what
+                                                                                                                 // does
+                                                                                                                 // this
+                                                                                                                 // do,
+                                                                                                                 // should
+                                                                                                                 // it
+                                                                                                                 // be
+                                                                                                                 // Start-4
         }
 
         /**
-         * CURRENTLY DOES NOT WORK
          * 
          * @return a command that Taxi's to 5
          */
@@ -185,13 +193,12 @@ public class Autos {
 
                 // loop.trajectory, or the new name
                 AutoTrajectory trajectory1 = routine.trajectory("Start-5");
-                return Commands.none();
-                // return Commands.print("Taxi").andThen(
-                // AutoUtils.startRoutine(routine, "Start-5", trajectory1));
+
+                return Commands.print("Taxi").andThen(
+                                AutoUtils.startRoutine(routine, "Start-5", trajectory1));
         }
 
         /**
-         * currently does not work
          * 
          * @return a command that scores at positions 5 and 4 at L1
          */
@@ -215,15 +222,13 @@ public class Autos {
                 // Trigger to update routineStarted when routine ends
                 new Trigger(() -> trajectory3.cmd().isFinished())
                                 .onTrue(Commands.runOnce(() -> stopRoutineTracking()));
-                return Commands.none();
-                // return Commands.print("Two Piece Score L1")
-                // .andThen(Commands.runOnce(() -> startRoutineTracking())) // Track routine
-                // start
-                // .andThen(AutoUtils.startRoutine(routine, "Start-5", trajectory1));
+
+                return Commands.print("Two Piece Score L1")
+                                .andThen(Commands.runOnce(() -> startRoutineTracking())) // Track routine start
+                                .andThen(AutoUtils.startRoutine(routine, "Start-5", trajectory1));
         }
 
         /**
-         * currently does not work
          * 
          * @return a command that Taxi's your teammate
          */
@@ -233,13 +238,11 @@ public class Autos {
                 // loop.trajectory, or the new name
                 AutoTrajectory trajectory1 = routine.trajectory("Start-Teamtaxi");
 
-                return Commands.none();
-                // return Commands.print("Team Taxi").andThen(
-                // AutoUtils.startRoutine(routine, "Start-TeamTaxi", trajectory1));
+                return Commands.print("Team Taxi").andThen(
+                                AutoUtils.startRoutine(routine, "Start-TeamTaxi", trajectory1));
         }
 
         /**
-         * currently does not work
          * 
          * @return a command that goes to middle to score (used when in middle)
          */
@@ -254,11 +257,9 @@ public class Autos {
                 new Trigger(() -> trajectory1.cmd().isFinished())
                                 .onTrue(Commands.runOnce(() -> stopRoutineTracking()));
 
-                return Commands.none();
-                // return Commands.print("One Piece Center")
-                // .andThen(Commands.runOnce(() -> startRoutineTracking()) // Track routine
-                // start
-                // .andThen(AutoUtils.startRoutine(routine, "MidStart-6", trajectory1)));
+                return Commands.print("One Piece Center")
+                                .andThen(Commands.runOnce(() -> startRoutineTracking()) // Track routine start
+                                                .andThen(AutoUtils.startRoutine(routine, "MidStart-6", trajectory1)));
         }
 
         /**
@@ -269,6 +270,7 @@ public class Autos {
                 AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("4-Piece Coral");
 
                 // loop.trajectory, or the new name
+                AutoTrajectory trajectory1 = routine.trajectory("Start-5");
                 AutoTrajectory trajectory2 = routine.trajectory("5-ArmIntake");
                 AutoTrajectory trajectory3 = routine.trajectory("ArmIntake-4");
                 AutoTrajectory trajectory4 = routine.trajectory("4-ArmIntake");
@@ -277,6 +279,7 @@ public class Autos {
                 AutoTrajectory trajectory7 = routine.trajectory("ArmIntake-2");
 
                 // Commands to scoreL4 and intake from source
+                Command score1 = AutoUtils.addScoreL4(trajectory1);
                 Command intake1 = AutoUtils.addIntake(trajectory2);
                 Command score2 = AutoUtils.addScoreL4(trajectory3);
                 Command intake2 = AutoUtils.addIntake(trajectory4);
@@ -290,6 +293,7 @@ public class Autos {
                 AutoUtils.goNextAfterCommand(trajectory4, trajectory5, intake2);
                 AutoUtils.goNextAfterCommand(trajectory3, trajectory4, score2);
                 AutoUtils.goNextAfterCommand(trajectory2, trajectory3, intake1);
+                AutoUtils.goNextAfterCommand(trajectory1, trajectory2, score1);
 
                 // Trigger to update routineStarted when routine ends
                 new Trigger(() -> trajectory7.cmd().isFinished())
@@ -297,7 +301,7 @@ public class Autos {
 
                 return Commands.print("4 piece auto!")
                                 .andThen(Commands.runOnce(() -> startRoutineTracking())) // Track routine start
-                                .andThen(AutoUtils.startRoutine(routine, PPSetpoints.J.ordinal(), trajectory2));
+                                .andThen(AutoUtils.startRoutine(routine, "Start-5", trajectory1));
         }
 
         /**
@@ -310,6 +314,7 @@ public class Autos {
                 AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("3 Coral and 2 Algae");
 
                 // loop.trajectory, or the new name
+                AutoTrajectory trajectory1 = routine.trajectory("Start-5");
                 AutoTrajectory trajectory2 = routine.trajectory("5-ArmIntake");
                 AutoTrajectory trajectory3 = routine.trajectory("ArmIntake-4");
                 AutoTrajectory trajectory4 = routine.trajectory("4-ArmIntake");
@@ -320,6 +325,7 @@ public class Autos {
                 AutoTrajectory trajectory9 = routine.trajectory("2-KnockAlgae1");
 
                 // Commands to scoreL4, intake from source, and knock algae
+                Command score1 = AutoUtils.addScoreL4(trajectory1);
                 Command intake1 = AutoUtils.addIntake(trajectory2);
                 Command score2 = AutoUtils.addScoreL4(trajectory3);
                 Command intake2 = AutoUtils.addIntake(trajectory4);
@@ -337,6 +343,7 @@ public class Autos {
                 AutoUtils.goNextAfterCommand(trajectory4, trajectory5, intake2);
                 AutoUtils.goNextAfterCommand(trajectory3, trajectory4, score2);
                 AutoUtils.goNextAfterCommand(trajectory2, trajectory3, intake1);
+                AutoUtils.goNextAfterCommand(trajectory1, trajectory2, score1);
 
                 // Trigger to update routineStarted when routine ends
                 new Trigger(() -> trajectory9.cmd().isFinished())
@@ -344,14 +351,14 @@ public class Autos {
 
                 return Commands.print("3 Coral and 2 Algae")
                                 .andThen(Commands.runOnce(() -> startRoutineTracking())) // Track routine start
-                                .andThen(AutoUtils.startRoutine(routine, PPSetpoints.J.ordinal(), trajectory2));
+                                .andThen(AutoUtils.startRoutine(routine, "Start-5", trajectory1));
         }
 
         public static Command getCoralArm4piece() {
                 AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("4 piece coral arm");
 
                 // loop.trajectory, or the new name
-                JoystickIO.getButtonBoard().setScoringMode(ScoringMode.L1);
+                AutoTrajectory trajectory1 = routine.trajectory("Start- 5arm");
                 AutoTrajectory trajectory2 = routine.trajectory("5arm-ArmIntake");
                 AutoTrajectory trajectory3 = routine.trajectory("ArmIntake-4arm");
                 AutoTrajectory trajectory4 = routine.trajectory("4arm-ArmIntake");
@@ -360,6 +367,7 @@ public class Autos {
                 AutoTrajectory trajectory7 = routine.trajectory("ArmIntake-2arm");
 
                 // Commands to scoreL4, intake from source, and knock algae
+                Command score1 = AutoUtils.addScoreL1(trajectory1);
                 Command intake1 = AutoUtils.addGroundIntake(trajectory2);
                 Command score2 = AutoUtils.addScoreL1(trajectory3);
                 Command intake2 = AutoUtils.addGroundIntake(trajectory4);
@@ -373,25 +381,29 @@ public class Autos {
                 AutoUtils.goNextAfterCommand(trajectory4, trajectory5, intake2);
                 AutoUtils.goNextAfterCommand(trajectory3, trajectory4, score2);
                 AutoUtils.goNextAfterCommand(trajectory2, trajectory3, intake1);
+                AutoUtils.goNextAfterCommand(trajectory1, trajectory2, score1);
 
                 // Trigger to update routineStarted when routine ends
+                new Trigger(() -> trajectory1.cmd().isFinished())
+                                .onTrue(Commands.runOnce(() -> stopRoutineTracking()));
 
                 return Commands.print("Start- 5arm")
                                 .andThen(Commands.runOnce(() -> startRoutineTracking()) // Track routine start
-                                                .andThen(AutoUtils.startRoutine(routine, PPSetpoints.JL1.ordinal(),
-                                                                trajectory2)));
+                                                .andThen(AutoUtils.startRoutine(routine, "Start- 5arm", trajectory1)));
         }
 
         public static Command getCoralArm3piece() {
-                AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("3 piece coral arm");
+                AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("4 piece coral arm");
 
                 // loop.trajectory, or the new name
+                AutoTrajectory trajectory1 = routine.trajectory("Start- 4arm");
                 AutoTrajectory trajectory2 = routine.trajectory("5arm-ArmIntake");
                 AutoTrajectory trajectory3 = routine.trajectory("ArmIntake-3arm");
                 AutoTrajectory trajectory4 = routine.trajectory("4arm-ArmIntake");
                 AutoTrajectory trajectory5 = routine.trajectory("ArmIntake-2arm");
 
                 // Commands to scoreL4, intake from source, and knock algae
+                Command score1 = AutoUtils.addScoreL1(trajectory1);
                 Command intake1 = AutoUtils.addGroundIntake(trajectory2);
                 Command score2 = AutoUtils.addScoreL1(trajectory3);
                 Command intake2 = AutoUtils.addGroundIntake(trajectory4);
@@ -401,10 +413,14 @@ public class Autos {
                 AutoUtils.goNextAfterCommand(trajectory4, trajectory5, intake2);
                 AutoUtils.goNextAfterCommand(trajectory3, trajectory4, score2);
                 AutoUtils.goNextAfterCommand(trajectory2, trajectory3, intake1);
+                AutoUtils.goNextAfterCommand(trajectory1, trajectory2, score1);
+
+                // Trigger to update routineStarted when routine ends
+                new Trigger(() -> trajectory1.cmd().isFinished())
+                                .onTrue(Commands.runOnce(() -> stopRoutineTracking()));
 
                 return Commands.print("Start- 5arm")
                                 .andThen(Commands.runOnce(() -> startRoutineTracking()) // Track routine start
-                                                .andThen(AutoUtils.startRoutine(routine, PPSetpoints.JL1.ordinal(),
-                                                                trajectory2)));
+                                                .andThen(AutoUtils.startRoutine(routine, "Start- 5arm", trajectory1)));
         }
 }

@@ -1,5 +1,6 @@
 package frc.robot.commands.integration;
 
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -53,6 +54,7 @@ public class ScoreL234 extends Command {
         if (Robot.scoringRoller.hasPiece()) {
             pieceRecognized = true;
         }
+        Logger.recordOutput("swerve at setpoint", Robot.swerve.atSwerveSetpoint(Robot.swerve.getPPSetpoint().setpoint));
         // scores when elevator reaches desired state
         if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState()
                 && scoreTimestamp == Double.MAX_VALUE) {
@@ -65,7 +67,7 @@ public class ScoreL234 extends Command {
             }
 
             Robot.scoringRoller.setState(RollerStates.SCORE);
-            if (scoreTimestamp==Double.MAX_VALUE){
+            if (scoreTimestamp == Double.MAX_VALUE) {
 
                 scoreTimestamp = Timer.getFPGATimestamp();
             }
@@ -84,7 +86,7 @@ public class ScoreL234 extends Command {
 
         pieceRecognized = false;
         scoreTimestamp = Double.MAX_VALUE;
-        if (interrupted==false){
+        if (interrupted == false) {
 
             Robot.scoringRoller.setHandoffComplete(false);
         }
@@ -97,8 +99,7 @@ public class ScoreL234 extends Command {
     @Override
     public boolean isFinished() {
         return !Robot.scoringRoller.hasPiece() && pieceRecognized &&
-                Timer.getFPGATimestamp() - scoreTimestamp > 0.9
-                && this.isScheduled();
+                Timer.getFPGATimestamp() - scoreTimestamp > 0.9 && this.isScheduled();
         // return Timer.getFPGATimestamp() - scoreTimestamp > 1 && this.isScheduled();
         // return false;
     }

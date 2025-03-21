@@ -177,12 +177,12 @@ public class AutoUtils {
      * @param firstTrajectory
      * @return
      */
-    public static Command startRoutine(AutoRoutine routine, int firstScoreIndex,
-            AutoTrajectory secondTrajectory) {
+    public static Command startRoutine(AutoRoutine routine, String firstTrajectoryName,
+            AutoTrajectory firstTrajectory) {
 
         routine.active()
-                .onTrue(
-                        new OTFAuto(firstScoreIndex).andThen(secondTrajectory.cmd()));
+                .onTrue(factory.resetOdometry(firstTrajectoryName).andThen(
+                        firstTrajectory.cmd()));
         return routine.cmd();
     }
 
@@ -396,7 +396,8 @@ public class AutoUtils {
     public static void goNextAfterCommand(AutoTrajectory curTrajectory, AutoTrajectory nextTrajectory,
             Command command) {
         // continue to move with PID to the final position until the command is done
-        new Trigger(() -> command.isFinished()).onTrue(Commands.print(command.getName()).andThen(nextTrajectory.cmd()));
+        new Trigger(() -> command.isFinished())
+                .onTrue(nextTrajectory.cmd());
 
     }
 
