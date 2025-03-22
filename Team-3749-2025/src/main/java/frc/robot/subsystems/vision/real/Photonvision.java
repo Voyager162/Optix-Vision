@@ -137,14 +137,6 @@ public class Photonvision implements VisionIO {
                 continue;
             }
 
-            if(pipelineResult.targets.get(index).fiducialId == 4 ||
-            pipelineResult.targets.get(index).fiducialId == 5 ||
-            pipelineResult.targets.get(index).fiducialId == 15 || 
-            pipelineResult.targets.get(index).fiducialId == 14 )
-            {
-                continue;
-            } //4 5 15 14
-
             double latencyMillis = pipelineResult.metadata.getLatencyMillis();
 
             visionData.latencyMillis[index] = latencyMillis;

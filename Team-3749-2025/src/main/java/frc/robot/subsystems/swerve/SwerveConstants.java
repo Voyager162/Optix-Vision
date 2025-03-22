@@ -71,7 +71,7 @@ public class SwerveConstants {
                                 false,
                                 true,
                                 false,
-                                false
+                                true
                 };
                 public static final boolean[] turningMotorInverted = {
                                 false,
@@ -90,7 +90,8 @@ public class SwerveConstants {
                                 // 1.177,
                                 2.761 - Math.PI / 2,
                                 0.072 - Math.PI / 2,
-                                1.974 - Math.PI / 2
+                                // 1.974 - Math.PI / 2
+                                3.525
                 };
 
                 //cam 1 2 6 are good
