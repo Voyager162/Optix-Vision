@@ -19,6 +19,6 @@ public final class AutoConstants {
         public static double kITurn = 0.6; // 3
         public static double kDTurn = 0.4;// 0.2
         public static double turnIZone = Units.degreesToRadians(6);
-        public static double turnToleranceRad = Units.degreesToRadians(2);
+        public static double turnToleranceRad = Units.degreesToRadians(6);
 
 }

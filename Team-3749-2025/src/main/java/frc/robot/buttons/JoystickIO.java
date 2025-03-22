@@ -87,10 +87,8 @@ public class JoystickIO {
                 setDefaultCommands();
         }
 
-        private static void OTFIndexChooser(int index)
-        {
-                if(buttonBoard.getScoringMode().equals(ScoringMode.ALGAE))
-                {
+        private static void OTFIndexChooser(int index) {
+                if (buttonBoard.getScoringMode().equals(ScoringMode.ALGAE)) {
                         Robot.swerve.startOnTheFly(ToPosConstants.Setpoints.reefSetpointIndexToAlgae.get(index));
                         return;
                 }
@@ -137,7 +135,8 @@ public class JoystickIO {
                 buttonBoard.buttonReset.onTrue(new Reset());
                 buttonBoard.buttonUtilityA.onTrue(Commands.runOnce(
                                 () -> Robot.coralRoller.setHasPiece(!Robot.coralRoller.hasPiece())));
-                ;
+        
+                buttonBoard.buttonUtilityB.onTrue(new PrepareClimb()).onFalse(new Climb());
         }
 
         /**
@@ -173,7 +172,6 @@ public class JoystickIO {
                 pilot.x().onTrue(new ScoreL234(ElevatorStates.L2));
                 // pilot.b().onTrue(new KnockAlgae(ElevatorStates.ALGAE_LOW));
                 // pilot.x().onTrue(new KnockAlgae(ElevatorStates.ALGAE_HIGH));
-
 
                 // reset
                 pilot.povDown().onTrue(new Reset());
@@ -286,7 +284,7 @@ public class JoystickIO {
                 // Robot.scoringRoller.setHasPiece(true)));
 
                 // pilot.x().onTrue(Autos.run3Piece());
-                pilot.x().onTrue(Commands.runOnce(()-> buttonBoard.setScoringMode(ScoringMode.ALGAE)));
+                pilot.x().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.ALGAE)));
                 pilot.y().onTrue(Commands.runOnce(() -> OTFIndexChooser(6)));
 
                 pilot.a().onTrue(Commands.runOnce(() -> Robot.coralRoller.setHasPiece(true)));

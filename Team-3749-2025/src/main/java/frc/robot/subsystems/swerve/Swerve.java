@@ -201,7 +201,7 @@ public class Swerve extends SubsystemBase {
     // return new Pose2d(new Translation2d(2, 4.9), new Rotation2d(Math.PI/2));
   }
 
-  public double getUpdateOdometryTimestamp(){
+  public double getUpdateOdometryTimestamp() {
     return odometryUpdateTimestamp;
   }
 
@@ -405,14 +405,19 @@ public class Swerve extends SubsystemBase {
   }
 
   public boolean atSwerveSetpoint(Pose2d pose) {
-
-    return UtilityFunctions.withinMargin(
+    boolean atPose = UtilityFunctions.withinMargin(
         new Pose2d(AutoConstants.driveToleranceMeters,
             AutoConstants.driveToleranceMeters,
             new Rotation2d(AutoConstants.turnToleranceRad)),
         getPose(), pose);
+    double robotVelocity = Math.hypot(getChassisSpeeds().vxMetersPerSecond,
+        getChassisSpeeds().vyMetersPerSecond);
+
+    boolean stopped = UtilityFunctions.withinMargin(0.02, robotVelocity, 0);
+    return atPose && stopped;
 
   }
+
   public boolean atSwerveSetpoint(Pose2d pose, Pose2d margin) {
 
     return UtilityFunctions.withinMargin(
@@ -435,13 +440,14 @@ public class Swerve extends SubsystemBase {
 
   }
   // private void setSetpointToClosestSideToSetpoint() {
-  //   Pose2d closestSide = getPPSetpoint().setpoint.nearest(ToPosConstants.Setpoints.reefSides);
-  //   // Iterate through the reef branch mappings to set the correct setpoint
-  //   for (Pose2d side : ToPosConstants.Setpoints.driveRelativeBranches.keySet()) {
-  //     if (closestSide.equals(side)) {
-  //       setPPSetpointIndex(ToPosConstants.Setpoints.driveRelativeBranches.get(side)[2]);
-  //     }
-  //   }
+  // Pose2d closestSide =
+  // getPPSetpoint().setpoint.nearest(ToPosConstants.Setpoints.reefSides);
+  // // Iterate through the reef branch mappings to set the correct setpoint
+  // for (Pose2d side : ToPosConstants.Setpoints.driveRelativeBranches.keySet()) {
+  // if (closestSide.equals(side)) {
+  // setPPSetpointIndex(ToPosConstants.Setpoints.driveRelativeBranches.get(side)[2]);
+  // }
+  // }
   // }
 
   // called when the button board is pressed with the (ppsetpoint)"index" the
@@ -453,8 +459,8 @@ public class Swerve extends SubsystemBase {
     currentPPSetpointIndex = setpointIndex;
 
     // if (JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.ALGAE &&
-    //     currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 25) {
-    //       setSetpointToClosestSideToSetpoint();
+    // currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 25) {
+    // setSetpointToClosestSideToSetpoint();
     // }
 
     if (JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.L1 &&
@@ -505,7 +511,7 @@ public class Swerve extends SubsystemBase {
    */
   public void updateOdometry() {
     // convert to -pi to pi
-    odometryUpdateTimestamp =Timer.getFPGATimestamp();
+    odometryUpdateTimestamp = Timer.getFPGATimestamp();
     swerveDrivePoseEstimator.updateWithTime(odometryUpdateTimestamp,
         Rotation2d.fromDegrees(gyroData.yawDeg),
         new SwerveModulePosition[] {

@@ -94,26 +94,23 @@ public class Photonvision implements VisionIO {
 
     public void updatePose() {
         // Cam # minus 1
+        cameraUpdatePose(0);
         cameraUpdatePose(1);
         cameraUpdatePose(2);
         // only use front cams if using trig solve
         Command elevatorCmd = Robot.elevator.getCurrentCommand();
         if (elevatorCmd == null) {
-            cameraUpdatePose(0);
-            cameraUpdatePose(3);
-            cameraUpdatePose(4);
-            cameraUpdatePose(5);
+            // cameraUpdatePose(0);
+            // cameraUpdatePose(3);
+            // cameraUpdatePose(4);
+            // cameraUpdatePose(5);
             return;
         }
 
         // else if (Robot.elevator.getCurrentCommand().getName() == "ScoreL234") {
-        //     System.out.println("score ignore");
-        //     return;
+        // System.out.println("score ignore");
+        // return;
         // }
-        cameraUpdatePose(0);
-        cameraUpdatePose(3);
-        // cameraUpdatePose(4);
-        cameraUpdatePose(5);
 
     }
 

@@ -50,7 +50,7 @@ public class ToPosConstants {
         public static final double yComponent = Math.sin(Math.toRadians(30));
 
         private static Translation2d flipIfRed(Translation2d translation) {
-            if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+            if (true) {
                 return new Translation2d(flipper.flipX(translation.getX()), flipper.flipY(translation.getY()));
             }
             return translation;
@@ -500,7 +500,7 @@ public class ToPosConstants {
                 this.approachPoint = approachPoint;
 
                 // Flip setpoints if on the red alliance
-                if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+                if (true) {
                     this.setpoint = flipPose(setpoint);
                     this.approachPoint = flipPose(approachPoint);
                 }

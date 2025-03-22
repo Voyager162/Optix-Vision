@@ -28,6 +28,7 @@ public class ScoreL234 extends Command {
     private boolean handoffComplete = false;
     private boolean pieceRecognized = false;
     private double scoreTimestamp = Double.MAX_VALUE;
+    private double cmdStartTimestamp = Double.MAX_VALUE;
 
     /**
      * 
@@ -44,8 +45,9 @@ public class ScoreL234 extends Command {
         Robot.elevator.setState(elevatorState);
         Robot.scoringRoller.setState(RollerStates.STOP);
         Robot.coralArm.setState(ArmStates.STOW);
-        Robot.vision.setCameraStrategy(PoseStrategy.PNP_DISTANCE_TRIG_SOLVE, 1);
-        Robot.vision.setCameraStrategy(PoseStrategy.PNP_DISTANCE_TRIG_SOLVE, 2);
+        // Robot.vision.setCameraStrategy(PoseStrategy.PNP_DISTANCE_TRIG_SOLVE, 1);
+        // Robot.vision.setCameraStrategy(PoseStrategy.PNP_DISTANCE_TRIG_SOLVE, 2);
+        cmdStartTimestamp = Timer.getFPGATimestamp();
 
     }
 
@@ -60,8 +62,11 @@ public class ScoreL234 extends Command {
                 && scoreTimestamp == Double.MAX_VALUE) {
 
             if ((Robot.swerve.getIsOTF() && !Robot.swerve.atSwerveSetpoint(Robot.swerve.getPPSetpoint().setpoint))
-                    || (DriverStation.isAutonomous()
-                            && !Robot.swerve.atSwerveSetpoint(Robot.swerve.getPositionSetpoint()))) {
+                    || (
+
+                    (DriverStation.isAutonomous()
+                            && !Robot.swerve.atSwerveSetpoint(Robot.swerve.getPositionSetpoint()))
+                            || Timer.getFPGATimestamp() - cmdStartTimestamp < 3.5)) {
                 Robot.scoringRoller.setState(RollerStates.STOP);
                 return;
             }
@@ -81,11 +86,12 @@ public class ScoreL234 extends Command {
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.scoringRoller.setState(RollerStates.STOP);
         Robot.coralRoller.setState(RollerStates.STOP);
-        Robot.vision.setCameraStrategy(PoseStrategy.LOWEST_AMBIGUITY, 1);
-        Robot.vision.setCameraStrategy(PoseStrategy.LOWEST_AMBIGUITY, 2);
+        // Robot.vision.setCameraStrategy(PoseStrategy.CONSTRAINED_SOLVEPNP, 1);
+        // Robot.vision.setCameraStrategy(PoseStrategy.CONSTRAINED_SOLVEPNP, 2);
 
         pieceRecognized = false;
         scoreTimestamp = Double.MAX_VALUE;
+        cmdStartTimestamp = Double.MAX_VALUE;
         if (interrupted == false) {
 
             Robot.scoringRoller.setHandoffComplete(false);
@@ -99,7 +105,7 @@ public class ScoreL234 extends Command {
     @Override
     public boolean isFinished() {
         return !Robot.scoringRoller.hasPiece() && pieceRecognized &&
-                Timer.getFPGATimestamp() - scoreTimestamp > 0.9 && this.isScheduled();
+                Timer.getFPGATimestamp() - scoreTimestamp > 1.5 && this.isScheduled(); // was 0.9
         // return Timer.getFPGATimestamp() - scoreTimestamp > 1 && this.isScheduled();
         // return false;
     }

@@ -115,7 +115,7 @@ public class Autos {
                 AutoRoutine routine = AutoUtils.getAutoFactory().newRoutine("3-Piece");
                 Robot.scoringRoller.setHandoffComplete(true);
                 // loop.trajectory, or the new name
-                AutoTrajectory trajectory1 = routine.trajectory("Start-4 (1)");
+                AutoTrajectory trajectory1 = routine.trajectory("Start-4");
                 AutoTrajectory trajectory2 = routine.trajectory("4-ArmIntake");
                 AutoTrajectory trajectory3 = routine.trajectory("ArmIntake-3");
                 AutoTrajectory trajectory4 = routine.trajectory("3-ArmIntake");
