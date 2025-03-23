@@ -92,7 +92,7 @@ public class ToPosTriggers {
         // * setpoint.
         // */
         public static boolean OTFWithinMargin() {
-                return UtilityFunctions.withinMargin(1.75,
+                return UtilityFunctions.withinMargin(2.25,
                                 Robot.swerve.getPose().getTranslation(),
                                 Robot.swerve.getPPSetpoint().setpoint.getTranslation());
         }

@@ -19,6 +19,8 @@ public class ToPosConstants {
      **/
     public static final ChoreoAllianceFlipUtil.Flipper flipper = ChoreoAllianceFlipUtil.getFlipper();
 
+    public static final boolean isRedAlliance = true;
+
     /**
      * given a pose on blue/red, switch it to red/blue
      * 
@@ -50,7 +52,7 @@ public class ToPosConstants {
         public static final double yComponent = Math.sin(Math.toRadians(30));
 
         private static Translation2d flipIfRed(Translation2d translation) {
-            if (true) {
+            if (isRedAlliance) {
                 return new Translation2d(flipper.flipX(translation.getX()), flipper.flipY(translation.getY()));
             }
             return translation;
@@ -500,7 +502,7 @@ public class ToPosConstants {
                 this.approachPoint = approachPoint;
 
                 // Flip setpoints if on the red alliance
-                if (true) {
+                if (isRedAlliance) {
                     this.setpoint = flipPose(setpoint);
                     this.approachPoint = flipPose(approachPoint);
                 }

@@ -209,7 +209,7 @@ public class AutoUtils {
         // Command intakeSource = new IntakeSource();
         Command scoreL4 = new ScoreL234(ElevatorStates.L4);
 
-        trajectory.atPose(endingPose2d, 1, 2 * Math.PI).onTrue(scoreL4);
+        trajectory.atPose(endingPose2d, 2.25, 2 * Math.PI).onTrue(scoreL4);
 
         trajectory.done()
                 .onTrue(

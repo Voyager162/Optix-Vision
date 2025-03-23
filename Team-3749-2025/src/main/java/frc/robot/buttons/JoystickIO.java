@@ -170,8 +170,8 @@ public class JoystickIO {
                 pilot.y().onTrue(new ScoreL234(ElevatorStates.L4));
                 pilot.b().onTrue(new ScoreL234(ElevatorStates.L3));
                 pilot.x().onTrue(new ScoreL234(ElevatorStates.L2));
-                // pilot.b().onTrue(new KnockAlgae(ElevatorStates.ALGAE_LOW));
-                // pilot.x().onTrue(new KnockAlgae(ElevatorStates.ALGAE_HIGH));
+                pilot.povLeft().onTrue(new KnockAlgae(ElevatorStates.ALGAE_LOW));
+                pilot.povRight().onTrue(new KnockAlgae(ElevatorStates.ALGAE_HIGH));
 
                 // reset
                 pilot.povDown().onTrue(new Reset());

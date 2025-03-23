@@ -60,20 +60,23 @@ public class ScoreL234 extends Command {
         // scores when elevator reaches desired state
         if (Robot.elevator.getState() == elevatorState && Robot.elevator.getIsStableState()
                 && scoreTimestamp == Double.MAX_VALUE) {
+            boolean otfReachedSetpoint = (Robot.swerve.getIsOTF()
+                    && Robot.swerve.atSwerveSetpoint(Robot.swerve.getPPSetpoint().setpoint));
+            boolean autoReachedSetpoint = ((DriverStation.isAutonomous()
+                    && Robot.swerve.atSwerveSetpoint(Robot.swerve.getPositionSetpoint())));
 
-            if ((Robot.swerve.getIsOTF() && !Robot.swerve.atSwerveSetpoint(Robot.swerve.getPPSetpoint().setpoint))
-                    || (
+            if ((otfReachedSetpoint
+                    || autoReachedSetpoint)) {
 
-                    (DriverStation.isAutonomous()
-                            && !Robot.swerve.atSwerveSetpoint(Robot.swerve.getPositionSetpoint()))
-                            || Timer.getFPGATimestamp() - cmdStartTimestamp < 3.5)) {
-                Robot.scoringRoller.setState(RollerStates.STOP);
+                Robot.scoringRoller.setState(RollerStates.SCORE);
                 return;
+            } else if ((Timer.getFPGATimestamp() - cmdStartTimestamp < 3.5)) {
+                Robot.scoringRoller.setState(RollerStates.SCORE);
+            } else {
+                Robot.scoringRoller.setState(RollerStates.STOP);
             }
 
-            Robot.scoringRoller.setState(RollerStates.SCORE);
             if (scoreTimestamp == Double.MAX_VALUE) {
-
                 scoreTimestamp = Timer.getFPGATimestamp();
             }
         }
