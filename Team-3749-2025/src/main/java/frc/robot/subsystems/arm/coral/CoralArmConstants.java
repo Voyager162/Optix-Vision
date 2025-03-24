@@ -28,7 +28,7 @@ public class CoralArmConstants {
 
 	// control values
 	public static LoggedTunableNumber kG = new LoggedTunableNumber("Arms/CoralArm/kG", 0.39);
-	public static LoggedTunableNumber kP = new LoggedTunableNumber("Arms/CoralArm/kP", 2.2);
+	public static LoggedTunableNumber kP = new LoggedTunableNumber("Arms/CoralArm/kP", 1.3);
 	public static LoggedTunableNumber kI = new LoggedTunableNumber("Arms/CoralArm/kI", 0);
 	public static LoggedTunableNumber kD = new LoggedTunableNumber("Arms/CoralArm/kD", 0);
 	public static LoggedTunableNumber kS = new LoggedTunableNumber("Arms/CoralArm/kS", 0.16);
@@ -46,12 +46,12 @@ public class CoralArmConstants {
 	public static final double stateMarginOfError = 0.225;
 
 	public enum ArmStates {
-		CORAL_PICKUP(-0.68),
-		CORAL_STATION(Math.PI /2),
+		CORAL_PICKUP(-0.71),
+		CORAL_STATION(1.44),
 
 		L1(Math.PI/4),
 		HAND_OFF(2.27),
-		STOW(2.2),
+		STOW(2.27),
 		STOPPED(0),
 		CLIMB(1.9);
 

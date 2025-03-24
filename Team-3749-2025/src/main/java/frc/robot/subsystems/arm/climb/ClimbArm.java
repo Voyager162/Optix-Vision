@@ -130,8 +130,12 @@ public class ClimbArm extends SubsystemBase {
 				stop();
 				break;
 			case CLIMB:
-			
 				armIO.setVoltage(ClimbArmConstants.climbVoltage.get());
+				break;
+			case REVERSE:
+				armIO.setVoltage(-1);
+				break;
+
 			default:
 				stop();
 				break;
@@ -185,7 +189,8 @@ public class ClimbArm extends SubsystemBase {
 		double pidVoltage = profile.calculate(getPositionRad());
 		State nextState = profile.getSetpoint();
 
-		double ffVoltage = feedforward.calculateWithVelocities(getPositionRad(), firstState.velocity, nextState.velocity);
+		double ffVoltage = feedforward.calculateWithVelocities(getPositionRad(), firstState.velocity,
+				nextState.velocity);
 
 		double volts = ffVoltage + pidVoltage;
 		armIO.setVoltage(volts);
@@ -202,8 +207,14 @@ public class ClimbArm extends SubsystemBase {
 			case STOPPED:
 				stop();
 				break;
+			case REVERSE:
+				armIO.setVoltage(-1);
+				break;
+
 			default:
 				// moveToGoal();
+				stop();
+
 				break;
 		}
 	}
@@ -229,6 +240,8 @@ public class ClimbArm extends SubsystemBase {
 		Logger.recordOutput("Arms/ClimbArm/backMotor/temperature", data.backMotorTempCelcius);
 
 		Logger.recordOutput("Arms/ClimbArm/climbArmMechanism", mechanism2d);
+
+		Logger.recordOutput("Arms/ClimbArm/state", state.name());
 
 		armLigament.setAngle(Math.toDegrees(data.positionRad));
 		publisher.set(getPose3d());

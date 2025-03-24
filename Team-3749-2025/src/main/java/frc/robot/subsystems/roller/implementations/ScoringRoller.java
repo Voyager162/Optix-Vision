@@ -29,6 +29,8 @@ public class ScoringRoller extends Roller {
     private boolean hasPiece = true;
     private boolean routineStarted = false;
     private boolean isAlgaeMode = false;
+    // this *should* just be has piece, but it's too close to comp to make neat rn
+    private boolean handoffComplete = true;
 
     public ScoringRoller() {
         super(Implementations.SCORING, FF(), positionPID(), velocityPID());
@@ -57,25 +59,23 @@ public class ScoringRoller extends Roller {
                 RollerConstants.Scoring.kDVelocity.get());
     }
 
-    public boolean getIsAlgaeMode()
-    {
+    public boolean getIsAlgaeMode() {
         return isAlgaeMode;
     }
 
-    public void setIsAlgaeMode(boolean isAlgaeMode)
-    {
+    public void setIsAlgaeMode(boolean isAlgaeMode) {
         this.isAlgaeMode = isAlgaeMode;
     }
 
     @Override
     public void outtake() {
-        if(isAlgaeMode)
-        {
+        if (isAlgaeMode) {
             setVelocity(RollerStates.OUTTAKE.algaeVelocity);
             return;
         }
         setVelocity(RollerStates.OUTTAKE.scoringVelocity);
     }
+
     @Override
     public void score() {
         setVelocity(RollerStates.SCORE.scoringVelocity);
@@ -91,8 +91,7 @@ public class ScoringRoller extends Roller {
      */
     @Override
     public void intake() {
-        if(isAlgaeMode)
-        {
+        if (isAlgaeMode) {
             setVelocity(RollerConstants.RollerStates.INTAKE.algaeVelocity);
             return;
         }
@@ -106,7 +105,15 @@ public class ScoringRoller extends Roller {
     public boolean hasPiece() {
         return hasPiece;
     }
-    
+
+    public boolean getHandoffComplete() {
+        return handoffComplete;
+    }
+
+    public void setHandoffComplete(boolean handoffComplete) {
+        this.handoffComplete = handoffComplete;
+    }
+
     int resetPiece = 0;
 
     public void setHasPiece(boolean hasPiece) {
@@ -118,17 +125,17 @@ public class ScoringRoller extends Roller {
         this.hasPiece = hasPiece;
     }
 
-    
     @Override
     public void maintain() {
-        Logger.recordOutput("Roller/ScoringRoller/setpointPosition", getLastKnownPosition() - RollerConstants.Scoring.reverseDistance);
-        setPosition(getLastKnownPosition() - RollerConstants.Scoring.reverseDistance, RollerConstants.Scoring.kSVelocity.get());
+        Logger.recordOutput("Roller/ScoringRoller/setpointPosition",
+                getLastKnownPosition() - RollerConstants.Scoring.reverseDistance);
+        setPosition(getLastKnownPosition() - RollerConstants.Scoring.reverseDistance,
+                RollerConstants.Scoring.kSVelocity.get());
     }
 
     @Override
     public void periodic() {
         super.periodic();
-
 
         photoelectricIO.updateData(photoelectricData);
 
@@ -137,31 +144,30 @@ public class ScoringRoller extends Roller {
         Logger.recordOutput("Roller/ScoringRoller/hasPiece", hasPiece);
         Logger.recordOutput("Roller/ScoringRoller/setInitalState", routineStarted);
         Logger.recordOutput("Roller/ScoringRoller/isAlgaeMode", isAlgaeMode);
-        
 
         // routineStarted is true when the routine begins in Autos
         if (Autos.isRoutineStarted() && !routineStarted) {
             routineStarted = true;
-        // routineStarted is true when the routine begins in Autos
-        if (Autos.isRoutineStarted() && !routineStarted) {
-            routineStarted = true;
-            // sets initial state at the start of each routine
-            photoelectricIO.setInitialState(true);
-            photoelectricIO.setInitialState(true);
-        }
+            // routineStarted is true when the routine begins in Autos
+            if (Autos.isRoutineStarted() && !routineStarted) {
+                routineStarted = true;
+                // sets initial state at the start of each routine
+                photoelectricIO.setInitialState(true);
+                photoelectricIO.setInitialState(true);
+            }
 
-        // routineStarted is false when the routine ends in Autos
+            // routineStarted is false when the routine ends in Autos
 
-        // routineStarted is false when the routine ends in Autos
-        if (!Autos.isRoutineStarted() && routineStarted) {
-            routineStarted = false;
-            routineStarted = false;
-        }
+            // routineStarted is false when the routine ends in Autos
+            if (!Autos.isRoutineStarted() && routineStarted) {
+                routineStarted = false;
+                routineStarted = false;
+            }
 
-        if (this.getCurrentCommand() != null) {
-            SmartDashboard.putString("scoring roller command", this.getCurrentCommand().getName());
-            return; //if you add more stuff here then this will cause problems
+            if (this.getCurrentCommand() != null) {
+                SmartDashboard.putString("scoring roller command", this.getCurrentCommand().getName());
+                return; // if you add more stuff here then this will cause problems
+            }
         }
     }
-}
 }

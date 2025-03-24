@@ -19,6 +19,8 @@ public class ToPosConstants {
      **/
     public static final ChoreoAllianceFlipUtil.Flipper flipper = ChoreoAllianceFlipUtil.getFlipper();
 
+    public static final boolean isRedAlliance = true;
+
     /**
      * given a pose on blue/red, switch it to red/blue
      * 
@@ -50,7 +52,7 @@ public class ToPosConstants {
         public static final double yComponent = Math.sin(Math.toRadians(30));
 
         private static Translation2d flipIfRed(Translation2d translation) {
-            if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+            if (isRedAlliance) {
                 return new Translation2d(flipper.flipX(translation.getX()), flipper.flipY(translation.getY()));
             }
             return translation;
@@ -284,7 +286,7 @@ public class ToPosConstants {
 
         // ======= Reef Positions =======
         public static Translation2d reefCenter = new Translation2d(4.48932, 4.02598);
-        public static double reefCenterToSetpointDistance = 0.85+Units.inchesToMeters(0) ;
+        public static double reefCenterToSetpointDistance = 0.85+Units.inchesToMeters(-1.25) ;
         // Positions marking different reef scoring locations
         public static Pose2d reefClose = adjustPose(getReefPose(0), false); // Center front of the reef
         public static Pose2d reefCloseRight = adjustPose(getReefPose(60), false); // Center front of the reef
@@ -350,6 +352,41 @@ public class ToPosConstants {
                 put(reefFarRight, new int[] { 12, 10, 31 }); // Left and right options from reefFarRight
                 put(reefFar, new int[] { 16, 14, 29 }); // Left and right options from reefFar
                 put(reefFarLeft, new int[] { 20, 18, 30 }); // Left and right options from reefFarLeft
+            }
+        };
+
+        public static final HashMap<Integer, Integer> reefSetpointIndexToAlgae = new HashMap<Integer, Integer>() {
+            {
+                put(1,26);
+                put(2, 26); 
+                put(3,26);
+                put(4,26);
+
+                put(5,28);
+                put(6,28);
+                put(7,28);
+                put(8,28);
+
+                put(9,31);
+                put(10,31);
+                put(11,31);
+                put(12,31);
+
+                put(13,29);
+                put(14,29);
+                put(15,29);
+                put(16,29);
+
+                put(17,30);
+                put(18,30);
+                put(19,30);
+                put(20,30);
+
+                put(21,27);
+                put(22,27);
+                put(23,27);
+                put(24,27);
+
             }
         };
 
@@ -465,7 +502,7 @@ public class ToPosConstants {
                 this.approachPoint = approachPoint;
 
                 // Flip setpoints if on the red alliance
-                if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+                if (isRedAlliance) {
                     this.setpoint = flipPose(setpoint);
                     this.approachPoint = flipPose(approachPoint);
                 }

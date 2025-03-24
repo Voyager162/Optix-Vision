@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.subsystems.leds.LEDConstants.LEDColor;
+import frc.robot.subsystems.roller.RollerConstants.RollerStates;
 import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -43,6 +44,7 @@ import frc.robot.subsystems.swerve.ToPos;
 import frc.robot.subsystems.swerve.ToPosConstants;
 import frc.robot.commands.integration.PrepareClimb;
 import frc.robot.commands.integration.Reset;
+import frc.robot.utils.LoggedTunableNumber;
 import frc.robot.utils.MiscConstants.ControllerConstants;
 
 /**
@@ -85,35 +87,44 @@ public class JoystickIO {
                 setDefaultCommands();
         }
 
+        private static void OTFIndexChooser(int index) {
+                if (buttonBoard.getScoringMode().equals(ScoringMode.ALGAE)) {
+                        Robot.swerve.startOnTheFly(ToPosConstants.Setpoints.reefSetpointIndexToAlgae.get(index));
+                        return;
+                }
+                Robot.swerve.startOnTheFly(index);
+
+        }
+
         public static void bindButtonBoard() {
                 buttonBoard.buttonLeftSource
                                 .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(0)));
                 buttonBoard.buttonRightSource
                                 .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(1)));
                 buttonBoard.buttonReefZoneLeft1
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(2)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(2)));
                 buttonBoard.buttonReefZoneRight1
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(4)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(4)));
                 buttonBoard.buttonReefZoneRight2
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(6)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(6)));
                 buttonBoard.buttonReefZoneRight3
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(8)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(8)));
                 buttonBoard.buttonReefZoneRight4
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(10)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(10)));
                 buttonBoard.buttonReefZoneRight5
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(12)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(12)));
                 buttonBoard.buttonReefZoneRight6
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(14)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(14)));
                 buttonBoard.buttonReefZoneLeft6
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(16)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(16)));
                 buttonBoard.buttonReefZoneLeft5
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(18)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(18)));
                 buttonBoard.buttonReefZoneLeft4
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(20)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(20)));
                 buttonBoard.buttonReefZoneLeft3
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(22)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(22)));
                 buttonBoard.buttonReefZoneLeft2
-                                .onTrue(Commands.runOnce(() -> Robot.swerve.startOnTheFly(24)));
+                                .onTrue(Commands.runOnce(() -> OTFIndexChooser(24)));
                 buttonBoard.buttonl1.onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L1)));
                 buttonBoard.buttonl2.onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L2)));
                 buttonBoard.buttonl3.onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.L3)));
@@ -124,7 +135,8 @@ public class JoystickIO {
                 buttonBoard.buttonReset.onTrue(new Reset());
                 buttonBoard.buttonUtilityA.onTrue(Commands.runOnce(
                                 () -> Robot.coralRoller.setHasPiece(!Robot.coralRoller.hasPiece())));
-                ;
+        
+                buttonBoard.buttonUtilityB.onTrue(new PrepareClimb()).onFalse(new Climb());
         }
 
         /**
@@ -132,16 +144,16 @@ public class JoystickIO {
          */
         public static void pilotAndOperatorBindings() {
                 // gyro reset
-                pilot.povLeft().onTrue(Commands.runOnce(()->Robot.vision.disable3(true)));
-                pilot.povRight().onTrue(Commands.runOnce(()->Robot.vision.disable3(false)));
-
                 pilot.start().onTrue(Commands.runOnce(() -> Robot.swerve.resetGyro()));
+                pilot.back().onTrue(new PrepareClimb()).onFalse(new Climb());
+                pilot.povRight().onTrue(
+                                Commands.runOnce(() -> Robot.climbArm.setState(ClimbArmConstants.ArmStates.REVERSE)));
 
                 // intake floor
                 pilot.leftTrigger().onTrue(new IntakeFloor().andThen(new ScoringModeConditionalHandoff())).onFalse(
                                 Commands.runOnce(() -> System.out.println("interupt ground intake"), Robot.coralArm));
                 // // intake source w arm
-
+                //
                 // pilot.leftTrigger().onTrue(Commands.runOnce(() ->
                 // Robot.elevator.setVoltage(5)));
                 pilot.rightTrigger().onTrue(new CoralIntakeSource()
@@ -155,11 +167,11 @@ public class JoystickIO {
                 pilot.rightBumper().onTrue(new IntakeSource());
                 // handoff
                 pilot.a().onTrue(new Handoff());
-                // Climb - Reset to cancel
-                pilot.y().onTrue(new PrepareClimb()).onFalse(new Climb());
-                // pilot.y().onTrue(new ScoreL234(ElevatorStates.L4));
-                // pilot.b().onTrue(new ScoreL234(ElevatorStates.L3));
-                // pilot.x().onTrue(new ScoreL234(ElevatorStates.L2));
+                pilot.y().onTrue(new ScoreL234(ElevatorStates.L4));
+                pilot.b().onTrue(new ScoreL234(ElevatorStates.L3));
+                pilot.x().onTrue(new ScoreL234(ElevatorStates.L2));
+                pilot.povLeft().onTrue(new KnockAlgae(ElevatorStates.ALGAE_LOW));
+                pilot.povRight().onTrue(new KnockAlgae(ElevatorStates.ALGAE_HIGH));
 
                 // reset
                 pilot.povDown().onTrue(new Reset());
@@ -218,20 +230,44 @@ public class JoystickIO {
                 // }));
 
                 // pilot.povRight().onTrue(Commands.runOnce(
-                // () -> Robot.climbArm.setState(ClimbArmConstants.ArmStates.STOWED)))
+                // () -> Robot.climbArm.setVoltage(Robot.subsystemVoltageSetter.get())))
                 // .onFalse(Commands.runOnce(
-                // () -> Robot.climbArm.setState(ClimbArmConstants.ArmStates.STOPPED)));
+                // () -> Robot.climbArm.setVoltage(0)));
 
                 // operator.povLeft().onTrue(Commands.runOnce(() ->
                 // Robot.swerve.cyclePPSetpoint()));
 
                 // operator.a().onTrue(Robot.swerve.startOnTheFly(0);)
 
-                pilot.a().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setHasPiece(false)));
-                pilot.b().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setHasPiece(true)));
+                // pilot.a().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(-0.5),
+                // Robot.climbArm))
+                // .onFalse(Commands.runOnce(() -> Robot.climbArm.setVoltage(0),
+                // Robot.climbArm));
+                // pilot.b().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(1),
+                // Robot.climbArm))
+                // .onFalse(Commands.runOnce(() -> Robot.climbArm.setVoltage(0),
+                // Robot.climbArm));
+                // pilot.x().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(2),
+                // Robot.climbArm))
+                // .onFalse(Commands.runOnce(() -> Robot.climbArm.setVoltage(0),
+                // Robot.climbArm));
+                // pilot.y().onTrue(Commands.run(() -> Robot.climbArm.setVoltage(3),
+                // Robot.climbArm))
+                // .onFalse(Commands.runOnce(() -> Robot.climbArm.setVoltage(0),
+                // Robot.climbArm));
 
-                pilot.x().onTrue(Commands.runOnce(() -> Robot.coralRoller.setHasPiece(false)));
-                pilot.y().onTrue(Commands.runOnce(() -> Robot.coralRoller.setHasPiece(true)));
+                pilot.a().onTrue(new PrepareClimb()).onFalse(
+                                new Climb());
+
+                // pilot.a().onTrue(Commands.runOnce(() ->
+                // Robot.elevator.setState(ElevatorStates.L1)));
+                // pilot.b().onTrue(Commands.runOnce(() ->
+                // Robot.elevator.setState(ElevatorStates.L2)));
+                // pilot.x().onTrue(Commands.runOnce(() ->
+                // Robot.elevator.setState(ElevatorStates.L3)));
+
+                // pilot.y().onTrue(Commands.runOnce(() ->
+                // Robot.scoringRoller.setState(RollerStates.OUTTAKE)));
         }
 
         public static void pilotBindings() {
@@ -242,13 +278,18 @@ public class JoystickIO {
 
         public static void simBindings() {
                 // pilotBindings();
-                // pilot.a().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setHasPiece(false)));
-                // pilot.b().onTrue(Commands.runOnce(() -> Robot.scoringRoller.setHasPiece(true)));
+                // pilot.a().onTrue(Commands.runOnce(() ->
+                // Robot.scoringRoller.setHasPiece(false)));
+                // pilot.b().onTrue(Commands.runOnce(() ->
+                // Robot.scoringRoller.setHasPiece(true)));
 
                 // pilot.x().onTrue(Autos.run3Piece());
+                pilot.x().onTrue(Commands.runOnce(() -> buttonBoard.setScoringMode(ScoringMode.ALGAE)));
+                pilot.y().onTrue(Commands.runOnce(() -> OTFIndexChooser(6)));
 
                 pilot.a().onTrue(Commands.runOnce(() -> Robot.coralRoller.setHasPiece(true)));
                 pilot.a().onTrue(Commands.runOnce(() -> Robot.coralRoller.setHasPiece(false)));
+                new Trigger(() -> Robot.swerve.getIsOTF()).onTrue(onTheFly);
         }
 
         /**

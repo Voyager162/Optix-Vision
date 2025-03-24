@@ -23,7 +23,7 @@ public class SwerveModuleSpark implements SwerveModuleIO {
     private double absoluteEncoderOffsetRad;
 
     public SwerveModuleSpark(int index) {
-        if (index == 1){
+        if (index != 3){
             drive = new OptixSpark(MotorConstants.driveMotorIds[index], OptixSpark.Type.SPARKFLEX);
 
         } else {

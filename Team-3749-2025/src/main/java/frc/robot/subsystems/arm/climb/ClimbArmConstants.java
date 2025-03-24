@@ -47,7 +47,7 @@ public class ClimbArmConstants {
 	// setpoints
 	public static final LoggedTunableNumber stowSetPointRad = new LoggedTunableNumber("Arms/ClimbArm/stowSetPointRad",
 			Math.PI / 2);
-	public static final LoggedTunableNumber climbVoltage = new LoggedTunableNumber("Arms/ClimbArm/climbVoltage", 10.5);
+	public static final LoggedTunableNumber climbVoltage = new LoggedTunableNumber("Arms/ClimbArm/climbVoltage", 7);
 
 	// extra
 	public static final boolean simulateGravity = true;
@@ -56,6 +56,7 @@ public class ClimbArmConstants {
 	public enum ArmStates {
 		CLIMB,
 		STOWED,
-		STOPPED
+		STOPPED,
+		REVERSE
 	}
 }

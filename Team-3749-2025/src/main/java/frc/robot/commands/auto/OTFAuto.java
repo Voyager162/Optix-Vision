@@ -3,9 +3,6 @@ package frc.robot.commands.auto;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.buttons.ToPosTriggers;
-import frc.robot.subsystems.elevator.ElevatorConstants.ElevatorStates;
-import frc.robot.subsystems.arm.climb.ClimbArmConstants;
-import frc.robot.subsystems.arm.coral.CoralArmConstants;
 
 public class OTFAuto extends Command {
     int otfIndex;
@@ -13,7 +10,6 @@ public class OTFAuto extends Command {
     boolean ranPath = false;
 
     public OTFAuto(int index) {
-        addRequirements(Robot.getAllSuperStructureSubsystems());
 
         otfIndex = index;
     }

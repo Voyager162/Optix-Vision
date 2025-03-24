@@ -50,6 +50,7 @@ public class PigeonGyro implements GyroIO {
 
         } catch (Exception e) {
         }
+        
     }
 
     @Override

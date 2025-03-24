@@ -27,11 +27,14 @@ public class Vision extends SubsystemBase {
         visionIO.updatePose();
     }
 
-    public void setStrategyCam12(PoseStrategy strat) {
-        visionIO.setStrategyCam12(strat);
+    /**
+     * 
+     * @param strat what multi-tag fallback strategy to use
+     * @param index what camera to change the strategy of (0-5)
+     */
+    public void setCameraStrategy(PoseStrategy strat, int index) {
+        visionIO.setCameraStrategy(strat, index);
     }
 
-    public void disable3(boolean disable){
-        visionIO.setDisable3(disable);
-    }
+
 }

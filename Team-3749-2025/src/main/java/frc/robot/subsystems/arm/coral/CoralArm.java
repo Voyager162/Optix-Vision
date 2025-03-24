@@ -231,6 +231,7 @@ public class CoralArm extends SubsystemBase {
         Logger.recordOutput("Arms/CoralArm/currentCommand",
                 this.getCurrentCommand() == null ? "None" : this.getCurrentCommand().getName());
         Logger.recordOutput("Arms/CoralArm/state", state.name());
+        Logger.recordOutput("Arms/CoralArm/stable state", getIsStableState());
 
         Logger.recordOutput("Arms/CoralArm/position", data.positionRad);
         Logger.recordOutput("Arms/CoralArm/velocity", data.velocityRadsPerSecond);

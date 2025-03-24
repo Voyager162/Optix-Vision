@@ -1,5 +1,6 @@
 package frc.robot.subsystems.vision.real;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.littletonrobotics.junction.Logger;
@@ -8,12 +9,14 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.estimation.TargetModel;
 import org.photonvision.targeting.*;
 
+import edu.wpi.first.cscore.OpenCvLoader;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Robot;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
@@ -31,26 +34,50 @@ public class Photonvision implements VisionIO {
     private final PhotonCamera cam5 = new PhotonCamera("5");
     private final PhotonCamera cam6 = new PhotonCamera("6");
 
-    private boolean disable3 = false;
-
     private final PhotonCamera[] cameraList = { cam1, cam2, cam3, cam4, cam5, cam6 };
     private PhotonPoseEstimator poseEstimatorList[] = VisionConstants.CameraReal.poseEstimatorList;
 
     private VisionData visionData;
+    private boolean useConstrainedPNP = false;
 
     public Photonvision(VisionData visionData) {
-        int index = 0;
+        try {
+
+            OpenCvLoader.forceLoad();
+            for (PhotonPoseEstimator poseEstimator : poseEstimatorList) {
+                // Use MultiTag detection on the coprocessor, and fall back to the least
+                // uncertain tag if that fails
+                poseEstimator.setPrimaryStrategy(PoseStrategy.CONSTRAINED_SOLVEPNP);
+            }
+            useConstrainedPNP = true;
+        } catch (Exception exception) {
+            System.out.println("OpenCV Load Failure");
+            System.out.println("OpenCV Load Failure");
+            System.out.println("OpenCV Load Failure");
+            System.out.println("OpenCV Load Failure");
+            System.out.println("OpenCV Load Failure");
+            System.out.println("OpenCV Load Failure");
+            System.out.println("OpenCV Load Failure");
+
+            for (PhotonPoseEstimator poseEstimator : poseEstimatorList) {
+                // Use MultiTag detection on the coprocessor, and fall back to the least
+                // uncertain tag if that fails
+                poseEstimator.setPrimaryStrategy(PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR);
+            }
+        }
         for (PhotonPoseEstimator poseEstimator : poseEstimatorList) {
             // Use MultiTag detection on the coprocessor, and fall back to the least
             // uncertain tag if that fails
-            poseEstimator.setPrimaryStrategy(PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR);
             poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
 
             // redundant, but why not (setting the correct apriltag size/model and correct
             // field layout)
             poseEstimator.setTagModel(TargetModel.kAprilTag36h11);
             poseEstimator.setFieldTags(VisionConstants.aprilTagFieldLayout);
-            index++;
+
+            // temporary for testing cameras outside of their cases
+            // poseEstimator.setRobotToCameraTransform(new Transform3d());
+
         }
 
         this.visionData = visionData;
@@ -64,30 +91,33 @@ public class Photonvision implements VisionIO {
     public PhotonCamera getCamera(int index) {
         return cameraList[index];
     }
-    @Override
-    public void setDisable3(boolean disable){
-        disable3 = disable;
-    }
 
     public void updatePose() {
         // Cam # minus 1
-        // Cam 3 missing, cam 2 is bad because of mount droop
-        
-        // cameraUpdatePose(0);
-        // cameraUpdatePose(1);
-        // cameraUpdatePose(2);
-        // cameraUpdatePose(3);
-        // cameraUpdatePose(4);
-        // cameraUpdatePose(5);
+        cameraUpdatePose(0);
+        cameraUpdatePose(1);
+        cameraUpdatePose(2);
+        // only use front cams if using trig solve
+        Command elevatorCmd = Robot.elevator.getCurrentCommand();
+        if (elevatorCmd == null) {
+            // cameraUpdatePose(0);
+            // cameraUpdatePose(3);
+            // cameraUpdatePose(4);
+            // cameraUpdatePose(5);
+            return;
+        }
 
+        // else if (Robot.elevator.getCurrentCommand().getName() == "ScoreL234") {
+        // System.out.println("score ignore");
+        // return;
+        // }
 
     }
 
     public void cameraUpdatePose(int index) {
 
-        if (index == 1 || index == 2) {
-            poseEstimatorList[index].addHeadingData(Timer.getFPGATimestamp(), Robot.swerve.getRotation2d());
-        }
+        poseEstimatorList[index].addHeadingData(Robot.swerve.getUpdateOdometryTimestamp(),
+                Robot.swerve.getRotation2d());
 
         PhotonCamera camera = cameraList[index];
         PhotonPoseEstimator poseEstimator = poseEstimatorList[index];
@@ -117,7 +147,7 @@ public class Photonvision implements VisionIO {
                 continue;
             }
 
-            if (pipelineResult.getTargets().size() == 1 &&
+            if (DriverStation.isEnabled() && pipelineResult.getTargets().size() == 1 &&
                     getHypotenuse(pipelineResult.getTargets().get(
                             0).bestCameraToTarget) > VisionConstants.RejectionRequirements.maxSingleTagDistanceMeters) {
 
@@ -126,9 +156,18 @@ public class Photonvision implements VisionIO {
 
                 continue;
             }
+            // min area for single tag
+            if (pipelineResult.getTargets().size() == 1 && pipelineResult.getBestTarget().area < 0.141) {
+                Logger.recordOutput("Vision/Cam" + (index + 1) + "/ single tag area", true);
+                logBlank(index);
+
+                continue;
+            }
+
             visionData.distance[index] = getHypotenuse(pipelineResult.getTargets().get(
                     0).bestCameraToTarget);
 
+            // skip for high ambiguity
             if (pipelineResult.getBestTarget().poseAmbiguity > 0.2 && pipelineResult.getTargets().size() == 1) {
                 Logger.recordOutput("Vision/Cam" + (index + 1) + "/pose ambiguity rejection", true);
                 logBlank(index);
@@ -138,6 +177,7 @@ public class Photonvision implements VisionIO {
             poseEstimator.setReferencePose(getReferencePose());
             var optional_robotPose = poseEstimator.update(pipelineResult);
 
+            // skip fro empty pose
             if (optional_robotPose.isEmpty()) {
                 Logger.recordOutput("Vision/Cam" + (index + 1) + "/ pose empty", true);
                 logBlank(index);
@@ -145,22 +185,12 @@ public class Photonvision implements VisionIO {
             }
 
             Pose3d robotPose = optional_robotPose.get().estimatedPose;
-            Logger.recordOutput("Vision/Cam" + (index + 1) + "/pitch", robotPose.getRotation().getMeasureY());
-            Logger.recordOutput("Vision/Cam" + (index + 1) + "/roll", robotPose.getRotation().getMeasureX());
 
             visionData.visionEstimatedPoses[index] = robotPose;
 
             updateStandardDeviations(pipelineResult, index);
 
-            // if ((Robot.swerve.getIsOTF() || DriverStation.isAutonomous())
-            // && Robot.elevator.getCurrentCommand().getName() == "ScoreL234" && !(index ==
-            // 1 || index == 2)) {
-            // continue;
-            // }
-
-           
-            // double timestamp = Timer.getFPGATimestamp() - latencyMillis / 1000.0;
-            double timestamp =  pipelineResult.getTimestampSeconds();
+            double timestamp = pipelineResult.getTimestampSeconds();
             Robot.swerve.visionUpdateOdometry(robotPose.toPose2d(), timestamp);
             logTarget(index);
         }
@@ -170,6 +200,13 @@ public class Photonvision implements VisionIO {
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/latency", visionData.latencyMillis[index]);
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/targetsSeen", visionData.targetsSeen[index]);
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/pose", visionData.visionEstimatedPoses[index]);
+        Logger.recordOutput("Vision/Cam" + (index + 1) + "/yaw",
+                visionData.visionEstimatedPoses[index].getRotation().getMeasureZ().baseUnitMagnitude() * 180 / Math.PI);
+        Logger.recordOutput("Vision/Cam" + (index + 1) + "/pitch",
+                visionData.visionEstimatedPoses[index].getRotation().getMeasureY().baseUnitMagnitude() * 180 / Math.PI);
+        Logger.recordOutput("Vision/Cam" + (index + 1) + "/roll",
+                visionData.visionEstimatedPoses[index].getRotation().getMeasureX().baseUnitMagnitude() * 180 / Math.PI);
+
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/distance", visionData.distance[index]);
         Logger.recordOutput("Vision/Cam" + (index + 1) + "/pose ambiguity rejection", false);
 
@@ -220,9 +257,11 @@ public class Photonvision implements VisionIO {
     }
 
     @Override
-    public void setStrategyCam12(PoseStrategy strat) {
-        // poseEstimatorList[1].setMultiTagFallbackStrategy(strat);
-        // poseEstimatorList[2].setMultiTagFallbackStrategy(strat);
+    public void setCameraStrategy(PoseStrategy strat, int index) {
+        if (!useConstrainedPNP && strat == PoseStrategy.CONSTRAINED_SOLVEPNP) {
+            strat = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
+        }
+        poseEstimatorList[0].setPrimaryStrategy(strat);
 
     }
 }

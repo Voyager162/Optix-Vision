@@ -7,7 +7,6 @@ package frc.robot.subsystems.swerve;
 import org.littletonrobotics.junction.Logger;
 
 import choreo.trajectory.SwerveSample;
-import choreo.util.ChoreoAllianceFlipUtil;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -21,9 +20,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
@@ -66,6 +64,7 @@ public class Swerve extends SubsystemBase {
 
   // equivilant to a odometer, but also intakes vision
   private SwerveDrivePoseEstimator swerveDrivePoseEstimator;
+  private double odometryUpdateTimestamp = 0;
 
   private PIDController xController = new PIDController(AutoConstants.kPDrive, AutoConstants.kIDrive,
       AutoConstants.kDDrive);
@@ -202,6 +201,10 @@ public class Swerve extends SubsystemBase {
     // return new Pose2d(new Translation2d(2, 4.9), new Rotation2d(Math.PI/2));
   }
 
+  public double getUpdateOdometryTimestamp() {
+    return odometryUpdateTimestamp;
+  }
+
   /**
    * @return Returns max speed to be achieved by the robot based on telop or auto
    */
@@ -324,16 +327,13 @@ public class Swerve extends SubsystemBase {
 
     double xPos = sample.x;
     double xVel = sample.vx;
-    double xAcc = sample.ax;
 
     double yPos = isFlipped ? AutoUtils.flipper.flipY(sample.y) : sample.y;
     double yVel = isFlipped ? -sample.vy : sample.vy;
-    double yAcc = isFlipped ? -sample.ay : sample.ay;
 
     double heading = isFlipped ? new Rotation2d(Math.PI - sample.heading).rotateBy(new Rotation2d(Math.PI)).getRadians()
         : sample.heading;
     double omega = isFlipped ? -sample.omega : sample.omega;
-    double alpha = isFlipped ? -sample.alpha : sample.alpha;
 
     positionSetpoint = new Pose2d(xPos, yPos, new Rotation2d(heading));
     velocitySetpoint = new Pose2d(xVel, yVel, new Rotation2d(omega));
@@ -405,6 +405,20 @@ public class Swerve extends SubsystemBase {
   }
 
   public boolean atSwerveSetpoint(Pose2d pose) {
+    boolean atPose = UtilityFunctions.withinMargin(
+        new Pose2d(AutoConstants.driveToleranceMeters,
+            AutoConstants.driveToleranceMeters,
+            new Rotation2d(AutoConstants.turnToleranceRad)),
+        getPose(), pose);
+    double robotVelocity = Math.hypot(getChassisSpeeds().vxMetersPerSecond,
+        getChassisSpeeds().vyMetersPerSecond);
+
+    boolean stopped = UtilityFunctions.withinMargin(0.02, robotVelocity, 0);
+    return atPose && stopped;
+
+  }
+
+  public boolean atSwerveSetpoint(Pose2d pose, Pose2d margin) {
 
     return UtilityFunctions.withinMargin(
         new Pose2d(AutoConstants.driveToleranceMeters,
@@ -414,38 +428,27 @@ public class Swerve extends SubsystemBase {
 
   }
 
-  // public boolean atChoreoEndpoint(Pose2d endpoint) {
-  //   if (AutoUtils.getIsFlipped()) {
-  //     endpoint = flipPoseVertical(endpoint);
-  //   }
-
-  //   Logger.recordOutput("Swerve/auto/alliance", DriverStation.getAlliance().get());
-  //   Logger.recordOutput("Swerve/auto/endpoint", endpoint);
-
-  //   SmartDashboard.putBoolean("atEndpoitn", UtilityFunctions.withinMargin(
-  //     new Pose2d(AutoConstants.driveToleranceMeters,
-  //         AutoConstants.driveToleranceMeters,
-  //         new Rotation2d(AutoConstants.turnToleranceRad)),
-  //     getPose(), endpoint));
-
-  //   return UtilityFunctions.withinMargin(
-  //       new Pose2d(AutoConstants.driveToleranceMeters,
-  //           AutoConstants.driveToleranceMeters,
-  //           new Rotation2d(AutoConstants.turnToleranceRad)),
-  //       getPose(), endpoint);
-
-  // }
-
   public Pose2d flipPoseVertical(Pose2d pose) {
 
     double xPos = pose.getX();
 
     double yPos = AutoUtils.flipper.flipY(pose.getY());
 
-    double heading = new Rotation2d(Math.PI - pose.getRotation().getRadians()).rotateBy(new Rotation2d(Math.PI)).getRadians();
-    return new Pose2d(xPos,yPos, new Rotation2d(heading));
+    double heading = new Rotation2d(Math.PI - pose.getRotation().getRadians()).rotateBy(new Rotation2d(Math.PI))
+        .getRadians();
+    return new Pose2d(xPos, yPos, new Rotation2d(heading));
 
   }
+  // private void setSetpointToClosestSideToSetpoint() {
+  // Pose2d closestSide =
+  // getPPSetpoint().setpoint.nearest(ToPosConstants.Setpoints.reefSides);
+  // // Iterate through the reef branch mappings to set the correct setpoint
+  // for (Pose2d side : ToPosConstants.Setpoints.driveRelativeBranches.keySet()) {
+  // if (closestSide.equals(side)) {
+  // setPPSetpointIndex(ToPosConstants.Setpoints.driveRelativeBranches.get(side)[2]);
+  // }
+  // }
+  // }
 
   // called when the button board is pressed with the (ppsetpoint)"index" the
   // button is associated w to drive to
@@ -455,9 +458,10 @@ public class Swerve extends SubsystemBase {
     Robot.elevator.setState(ElevatorStates.STOW);
     currentPPSetpointIndex = setpointIndex;
 
-    if (JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.ALGAE &&
-        currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 25) {
-    }
+    // if (JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.ALGAE &&
+    // currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 25) {
+    // setSetpointToClosestSideToSetpoint();
+    // }
 
     if (JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.L1 &&
         currentPPSetpointIndex >= 2 && currentPPSetpointIndex <= 24 && currentPPSetpointIndex % 2 == 0) {
@@ -507,8 +511,8 @@ public class Swerve extends SubsystemBase {
    */
   public void updateOdometry() {
     // convert to -pi to pi
-
-    swerveDrivePoseEstimator.update(
+    odometryUpdateTimestamp = Timer.getFPGATimestamp();
+    swerveDrivePoseEstimator.updateWithTime(odometryUpdateTimestamp,
         Rotation2d.fromDegrees(gyroData.yawDeg),
         new SwerveModulePosition[] {
             modules[0].getPosition(),

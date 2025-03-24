@@ -66,7 +66,7 @@ public class ButtonBoard {
     public void setScoringMode(ScoringMode scoringMode) {
         this.previousScoringMode = this.scoringMode;
         this.scoringMode = scoringMode;
-        Logger.recordOutput("/buttons/buttonboard/scoringMode", getScoringMode());
+        Logger.recordOutput("/Buttons/ButtonBoard/scoringMode", getScoringMode());
     }
 
 }

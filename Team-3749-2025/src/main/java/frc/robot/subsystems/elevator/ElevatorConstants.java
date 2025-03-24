@@ -25,18 +25,19 @@ public class ElevatorConstants {
         public static final double baseHeight = Units.feetToMeters(3.25);
 
         public static int[] motorIds = { 19, 20 };
-        public static boolean[] motorInverted = { true, false };
+        public static boolean[] motorInverted = { false, true };
 
         public static int zeroOffset = 0;
     }
 
-    public static final double stateMarginOfError = 0.1;
+    public static final double statePostionMarginOfError = 0.015;
+    public static final double stateVelocityMarginOfError = 0.15;
 
     public static class ElevatorControl {
         public static LoggedTunableNumber kG = new LoggedTunableNumber("Elevator/kG", 0.32);
-        public static LoggedTunableNumber kP = new LoggedTunableNumber("Elevator/kP", 12);
-        public static LoggedTunableNumber kI = new LoggedTunableNumber("Elevator/kI", 0);
-        public static LoggedTunableNumber kD = new LoggedTunableNumber("Elevator/kD", 0);
+        public static LoggedTunableNumber kP = new LoggedTunableNumber("Elevator/kP", 16);
+        public static LoggedTunableNumber kI = new LoggedTunableNumber("Elevator/kI", 10);
+        public static LoggedTunableNumber kD = new LoggedTunableNumber("Elevator/kD", 0.2);
         public static LoggedTunableNumber kS = new LoggedTunableNumber("Elevator/kS", 0.16);
         public static LoggedTunableNumber kV = new LoggedTunableNumber("Elevator/kV", 7.77);
         public static LoggedTunableNumber kA = new LoggedTunableNumber("Elevator/kA", 0.27); // 1.72
@@ -50,12 +51,12 @@ public class ElevatorConstants {
     public enum ElevatorStates {
         STOP(Units.inchesToMeters(0)),
         L1(Units.inchesToMeters(12)),
-        L2(Units.inchesToMeters(15.35)),
-        L3(.742),
-        L4(1.3),
+        L2(0.389),//Units.inchesToMeters(%15.35)),
+        L3(0.7175),
+        L4(1.25),
         SOURCE(Units.inchesToMeters(30)),
         ALGAE_LOW(Units.inchesToMeters(.4)),
-        ALGAE_HIGH(Units.inchesToMeters(16)),
+        ALGAE_HIGH(Units.inchesToMeters(15.5)),
         MAX(Units.feetToMeters(6)),
         STOW(Units.inchesToMeters(.75));
         // STOP(Units.inchesToMeters(0)),

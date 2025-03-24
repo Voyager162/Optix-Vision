@@ -27,10 +27,12 @@ public class ScoringModeConditionalHandoff extends Command {
 
     @Override
     public void initialize() {
-        if (JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.L1 ||JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.ALGAE ){
+        if (JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.L1
+                || JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.ALGAE) {
             cancel();
             return;
         }
+        Robot.scoringRoller.setHandoffComplete(false);
 
         Robot.elevator.setState(ElevatorStates.STOW);
         Robot.coralArm.setState(CoralArmConstants.ArmStates.HAND_OFF);
@@ -40,11 +42,11 @@ public class ScoringModeConditionalHandoff extends Command {
 
     @Override
     public void execute() {
-        if (Robot.coralArm.getIsStableState()&& Robot.coralArm.getState()==ArmStates.HAND_OFF){
+        if (Robot.coralArm.getIsStableState() && Robot.coralArm.getState() == ArmStates.HAND_OFF) {
             if (handoffPositionTimestamp == Double.MAX_VALUE) {
-                handoffPositionTimestamp = Timer.getFPGATimestamp(); 
+                handoffPositionTimestamp = Timer.getFPGATimestamp();
             }
-            if (Timer.getFPGATimestamp() - handoffPositionTimestamp >0.25){
+            if (Timer.getFPGATimestamp() - handoffPositionTimestamp > 0.25) {
 
                 Robot.coralRoller.setState(RollerConstants.RollerStates.OUTTAKE);
             }
@@ -58,9 +60,14 @@ public class ScoringModeConditionalHandoff extends Command {
         Robot.coralRoller.setState(RollerConstants.RollerStates.STOP);
         Robot.scoringRoller.setState(RollerStates.MAINTAIN);
         handoffPositionTimestamp = Double.MAX_VALUE;
+
+        if (interrupted == false) {
+            Robot.scoringRoller.setHandoffComplete(true);
+        }
+
     }
 
-    /** 
+    /**
      * Command finishes when scoringRoller has coral and command is being scheduled
      */
     @Override

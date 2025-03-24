@@ -18,6 +18,8 @@ public class RollerConstants {
                 public static final double gearRatio = 3;
                 public static final double measurementNoise = 0.0;
 
+                public static final double intakeSourceWaitTime = 0.45;
+
                 public static LoggedTunableNumber kPVelocity = new LoggedTunableNumber(
                                 " rollers/coralRoller/kPVelocity", 0.0);
                 public static LoggedTunableNumber kIVelocity = new LoggedTunableNumber(
@@ -52,7 +54,7 @@ public class RollerConstants {
 
         public static final class Scoring {
                 public static final int motorId = 21;
-                public static final boolean inverted = false;
+                public static final boolean inverted = true;
 
                 public static final double momentOfInertia = 0.04;
                 public static final double gearRatio = 4;
@@ -67,12 +69,12 @@ public class RollerConstants {
                 public static LoggedTunableNumber kSVelocity = new LoggedTunableNumber(
                                 " rollers/scoringRoller/kSVelocity", 0.14);
                 public static LoggedTunableNumber kVVelocity = new LoggedTunableNumber(
-                                " rollers/scoringRoller/kVVelocity", 0.0619);
+                                " rollers/scoringRoller/kVVelocity", 0.651);
                 public static LoggedTunableNumber kAVelocity = new LoggedTunableNumber(
                                 " rollers/scoringRoller/kAVelocity", 0.0142);
 
                 public static LoggedTunableNumber kPPosition = new LoggedTunableNumber(
-                                " rollers/scoringRoller/kPPosition", .25);
+                                " rollers/scoringRoller/kPPosition", .2);
                 public static LoggedTunableNumber kIPosition = new LoggedTunableNumber(
                                 " rollers/scoringRoller/kIPosition", 0.0);
                 public static LoggedTunableNumber kDPosition = new LoggedTunableNumber(
@@ -83,16 +85,16 @@ public class RollerConstants {
                 public static LoggedTunableNumber maxAcceleration = new LoggedTunableNumber(
                                 " rollers/scoringRoller/maxAcceleration", 412);
 
-                public static final int sensorPort = 7;
+                public static final int sensorPort = 0;
 
-                public static final double reverseDistance = 7;
+                public static final double reverseDistance = 11;
         }
 
         public enum RollerStates {
-                INTAKE(-200, 85, 200),
+                INTAKE(200, 80, 200),
                 MAINTAIN(0, 0, 0),
-                OUTTAKE(-50, -42.5, Scoring.maxVelocity.get()), // -42.5
-                SCORE(0, -50, Scoring.maxVelocity.get()), // -42.5
+                OUTTAKE(-50, -45, 100), // -42.5
+                SCORE(0, -50, 120), // -42.5
                 STOP(0, 0, 0);
 
                 public final double algaeVelocity;

@@ -15,7 +15,7 @@ public class VisionConstants {
 
         public class RejectionRequirements {
                 public static final double maxLatencyMilliSec = 150;
-                public static final double maxSingleTagDistanceMeters = Units.inchesToMeters(80);
+                public static final double maxSingleTagDistanceMeters = Units.inchesToMeters(90);
         }
 
         // currently 3748's #'s'
@@ -27,70 +27,69 @@ public class VisionConstants {
 
                 public class OneTag {
                         public static final double slope =0.0021889 ;
-                        public static final double thetaRads = Units.degreesToRadians(7);
+                        public static final double thetaRads = Units.degreesToRadians(8);
                         public static final Function<Double, Double> regression = (distance) -> slope * distance;
                 }
 
                 public class TwoTag {
                         public static final double xy = Math.hypot(0.005, 0.008);
-                        public static final double thetaRads = Units.degreesToRadians(2);
+                        public static final double thetaRads = Units.degreesToRadians(3);
                 }
 
                 public class ManyTag {
                         public static final double xy = Math.hypot(0.002, 0.003);
-                        public static final double thetaRads = Units.degreesToRadians(2);
+                        public static final double thetaRads = Units.degreesToRadians(3);
                 }
         }
 
         public class CameraPositions {
                 public static Transform3d cam1 = new Transform3d(
-                                Units.inchesToMeters(10.19),
-                                Units.inchesToMeters(15.67),
-                                Units.inchesToMeters(10.422),
+                                Units.inchesToMeters(11.961),
+                                Units.inchesToMeters(10.313),
+                                Units.inchesToMeters(10.881),
                                 new Rotation3d(0,
-                                                Units.degreesToRadians(15),
-                                                Units.degreesToRadians(90 - 7)));
+                                                Units.degreesToRadians(-15),
+                                                Units.degreesToRadians(90)));
 
                 public static Transform3d cam2 = new Transform3d(
-                                Units.inchesToMeters(11.873),
-                                Units.inchesToMeters(11.476),
-                                Units.inchesToMeters(10.353),
-                                new Rotation3d(0,
-                                                Units.degreesToRadians(15),
-                                                Units.degreesToRadians(62 - 90)));
+                                Units.inchesToMeters(10.585),
+                                Units.inchesToMeters(6.287),
+                                Units.inchesToMeters(10.826),
+                                new Rotation3d(Units.degreesToRadians(-1), //0
+                                                Units.degreesToRadians(-10),
+                                                Units.degreesToRadians(-30.1)));
 
                 public static Transform3d cam3 = new Transform3d(
-                                Units.inchesToMeters(9.504+6)-0.4223,
-                                // Units.inchesToMeters(9.504),
+                                Units.inchesToMeters(9.504),
 
                                 Units.inchesToMeters(-10.961),
                                 Units.inchesToMeters(15.746),
                                 new Rotation3d(0,
-                                                Units.degreesToRadians(-20),
+                                                Units.degreesToRadians(17),//20
                                                 Units.degreesToRadians(0)));
 
                 public static Transform3d cam4 = new Transform3d(
-                                Units.inchesToMeters(-11.886),
-                                Units.inchesToMeters(14.995),
-                                Units.inchesToMeters(10.461),
+                                Units.inchesToMeters(-10.354),
+                                Units.inchesToMeters(10.189),
+                                Units.inchesToMeters(10.846),
                                 new Rotation3d(0,
-                                                Units.degreesToRadians(4.9),
-                                                Units.degreesToRadians(30 + 90)));
+                                                Units.degreesToRadians(-15),
+                                                Units.degreesToRadians(149.9)));
 
                 public static Transform3d cam5 = new Transform3d(
-                                Units.inchesToMeters(-12.839),
-                                Units.inchesToMeters(10.925),
-                                Units.inchesToMeters(10.447),
+                                Units.inchesToMeters(-12.244),
+                                Units.inchesToMeters(6.74),
+                                Units.inchesToMeters(10.814),
                                 new Rotation3d(0,
-                                                Units.degreesToRadians(15),
-                                                Units.degreesToRadians(35 + 180)));
+                                                Units.degreesToRadians(-15),
+                                                Units.degreesToRadians(45.1 + 180)));
 
                 public static Transform3d cam6 = new Transform3d(
                                 Units.inchesToMeters(-9.745),
                                 Units.inchesToMeters(-11.177),
                                 Units.inchesToMeters(20.27),
                                 new Rotation3d(0,
-                                                Units.degreesToRadians(10),
+                                                Units.degreesToRadians(-9.5),
                                                 Units.degreesToRadians(-260 + 90)));
 
                 public static Transform3d[] cameraList = { cam1, cam2, cam3, cam4, cam5, cam6 };
@@ -117,5 +116,5 @@ public class VisionConstants {
         }
 
         public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout
-                        .loadField(AprilTagFields.k2025Reefscape);
+                        .loadField(AprilTagFields.k2025ReefscapeWelded);
 }

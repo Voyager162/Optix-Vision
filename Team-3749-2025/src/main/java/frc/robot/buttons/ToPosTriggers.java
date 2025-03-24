@@ -84,18 +84,18 @@ public class ToPosTriggers {
 
         // ======= Utility Functions =======
 
-    // /**
-    // * Checks if the robot is within a certain margin of the target setpoint.
-    // * Used to determine when to execute position-based triggers.
-    // *
-    // * @return true if the robot is within the defined distance of the target
-    // * setpoint.
-    // */
-    public static boolean OTFWithinMargin() {
-        return UtilityFunctions.withinMargin(ToPosConstants.Setpoints.approachPointDistance,
-                Robot.swerve.getPose().getTranslation(),
-                Robot.swerve.getPPSetpoint().setpoint.getTranslation());
-    }
+        // /**
+        // * Checks if the robot is within a certain margin of the target setpoint.
+        // * Used to determine when to execute position-based triggers.
+        // *
+        // * @return true if the robot is within the defined distance of the target
+        // * setpoint.
+        // */
+        public static boolean OTFWithinMargin() {
+                return UtilityFunctions.withinMargin(2.25,
+                                Robot.swerve.getPose().getTranslation(),
+                                Robot.swerve.getPPSetpoint().setpoint.getTranslation());
+        }
 
         // ======= Trigger Setup for Automatic Actions =======
 
@@ -124,7 +124,7 @@ public class ToPosTriggers {
 
                 // ======= Reef Level 2 Scoring Trigger =======
                 Trigger coralReefL2 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
-                        return OTFWithinMargin() &&
+                        return OTFWithinMargin() && Robot.scoringRoller.getHandoffComplete() &&
                                         isReefSupplier.getAsBoolean() &&
                                         JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.L2;
                 });
@@ -132,7 +132,7 @@ public class ToPosTriggers {
 
                 // ======= Reef Level 3 Scoring Trigger =======
                 Trigger coralReefL3 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
-                        return OTFWithinMargin() &&
+                        return OTFWithinMargin() && Robot.scoringRoller.getHandoffComplete() &&
                                         isReefSupplier.getAsBoolean() &&
                                         JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.L3;
                 });
@@ -140,7 +140,7 @@ public class ToPosTriggers {
 
                 // ======= Reef Level 4 Scoring Trigger =======
                 Trigger coralReefL4 = new Trigger(() -> Robot.swerve.getIsOTF()).and(() -> {
-                        return OTFWithinMargin() &&
+                        return OTFWithinMargin() && Robot.scoringRoller.getHandoffComplete() &&
                                         isReefSupplier.getAsBoolean() &&
                                         JoystickIO.getButtonBoard().getScoringMode() == ScoringMode.L4;
                 });

@@ -51,7 +51,7 @@ public class Robot extends LoggedRobot {
   public static ClimbArm climbArm = new ClimbArm();
   public static Vision vision = new Vision();
   public static Led led = new Led();
-  public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("setVoltage", 0);
+  public static LoggedTunableNumber subsystemVoltageSetter = new LoggedTunableNumber("setVoltage", 2  );
 
   private RobotContainer m_robotContainer;
   private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
@@ -111,25 +111,36 @@ public class Robot extends LoggedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-
+    // /Publish hexagon points to NetworkTables
+    List<Pose2d> hexagonPoses = new ArrayList<>();
+    for (Translation2d vertex : ToPosConstants.ReefVerticies.getHexagonVertices()) {
+      hexagonPoses.add(new Pose2d(vertex, new Rotation2d()));
+    }
   }
 
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
 
-    // /Publish hexagon points to NetworkTables
-    List<Pose2d> hexagonPoses = new ArrayList<>();
-    for (Translation2d vertex : ToPosConstants.ReefVerticies.getHexagonVertices()) {
-      hexagonPoses.add(new Pose2d(vertex, new Rotation2d()));
-    }
+
+    Logger.recordOutput("OTF/a", PPSetpoints.A.setpoint);
+    Logger.recordOutput("OTF/b", PPSetpoints.B.setpoint);
+    Logger.recordOutput("OTF/c", PPSetpoints.C.setpoint);
+    Logger.recordOutput("OTF/d", PPSetpoints.D.setpoint);
+    Logger.recordOutput("OTF/e", PPSetpoints.E.setpoint);
+    Logger.recordOutput("OTF/f", PPSetpoints.F.setpoint);
+    Logger.recordOutput("OTF/g", PPSetpoints.G.setpoint);
+    Logger.recordOutput("OTF/h", PPSetpoints.H.setpoint);
+    Logger.recordOutput("OTF/i", PPSetpoints.I.setpoint);
+    Logger.recordOutput("OTF/j", PPSetpoints.J.setpoint);
+    Logger.recordOutput("OTF/k", PPSetpoints.K.setpoint);
+    Logger.recordOutput("OTF/l", PPSetpoints.L.setpoint);
+   
 
   }
 
   @Override
   public void disabledInit() {
-
-    vision.setStrategyCam12(PoseStrategy.LOWEST_AMBIGUITY);
 
   }
 
@@ -139,7 +150,7 @@ public class Robot extends LoggedRobot {
 
   @Override
   public void disabledExit() {
-    vision.setStrategyCam12(PoseStrategy.PNP_DISTANCE_TRIG_SOLVE);
+
   }
 
   @Override
