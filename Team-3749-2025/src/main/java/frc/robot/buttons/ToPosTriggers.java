@@ -24,6 +24,7 @@ import frc.robot.utils.UtilityFunctions;
  * of scoring
  * and intake actions.
  */
+@SuppressWarnings("unused")
 public class ToPosTriggers {
 
         // ======= Boolean Suppliers for Identifying Robot Position =======

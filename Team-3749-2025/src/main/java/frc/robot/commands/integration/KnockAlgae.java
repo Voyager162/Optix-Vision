@@ -10,6 +10,7 @@ import frc.robot.subsystems.roller.RollerConstants;
 /*
  * KnockAlgae command for knocking algae off reef
  */
+@SuppressWarnings("unused")
 public class KnockAlgae extends Command {
     private final ElevatorStates elevatorState;
     private double startTimeStamp = Double.MAX_VALUE;

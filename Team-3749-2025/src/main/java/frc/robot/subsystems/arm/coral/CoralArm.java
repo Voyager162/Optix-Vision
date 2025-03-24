@@ -188,20 +188,16 @@ public class CoralArm extends SubsystemBase {
      * This method combines PID and feedforward to control the arm's movement.
      */
     private void moveToGoal() {
-        // Get the setpoint from the PID controller
-        State firstState = profile.getSetpoint();
+		State firstState = profile.getSetpoint();
 
-        // Calculate the PID control voltage based on the arm's current position
-        double pidVoltage = profile.calculate(getPositionRad());
-        State nextState = profile.getSetpoint();
+		double pidVoltage = profile.calculate(getPositionRad());
+		State nextState = profile.getSetpoint();
 
-        // pidVoltage = 0;
-        // Calculate the feedforward voltage based on velocity
-        double ffVoltage = feedforward.calculate(getPositionRad(), firstState.velocity);
-        // ffVoltage = CoralArmConstants.kG.get() * Math.cos(data.positionRad);
-        // Apply the combined PID and feedforward voltages to the arm
-        double volts = ffVoltage + pidVoltage;
-        armIO.setVoltage(volts);
+		double ffVoltage = feedforward.calculateWithVelocities(getPositionRad(), firstState.velocity,
+				nextState.velocity);
+
+		double volts = ffVoltage + pidVoltage;
+		armIO.setVoltage(volts);
 
     }
 

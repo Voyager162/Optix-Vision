@@ -182,6 +182,7 @@ public class ClimbArm extends SubsystemBase {
 	 * Move the arm to the setpoint using the PID controller and feedforward.
 	 * combines PID control and feedforward to move the arm to desired position.
 	 */
+	@SuppressWarnings("unused")
 	private void moveToGoal() {
 
 		State firstState = profile.getSetpoint();

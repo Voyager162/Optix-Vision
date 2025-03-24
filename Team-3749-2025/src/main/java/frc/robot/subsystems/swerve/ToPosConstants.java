@@ -11,6 +11,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation; //dont remove all unusred importas here read line 42
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
+@SuppressWarnings("unused")
 public class ToPosConstants {
     /**
      * The Flipper flips all points in this section, its purpose is for allience
